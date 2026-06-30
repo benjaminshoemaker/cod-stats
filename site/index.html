@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CoD Major Wins — Era-Adjusted Leaderboard</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Call of Duty major tournament wins, re-ranked by era — every season weighted equally, then rescaled to a familiar wins number.">
+<meta name="description" content="Call of Duty major tournament wins, re-ranked by era: every season weighted equally, then rescaled to a familiar wins number.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
 <meta property="og:title" content="Who really dominated Call of Duty?">
-<meta property="og:description" content="Major tournament wins, re-weighted so every season counts equally. Sortable leaderboard, per-player breakdowns, and the methodology.">
+<meta property="og:description" content="Major tournament wins, re-weighted so every season counts equally. Sortable leaderboard with per-player breakdowns.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -120,7 +120,7 @@ const table = new Tabulator("#table",{
       sorter:"number", headerTooltip:"Adjusted wins minus raw wins", formatter:c=>changePill(c.getValue(), true)},
     {title:"Champs", field:"champs", width:M?96:115, minWidth:M?96:115, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      headerTooltip:"Call of Duty World Championship wins (unweighted — one per year)", formatter:champFmt},
+      headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
   ],
 });
 

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Why Weight by Era? — CoD Major Wins</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Why weighting Call of Duty major wins by era makes sense — three scoring options and a Crimsix vs Simp worked example.">
+<meta name="description" content="Why weighting Call of Duty major wins by era makes sense, with three scoring options and a Crimsix vs Simp example.">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
 <meta property="og:title" content="Why weight CoD major wins by era?">
-<meta property="og:description" content="Some seasons had 3× as many majors. Here's the problem, three ways to fix it, and a Crimsix vs Simp head-to-head.">
+<meta property="og:description" content="Some seasons had 3× as many majors, so a raw win count misleads. Here's the fix, with a Crimsix vs Simp example.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/methodology.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -89,20 +89,19 @@ const bo2=D.majors['Black Ops 2'], small=6;
 
 root.innerHTML=`
   <h1>Why weight major wins by era?</h1>
-  <p class="lede">Raw "major wins" treats a 2013 title and a 2023 title as equal — but they weren't equally hard to come by.
-  Some seasons had three times as many majors. Here's the problem, three ways to fix it, and a Crimsix-vs-Simp
-  head-to-head that shows the era gap clearly.</p>
+  <p class="lede">Raw "major wins" counts a 2013 title and a 2023 title the same, but they weren't equally hard to win.
+  Some seasons had three times as many majors. Below: the problem, three ways to score around it, and a Crimsix-vs-Simp example.</p>
 
-  <h2>1. The problem: majors per season swung enormously</h2>
-  <p>Every bar is one season. Early Call of Duty had a packed circuit — <strong>${bo2} majors in Black Ops 2</strong> —
-  while modern seasons settle around <strong>6–7</strong>. More events means more chances to win one.
+  <h2>1. The problem: some eras had far more majors</h2>
+  <p>Every bar is one season. Early Call of Duty had a packed circuit: <strong>${bo2} majors in Black Ops 2</strong>,
+  versus <strong>6–7</strong> in modern seasons. More events means more chances to win one.
   <span class="pill warn small">amber</span> = above the ${avg.toFixed(1)}-major average.</p>
   <div class="scroll-x"><div class="tl">${timeline}</div></div>
-  <p class="small muted">So a player active in 2013–2015 could rack up wins that a modern player simply never had the chance to.
+  <p class="small muted">So a player active in 2013–2015 could rack up wins a modern player never had the chance at.
   Raw totals reward <em>showing up in a busy era</em> as much as dominance.</p>
 
   <h2>2. The fix: make every season worth the same</h2>
-  <p>Treat each season as a single unit. A win is worth <span class="formula">1 ÷ (majors that season)</span> —
+  <p>Treat each season as a single unit. A win is worth <span class="formula">1 ÷ (majors that season)</span>:
   your <strong>share</strong> of that season. Win 20% of a season's majors and you bank 0.20, whether that was 2-of-10 or
   3-of-15. One win is worth very different amounts depending on when it happened:</p>
   <div class="cmp">
@@ -111,7 +110,7 @@ root.innerHTML=`
       <p class="small">1 / ${bo2} = <strong>${(1/bo2).toFixed(3)}</strong> of a season</p></div>
     <div class="opt"><h3>A win in a 6-major season</h3>
       <div class="bar-track" style="height:20px"><div class="bar-fill" style="width:${(1/small*100*3).toFixed(0)}%"></div></div>
-      <p class="small">1 / ${small} = <strong>${(1/small).toFixed(3)}</strong> of a season — worth ${(bo2/small).toFixed(1)}× as much</p></div>
+      <p class="small">1 / ${small} = <strong>${(1/small).toFixed(3)}</strong> of a season, worth ${(bo2/small).toFixed(1)}× as much</p></div>
   </div>
 
   <h2>3. Three ways you could score it</h2>
@@ -121,31 +120,31 @@ root.innerHTML=`
       <p class="small muted">Simple and familiar, but rewards era volume. This is what the wiki shows.</p></div>
     <div class="opt"><h3>Option 2</h3><div class="pill tag small">era-neutral</div>
       <p class="small">Sum of season shares.</p><div class="formula">Σ wins ÷ majors</div>
-      <p class="small muted">Opportunity-normalized — each season caps at 1.0, so era no longer inflates totals. But the numbers are small and unintuitive (a legend scores ~3).</p></div>
+      <p class="small muted">Opportunity-normalized: each season caps at 1.0, so era no longer inflates totals. But the numbers are small and unintuitive (a legend scores ~3).</p></div>
     <div class="opt pick"><h3>Option 3 ✓</h3><div class="pill up small">chosen</div>
       <p class="small">Share, rescaled to a wins-like number.</p><div class="formula">(Σ wins ÷ majors) × ${avg.toFixed(2)}</div>
       <p class="small muted">Identical ranking to Option 2, but multiplied by the average majors-per-season so it reads on the familiar "wins" scale.</p></div>
   </div>
-  <p class="small muted">We deliberately <em>didn't</em> weight by prize money or field size — those are noisier and more subjective than
-  "how many majors existed that year," which is exactly the quantity your instinct flags.</p>
+  <p class="small muted">We deliberately <em>didn't</em> weight by prize money or field size. Those are noisier and more subjective
+  than a plain count of how many majors existed that year.</p>
 
   <div class="note" style="background:var(--panel);border-color:var(--line);color:var(--muted)">
-    <strong>What this does and doesn't measure.</strong> This adjusts for one thing: how many chances to win a major existed each season.
-    It does <em>not</em> account for field strength, online vs. LAN, regional depth, roster format, or prize size. It's best read as
-    <em>opportunity-normalized</em> major wins, not a complete "who was better" verdict.
+    <strong>What this does and doesn't measure.</strong> It adjusts for one thing: how many chances to win a major existed each season.
+    It does <em>not</em> account for field strength, online vs. LAN, regional depth, roster format, or prize size. Read it as
+    <em>opportunity-normalized</em> major wins, not a full "who was better" verdict.
   </div>
 
   <h2>4. Head-to-head: Crimsix vs. Simp</h2>
-  <p>A clear high-profile example. <strong style="color:#2563eb">Crimsix</strong> piled up ${C.raw} wins largely in the 16–17-major
-  seasons; <strong style="color:#d97706">Simp</strong> has ${S.raw}, almost all in lean 6–7-major seasons. Neither changes rank dramatically here —
-  what changes is <em>the gap between them</em>. Watch it collapse as we move from raw to adjusted:</p>
+  <p>A clear, high-profile example. <strong style="color:#2563eb">Crimsix</strong> piled up ${C.raw} wins, mostly in the 16–17-major
+  seasons; <strong style="color:#d97706">Simp</strong> has ${S.raw}, almost all in lean 6–7-major seasons. Neither moves much in the
+  rankings, but the gap between them shrinks a lot from raw to adjusted:</p>
 
   <div class="grid cols-3">
     ${opt.map(o=>`<div class="opt"><h3 class="small">${o.k}</h3>${vsBars(o)}</div>`).join('')}
   </div>
-  <p>By raw major-win count Crimsix is <strong>${(C.raw/S.raw).toFixed(2)}×</strong> Simp's total. Adjust for era and the gap shrinks to
-  <strong>${(C.adj_all/S.adj_all).toFixed(2)}×</strong> — because Simp's titles were each scarcer. He's still behind, but the
-  picture is far closer to "two all-time greats" than "one double the other."</p>
+  <p>By raw count Crimsix is <strong>${(C.raw/S.raw).toFixed(2)}×</strong> Simp's total. Adjust for era and that gap shrinks to
+  <strong>${(C.adj_all/S.adj_all).toFixed(2)}×</strong>, because Simp's titles were each scarcer. He's still behind, just nowhere near
+  ${(C.raw/S.raw).toFixed(1)}× behind.</p>
 
   <div class="cmp" style="margin-top:1rem">
     <div>
@@ -157,11 +156,11 @@ root.innerHTML=`
       ${seasonMinis(S)}
     </div>
   </div>
-  <p class="small muted">Each bar is a season share (wins ÷ that season's majors). Notice how many of Crimsix's seasons sit in
-  the 16–17-major era, where each win is a thin slice — versus Simp's wins in 6–7-major seasons, where each is a fat one.</p>
+  <p class="small muted">Each bar is a season share (wins ÷ that season's majors). Many of Crimsix's sit in the 16–17-major era,
+  where each win is a small slice of the season; Simp's came in 6–7-major years, where each slice is much bigger.</p>
 
   <div class="note" style="margin-top:1.4rem">Want to see it without the earliest, sparsest seasons?
-  The <a href="index.html">leaderboard</a> has an <strong>"Exclude pre-BO2"</strong> toggle — those 2010–2012 seasons have as few
+  The <a href="index.html">leaderboard</a> has an <strong>"Exclude pre-BO2"</strong> toggle. Those 2010–2012 seasons have as few
   as 3 tracked majors, which can over-reward a single early win.</div>
 `;
 mountFoot();
