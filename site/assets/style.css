@@ -39,6 +39,7 @@ p{margin:.6em 0}
 
 .wrap{max-width:1080px;margin:0 auto;padding:1.6rem 1.25rem 4rem}
 .wrap.narrow{max-width:840px}
+.wrap.wide{max-width:1280px}
 
 .lede{color:var(--muted);font-size:1rem;max-width:70ch}
 .crumb{font-size:.85rem;color:var(--faint);margin-bottom:.5rem}
