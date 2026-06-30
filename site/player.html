@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player — Era-Adjusted Major Wins</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('');
+const name = qs('p');
+const lb = D.leaderboard.find(r=>r.name===name);
+const p = D.players[name];
+const root = document.getElementById('root');
+const SS = window.localStorage;
+
+if(!p || !lb){
+  root.innerHTML = `<p class="crumb"><a href="index.html">← Leaderboard</a></p>
+    <h1>Player not found</h1><p class="muted">No top-50 data for "${esc(name||'')}".</p>`;
+  mountFoot();
+}else{
+  const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
+
+  root.innerHTML = `
+    <p class="crumb"><a href="index.html">← Leaderboard</a></p>
+    <h1>${esc(p.name)}</h1>
+    <div class="stat-row">
+      <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
+      <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
+      <div class="stat" id="tile-post"><div class="k">Excl. pre-BO2</div><div class="v sm">${p.adj_post.toFixed(1)}</div><div class="small faint">rank #${lb.postRank} ${deltaPill(lb.deltaPost)}</div></div>
+      <div class="stat"><div class="k">World Championships</div><div class="v">${p.champs||0}</div>
+        <div class="small faint">${p.champs?p.champ_events.map(e=>e.year).join(' · '):'none'}</div></div>
+    </div>
+    ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year — shown unweighted.)</p>`:''}
+
+    <div class="controls">
+      <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
+        <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
+      <span class="small muted" id="modeline"></span>
+    </div>
+
+    <div class="grid cols-2">
+      <div>
+        <h2>How the weighting builds up</h2>
+        <p class="small muted">Each win is worth <span class="num">1 ÷ (majors that season)</span>. Sum those across seasons to get the season-share, then &times; the average majors/season for the adjusted total.</p>
+        <div id="buildup"></div>
+      </div>
+      <div>
+        <h2>Wins vs. opportunity</h2>
+        <p class="small muted">Dark = wins. Faint = majors available that season. A short dark bar inside a long faint bar means lots of competition for few titles — diluted era.</p>
+        <div id="chart"></div>
+      </div>
+    </div>
+
+    <h2>Every major win (${p.raw})</h2>
+    <table class="data"><tbody id="winlist"></tbody></table>
+  `;
+
+  function render(excl){
+    const shown = excl ? p.seasons.filter(s=>!s.pre_bo2) : p.seasons;
+    const mbar  = excl ? D.meta.mbarPost : D.meta.mbarAll;
+    const share = excl ? p.share_post : p.share_all;
+    const adj   = excl ? p.adj_post   : p.adj_all;
+    const rank  = excl ? lb.postRank  : lb.adjRank;
+    const delta = excl ? lb.deltaPost : lb.delta;
+
+    // build-up table
+    const rows = shown.map(s=>`<tr>
+        <td>${gameLink(s.game)} ${s.pre_bo2?'<span class="pill warn small">pre-BO2</span>':''}</td>
+        <td class="n">${s.wins}</td><td class="n">${s.majors}</td>
+        <td class="n">${(1/s.majors).toFixed(3)}</td>
+        <td class="n"><strong>${s.share.toFixed(3)}</strong></td>
+        <td><div class="bar-track" style="width:120px"><div class="bar-fill" style="width:${(s.share*100).toFixed(1)}%"></div></div></td>
+      </tr>`).join('');
+    const winsShown = shown.reduce((a,s)=>a+s.wins,0);
+    document.getElementById('buildup').innerHTML = `
+      <table class="data">
+        <thead><tr><th>Season</th><th class="n">Wins</th><th class="n">Majors</th><th class="n">Per win</th><th class="n">Share</th><th>&nbsp;</th></tr></thead>
+        <tbody>${rows}
+          <tr style="border-top:2px solid var(--line-2)"><td><strong>Total</strong></td>
+            <td class="n"><strong>${winsShown}</strong></td><td class="n faint">—</td><td class="n faint">—</td>
+            <td class="n"><strong>${share.toFixed(3)}</strong></td>
+            <td class="small muted">× ${mbar.toFixed(2)} = <strong>${adj.toFixed(1)}</strong></td></tr>
+        </tbody>
+      </table>`;
+
+    // chart
+    document.getElementById('chart').innerHTML = shown.map(s=>`<div style="margin:.35rem 0">
+        <div class="small muted" style="display:flex;justify-content:space-between">
+          <span>${esc(s.game)}</span><span class="num">${s.wins} / ${s.majors} majors</span></div>
+        <div class="bar-track" style="height:14px;position:relative;background:var(--panel-2)">
+          <div class="bar-fill amber" style="width:${(s.majors/maxMajors*100).toFixed(1)}%;opacity:.28"></div>
+          <div class="bar-fill" style="width:${(s.wins/maxMajors*100).toFixed(1)}%;position:absolute;top:0;left:0"></div>
+        </div></div>`).join('') || '<p class="small faint">No included seasons.</p>';
+
+    // full win list (pre-BO2 groups greyed + tagged when excluded)
+    document.getElementById('winlist').innerHTML = p.seasons.map(s=>{
+      const muted = excl && s.pre_bo2;
+      const evs = s.events.map(e=>`<tr${muted?' style="opacity:.45"':''}>
+          <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
+          <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
+      return `<tr class="subhead"${muted?' style="opacity:.6"':''}><td colspan="3">${esc(s.game)} — ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}${muted?' · excluded':''}</td></tr>${evs}`;
+    }).join('');
+
+    // active tile + mode line
+    document.getElementById('tile-all').classList.toggle('active', !excl);
+    document.getElementById('tile-post').classList.toggle('active', excl);
+    document.getElementById('modeline').innerHTML = excl
+      ? `Showing <strong>excluding pre-BO2</strong>: ${adj.toFixed(1)} adjusted wins, rank #${rank} ${deltaPill(delta)} (× ${mbar.toFixed(2)} avg majors/season).`
+      : `Showing <strong>all seasons</strong>: ${adj.toFixed(1)} adjusted wins, rank #${rank} ${deltaPill(delta)} (× ${mbar.toFixed(2)} avg majors/season).`;
+  }
+
+  const box=document.getElementById('excl');
+  box.checked = SS.getItem('excl')==='1';
+  render(box.checked);
+  box.addEventListener('change',e=>{ SS.setItem('excl', e.target.checked?'1':'0'); render(e.target.checked); });
+
+  mountFoot();
+}
+</script>
+</body>
+</html>

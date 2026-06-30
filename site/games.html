@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seasons — Era-Adjusted Major Wins</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('games.html');
+const root=document.getElementById('root');
+const games=D.games.slice().sort((a,b)=>a.order-b.order);
+const maxM=Math.max(...games.map(g=>g.majors));
+const minM=Math.min(...games.map(g=>g.majors));
+const avg=D.meta.mbarAll;
+
+let rows=games.map(g=>{
+  const ratio=g.majors/avg;
+  const tag = g.preBo2?'<span class="pill warn small">pre-BO2</span>':'';
+  return `<tr>
+    <td>${gameLink(g.game)} ${tag}</td>
+    <td class="n faint">${yr(g.firstDate)}</td>
+    <td class="n"><strong>${g.majors}</strong></td>
+    <td class="n">${g.weight.toFixed(3)}</td>
+    <td style="min-width:160px"><div class="bar-track"><div class="bar-fill ${g.majors>=avg?'amber':''}" style="width:${(g.majors/maxM*100).toFixed(0)}%"></div></div></td>
+    <td class="n"><span class="${g.majors>avg?'delta down':'delta up'}">${g.majors>avg?'▲':'▼'} ${ratio.toFixed(2)}×</span></td>
+  </tr>`;
+}).join('');
+
+root.innerHTML=`
+  <h1>Seasons &amp; the major count</h1>
+  <p class="lede">Each Call of Duty title is one competitive "season". The number of majors per season swung wildly —
+  from <strong>17 (Black Ops 2)</strong> down to <strong>6</strong> in recent years. That swing is the whole reason raw win totals
+  flatter early-era players. The weighting makes a win worth <span class="num">1 ÷ majors</span> of its season.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="k">Seasons</div><div class="v">${D.meta.consoleSeasons}</div></div>
+    <div class="stat"><div class="k">Total majors</div><div class="v">${D.meta.consoleMajors}</div></div>
+    <div class="stat"><div class="k">Avg majors / season</div><div class="v sm">${avg.toFixed(2)}</div></div>
+    <div class="stat"><div class="k">Range</div><div class="v sm">${minM}–${maxM}</div></div>
+  </div>
+
+  <table class="data">
+    <thead><tr><th>Season</th><th class="n">First major</th><th class="n">Majors</th>
+      <th class="n">Per win</th><th>Relative volume</th><th class="n">vs avg</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <p class="small muted">A "vs avg" above 1.0× (red) means that season had more majors than average, so each win there is worth
+  proportionally less.</p>
+`;
+mountFoot();
+</script>
+</body>
+</html>

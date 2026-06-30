@@ -1,0 +1,51 @@
+AdjRank,Player,RawMajorWins,RawRank,YearlyShareSum,AdjustedWins,SeasonBreakdown
+1,Crimsix,38,1,3.005,26.55,Advanced Warfare:9/16; Black Ops 3:5/10; Infinite Warfare:4/8; Ghosts:7/16; Black Ops 2:7/17; Modern Warfare:4/13; Black Ops 4:1/7; Vanguard:1/7
+2,Scump,28,2,2.623,23.17,Advanced Warfare:9/16; Black Ops 3:5/10; Infinite Warfare:4/8; Modern Warfare 3:2/6; Black Ops:2/12; Modern Warfare:2/13; Black Ops 4:1/7; Vanguard:1/7; Ghosts:1/16; Black Ops 2:1/17
+3,aBeZy,14,8,2.082,18.39,Black Ops Cold War:4/6; Modern Warfare III:2/6; Black Ops 6:2/6; Black Ops 4:2/7; Modern Warfare II:1/6; Modern Warfare:2/13; Black Ops 7:1/7
+4,Simp,14,9,2.082,18.39,Black Ops Cold War:4/6; Modern Warfare III:2/6; Black Ops 6:2/6; Black Ops 4:2/7; Modern Warfare II:1/6; Modern Warfare:2/13; Black Ops 7:1/7
+5,Karma,24,3,2.003,17.69,Black Ops 3:5/10; Infinite Warfare:4/8; Ghosts:6/16; Advanced Warfare:4/16; Black Ops 2:4/17; Black Ops 4:1/7
+6,FormaL,23,4,1.984,17.53,Advanced Warfare:9/16; Black Ops 3:5/10; Infinite Warfare:4/8; Modern Warfare:2/13; Black Ops 4:1/7; Ghosts:2/16
+7,Cellium,11,10,1.654,14.61,Black Ops Cold War:4/6; Modern Warfare III:2/6; Black Ops 6:2/6; Modern Warfare II:1/6; Modern Warfare:2/13
+8,Kenny,10,12,1.371,12.11,Modern Warfare III:2/6; World War II:3/10; Black Ops 4:2/7; Vanguard:2/7; Modern Warfare II:1/6
+9,Clayster,18,6,1.321,11.67,Black Ops 2:6/17; Modern Warfare:4/13; Black Ops 4:2/7; Advanced Warfare:4/16; Ghosts:2/16
+10,BigTymeR,9,20,1.309,11.56,Modern Warfare 3:4/6; Call of Duty 4:1/3; Black Ops:3/12; Black Ops 2:1/17
+11,HyDra,8,24,1.286,11.36,Modern Warfare II:3/6; Black Ops 6:2/6; Modern Warfare III:1/6; Black Ops 7:1/7; Vanguard:1/7
+12,Drazah,8,23,1.262,11.15,Modern Warfare III:2/6; Black Ops 6:2/6; Vanguard:2/7; Modern Warfare II:1/6; Black Ops 7:1/7
+13,ACHES,19,5,1.262,11.15,Ghosts:7/16; Black Ops 2:7/17; Black Ops:3/12; World War II:1/10; Advanced Warfare:1/16
+14,Shotzzy,10,11,1.260,11.13,Modern Warfare III:2/6; Black Ops 6:2/6; Modern Warfare:4/13; Vanguard:1/7; Black Ops 7:1/7
+15,Envoy,9,17,1.249,11.03,Black Ops 6:2/6; Vanguard:2/7; Modern Warfare III:1/6; Modern Warfare II:1/6; Modern Warfare:2/13; Black Ops 7:1/7
+16,Arcitys,9,16,1.231,10.88,Black Ops Cold War:4/6; Black Ops 4:2/7; Modern Warfare:2/13; Infinite Warfare:1/8
+17,Priestahh,9,19,1.206,10.66,Modern Warfare II:3/6; Black Ops 4:2/7; Black Ops Cold War:1/6; Modern Warfare:2/13; World War II:1/10
+18,TeeP,18,7,1.183,10.45,Ghosts:7/16; Black Ops 2:7/17; Black Ops:4/12
+19,Octane,9,18,1.163,10.27,Black Ops 4:2/7; Vanguard:2/7; World War II:2/10; Modern Warfare II:1/6; Infinite Warfare:1/8; Black Ops 3:1/10
+20,MerK,10,13,1.100,9.72,Modern Warfare 3:4/6; Black Ops:3/12; Ghosts:2/16; Black Ops 2:1/17
+21,Dashy,7,25,1.095,9.67,Modern Warfare III:2/6; Black Ops 6:2/6; Black Ops 4:1/7; Vanguard:1/7; Black Ops 7:1/7
+22,SlasheR,9,15,1.058,9.34,Black Ops 4:2/7; Black Ops 3:2/10; World War II:2/10; Modern Warfare II:1/6; Vanguard:1/7; Advanced Warfare:1/16
+23,Huke,8,21,0.927,8.19,Black Ops 6:2/6; Modern Warfare:4/13; Vanguard:1/7; Black Ops 7:1/7
+24,Rambo,5,39,0.917,8.10,Modern Warfare 3:3/6; Call of Duty 4:1/3; Black Ops:1/12
+25,Skyz,7,29,0.897,7.93,Modern Warfare II:3/6; Modern Warfare:3/13; Modern Warfare III:1/6
+26,Scrap,5,44,0.810,7.15,Black Ops 6:2/6; Modern Warfare III:1/6; Modern Warfare II:1/6; Black Ops 7:1/7
+27,KiSMET,5,49,0.810,7.15,Modern Warfare II:3/6; Modern Warfare III:1/6; Vanguard:1/7
+28,JKap,9,14,0.754,6.66,Black Ops 3:2/10; World War II:2/10; Black Ops:2/12; Ghosts:2/16; Advanced Warfare:1/16
+29,CleanX,5,42,0.720,6.36,Modern Warfare III:1/6; Black Ops Cold War:1/6; Modern Warfare II:1/6; Vanguard:1/7; Modern Warfare:1/13
+30,Enable,8,22,0.698,6.17,Advanced Warfare:5/16; Black Ops 4:2/7; World War II:1/10
+31,John,7,26,0.685,6.05,Black Ops 3:2/10; World War II:2/10; Black Ops 4:1/7; Black Ops:1/12; Black Ops 2:1/17
+32,ProoFy,5,40,0.646,5.70,Modern Warfare 2:1/3; Black Ops:3/12; Ghosts:1/16
+33,Gunless,6,38,0.645,5.70,World War II:3/10; Black Ops 4:1/7; Infinite Warfare:1/8; Modern Warfare:1/13
+34,Slacked,6,35,0.630,5.57,World War II:2/10; Black Ops 4:1/7; Infinite Warfare:1/8; Black Ops 3:1/10; Advanced Warfare:1/16
+35,MadCat,6,33,0.617,5.45,Black Ops 3:2/10; Modern Warfare 3:1/6; Infinite Warfare:1/8; Advanced Warfare:1/16; Ghosts:1/16
+36,Attach,7,27,0.594,5.24,Advanced Warfare:4/16; Black Ops Cold War:1/6; World War II:1/10; Modern Warfare:1/13
+37,Loony,5,47,0.525,4.64,World War II:3/10; Infinite Warfare:1/8; Black Ops 3:1/10
+38,Parasite,7,28,0.523,4.62,Black Ops 2:5/17; Modern Warfare 3:1/6; Ghosts:1/16
+39,Accuracy,5,43,0.520,4.59,World War II:3/10; Vanguard:1/7; Modern Warfare:1/13
+40,Bance,4,50,0.511,4.52,Black Ops Cold War:1/6; Vanguard:1/7; Infinite Warfare:1/8; Modern Warfare:1/13
+41,Jurd,6,30,0.509,4.49,Black Ops 3:2/10; Ghosts:2/16; Infinite Warfare:1/8; Black Ops 2:1/17
+42,Classic,5,46,0.507,4.48,Black Ops 4:1/7; Infinite Warfare:1/8; Black Ops 3:1/10; Modern Warfare:1/13; Advanced Warfare:1/16
+43,TJHaLy,5,45,0.505,4.46,World War II:3/10; Black Ops 4:1/7; Advanced Warfare:1/16
+44,Apathy,6,31,0.488,4.31,Black Ops 3:2/10; Ghosts:2/16; World War II:1/10; Advanced Warfare:1/16
+45,Nadeshot,6,37,0.475,4.20,Advanced Warfare:3/16; Modern Warfare 3:1/6; Ghosts:1/16; Black Ops 2:1/17
+46,Joshh,6,34,0.472,4.17,Modern Warfare 3:1/6; Ghosts:2/16; Black Ops 2:2/17; Advanced Warfare:1/16
+47,iLLeY,5,48,0.451,3.98,Modern Warfare:4/13; Vanguard:1/7
+48,Tommey,6,32,0.446,3.94,Black Ops 3:2/10; Ghosts:2/16; Advanced Warfare:1/16; Black Ops 2:1/17
+49,ZooMaa,6,36,0.427,3.77,Advanced Warfare:3/16; World War II:1/10; Modern Warfare:1/13; Ghosts:1/16
+50,Swanny,5,41,0.388,3.42,Black Ops 3:2/10; Ghosts:2/16; Advanced Warfare:1/16

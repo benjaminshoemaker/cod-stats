@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Why weight by era? — CoD Major Wins</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+@media(max-width:760px){.cmp{grid-template-columns:1fr}}
+.season-mini{margin:.3rem 0}
+.season-mini .top{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.opt{border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.15rem;background:var(--panel)}
+.opt.pick{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.opt h3{margin-top:0;display:flex;align-items:center;gap:.5rem}
+.formula{font-family:var(--mono);font-size:.85rem;background:#fff;border:1px solid var(--line);
+  border-radius:7px;padding:.5rem .7rem;display:inline-block;margin:.3rem 0}
+.vs-bar{display:flex;align-items:center;gap:.6rem;margin:.3rem 0}
+.vs-bar .who{width:62px;font-size:.85rem;font-weight:600}
+.vs-bar .tr{flex:1;background:var(--panel-2);border-radius:5px;height:22px;position:relative}
+.vs-bar .fl{height:100%;border-radius:5px;display:flex;align-items:center;justify-content:flex-end;
+  padding-right:.4rem;color:#fff;font-size:.78rem;font-family:var(--mono);font-weight:600}
+.fl.c{background:#2563eb}.fl.s{background:#d97706}
+.ratio-tag{font-family:var(--mono);font-weight:700;font-size:1.1rem}
+.tl{display:flex;align-items:flex-end;gap:3px;height:150px;margin:1rem 0;padding-top:10px;min-width:600px}
+.tl .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px}
+.tl .col .b{width:100%;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px}
+.tl .col .b.hi{background:#d97706}
+.tl .col .cap{font-size:.62rem;color:var(--faint);writing-mode:vertical-rl;transform:rotate(180deg);height:54px;white-space:nowrap;overflow:hidden}
+.tl .col .nm{font-size:.7rem;font-family:var(--mono);color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap narrow" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('methodology.html');
+const root=document.getElementById('root');
+const C=D.players['Crimsix'], S=D.players['Simp'];
+const avg=D.meta.mbarAll;
+const games=D.games.slice().sort((a,b)=>a.order-b.order);
+const maxM=Math.max(...games.map(g=>g.majors));
+
+// timeline of majors per season
+const timeline = games.map(g=>`<div class="col">
+  <div class="nm">${g.majors}</div>
+  <div class="b ${g.majors>avg?'hi':''}" style="height:${(g.majors/maxM*120).toFixed(0)}px" title="${esc(g.game)}: ${g.majors} majors"></div>
+  <div class="cap">${esc(g.game)}</div></div>`).join('');
+
+// per-player season-share mini bars
+function seasonMinis(p){
+  return p.seasons.map(s=>`<div class="season-mini">
+    <div class="top"><span>${esc(s.game)}</span><span class="num">${s.wins}/${s.majors} = ${s.share.toFixed(3)}</span></div>
+    <div class="bar-track" style="height:12px"><div class="bar-fill" style="width:${(s.share*100).toFixed(1)}%"></div></div>
+  </div>`).join('');
+}
+
+// options comparison numbers
+const opt = [
+  {k:'Raw wins (status quo)', c:C.raw, s:S.raw, fmt:v=>v.toFixed(0)},
+  {k:'Pure season-share', c:C.share_all, s:S.share_all, fmt:v=>v.toFixed(2)},
+  {k:'Rescaled adjusted', c:C.adj_all, s:S.adj_all, fmt:v=>v.toFixed(1)},
+];
+function vsBars(o){
+  const mx=Math.max(o.c,o.s);
+  return `<div class="vs-bar"><div class="who" style="color:#2563eb">Crimsix</div>
+      <div class="tr"><div class="fl c" style="width:${(o.c/mx*100).toFixed(0)}%">${o.fmt(o.c)}</div></div></div>
+    <div class="vs-bar"><div class="who" style="color:#d97706">Simp</div>
+      <div class="tr"><div class="fl s" style="width:${(o.s/mx*100).toFixed(0)}%">${o.fmt(o.s)}</div></div></div>
+    <div class="small muted" style="text-align:right">gap: <span class="ratio-tag">${(o.c/o.s).toFixed(2)}×</span></div>`;
+}
+
+const bo2=D.majors['Black Ops 2'], small=6;
+
+root.innerHTML=`
+  <h1>Why weight major wins by era?</h1>
+  <p class="lede">Raw "major wins" treats a 2013 title and a 2023 title as equal — but they weren't equally hard to come by.
+  Some seasons had three times as many majors. Here's the problem, three ways to fix it, and a Crimsix-vs-Simp
+  head-to-head that shows the era gap clearly.</p>
+
+  <h2>1. The problem: majors per season swung enormously</h2>
+  <p>Every bar is one season. Early Call of Duty had a packed circuit — <strong>${bo2} majors in Black Ops 2</strong> —
+  while modern seasons settle around <strong>6–7</strong>. More events means more chances to win one.
+  <span class="pill warn small">amber</span> = above the ${avg.toFixed(1)}-major average.</p>
+  <div class="scroll-x"><div class="tl">${timeline}</div></div>
+  <p class="small muted">So a player active in 2013–2015 could rack up wins that a modern player simply never had the chance to.
+  Raw totals reward <em>showing up in a busy era</em> as much as dominance.</p>
+
+  <h2>2. The fix: make every season worth the same</h2>
+  <p>Treat each season as a single unit. A win is worth <span class="formula">1 ÷ (majors that season)</span> —
+  your <strong>share</strong> of that season. Win 20% of a season's majors and you bank 0.20, whether that was 2-of-10 or
+  3-of-15. One win is worth very different amounts depending on when it happened:</p>
+  <div class="cmp">
+    <div class="opt"><h3>A win in Black Ops 2</h3>
+      <div class="bar-track" style="height:20px"><div class="bar-fill amber" style="width:${(1/bo2*100*3).toFixed(0)}%"></div></div>
+      <p class="small">1 / ${bo2} = <strong>${(1/bo2).toFixed(3)}</strong> of a season</p></div>
+    <div class="opt"><h3>A win in a 6-major season</h3>
+      <div class="bar-track" style="height:20px"><div class="bar-fill" style="width:${(1/small*100*3).toFixed(0)}%"></div></div>
+      <p class="small">1 / ${small} = <strong>${(1/small).toFixed(3)}</strong> of a season — worth ${(bo2/small).toFixed(1)}× as much</p></div>
+  </div>
+
+  <h2>3. Three ways you could score it</h2>
+  <div class="grid cols-3" style="margin-top:.6rem">
+    <div class="opt"><h3>Option 1</h3><div class="pill flat small">status quo</div>
+      <p class="small">Just count wins.</p><div class="formula">total wins</div>
+      <p class="small muted">Simple and familiar, but rewards era volume. This is what the wiki shows.</p></div>
+    <div class="opt"><h3>Option 2</h3><div class="pill tag small">era-neutral</div>
+      <p class="small">Sum of season shares.</p><div class="formula">Σ wins ÷ majors</div>
+      <p class="small muted">Opportunity-normalized — each season caps at 1.0, so era no longer inflates totals. But the numbers are small and unintuitive (a legend scores ~3).</p></div>
+    <div class="opt pick"><h3>Option 3 ✓</h3><div class="pill up small">chosen</div>
+      <p class="small">Share, rescaled to a wins-like number.</p><div class="formula">(Σ wins ÷ majors) × ${avg.toFixed(2)}</div>
+      <p class="small muted">Identical ranking to Option 2, but multiplied by the average majors-per-season so it reads on the familiar "wins" scale.</p></div>
+  </div>
+  <p class="small muted">We deliberately <em>didn't</em> weight by prize money or field size — those are noisier and more subjective than
+  "how many majors existed that year," which is exactly the quantity your instinct flags.</p>
+
+  <div class="note" style="background:var(--panel);border-color:var(--line);color:var(--muted)">
+    <strong>What this does and doesn't measure.</strong> This adjusts for one thing: how many chances to win a major existed each season.
+    It does <em>not</em> account for field strength, online vs. LAN, regional depth, roster format, or prize size. It's best read as
+    <em>opportunity-normalized</em> major wins, not a complete "who was better" verdict.
+  </div>
+
+  <h2>4. Head-to-head: Crimsix vs. Simp</h2>
+  <p>A clear high-profile example. <strong style="color:#2563eb">Crimsix</strong> piled up ${C.raw} wins largely in the 16–17-major
+  seasons; <strong style="color:#d97706">Simp</strong> has ${S.raw}, almost all in lean 6–7-major seasons. Neither changes rank dramatically here —
+  what changes is <em>the gap between them</em>. Watch it collapse as we move from raw to adjusted:</p>
+
+  <div class="grid cols-3">
+    ${opt.map(o=>`<div class="opt"><h3 class="small">${o.k}</h3>${vsBars(o)}</div>`).join('')}
+  </div>
+  <p>By raw major-win count Crimsix is <strong>${(C.raw/S.raw).toFixed(2)}×</strong> Simp's total. Adjust for era and the gap shrinks to
+  <strong>${(C.adj_all/S.adj_all).toFixed(2)}×</strong> — because Simp's titles were each scarcer. He's still behind, but the
+  picture is far closer to "two all-time greats" than "one double the other."</p>
+
+  <div class="cmp" style="margin-top:1rem">
+    <div>
+      <h3 style="color:#2563eb">Crimsix — ${C.raw} wins, ${C.share_all.toFixed(2)} share → ${C.adj_all.toFixed(1)} adj</h3>
+      ${seasonMinis(C)}
+    </div>
+    <div>
+      <h3 style="color:#d97706">Simp — ${S.raw} wins, ${S.share_all.toFixed(2)} share → ${S.adj_all.toFixed(1)} adj</h3>
+      ${seasonMinis(S)}
+    </div>
+  </div>
+  <p class="small muted">Each bar is a season share (wins ÷ that season's majors). Notice how many of Crimsix's seasons sit in
+  the 16–17-major era, where each win is a thin slice — versus Simp's wins in 6–7-major seasons, where each is a fat one.</p>
+
+  <div class="note" style="margin-top:1.4rem">Want to see it without the earliest, sparsest seasons?
+  The <a href="index.html">leaderboard</a> has an <strong>"Exclude pre-BO2"</strong> toggle — those 2010–2012 seasons have as few
+  as 3 tracked majors, which can over-reward a single early win.</div>
+`;
+mountFoot();
+</script>
+</body>
+</html>

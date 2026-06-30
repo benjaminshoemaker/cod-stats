@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Season — Era-Adjusted Major Wins</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('games.html');
+const root=document.getElementById('root');
+const gname=qs('g');
+const g=D.games.find(x=>x.game===gname);
+const avg=D.meta.mbarAll;
+
+if(!g){
+  root.innerHTML=`<p class="crumb"><a href="games.html">← Seasons</a></p><h1>Season not found</h1>`;
+}else{
+  const evRows=g.events.map(e=>`<tr>
+    <td class="faint num small">${esc(e.date||'')}</td>
+    <td>${esc(e.event)}</td>
+    <td>${esc(e.winner||'—')}</td>
+    <td class="small muted">${esc(e.type||'')}${e.location?' · '+esc(e.location):''}</td>
+    <td class="n faint">+${g.weight.toFixed(3)}</td>
+  </tr>`).join('');
+
+  const players=g.topPlayers.map(p=>`<tr>
+    <td>${playerLink(p.name)}</td>
+    <td class="n">${p.wins}</td>
+    <td class="n"><strong>${(p.wins*g.weight).toFixed(3)}</strong></td>
+  </tr>`).join('');
+
+  const ratio=g.majors/avg;
+  const tag = g.preBo2?'<span class="pill warn">pre-BO2</span>':'';
+
+  root.innerHTML=`
+    <p class="crumb"><a href="games.html">← Seasons</a></p>
+    <h1>${esc(g.game)} ${tag}</h1>
+    <div class="stat-row">
+      <div class="stat"><div class="k">Majors this season</div><div class="v">${g.majors}</div></div>
+      <div class="stat"><div class="k">Each win worth</div><div class="v sm">1 / ${g.majors}</div><div class="small faint">= ${g.weight.toFixed(3)} of a season</div></div>
+      <div class="stat"><div class="k">vs avg season</div><div class="v sm"><span class="${g.majors>avg?'delta down':'delta up'}">${ratio.toFixed(2)}×</span></div><div class="small faint">avg ${avg.toFixed(1)} majors</div></div>
+      <div class="stat"><div class="k">Win the whole season</div><div class="v sm">1.00</div><div class="small faint">all ${g.majors} = one "season"</div></div>
+    </div>
+
+    <div class="note">How the weighting works here: this season had <strong>${g.majors}</strong> majors.
+    Winning <em>any</em> one of them is worth <span class="num">1/${g.majors} = ${g.weight.toFixed(3)}</span> of a season.
+    To "max out" the season you'd need to win all ${g.majors}. For comparison, a single win in a lean 6-major season is worth
+    <strong>${(g.majors/6).toFixed(2)}×</strong> a single win here.</div>
+
+    <div class="grid cols-2" style="margin-top:1.4rem">
+      <div>
+        <h2>All ${g.majors} majors</h2>
+        <table class="data">
+          <thead><tr><th>Date</th><th>Event</th><th>Winner</th><th>Type</th><th class="n">Weight</th></tr></thead>
+          <tbody>${evRows}</tbody>
+        </table>
+      </div>
+      <div>
+        <h2>Top-50 players this season</h2>
+        <p class="small muted">Their wins here, and the season-share each earned.</p>
+        <table class="data">
+          <thead><tr><th>Player</th><th class="n">Wins</th><th class="n">Share earned</th></tr></thead>
+          <tbody>${players||'<tr><td colspan=3 class="muted">No top-50 players won this season.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+mountFoot();
+</script>
+</body>
+</html>

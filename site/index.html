@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CoD Major Wins — Era-Adjusted Leaderboard</title>
+<link rel="stylesheet" href="vendor/tabulator.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>Era-Adjusted Major Tournament Wins</h1>
+  <p class="lede">Call of Duty had far more majors in its early years, so a win was easier to come by.
+  This leaderboard treats <strong>every season as equal weight</strong>: a win counts as a share of that
+  season's majors, then is rescaled back to a familiar "wins" number.
+  <a href="methodology.html">See why &rarr;</a></p>
+
+  <div class="controls">
+    <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off">
+    <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
+      <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
+  </div>
+
+  <div id="table"></div>
+
+  <div class="legend">
+    <span><span class="sw" style="background:var(--accent)"></span>Adjusted = season-share &times; avg majors/season</span>
+    <span><span class="sw" style="background:var(--pos)"></span>▲ rose vs raw rank</span>
+    <span><span class="sw" style="background:var(--neg)"></span>▼ fell vs raw rank</span>
+  </div>
+  <p class="small muted" id="modenote"></p>
+</div>
+
+<script src="data.js"></script>
+<script src="vendor/tabulator.min.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('index.html');
+
+function viewRows(excl){
+  return D.leaderboard.map(r=>({
+    name:r.name,
+    raw:r.raw,
+    rawRank:r.rawRank,
+    champs:r.champs,
+    adjRank: excl? r.postRank : r.adjRank,
+    adjusted: excl? r.adjPost : r.adjAll,
+    share: excl? r.sharePost : r.shareAll,
+    delta: excl? r.deltaPost : r.delta,
+  }));
+}
+
+const SS = window.localStorage;
+const startExcl = SS.getItem('excl')==='1';
+
+const table = new Tabulator("#table",{
+  data: viewRows(startExcl),
+  layout:"fitColumns",
+  height:"640px",
+  responsiveLayout:"collapse",          // fold low-priority columns into a detail row on narrow screens
+  responsiveLayoutCollapseStartOpen:false,
+  placeholder:"No players match your search.",
+  initialSort:[{column:"adjRank",dir:"asc"}],
+  columns:[
+    {title:"Rank", field:"adjRank", width:96, minWidth:80, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", responsive:0, headerTooltip:"Adjusted rank"},
+    {title:"Player", field:"name", minWidth:150, widthGrow:3, sorter:"string", responsive:0,
+      formatter:c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`},
+    {title:"Adjusted", field:"adjusted", width:130, minWidth:110, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", responsive:0,
+      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
+      headerTooltip:"Era-adjusted wins"},
+    {title:"Raw wins", field:"raw", width:115, minWidth:95, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", responsive:2, headerTooltip:"Major wins as listed on the wiki"},
+    {title:"Rank change", field:"delta", width:140, minWidth:120, hozAlign:"right", headerHozAlign:"right",
+      sorter:"number", responsive:3, headerTooltip:"Movement vs raw rank",
+      formatter:c=>{const d=c.getValue();
+        if(d>0)return `<span class="pill up">▲ ${d}</span>`;
+        if(d<0)return `<span class="pill down">▼ ${Math.abs(d)}</span>`;
+        return `<span class="pill flat">–</span>`;}},
+    {title:"Raw rank", field:"rawRank", width:115, minWidth:95, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", responsive:4, headerTooltip:"Rank by raw wins"},
+    {title:"Champs", field:"champs", width:110, minWidth:90, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", responsive:1,
+      headerTooltip:"Call of Duty World Championship wins (unweighted — one per year)",
+      formatter:c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;}},
+  ],
+});
+
+// keyboard-accessible sorting: make headers focusable + Enter/Space to sort (#2)
+table.on("tableBuilt",()=>{
+  document.querySelectorAll('#table .tabulator-col[tabulator-field]').forEach(col=>{
+    col.setAttribute('tabindex','0'); col.setAttribute('role','button');
+    col.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();
+        col.querySelector('.tabulator-col-content')?.click();}});
+  });
+});
+// persist sort (#8)
+table.on("dataSorted",(sorters)=>{
+  if(sorters && sorters.length) SS.setItem('sort',JSON.stringify({c:sorters[0].field,d:sorters[0].dir}));
+});
+const savedSort = (()=>{try{return JSON.parse(SS.getItem('sort'));}catch(e){return null;}})();
+if(savedSort && savedSort.c) table.on("tableBuilt",()=>table.setSort(savedSort.c,savedSort.d));
+
+document.getElementById("search").addEventListener("input",e=>{
+  const v=e.target.value;
+  if(v) table.setFilter("name","like",v); else table.clearFilter();
+});
+
+const note=document.getElementById("modenote");
+function setNote(excl){
+  note.innerHTML = excl
+    ? `Mode: <strong>excluding pre-BO2</strong>. Adjusted = season-share &times; ${D.meta.mbarPost} (avg majors across the ${D.meta.consoleSeasons-D.meta.preBo2.length} post-BO2 seasons).`
+    : `Mode: <strong>all seasons</strong>. Adjusted = season-share &times; ${D.meta.mbarAll} (avg majors across all ${D.meta.consoleSeasons} seasons).`;
+}
+const exclBox=document.getElementById("excl");
+exclBox.checked=startExcl;
+setNote(startExcl);
+exclBox.addEventListener("change",e=>{
+  const excl=e.target.checked;
+  SS.setItem('excl', excl?'1':'0');
+  table.replaceData(viewRows(excl)).then(()=>table.setSort("adjRank","asc"));
+  setNote(excl);
+});
+
+mountFoot();
+</script>
+</body>
+</html>
