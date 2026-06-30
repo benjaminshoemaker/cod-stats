@@ -87,7 +87,7 @@ if(!p || !lb){
 
     // build-up table
     const rows = shown.map(s=>`<tr>
-        <td>${gameLink(s.game)} ${s.pre_bo2?'<span class="pill warn small">pre-BO2</span>':''}</td>
+        <td>${gameLink(s.game)} ${s.pre_bo2?'<span class="pill warn small">pre-BO2</span>':''}${s.held&&s.held!==s.majors?`<span class="pill tag small">${s.majors} of ${s.held} held</span>`:''}</td>
         <td class="n">${s.wins}</td><td class="n">${s.majors}</td>
         <td class="n">${(1/s.majors).toFixed(3)}</td>
         <td class="n"><strong>${s.share.toFixed(3)}</strong></td>

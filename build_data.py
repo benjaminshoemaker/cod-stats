@@ -13,6 +13,15 @@ def _p(*parts): return os.path.join(HERE, *parts)
 ASOF = '2026-06-29'              # only majors played on/before this count (drops future BO7 events)
 DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 
+# Some seasons structurally restricted how many majors a team could enter, so a
+# player's share should divide by what they *could win*, not the raw count held.
+# Modern Warfare 2019 (CDL 2020) ran a split "Home Series" format: 13 majors were
+# held, but every team played exactly 9 (12 Home Series of 8 teams each = 8 per
+# team, plus the 12-team Champs), verified in team_participation.json. Open-era
+# seasons are deliberately NOT here — their majors were open/qualified events
+# everyone had the opportunity to enter (see team_participation.json analysis).
+STRUCTURAL_DENOM = {'Modern Warfare': 9}
+
 # The wiki's published "Major Wins" leaderboard (display name, raw wins). The build
 # verifies our reconstruction reproduces every one of these exactly.
 PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19),("Clayster",18),
@@ -38,8 +47,11 @@ def build():
     events = [e for e in events if e['Game'] not in DROP_GAMES and played(e.get('Date'))]
     pwins  = [r for r in pwins  if r['Game'] not in DROP_GAMES and played(r.get('Date'))]
 
-    # denominators + chronological season order
+    # held = majors actually held that season; denom = majors a team could win
+    # (reduced for structurally-restricted seasons). Shares/peak/rescale use denom.
     majors = Counter(e['Game'] for e in events)
+    held = dict(majors)
+    denom = {g: STRUCTURAL_DENOM.get(g, held[g]) for g in held}
     first_date = {}
     for e in events:
         g = e['Game']; d = e.get('Date') or '9999'
@@ -51,7 +63,7 @@ def build():
     bo2_date = first_date['Black Ops 2']
     pre_bo2 = {g for g in season_order if first_date[g] < bo2_date}
 
-    def mbar(games): return sum(majors[g] for g in games) / len(games)
+    def mbar(games): return sum(denom[g] for g in games) / len(games)
     MBAR_ALL  = mbar(console_seasons)
     MBAR_POST = mbar([g for g in console_seasons if g not in pre_bo2])
 
@@ -64,7 +76,7 @@ def build():
         if k in top50_mkeys:
             player_wins[k].append(r)
 
-    def weight(g): return 1.0 / majors[g]
+    def weight(g): return 1.0 / denom[g]
 
     champs_by = defaultdict(list)
     for r in champs_rows:
@@ -85,7 +97,8 @@ def build():
         seasons = []
         for g in sorted(by_season, key=lambda x: order_idx[x]):
             c = by_season[g]['count']
-            seasons.append({'game': g, 'wins': c, 'majors': majors[g], 'share': round(c / majors[g], 4),
+            seasons.append({'game': g, 'wins': c, 'majors': denom[g], 'held': held[g],
+                            'share': round(c / denom[g], 4),
                             'pre_bo2': g in pre_bo2, 'events': by_season[g]['events']})
         share_all  = sum(s['share'] for s in seasons)
         share_post = sum(s['share'] for s in seasons if not s['pre_bo2'])
@@ -149,7 +162,7 @@ def build():
         for r in pwins:
             if r['Game'] == g and mkey(r['Player']) in top50_mkeys:
                 wc[disp_by_mkey[mkey(r['Player'])]] += 1
-        games_out.append({'game': g, 'majors': majors[g], 'weight': round(1.0 / majors[g], 4),
+        games_out.append({'game': g, 'majors': held[g], 'denom': denom[g], 'weight': round(1.0 / denom[g], 4),
             'order': order_idx[g], 'preBo2': g in pre_bo2, 'firstDate': first_date[g],
             'events': [{'event': e['Event'], 'date': e.get('Date') or '', 'winner': e.get('Winner') or '',
                         'type': e.get('EventType') or '', 'prize': e.get('Prizepool') or '', 'location': e.get('Location') or '',

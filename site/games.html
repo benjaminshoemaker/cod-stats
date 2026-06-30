@@ -32,9 +32,13 @@ const maxM=Math.max(...games.map(g=>g.majors));
 const minM=Math.min(...games.map(g=>g.majors));
 const avg=D.meta.mbarAll;
 
+let hasSplit=false;
 let rows=games.map(g=>{
+  const split = g.denom !== g.majors;        // structurally-restricted season (e.g. MW 2019)
+  if(split) hasSplit=true;
   const ratio=g.majors/avg;
-  const tag = g.preBo2?'<span class="pill warn small">pre-BO2</span>':'';
+  const tag = g.preBo2?'<span class="pill warn small">pre-BO2</span>'
+            : split?`<span class="pill tag small">${g.denom} of ${g.majors} per team</span>`:'';
   return `<tr>
     <td>${gameLink(g.game)} ${tag}</td>
     <td class="n faint">${yr(g.firstDate)}</td>
@@ -64,7 +68,8 @@ root.innerHTML=`
     <tbody>${rows}</tbody>
   </table>
   <p class="small muted">A "vs avg" above 1.0× (red) means that season had more majors than average, so each win there is worth
-  proportionally less.</p>
+  proportionally less.${hasSplit?` <strong>Modern Warfare 2019</strong> held 13 majors but ran a split "Home Series" format — every
+  team played only 9 (8 Home Series + Champs) — so a win there is worth 1/9, not 1/13.`:''}</p>
 `;
 mountFoot();
 </script>

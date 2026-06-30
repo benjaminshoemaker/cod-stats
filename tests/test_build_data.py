@@ -94,6 +94,42 @@ def test_peak_and_longevity(data):
         assert pl["titles_all"] == len(pl["seasons"]), name
 
 
+def test_modern_warfare_structural_denominator(data):
+    # MW 2019 ran a split Home Series format: 13 majors held, but each team played 9.
+    # Shares must divide by 9, while the Seasons page still reports 13 held.
+    mw_players = [pl for pl in data["players"].values()
+                  if any(s["game"] == "Modern Warfare" for s in pl["seasons"])]
+    assert mw_players
+    for pl in mw_players:
+        s = next(s for s in pl["seasons"] if s["game"] == "Modern Warfare")
+        assert s["held"] == 13 and s["majors"] == 9
+        assert s["share"] == round(s["wins"] / 9, 4)
+    g = next(g for g in data["games"] if g["game"] == "Modern Warfare")
+    assert g["majors"] == 13 and g["denom"] == 9
+
+
+def test_structural_override_matches_participation():
+    # The override (9) must equal MW's real max team-attendance, and no MODERN
+    # season (Cold War onward) may silently become structural without review.
+    from collections import defaultdict
+    part = json.load(open(build_data._p("team_participation.json")))
+    ev = json.load(open(build_data._p("major_events.json")))
+    counted = defaultdict(set)
+    for e in ev:
+        if e["Game"] in build_data.DROP_GAMES or (e.get("Date") or "0") > build_data.ASOF:
+            continue
+        counted[e["Game"]].add(e["Event"])
+    att = defaultdict(lambda: defaultdict(set))
+    for r in part:
+        g, evn, team = r["Game"], r["Event"], (r["Team"] or "").strip()
+        if team and g in counted and evn in counted[g]:
+            att[g][team].add(evn)
+    maxatt = lambda g: max((len(s) for s in att[g].values()), default=0)
+    assert maxatt("Modern Warfare") == build_data.STRUCTURAL_DENOM["Modern Warfare"] == 9
+    for g in ["Black Ops Cold War", "Vanguard", "Modern Warfare II", "Modern Warfare III", "Black Ops 6"]:
+        assert maxatt(g) == len(counted[g]), f"{g} unexpectedly structural (max {maxatt(g)} < {len(counted[g])})"
+
+
 def test_guard_raises_on_wrong_total(monkeypatch):
     monkeypatch.setattr(build_data, "PUBLISHED", build_data.PUBLISHED + [("NotARealPlayer", 5)])
     with pytest.raises(RuntimeError):
