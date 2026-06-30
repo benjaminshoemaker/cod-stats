@@ -1,3 +1,26 @@
+/* Sentry: JS error monitoring + feedback widget (loaded via CDN in each page <head>) */
+if (window.Sentry) {
+  Sentry.init({
+    dsn: "https://31fc37624c1589dbbe233db42c843560@o4511651597975552.ingest.us.sentry.io/4511651631398912",
+    integrations: [
+      Sentry.feedbackIntegration({
+        colorScheme: "light",
+        showBranding: false,
+        autoInject: true,
+        isNameRequired: false,
+        isEmailRequired: true,        // reporter must leave an email
+        enableScreenshot: true,       // reporter can attach/annotate a screenshot
+        triggerLabel: "Send feedback",
+        formTitle: "Send feedback",
+        submitButtonLabel: "Send feedback",
+        messagePlaceholder: "What happened, and what did you expect? Mention the player or page if it helps.",
+      }),
+    ],
+    tracesSampleRate: 0,             // no performance tracing — conserve free quota
+    allowUrls: [/cod-stats-one\.vercel\.app/, /localhost/, /127\.0\.0\.1/],
+  });
+}
+
 /* shared helpers */
 const D = window.APP_DATA;
 
