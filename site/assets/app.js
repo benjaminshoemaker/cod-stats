@@ -55,7 +55,7 @@ function barRow(label,value,max,opts={}){
 
 /* build header nav, marking active */
 function mountNav(active){
-  const links=[['index.html','Leaderboard'],['games.html','Seasons'],['methodology.html','Why weight?']];
+  const links=[['index.html','Leaderboard'],['scatter.html','Peak vs Longevity'],['games.html','Seasons'],['methodology.html','Why weight?']];
   const nav=links.map(([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`).join('');
   document.body.insertAdjacentHTML('afterbegin',
     `<header class="site-head"><div class="inner">

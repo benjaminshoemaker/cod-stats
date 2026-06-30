@@ -60,6 +60,10 @@ function viewRows(excl){
       name:r.name, raw:r.raw, rawRank:r.rawRank, champs:r.champs,
       adjRank: excl? r.postRank : r.adjRank,
       adjusted,
+      peak: excl? r.peakPost : r.peakAll,               // best single season, rescaled
+      peakInfo: excl? r.peakInfoPost : r.peakInfoAll,
+      eras: excl? r.titlesPost : r.titlesAll,           // distinct CoD titles with a major (longevity)
+      firstYear:r.firstYear, lastYear:r.lastYear,
       winsChange: Math.round((adjusted - r.raw)*10)/10,   // adjusted minus raw wins
       delta: excl? r.deltaPost : r.delta,
     };
@@ -80,7 +84,7 @@ const exclBox = document.getElementById("excl");
 
 // ---- read shareable state from the URL (falls back to localStorage / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','raw','winsChange','rawRank','delta','champs']);
+const VALID = new Set(['adjRank','name','adjusted','peak','eras','raw','winsChange','rawRank','delta','champs']);
 const startExcl = params.has('excl') ? params.get('excl')==='1' : (SS.getItem('excl')==='1');
 const startQ    = params.get('q') || '';
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
@@ -103,22 +107,31 @@ const table = new Tabulator("#table",{
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
   columns:[
-    {title:M?"#":"Rank", field:"adjRank", width:M?50:96, minWidth:M?50:96, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
-      : {title:"Player", field:"name", minWidth:170, widthGrow:3, sorter:"string", formatter:playerFmt},
-    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:125, minWidth:M?76:125, hozAlign:"right", headerHozAlign:"right",
+      : {title:"Player", field:"name", minWidth:160, widthGrow:3, sorter:"string", formatter:playerFmt},
+    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:116, minWidth:M?76:116, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
-    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:125, minWidth:M?84:125, hozAlign:"right", headerHozAlign:"right",
+    {title:"Peak", field:"peak", width:M?76:104, minWidth:M?76:104, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number",
+      headerTooltip:"Best single season, era-adjusted (your most dominant year)",
+      tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors)`:'';},
+      formatter:c=>c.getValue()?`${c.getValue().toFixed(1)}`:'<span class="faint">–</span>'},
+    {title:"Eras", field:"eras", width:M?76:92, minWidth:M?76:92, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number",
+      headerTooltip:"Distinct CoD titles with a major win (longevity)",
+      tooltip:(e,cell)=>{const d=cell.getRow().getData(); return `won majors in ${d.eras} CoD titles · career ${d.firstYear}–${d.lastYear}`;}},
+    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:124, minWidth:M?84:124, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
-    {title:M?"Rank Δ":"Rank change", field:"delta", width:M?92:155, minWidth:M?92:155, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Rank Δ":"Rank Δ", field:"delta", width:M?92:104, minWidth:M?92:104, hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Movement vs raw rank", formatter:c=>changePill(c.getValue(), false)},
-    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:125, minWidth:M?76:125, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:124, minWidth:M?76:124, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
-    {title:M?"Wins Δ":"Wins change", field:"winsChange", width:M?92:155, minWidth:M?92:155, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Wins Δ":"Wins Δ", field:"winsChange", width:M?92:104, minWidth:M?92:104, hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Adjusted wins minus raw wins", formatter:c=>changePill(c.getValue(), true)},
-    {title:"Champs", field:"champs", width:M?96:115, minWidth:M?96:115, hozAlign:"right", headerHozAlign:"right",
+    {title:"Champs", field:"champs", width:M?96:106, minWidth:M?96:106, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
   ],

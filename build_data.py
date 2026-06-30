@@ -89,10 +89,29 @@ def build():
                             'pre_bo2': g in pre_bo2, 'events': by_season[g]['events']})
         share_all  = sum(s['share'] for s in seasons)
         share_post = sum(s['share'] for s in seasons if not s['pre_bo2'])
+
+        # Peak (best single season's share, rescaled to a wins-like number) + Longevity
+        # (distinct titles won, plus career span in years). Computed for both modes.
+        def peak_of(slist, mb):
+            if not slist: return {'adj': 0.0, 'season': None, 'wins': 0, 'majors': 0}
+            best = max(slist, key=lambda s: s['share'])
+            return {'adj': round(best['share'] * mb, 2), 'season': best['game'], 'wins': best['wins'], 'majors': best['majors']}
+        def span_of(slist):
+            yrs = [int(e['date'][:4]) for s in slist for e in s['events'] if e['date']]
+            return (max(yrs) - min(yrs) + 1, min(yrs), max(yrs)) if yrs else (0, None, None)
+        seasons_post = [s for s in seasons if not s['pre_bo2']]
+        pk_all, pk_post = peak_of(seasons, MBAR_ALL), peak_of(seasons_post, MBAR_POST)
+        span_all, first_all, last_all = span_of(seasons)
+        span_post, first_post, last_post = span_of(seasons_post)
+
         players_out[n] = {'name': n, 'raw': pub, 'seasons': seasons,
                           'share_all': round(share_all, 4), 'adj_all': round(share_all * MBAR_ALL, 2),
                           'share_post': round(share_post, 4), 'adj_post': round(share_post * MBAR_POST, 2),
-                          'champs': len(champs_by.get(mk, [])), 'champ_events': champs_by.get(mk, [])}
+                          'champs': len(champs_by.get(mk, [])), 'champ_events': champs_by.get(mk, []),
+                          'peak_all': pk_all, 'peak_post': pk_post,
+                          'titles_all': len(seasons), 'titles_post': len(seasons_post),
+                          'span_all': span_all, 'span_post': span_post,
+                          'first_year': first_all, 'last_year': last_all}
 
     # GUARD: reconstructed wins must equal the published wiki total for every player
     mismatch = [(n, pub, sum(s['wins'] for s in players_out[n]['seasons'])) for n, pub in PUBLISHED
@@ -116,6 +135,11 @@ def build():
             'shareAll': p['share_all'], 'adjAll': p['adj_all'], 'adjRank': adj_rank[n], 'delta': raw_rank[n] - adj_rank[n],
             'sharePost': p['share_post'], 'adjPost': p['adj_post'], 'postRank': post_rank[n], 'deltaPost': raw_rank[n] - post_rank[n],
             'champs': p['champs'],
+            'peakAll': p['peak_all']['adj'], 'peakPost': p['peak_post']['adj'],
+            'peakInfoAll': p['peak_all'], 'peakInfoPost': p['peak_post'],
+            'titlesAll': p['titles_all'], 'titlesPost': p['titles_post'],
+            'spanAll': p['span_all'], 'spanPost': p['span_post'],
+            'firstYear': p['first_year'], 'lastYear': p['last_year'],
         })
 
     games_out = []

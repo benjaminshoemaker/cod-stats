@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Peak vs Longevity — CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Every CoD major winner plotted by peak (best single era-adjusted season) against longevity (distinct titles won). Peak vs longevity, in one chart.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
+<meta property="og:title" content="Peak vs Longevity — CoD majors">
+<meta property="og:description" content="Who peaked highest vs who lasted longest, era-adjusted. The two axes of every GOAT debate, in one chart.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/scatter.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
+<style>
+  .scatter-wrap{overflow-x:auto}
+  svg.scatter{display:block;min-width:680px;width:100%;height:auto;font-family:var(--sans)}
+  svg.scatter .axis{stroke:var(--line-2);stroke-width:1}
+  svg.scatter .grid{stroke:var(--line);stroke-width:1}
+  svg.scatter .tick{fill:var(--muted);font-size:12px}
+  svg.scatter .axlabel{fill:var(--ink);font-size:13px;font-weight:600}
+  svg.scatter .quad{fill:var(--faint);font-size:12px;font-weight:600;opacity:.7}
+  svg.scatter .dot{fill:var(--accent);fill-opacity:.55;stroke:#fff;stroke-width:1;cursor:pointer}
+  svg.scatter .dot:hover{fill-opacity:.9}
+  svg.scatter .dot.champ{fill:#d4a017;fill-opacity:.6}
+  svg.scatter .lbl{fill:var(--ink);font-size:12px;pointer-events:none}
+  svg.scatter a{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('scatter.html');
+const root=document.getElementById('root');
+const SS=window.localStorage;
+
+root.innerHTML=`
+  <h1>Peak vs. Longevity</h1>
+  <p class="lede">The era-adjusted total hides <em>what kind</em> of great a player was. This splits it into the two
+  axes every GOAT debate runs on: <strong>peak</strong> (your single most dominant season) and <strong>longevity</strong>
+  (how many different CoD titles you won a major in). Bubble size = total adjusted wins.</p>
+  <div class="controls">
+    <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
+      <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
+    <span class="small muted">Hover a dot for detail; click to open the player.</span>
+  </div>
+  <div class="scatter-wrap"><div id="chart"></div></div>
+  <p class="small muted" style="margin-top:1rem"><strong>How to read it:</strong> top-right = dominant <em>and</em> durable
+  (the all-time greats). Top-left = enormous peak over a short window. Bottom-right = long careers built on volume rather
+  than dominant seasons.</p>
+`;
+
+const W=900, H=560, mL=58, mR=26, mT=28, mB=52;
+const plotW=W-mL-mR, plotH=H-mT-mB;
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h;}
+
+function render(excl){
+  const rows=D.leaderboard.map(r=>({
+    name:r.name,
+    peak: excl? r.peakPost : r.peakAll,
+    eras: excl? r.titlesPost : r.titlesAll,
+    adj:  excl? r.adjPost : r.adjAll,
+    champs:r.champs,
+    info: excl? r.peakInfoPost : r.peakInfoAll,
+  })).filter(p=>p.eras>0 && p.peak>0);
+
+  const xMax=Math.max(...rows.map(p=>p.eras));
+  const yMaxRaw=Math.max(...rows.map(p=>p.peak));
+  const yMax=Math.ceil(yMaxRaw);
+  const maxAdj=Math.max(...rows.map(p=>p.adj));
+  const xS=e=>mL+((e-1)/(Math.max(1,xMax-1)))*plotW;
+  const yS=p=>mT+plotH-(p/yMax)*plotH;
+  const rS=a=>4+(a/maxAdj)*11;
+
+  // label the notable ones: top 16 by adjusted, plus peak/eras leaders
+  const byAdj=[...rows].sort((a,b)=>b.adj-a.adj);
+  const labelSet=new Set(byAdj.slice(0,16).map(p=>p.name));
+  labelSet.add(byAdj[0].name);
+  [...rows].sort((a,b)=>b.eras-a.eras)[0] && labelSet.add([...rows].sort((a,b)=>b.eras-a.eras)[0].name);
+
+  // grid + ticks
+  let g='';
+  for(let e=1;e<=xMax;e++){const x=xS(e);g+=`<line class="grid" x1="${x}" y1="${mT}" x2="${x}" y2="${mT+plotH}"/><text class="tick" x="${x}" y="${mT+plotH+18}" text-anchor="middle">${e}</text>`;}
+  for(let p=0;p<=yMax;p++){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${p}</text>`;}
+  // axes
+  g+=`<line class="axis" x1="${mL}" y1="${mT+plotH}" x2="${mL+plotW}" y2="${mT+plotH}"/><line class="axis" x1="${mL}" y1="${mT}" x2="${mL}" y2="${mT+plotH}"/>`;
+  // axis labels
+  g+=`<text class="axlabel" x="${mL+plotW/2}" y="${H-12}" text-anchor="middle">Longevity →  distinct CoD titles won</text>`;
+  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  best single season (adjusted)</text>`;
+  // quadrant hints
+  g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+16}" text-anchor="end">peak + longevity</text>`;
+  g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
+  g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+plotH-8}" text-anchor="end">long career, lower peak</text>`;
+
+  // dots (smallest first so big ones draw on top)
+  const sorted=[...rows].sort((a,b)=>a.adj-b.adj);
+  let dots='';
+  for(const p of sorted){
+    const jx=((hash(p.name)%9)-4)*1.4, jy=((hash(p.name+'y')%9)-4)*1.4;
+    const x=xS(p.eras)+jx, y=yS(p.peak)+jy, r=rS(p.adj);
+    const tip=`${p.name}: peak ${p.peak.toFixed(1)} (${p.info.wins} of ${p.info.majors} in ${p.info.season}), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
+    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"><title>${esc(tip)}</title></circle>`;
+    if(labelSet.has(p.name)){
+      const right = x > mL+plotW*0.72;                 // flip labels left near the right edge so they don't clip
+      const lx = right ? (x-r-4) : (x+r+4);
+      dots+=`<text class="lbl" x="${lx.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="${right?'end':'start'}">${esc(p.name)}</text>`;
+    }
+    dots+=`</a>`;
+  }
+
+  document.getElementById('chart').innerHTML=`<svg class="scatter" viewBox="0 0 ${W} ${H}" role="img" aria-label="Peak vs longevity scatter">${g}${dots}</svg>`;
+}
+
+const box=document.getElementById('excl');
+box.checked = SS.getItem('excl')==='1';
+render(box.checked);
+box.addEventListener('change',e=>{ SS.setItem('excl', e.target.checked?'1':'0'); render(e.target.checked); });
+mountFoot();
+</script>
+</body>
+</html>

@@ -76,6 +76,24 @@ def test_adjusted_equals_share_times_mbar(data):
         assert abs(pl["adj_all"] - round(pl["share_all"] * mbar, 2)) <= 0.05
 
 
+def test_peak_and_longevity(data):
+    p = data["players"]
+    mbar = data["meta"]["mbarAll"]
+    # peak = best single season's share, rescaled by mbar
+    for name, pl in p.items():
+        if pl["seasons"]:
+            expected = round(max(s["share"] for s in pl["seasons"]) * mbar, 2)
+            assert abs(pl["peak_all"]["adj"] - expected) <= 0.05, name
+    # known peak detail + longevity counts
+    assert p["aBeZy"]["peak_all"]["season"] == "Black Ops Cold War"
+    assert (p["aBeZy"]["peak_all"]["wins"], p["aBeZy"]["peak_all"]["majors"]) == (4, 6)
+    assert p["Scump"]["titles_all"] == 10
+    assert p["Crimsix"]["titles_all"] == 8
+    # titles == distinct seasons with a major
+    for name, pl in p.items():
+        assert pl["titles_all"] == len(pl["seasons"]), name
+
+
 def test_guard_raises_on_wrong_total(monkeypatch):
     monkeypatch.setattr(build_data, "PUBLISHED", build_data.PUBLISHED + [("NotARealPlayer", 5)])
     with pytest.raises(RuntimeError):

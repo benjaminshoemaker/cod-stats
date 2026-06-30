@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'rawRank', 'delta', 'raw', 'winsChange', 'champs'];
+const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'peak', 'eras', 'rawRank', 'delta', 'raw', 'winsChange', 'champs'];
 
 test.describe('leaderboard', () => {
   test('loads all 50 players', async ({ page }) => {
@@ -91,5 +91,12 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: /Seasons/ })).toBeVisible();
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: /Why weight/ })).toBeVisible();
+  });
+
+  test('peak-vs-longevity scatter renders dots', async ({ page }) => {
+    await page.goto('/scatter.html');
+    await expect(page.getByRole('heading', { name: /Peak vs\.? Longevity/ })).toBeVisible();
+    // every top-50 player with wins should be a dot
+    await expect(page.locator('svg.scatter circle.dot')).toHaveCount(50);
   });
 });
