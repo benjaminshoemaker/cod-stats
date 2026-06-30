@@ -4,6 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CoD Major Wins — Era-Adjusted Leaderboard</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Call of Duty major tournament wins, re-ranked by era — every season weighted equally, then rescaled to a familiar wins number.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
+<meta property="og:title" content="Who really dominated Call of Duty?">
+<meta property="og:description" content="Major tournament wins, re-weighted so every season counts equally. Sortable leaderboard, per-player breakdowns, and the methodology.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Who really dominated Call of Duty?">
+<meta name="twitter:description" content="Major tournament wins, re-weighted so every season counts equally.">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -21,6 +35,7 @@
       <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
   </div>
 
+  <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
   <div id="table"></div>
 
   <div class="legend">
@@ -53,35 +68,40 @@ function viewRows(excl){
 const SS = window.localStorage;
 const startExcl = SS.getItem('excl')==='1';
 
+// On phones, keep every column reachable via horizontal scroll instead of hiding them.
+// fitData = columns keep their fixed widths and the table scrolls sideways;
+// fitColumns = stretch to fill width (desktop). Reload if the breakpoint is crossed.
+const mq = window.matchMedia('(max-width: 760px)');
+const isMobile = mq.matches;
+mq.addEventListener('change', ()=>location.reload());
+
 const table = new Tabulator("#table",{
   data: viewRows(startExcl),
-  layout:"fitColumns",
-  height:"640px",
-  responsiveLayout:"collapse",          // fold low-priority columns into a detail row on narrow screens
-  responsiveLayoutCollapseStartOpen:false,
+  layout: isMobile ? "fitData" : "fitColumns",
+  height: isMobile ? undefined : "640px",   // let the page scroll vertically on mobile; only the table scrolls sideways
   placeholder:"No players match your search.",
   initialSort:[{column:"adjRank",dir:"asc"}],
   columns:[
-    {title:"Rank", field:"adjRank", width:96, minWidth:80, hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", responsive:0, headerTooltip:"Adjusted rank"},
-    {title:"Player", field:"name", minWidth:150, widthGrow:3, sorter:"string", responsive:0,
+    {title:"Rank", field:"adjRank", width:96, minWidth:96, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
+    {title:"Player", field:"name", width:180, minWidth:150, widthGrow:3, sorter:"string",
       formatter:c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`},
-    {title:"Adjusted", field:"adjusted", width:130, minWidth:110, hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", responsive:0,
+    {title:"Adjusted", field:"adjusted", width:130, minWidth:130, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number",
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
       headerTooltip:"Era-adjusted wins"},
-    {title:"Raw wins", field:"raw", width:115, minWidth:95, hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", responsive:2, headerTooltip:"Major wins as listed on the wiki"},
-    {title:"Rank change", field:"delta", width:140, minWidth:120, hozAlign:"right", headerHozAlign:"right",
-      sorter:"number", responsive:3, headerTooltip:"Movement vs raw rank",
+    {title:"Raw wins", field:"raw", width:120, minWidth:120, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
+    {title:"Rank change", field:"delta", width:140, minWidth:140, hozAlign:"right", headerHozAlign:"right",
+      sorter:"number", headerTooltip:"Movement vs raw rank",
       formatter:c=>{const d=c.getValue();
         if(d>0)return `<span class="pill up">▲ ${d}</span>`;
         if(d<0)return `<span class="pill down">▼ ${Math.abs(d)}</span>`;
         return `<span class="pill flat">–</span>`;}},
-    {title:"Raw rank", field:"rawRank", width:115, minWidth:95, hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", responsive:4, headerTooltip:"Rank by raw wins"},
-    {title:"Champs", field:"champs", width:110, minWidth:90, hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", responsive:1,
+    {title:"Raw rank", field:"rawRank", width:120, minWidth:120, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
+    {title:"Champs", field:"champs", width:115, minWidth:115, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted — one per year)",
       formatter:c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;}},
   ],

@@ -127,6 +127,8 @@ a:focus-visible,.toggle:focus-within,input:focus-visible,
 }
 /* horizontal-scroll wrapper for wide charts on small screens */
 .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.scrollhint{display:none;margin:.25rem 0 .5rem}
+@media(max-width:760px){.scrollhint{display:block}}
 
 .legend{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin:.5rem 0}
 .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
