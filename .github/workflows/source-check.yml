@@ -1,0 +1,20 @@
+name: Source check (daily)
+
+# Re-checks our "Raw Wins" against the live CoD Esports Wiki once a day.
+# Fails (and notifies) only on a real numeric mismatch; skips quietly if the
+# wiki is unreachable. Also runnable on demand from the Actions tab.
+on:
+  schedule:
+    - cron: "30 13 * * *"   # daily, ~13:30 UTC
+  workflow_dispatch:
+
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compare Raw Wins to the live wiki
+        run: python3 scripts/check_live_source.py

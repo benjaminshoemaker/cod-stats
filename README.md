@@ -66,6 +66,19 @@ Both suites run on every push via GitHub Actions (`.github/workflows/ci.yml`). T
 tests use `build_data.build()`; first-time setup is `python3 -m venv .venv && .venv/bin/pip install pytest`
 and `npm install && npx playwright install chromium`.
 
+### Source-of-truth drift check
+
+```bash
+python3 scripts/check_live_source.py   # re-query the LIVE wiki; compare Raw Wins to our snapshot
+```
+
+The offline tests only prove internal consistency (our data matches the hardcoded `PUBLISHED`
+snapshot). This script re-runs the wiki's own Cargo query against the live API and diffs the
+per-player Raw Wins, so it catches **source drift** (the wiki changed; our snapshot is stale).
+It runs **daily** via `.github/workflows/source-check.yml` — fails (and notifies) only on a real
+numeric mismatch, and skips quietly if the wiki is unreachable. On a mismatch, re-pull the data
+and update `PUBLISHED`.
+
 ## Data files (repo root)
 - `player_event_wins.json` — every individual major win (player, event, game, date)
 - `major_events.json` — every major event (name, game, date, winner, type, prize, location)
