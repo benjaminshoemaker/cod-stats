@@ -116,7 +116,7 @@ const table = new Tabulator("#table",{
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
     {title:"Peak", field:"peak", width:M?76:104, minWidth:M?76:104, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      headerTooltip:"Best single season, era-adjusted (your most dominant year)",
+      headerTooltip:"Most dominant title-winning season — biggest share of a season's majors won, era-adjusted",
       tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors)`:'';},
       formatter:c=>c.getValue()?`${c.getValue().toFixed(1)}`:'<span class="faint">–</span>'},
     {title:"Eras", field:"eras", width:M?76:92, minWidth:M?76:92, hozAlign:"right", headerHozAlign:"right",

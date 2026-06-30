@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Peak vs Longevity — CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Every CoD major winner plotted by peak (best single era-adjusted season) against longevity (distinct titles won). Peak vs longevity, in one chart.">
+<meta name="description" content="Every CoD major winner plotted by peak (best title-winning season) against longevity (distinct titles won), era-adjusted. Measured by winning, not individual stats.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
 <meta property="og:title" content="Peak vs Longevity — CoD majors">
-<meta property="og:description" content="Who peaked highest vs who lasted longest, era-adjusted. The two axes of every GOAT debate, in one chart.">
+<meta property="og:description" content="Who won the most in a single season vs who kept winning across the most eras, era-adjusted. Two axes, one chart.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/scatter.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -44,18 +44,19 @@ const SS=window.localStorage;
 
 root.innerHTML=`
   <h1>Peak vs. Longevity</h1>
-  <p class="lede">The era-adjusted total hides <em>what kind</em> of great a player was. This splits it into the two
-  axes every GOAT debate runs on: <strong>peak</strong> (your single most dominant season) and <strong>longevity</strong>
-  (how many different CoD titles you won a major in). Bubble size = total adjusted wins.</p>
+  <p class="lede">Two players can share an adjusted total and have completely different résumés. This splits it into two
+  axes — both measured by <strong>winning</strong>, not individual play (the data is tournament results, not slaying stats):
+  <strong>peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took),
+  and <strong>longevity</strong> = how many different CoD titles you kept winning majors across. Bubble size = total adjusted wins.</p>
   <div class="controls">
     <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
       <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
     <span class="small muted">Hover a dot for detail; click to open the player.</span>
   </div>
   <div class="scatter-wrap"><div id="chart"></div></div>
-  <p class="small muted" style="margin-top:1rem"><strong>How to read it:</strong> top-right = dominant <em>and</em> durable
-  (the all-time greats). Top-left = enormous peak over a short window. Bottom-right = long careers built on volume rather
-  than dominant seasons.</p>
+  <p class="small muted" style="margin-top:1rem"><strong>How to read it:</strong> top-right = won big <em>and</em> kept winning
+  (the all-time résumés). Top-left = a huge winning season over a short window. Bottom-right = long careers built on steady
+  winning rather than one dominant season.</p>
 `;
 
 const W=900, H=560, mL=58, mR=26, mT=28, mB=52;
@@ -94,7 +95,7 @@ function render(excl){
   g+=`<line class="axis" x1="${mL}" y1="${mT+plotH}" x2="${mL+plotW}" y2="${mT+plotH}"/><line class="axis" x1="${mL}" y1="${mT}" x2="${mL}" y2="${mT+plotH}"/>`;
   // axis labels
   g+=`<text class="axlabel" x="${mL+plotW/2}" y="${H-12}" text-anchor="middle">Longevity →  distinct CoD titles won</text>`;
-  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  best single season (adjusted)</text>`;
+  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  best title-winning season (adjusted)</text>`;
   // quadrant hints
   g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+16}" text-anchor="end">peak + longevity</text>`;
   g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
