@@ -56,12 +56,13 @@ mountNav('index.html');
 function viewRows(excl){
   return D.leaderboard.map(r=>{
     const adjusted = excl? r.adjPost : r.adjAll;
+    const pkInfo = excl? r.peakInfoPost : r.peakInfoAll;
     return {
       name:r.name, raw:r.raw, rawRank:r.rawRank, champs:r.champs,
       adjRank: excl? r.postRank : r.adjRank,
       adjusted,
-      peak: excl? r.peakPost : r.peakAll,               // best single season, rescaled
-      peakInfo: excl? r.peakInfoPost : r.peakInfoAll,
+      peak: (pkInfo && pkInfo.majors) ? pkInfo.wins/pkInfo.majors : 0,   // best season's share (sort key)
+      peakInfo: pkInfo,                                  // {wins, majors, season} for the X/Y display
       eras: excl? r.titlesPost : r.titlesAll,           // distinct CoD titles with a major (longevity)
       firstYear:r.firstYear, lastYear:r.lastYear,
       winsChange: Math.round((adjusted - r.raw)*10)/10,   // adjusted minus raw wins
@@ -116,9 +117,9 @@ const table = new Tabulator("#table",{
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
     {title:"Peak", field:"peak", width:M?76:104, minWidth:M?76:104, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      headerTooltip:"Most dominant title-winning season — biggest share of a season's majors won, era-adjusted",
-      tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors)`:'';},
-      formatter:c=>c.getValue()?`${c.getValue().toFixed(1)}`:'<span class="faint">–</span>'},
+      headerTooltip:"Most dominant season: majors won / majors that season (sorted by share)",
+      tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors = ${(i.wins/i.majors*100).toFixed(0)}%)`:'';},
+      formatter:c=>{const i=c.getRow().getData().peakInfo; return (i&&i.majors)?`${i.wins}/${i.majors}`:'<span class="faint">–</span>';}},
     {title:"Eras", field:"eras", width:M?76:92, minWidth:M?76:92, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Distinct CoD titles with a major win (longevity)",

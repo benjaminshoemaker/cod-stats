@@ -45,7 +45,7 @@ if(!p || !lb){
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
       <div class="stat" id="tile-post"><div class="k">Excl. pre-BO2</div><div class="v sm">${p.adj_post.toFixed(1)}</div><div class="small faint">rank #${lb.postRank} ${deltaPill(lb.deltaPost)}</div></div>
-      <div class="stat"><div class="k">Peak season</div><div class="v" id="tile-peak">${p.peak_all.adj.toFixed(1)}</div>
+      <div class="stat"><div class="k">Peak season</div><div class="v" id="tile-peak">${p.peak_all.wins}/${p.peak_all.majors}</div>
         <div class="small faint" id="tile-peak-sub">&nbsp;</div></div>
       <div class="stat"><div class="k">Eras (titles)</div><div class="v" id="tile-eras">${p.titles_all}</div>
         <div class="small faint" id="tile-eras-sub">&nbsp;</div></div>
@@ -127,8 +127,8 @@ if(!p || !lb){
     const pk = excl ? p.peak_post : p.peak_all;
     const titles = excl ? p.titles_post : p.titles_all;
     const span = excl ? p.span_post : p.span_all;
-    document.getElementById('tile-peak').textContent = pk.adj ? pk.adj.toFixed(1) : '–';
-    document.getElementById('tile-peak-sub').textContent = pk.season ? `${pk.wins} of ${pk.majors} · ${pk.season}` : '—';
+    document.getElementById('tile-peak').textContent = pk.majors ? `${pk.wins}/${pk.majors}` : '–';
+    document.getElementById('tile-peak-sub').textContent = pk.season || '—';
     document.getElementById('tile-eras').textContent = titles;
     document.getElementById('tile-eras-sub').textContent = span ? `${span}-yr span` : '—';
 

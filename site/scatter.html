@@ -68,18 +68,20 @@ const W=900, H=560, mL=58, mR=26, mT=28, mB=52;
 const plotW=W-mL-mR, plotH=H-mT-mB;
 
 function render(excl){
-  const rows=D.leaderboard.map(r=>({
-    name:r.name,
-    peak: excl? r.peakPost : r.peakAll,
-    eras: excl? r.titlesPost : r.titlesAll,
-    adj:  excl? r.adjPost : r.adjAll,
-    champs:r.champs,
-    info: excl? r.peakInfoPost : r.peakInfoAll,
-  })).filter(p=>p.eras>0 && p.peak>0);
+  const rows=D.leaderboard.map(r=>{
+    const info = excl? r.peakInfoPost : r.peakInfoAll;
+    return {
+      name:r.name,
+      peak: (info && info.majors) ? info.wins/info.majors : 0,   // share of best season's majors
+      eras: excl? r.titlesPost : r.titlesAll,
+      adj:  excl? r.adjPost : r.adjAll,
+      champs:r.champs, info,
+    };
+  }).filter(p=>p.eras>0 && p.peak>0);
 
   const xMax=Math.max(...rows.map(p=>p.eras));
-  const yMaxRaw=Math.max(...rows.map(p=>p.peak));
-  const yMax=Math.ceil(yMaxRaw);
+  const maxShare=Math.max(...rows.map(p=>p.peak));
+  const yMax=Math.min(1, Math.ceil((maxShare+0.04)/0.2)*0.2);   // round up to a 0.2 step
   const maxAdj=Math.max(...rows.map(p=>p.adj));
   const xS=e=>mL+((e-1)/(Math.max(1,xMax-1)))*plotW;
   const yS=p=>mT+plotH-(p/yMax)*plotH;
@@ -94,12 +96,12 @@ function render(excl){
   // grid + ticks
   let g='';
   for(let e=1;e<=xMax;e++){const x=xS(e);g+=`<line class="grid" x1="${x}" y1="${mT}" x2="${x}" y2="${mT+plotH}"/><text class="tick" x="${x}" y="${mT+plotH+18}" text-anchor="middle">${e}</text>`;}
-  for(let p=0;p<=yMax;p++){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${p}</text>`;}
+  for(let p=0;p<=yMax+1e-9;p+=0.2){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${p.toFixed(1)}</text>`;}
   // axes
   g+=`<line class="axis" x1="${mL}" y1="${mT+plotH}" x2="${mL+plotW}" y2="${mT+plotH}"/><line class="axis" x1="${mL}" y1="${mT}" x2="${mL}" y2="${mT+plotH}"/>`;
   // axis labels
   g+=`<text class="axlabel" x="${mL+plotW/2}" y="${H-12}" text-anchor="middle">Longevity →  distinct CoD titles won</text>`;
-  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  best title-winning season (adjusted)</text>`;
+  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  share of best season's majors won</text>`;
   // quadrant hints
   g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+16}" text-anchor="end">peak + longevity</text>`;
   g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
@@ -110,7 +112,7 @@ function render(excl){
   let dots='';
   for(const p of sorted){
     const x=xS(p.eras), y=yS(p.peak), r=rS(p.adj);
-    const tip=`${p.name}: peak ${p.peak.toFixed(1)} (${p.info.wins} of ${p.info.majors} in ${p.info.season}), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
+    const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
     dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"><title>${esc(tip)}</title></circle></a>`;
   }
 
