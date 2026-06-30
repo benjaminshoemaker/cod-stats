@@ -35,6 +35,9 @@ npx playwright test              # browser/layout tests (desktop + mobile)
 - **Default to TDD for the data/logic** (build_data): add/adjust a test in `tests/test_build_data.py`
   first. For UI changes, add or update a Playwright assertion in `leaderboard.spec.ts` — that suite
   exists because a mobile-layout regression once slipped through manual checks.
+- **Log user-facing changes** in the changelog: prepend an entry to the `ENTRIES` array in
+  `site/changelog.html` (newest first). Anything that moves the rankings is tagged `Methodology`
+  with its rationale **and** impact (who moved) — the numbers must never look arbitrary.
 - **Verify objective claims yourself** (run the tests / load the page) before asking the user to verify.
 - Fetching wiki data: WebFetch is blocked; use `curl` with a browser User-Agent, expect rate limiting,
   and read wikitext via `api.php?action=query` (the `?action=raw` route is Cloudflare-challenged).

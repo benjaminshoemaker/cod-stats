@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Changelog — CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="What's changed in the era-adjusted Call of Duty major-wins site — including methodology changes that move the rankings, with their rationale.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
+<meta property="og:title" content="Changelog — CoD Era-Adjusted">
+<meta property="og:description" content="What's changed — including methodology updates that move the rankings, logged with their rationale and impact.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/changelog.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
+<style>
+  .cl-entry{display:flex;gap:.9rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+  .cl-entry:last-child{border-bottom:none}
+  .cl-tag{flex:0 0 auto;width:104px;padding-top:.1rem}
+  .cl-body h3{font-size:1rem;margin:0 0 .2rem}
+  .cl-body p{margin:0;color:var(--muted);font-size:.92rem}
+  .cl-date{font-family:var(--mono);font-size:.8rem;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;
+    margin:1.6rem 0 .2rem;border-top:2px solid var(--line);padding-top:1rem}
+  @media(max-width:560px){.cl-entry{flex-direction:column;gap:.3rem}.cl-tag{width:auto}}
+</style>
+</head>
+<body>
+<div class="wrap narrow" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('changelog.html');
+
+// Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed.
+const ENTRIES = [
+  {date:'2026-06-30', tag:'Methodology', title:'Modern Warfare 2019 scored by opportunity, not events held',
+   body:`CDL 2020 ran a split "Home Series" format — 13 majors were held, but every team played only <strong>9</strong>
+   (8 Home Series + Champs). We now divide those wins by 9, not 13, matching how the metric treats every other season.
+   This lifted the 2020 cohort — <strong>iLLeY moved up 10 spots</strong>, and Clayster, Shotzzy and Huke all rose; their
+   best-season Peak went 31% → 44%. The top of the board was unchanged. <a href="methodology.html">Why we weight by era →</a>`},
+  {date:'2026-06-30', tag:'Improved', title:'Peak shown as a percentage',
+   body:`The Peak column now reads as the share of a season's majors a player won in their best year (e.g. 67%), which
+   compares across players far more naturally than a rescaled number.`},
+  {date:'2026-06-30', tag:'New', title:'Daily accuracy check',
+   body:`Every day the site re-checks its Raw Wins against the live Call of Duty Esports Wiki and flags any drift, so the
+   numbers stay current with the source.`},
+
+  {date:'2026-06-29', tag:'New', title:'Launched the era-adjusted leaderboard',
+   body:`Re-ranks CoD pros by major tournament wins, normalized so every season counts equally — with per-player
+   breakdowns, per-season pages, and a page explaining the method.`},
+  {date:'2026-06-29', tag:'New', title:'Peak vs Longevity',
+   body:`A chart splitting each résumé into <strong>peak</strong> (most dominant single season) and <strong>longevity</strong>
+   (how many titles you kept winning across) — the two axes of every GOAT debate.`},
+  {date:'2026-06-29', tag:'New', title:'World Championship counts and shareable links',
+   body:`Each player's CoD World Championship count, plus sort / search / pre-BO2 state saved in the URL so you can share an
+   exact view of the table.`},
+  {date:'2026-06-29', tag:'Improved', title:'Wins Change column, sticky header, mobile scrolling, and a feedback button',
+   body:`Added the Wins Change column; the leaderboard header now sticks to the top, the table scrolls cleanly on phones,
+   and a "Send feedback" button lets you report anything with a screenshot.`},
+  {date:'2026-06-29', tag:'Changed', title:'Warzone and Mobile excluded',
+   body:`They're separate competitive ecosystems, so they're left out of the console major-wins ranking.`},
+];
+
+const TAGCLASS = {Methodology:'warn', New:'tag', Improved:'flat', Changed:'flat', Fixed:'flat'};
+
+let html = `<h1>Changelog</h1>
+  <p class="lede">What's changed on the site. <strong>Methodology</strong> entries (amber) are changes that move the
+  rankings — they're logged with their reasoning and impact, so the numbers are never a black box.</p>`;
+
+let lastDate = null;
+for(const e of ENTRIES){
+  if(e.date !== lastDate){ html += `<div class="cl-date">${e.date}</div>`; lastDate = e.date; }
+  html += `<div class="cl-entry">
+    <div class="cl-tag"><span class="pill ${TAGCLASS[e.tag]||'flat'}">${e.tag}</span></div>
+    <div class="cl-body"><h3>${e.title}</h3><p>${e.body}</p></div>
+  </div>`;
+}
+document.getElementById('root').innerHTML = html;
+mountFoot();
+</script>
+</body>
+</html>

@@ -99,4 +99,11 @@ test.describe('pages', () => {
     // every top-50 player with wins should be a dot
     await expect(page.locator('svg.scatter circle.dot')).toHaveCount(50);
   });
+
+  test('changelog renders entries incl. the MW methodology change', async ({ page }) => {
+    await page.goto('/changelog.html');
+    await expect(page.getByRole('heading', { name: 'Changelog', exact: true })).toBeVisible();
+    await expect(page.locator('.cl-entry').first()).toBeVisible();
+    await expect(page.getByText(/Modern Warfare 2019/)).toBeVisible();
+  });
 });
