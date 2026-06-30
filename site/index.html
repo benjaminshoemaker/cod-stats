@@ -91,35 +91,36 @@ const mq = window.matchMedia('(max-width: 760px)');
 const isMobile = mq.matches;
 mq.addEventListener('change', ()=>location.reload());
 
+const M = isMobile;
+const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
+const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
+
+// No fixed height → the table flows in the page so the header can stick to the window
+// (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
 const table = new Tabulator("#table",{
   data: viewRows(startExcl),
-  layout: isMobile ? "fitData" : "fitColumns",
-  height: isMobile ? undefined : "640px",
+  layout: M ? "fitData" : "fitColumns",
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
   columns:[
-    {title:"Rank", field:"adjRank", width:96, minWidth:96, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"#":"Rank", field:"adjRank", width:M?50:96, minWidth:M?50:96, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
-    {title:"Player", field:"name", minWidth:170, widthGrow:3, sorter:"string",
-      formatter:c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`},
-    {title:"Adjusted", field:"adjusted", width:125, minWidth:125, hozAlign:"right", headerHozAlign:"right",
+    M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
+      : {title:"Player", field:"name", minWidth:170, widthGrow:3, sorter:"string", formatter:playerFmt},
+    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:125, minWidth:M?76:125, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
-      headerTooltip:"Era-adjusted wins"},
-    {title:"Raw wins", field:"raw", width:125, minWidth:125, hozAlign:"right", headerHozAlign:"right",
+      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
+    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:125, minWidth:M?76:125, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
-    {title:"Wins change", field:"winsChange", width:155, minWidth:155, hozAlign:"right", headerHozAlign:"right",
-      sorter:"number", headerTooltip:"Adjusted wins minus raw wins",
-      formatter:c=>changePill(c.getValue(), true)},
-    {title:"Raw rank", field:"rawRank", width:125, minWidth:125, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Wins Δ":"Wins change", field:"winsChange", width:M?92:155, minWidth:M?92:155, hozAlign:"right", headerHozAlign:"right",
+      sorter:"number", headerTooltip:"Adjusted wins minus raw wins", formatter:c=>changePill(c.getValue(), true)},
+    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:125, minWidth:M?84:125, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
-    {title:"Rank change", field:"delta", width:155, minWidth:155, hozAlign:"right", headerHozAlign:"right",
-      sorter:"number", headerTooltip:"Movement vs raw rank",
-      formatter:c=>changePill(c.getValue(), false)},
-    {title:"Champs", field:"champs", width:115, minWidth:115, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Rank Δ":"Rank change", field:"delta", width:M?92:155, minWidth:M?92:155, hozAlign:"right", headerHozAlign:"right",
+      sorter:"number", headerTooltip:"Movement vs raw rank", formatter:c=>changePill(c.getValue(), false)},
+    {title:"Champs", field:"champs", width:M?96:115, minWidth:M?96:115, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      headerTooltip:"Call of Duty World Championship wins (unweighted — one per year)",
-      formatter:c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;}},
+      headerTooltip:"Call of Duty World Championship wins (unweighted — one per year)", formatter:champFmt},
   ],
 });
 

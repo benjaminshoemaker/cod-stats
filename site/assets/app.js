@@ -62,6 +62,12 @@ function mountNav(active){
       <a class="brand" href="index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
       <nav class="nav">${nav}</nav>
     </div></header>`);
+  // expose the nav's height so sticky table headers can sit just below it
+  const setNavH=()=>{const el=document.querySelector('.site-head');
+    if(el) document.documentElement.style.setProperty('--navh', el.offsetHeight+'px');};
+  setNavH();
+  window.addEventListener('resize', setNavH);
+  window.addEventListener('load', setNavH);
 }
 function mountFoot(){
   document.body.insertAdjacentHTML('beforeend',

@@ -102,8 +102,10 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
   font-size:.85rem;color:#1e40af}
 
 /* tabulator tuning (clean analytical) */
-.tabulator{background:#fff;border:1px solid var(--line);border-radius:var(--radius);font-size:.9rem;font-family:var(--sans)}
-.tabulator .tabulator-header{background:#fff;border-bottom:2px solid var(--line);font-weight:600}
+.tabulator{background:#fff;border:1px solid var(--line);border-radius:var(--radius);font-size:.9rem;font-family:var(--sans);overflow:visible}
+/* header sticks to the window (just below the sticky nav) as the page scrolls */
+.tabulator .tabulator-header{background:#fff;border-bottom:2px solid var(--line);font-weight:600;
+  position:sticky;top:var(--navh,52px);z-index:11}
 .tabulator .tabulator-header .tabulator-col{background:#fff;border-right:none}
 .tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:.6rem .7rem}
 .tabulator .tabulator-header .tabulator-col-title{font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;color:var(--faint);
@@ -129,7 +131,12 @@ a:focus-visible,.toggle:focus-within,input:focus-visible,
 /* horizontal-scroll wrapper for wide charts on small screens */
 .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .scrollhint{display:none;margin:.25rem 0 .5rem}
-@media(max-width:760px){.scrollhint{display:block}}
+@media(max-width:760px){
+  .scrollhint{display:block}
+  /* tighter cells on phones so the compact columns fit their labels */
+  .tabulator .tabulator-cell{padding:.45rem .5rem}
+  .tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:.5rem .5rem}
+}
 
 .legend{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin:.5rem 0}
 .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
