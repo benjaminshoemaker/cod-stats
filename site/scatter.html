@@ -96,12 +96,12 @@ function render(excl){
   // grid + ticks
   let g='';
   for(let e=1;e<=xMax;e++){const x=xS(e);g+=`<line class="grid" x1="${x}" y1="${mT}" x2="${x}" y2="${mT+plotH}"/><text class="tick" x="${x}" y="${mT+plotH+18}" text-anchor="middle">${e}</text>`;}
-  for(let p=0;p<=yMax+1e-9;p+=0.2){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${p.toFixed(1)}</text>`;}
+  for(let p=0;p<=yMax+1e-9;p+=0.2){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${Math.round(p*100)}%</text>`;}
   // axes
   g+=`<line class="axis" x1="${mL}" y1="${mT+plotH}" x2="${mL+plotW}" y2="${mT+plotH}"/><line class="axis" x1="${mL}" y1="${mT}" x2="${mL}" y2="${mT+plotH}"/>`;
   // axis labels
   g+=`<text class="axlabel" x="${mL+plotW/2}" y="${H-12}" text-anchor="middle">Longevity →  distinct CoD titles won</text>`;
-  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  share of best season's majors won</text>`;
+  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  % of best season's majors won</text>`;
   // quadrant hints
   g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+16}" text-anchor="end">peak + longevity</text>`;
   g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
