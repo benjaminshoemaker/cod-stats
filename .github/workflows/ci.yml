@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  data-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - name: Build data (runs the reconstruction guard)
+        run: python build_data.py
+      - name: Committed data.js is up to date
+        run: git diff --exit-code site/data.js
+      - name: Data-integrity tests
+        run: pytest tests/test_build_data.py -q
+
+  browser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Browser/layout tests (desktop + mobile)
+        run: npx playwright test

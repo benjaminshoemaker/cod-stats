@@ -54,6 +54,18 @@ python3 build_data.py          # reads major_events.json + player_event_wins.jso
 ```
 `era_adjusted_major_wins.csv` is a flat export of the leaderboard with per-season breakdowns.
 
+## Tests
+
+```bash
+./verify.sh                        # build + both suites (run before pushing)
+pytest tests/test_build_data.py -q # data-integrity tests (reconstruction == wiki totals, denominators, BO7 date filter, champs)
+npx playwright test                # browser/layout tests at 1280px + 393px (column order, desktop fill, sticky header, mobile scroll, URL state, sub-pages)
+```
+
+Both suites run on every push via GitHub Actions (`.github/workflows/ci.yml`). The data
+tests use `build_data.build()`; first-time setup is `python3 -m venv .venv && .venv/bin/pip install pytest`
+and `npm install && npx playwright install chromium`.
+
 ## Data files (repo root)
 - `player_event_wins.json` — every individual major win (player, event, game, date)
 - `major_events.json` — every major event (name, game, date, winner, type, prize, location)

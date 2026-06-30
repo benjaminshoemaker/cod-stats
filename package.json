@@ -1,0 +1,15 @@
+{
+  "name": "cod-stats",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Era-adjusted Call of Duty major tournament wins — interactive site",
+  "scripts": {
+    "data": "python3 build_data.py",
+    "serve": "python3 -m http.server 8765 --directory site",
+    "test:e2e": "playwright test",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
