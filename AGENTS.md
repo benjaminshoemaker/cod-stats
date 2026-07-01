@@ -18,7 +18,8 @@ npx playwright test              # browser/layout tests (desktop + mobile)
 ## Structure
 
 - `site/` — the deployed static site. Vercel's **Root Directory is `site`**.
-  - `index.html` leaderboard (Tabulator), `player.html`, `games.html`, `game.html`, `methodology.html`
+  - `index.html` leaderboard (Tabulator), `player.html`, `games.html`, `game.html`, `methodology.html`,
+    `scatter.html` (Peak vs Longevity), `changelog.html`
   - `assets/` (style.css, app.js, favicon.svg, og.png), `vendor/` (Tabulator, committed for offline), `data.js` (**generated**)
 - `build_data.py` — pure `build()` returns the data dict; `main()` writes `site/data.js`.
 - Source data (committed JSON from the CoD Esports Wiki Cargo API): `major_events.json`,

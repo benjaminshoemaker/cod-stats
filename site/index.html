@@ -184,8 +184,11 @@ setNote(startExcl);
 exclBox.addEventListener("change",e=>{
   const excl=e.target.checked;
   SS.setItem('excl', excl?'1':'0');
-  const s = table.getSorters()[0];
-  table.replaceData(viewRows(excl)).then(()=>{ if(s) table.setSort(s.field,s.dir); });
+  // replaceData preserves the current sort on its own; re-sorting manually in a
+  // .then() re-ran Tabulator's pipeline against a half-built state and threw
+  // (COD-STATS-5), which in turn kicked off the empty-table resize loop
+  // (COD-STATS-4). The .catch keeps any rejection from going unhandled.
+  table.replaceData(viewRows(excl)).catch(()=>{});
   setNote(excl);
   syncURL();
 });
