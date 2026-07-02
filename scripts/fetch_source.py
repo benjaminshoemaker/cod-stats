@@ -132,13 +132,14 @@ def fetch_team_participation():
 
 
 def print_published():
-    """Print the live top-50 Major Wins list as a PUBLISHED literal for build_data.py."""
+    """Print the live Major Wins list (everyone with >=2 wins, matching the
+    PUBLISHED inclusion rule) as a paste-able literal for build_data.py."""
     sys.path.insert(0, os.path.join(HERE, "scripts"))
     from check_live_source import live_major_wins   # same query the wiki's list uses
     live = live_major_wins()
     if live is None:
         raise SystemExit("wiki unreachable — try again later")
-    top = sorted(live.values(), key=lambda w: -w[0])[:50]
+    top = sorted((w for w in live.values() if w[0] >= 2), key=lambda w: -w[0])
     print("PUBLISHED = [", end="")
     for i, (wins, name) in enumerate(top):
         print(("" if i % 6 else "\n ") + f"({name!r},{wins}),", end="")

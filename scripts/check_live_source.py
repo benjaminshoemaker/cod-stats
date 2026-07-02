@@ -7,7 +7,7 @@ and compares the live per-player Raw Wins to our hardcoded PUBLISHED list (and,
 transitively, the data the site is built from — the build guard keeps data.js == PUBLISHED).
 
 Behavior:
-  * exit 0 + "match"   — every one of our 50 players still matches the live wiki
+  * exit 0 + "match"   — every player on our PUBLISHED list still matches the live wiki
   * exit 0 + "SKIP"    — wiki unreachable/rate-limited (no false alarm on outages)
   * exit 1 + diff      — a real numeric mismatch (your signal to re-pull + update PUBLISHED)
 
@@ -70,9 +70,11 @@ def main():
         if got_wins != pub:
             mism.append((name, pub, got_wins))
 
+    # the list covers everyone at/above the cutoff (min wins on PUBLISHED), so any
+    # non-listed player reaching it belongs on the board
     floor = min(p for _, p in PUBLISHED)
     ours = {mkey(n) for n, _ in PUBLISHED}
-    newcomers = sorted(((w, nm) for k, (w, nm) in live.items() if w > floor and k not in ours), reverse=True)[:10]
+    newcomers = sorted(((w, nm) for k, (w, nm) in live.items() if w >= floor and k not in ours), reverse=True)[:10]
 
     lines = []
     if mism:
@@ -80,9 +82,9 @@ def main():
                   "| Player | Our Raw Wins | Live wiki |", "|---|---:|---:|"]
         lines += [f"| {n} | {pub} | {got if got is not None else '— (not found)'} |" for n, pub, got in mism]
     if newcomers:
-        lines += ["", f"## ⚠️ Players above our #50 cutoff ({floor}) not in our list"]
+        lines += ["", f"## ⚠️ Players with ≥{floor} wins missing from our {len(PUBLISHED)}-player list"]
         lines += [f"- {nm}: {w} major wins" for w, nm in newcomers]
-    report = "\n".join(lines) if lines else "## ✅ Raw Wins match the live wiki for all 50 players"
+    report = "\n".join(lines) if lines else f"## ✅ Raw Wins match the live wiki for all {len(PUBLISHED)} players"
 
     print(report)
     step_summary = os.environ.get("GITHUB_STEP_SUMMARY")

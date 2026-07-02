@@ -28,15 +28,24 @@ DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 #    the season completes (a Black Ops 7 win counting 1/4 instead of 1/7).
 STRUCTURAL_DENOM = {'Modern Warfare': 9}
 
-# The wiki's published "Major Wins" leaderboard (display name, raw wins). The build
-# verifies our reconstruction reproduces every one of these exactly.
+# The wiki's published "Major Wins" leaderboard (display name, raw wins), everyone
+# with >=2 console major wins. The build verifies our reconstruction reproduces
+# every one of these exactly. Warzone/Mobile events (DROP_GAMES) and future-dated
+# events (> ASOF) are excluded, so counts are console majors played to date.
 PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19),("Clayster",18),
  ("TeeP",18),("aBeZy",14),("Simp",14),("Cellium",11),("Shotzzy",10),("Kenny",10),("MerK",10),
  ("JKap",9),("SlasheR",9),("Arcitys",9),("Envoy",9),("Octane",9),("Priestahh",9),("BigTymeR",9),
  ("Huke",8),("Enable",8),("Drazah",8),("HyDra",8),("Dashy",7),("John",7),("Attach",7),("Parasite",7),
  ("Skyz",7),("Jurd",6),("Apathy",6),("Tommey",6),("MadCat",6),("Joshh",6),("Slacked",6),("ZooMaa",6),
  ("Nadeshot",6),("Gunless",6),("Rambo",5),("ProoFy",5),("Swanny",5),("CleanX",5),("Accuracy",5),
- ("Scrap",5),("TJHaLy",5),("Classic",5),("Loony",5),("iLLeY",5),("KiSMET",5),("Bance",4)]
+ ("Scrap",5),("TJHaLy",5),("Classic",5),("Loony",5),("iLLeY",5),("KiSMET",5),("Bance",4),
+ ("Censor",4),("Dedo",4),("Fero",4),("GunShy",4),("Insight",4),("KiLLa",4),
+ ("MiRx",4),("NAMELESS",4),("Prestinni",4),("Saints",4),("XLNC",4),("Cammy",3),
+ ("Crowder",3),("Frosty",3),("Ghosty",3),("Havok",3),("MajorManiak",3),("Mak",3),
+ ("Mercules",3),("Pred",3),("Sib",3),("ASSASS1N",2),("Bissell",2),("Bobby",2),
+ ("Cheen",2),("DopedGoat",2),("FEARS",2),("Jake",2),("Mack",2),("Methodz",2),
+ ("MuTaTioN",2),("Owakening",2),("PHiZZURP",2),("Ricky",2),("SiLLY",2),("StaiNViLLe",2),
+ ("Theory",2),("Tobi",2),("Vengeance",2),("VeXeL",2),("VintaGe",2)]
 
 # Player-specific data-provenance footnotes surfaced on the player page. Kept rare —
 # only where a player's total is commonly disputed against other trackers.
@@ -101,14 +110,14 @@ def build():
     for r in champs_rows:
         t = r['title']
         # GUARD: the champs join is by normalized name, so a wiki disambiguation like
-        # "Scump (someone else)" would silently merge into the top-50 player's count.
+        # "Scump (someone else)" would silently merge into the listed player's count.
         if mkey(t['Player']) in top50_mkeys and norm(t['Player']) != t['Player'].strip():
             raise RuntimeError(f"ambiguous champs name needs review: {t['Player']!r}")
         champs_by[mkey(t['Player'])].append({'event': t['Event'], 'year': (t.get('Date') or '')[:4]})
     for k in champs_by:
         champs_by[k].sort(key=lambda e: e['year'])
 
-    # GUARD: every championship is itself a major, so a top-50 player's champ events
+    # GUARD: every championship is itself a major, so a listed player's champ events
     # must appear among their reconstructed major wins (unlike the wins join, the
     # champs join has no published-total check — this is its integrity anchor).
     for mk in top50_mkeys:

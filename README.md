@@ -11,9 +11,9 @@ Static, no build step, works offline (the table library is vendored locally).
 
 | Page | What it shows |
 |------|----------------|
-| `index.html` | Sortable / searchable / filterable leaderboard (top 50) with Adjusted, Peak, Eras, Raw wins, rank-change, and **Championships** columns plus an **"Exclude pre-BO2"** toggle (state persists). Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
+| `index.html` | Sortable / searchable / filterable leaderboard (every player with 2+ major wins) with Adjusted, Peak, Eras, Raw wins, rank-change, and **Championships** columns plus an **"Exclude pre-BO2"** toggle (state persists). Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
 | `player.html?p=Name` | A player's every major win, grouped by season, with each win's weight and the running adjusted total — plus their **Call of Duty World Championship** count (unweighted, one per year). |
-| `games.html` / `game.html?g=Game` | Per-season pages: how many majors there were, the per-win weight, the full event list with winners, and which top-50 players won. |
+| `games.html` / `game.html?g=Game` | Per-season pages: how many majors there were, the per-win weight, the full event list with winners, and which leaderboard players won. |
 | `scatter.html` | **Peak vs Longevity** scatter: best title-winning season against distinct CoD titles won. |
 | `methodology.html` | Visual rationale: the major-count timeline, three scoring options, and a Crimsix-vs-Simp head-to-head. |
 | `changelog.html` | What's changed, with **Methodology** entries logging rationale + ranking impact. |
@@ -42,7 +42,8 @@ After that, every push to `main` auto-deploys to production, and pull requests g
 
 - **Major** = a tournament with `Tier` of `"Major"` or `"Premier"` on the
   [CoD Esports Wiki](https://cod-esports.fandom.com), where the player finished **1st** (players + subs).
-  This reproduces the wiki's published "Major Wins" totals **exactly** for all 50 players.
+  This reproduces the wiki's published "Major Wins" totals **exactly** for every listed player
+  (everyone with 2+ console major wins).
 - **Season** = the game title (Black Ops 2, Ghosts, …). Warzone (battle royale) and Mobile are excluded entirely.
 - **Denominator** = majors a team *could win* that season: the majors held, except
   Modern Warfare 2019's split Home Series format (9 playable of 13 held) and in-progress
@@ -62,7 +63,7 @@ python3 build_data.py          # reads major_events.json + player_event_wins.jso
 To refresh the cached JSON from the live wiki (e.g. after a drift alert):
 ```bash
 python3 scripts/fetch_source.py               # re-pulls all four source JSON files
-python3 scripts/fetch_source.py --published   # prints the live top-50 as a PUBLISHED literal
+python3 scripts/fetch_source.py --published   # prints the live list (2+ wins) as a PUBLISHED literal
 ```
 Then update `PUBLISHED`/`ASOF` in `build_data.py` if the wiki list moved, re-run the build, and commit.
 

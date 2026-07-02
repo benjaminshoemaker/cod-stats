@@ -25,7 +25,7 @@ npx playwright test              # browser/layout tests (desktop + mobile)
 - Source data (committed JSON from the CoD Esports Wiki Cargo API): `major_events.json`,
   `player_event_wins.json`, `champs_wins.json`, `team_participation.json`.
 - `scripts/` — `fetch_source.py` (re-pull the source JSON from the live wiki; `--published`
-  prints the top-50 literal), `check_live_source.py` (daily drift check), `og-card.html`
+  prints the PUBLISHED literal), `check_live_source.py` (daily drift check), `og-card.html`
   (dev scratch that produced `assets/og.png`).
 - `tests/` — `test_build_data.py` (pytest), `leaderboard.spec.ts` (Playwright).
 
@@ -33,8 +33,9 @@ npx playwright test              # browser/layout tests (desktop + mobile)
 
 - **Never hand-edit `site/data.js`** — it's generated. Change `build_data.py` (or the source
   JSON) and re-run it; commit the regenerated file.
-- A "major" = wiki `Tier` of `"Major"`/`"Premier"` + 1st place. The build **must** reproduce the
-  50 published wiki totals exactly — `build()` raises otherwise, and CI fails. Don't weaken that guard.
+- A "major" = wiki `Tier` of `"Major"`/`"Premier"` + 1st place. The build **must** reproduce every
+  published wiki total (all `PUBLISHED` players — everyone with 2+ console major wins) exactly —
+  `build()` raises otherwise, and CI fails. Don't weaken that guard.
 - Warzone/Mobile are excluded; only majors played on/before `ASOF` count as wins. Future-dated
   events still count toward an in-progress season's *denominator* (a BO7 win is 1/7, not 1/4),
   and ranks use exact fractions with ties sharing the minimum rank.

@@ -32,7 +32,7 @@ const root = document.getElementById('root');
 
 if(!p || !lb){
   root.innerHTML = `<p class="crumb"><a href="index.html">← Leaderboard</a></p>
-    <h1>Player not found</h1><p class="muted">No top-50 data for "${esc(name||'')}".</p>`;
+    <h1>Player not found</h1><p class="muted">No leaderboard data for "${esc(name||'')}".</p>`;
   mountFoot();
 }else{
   document.title = `${p.name} — Era-Adjusted Major Wins`;
