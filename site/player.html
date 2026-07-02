@@ -57,6 +57,7 @@ if(!p || !lb){
         <div class="small faint">${p.champs?p.champ_events.map(e=>e.year).join(' · '):'none'}</div></div>
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
+    ${p.note?`<div class="note" style="margin-top:.4rem;background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#data-source">See methodology →</a></div>`:''}
 
     <div class="controls">
       <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results

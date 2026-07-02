@@ -32,6 +32,16 @@ PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19)
  ("Nadeshot",6),("Gunless",6),("Rambo",5),("ProoFy",5),("Swanny",5),("CleanX",5),("Accuracy",5),
  ("Scrap",5),("TJHaLy",5),("Classic",5),("Loony",5),("iLLeY",5),("KiSMET",5),("Bance",4)]
 
+# Player-specific data-provenance footnotes surfaced on the player page. Kept rare —
+# only where a player's total is commonly disputed against other trackers.
+PLAYER_NOTES = {
+ "Scump": ("Counted here as 28 major wins, following the CoD Esports Wiki's Major/Premier "
+           "classification. Some trackers (e.g. breakingpoint, Dexerto) list 30 by including "
+           "sub-major or legacy events the wiki treats as minors; the exact events differ by "
+           "source and often aren't itemized, so this site defers to the wiki's classification "
+           "rather than hand-picking tournaments."),
+}
+
 def norm(n): return re.sub(r'\s*\(.*?\)\s*', '', n).strip()   # strip disambiguation parenthetical
 def mkey(n): return norm(n).lower()                           # case-insensitive join key (ABeZy vs aBeZy)
 
@@ -124,7 +134,8 @@ def build():
                           'peak_all': pk_all, 'peak_post': pk_post,
                           'titles_all': len(seasons), 'titles_post': len(seasons_post),
                           'span_all': span_all, 'span_post': span_post,
-                          'first_year': first_all, 'last_year': last_all}
+                          'first_year': first_all, 'last_year': last_all,
+                          'note': PLAYER_NOTES.get(n)}
 
     # GUARD: reconstructed wins must equal the published wiki total for every player
     mismatch = [(n, pub, sum(s['wins'] for s in players_out[n]['seasons'])) for n, pub in PUBLISHED
