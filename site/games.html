@@ -18,11 +18,8 @@
 <meta name="twitter:title" content="Seasons & the major count">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap" id="root"></div>
@@ -32,24 +29,30 @@
 mountNav('games.html');
 const root=document.getElementById('root');
 const games=D.games.slice().sort((a,b)=>a.order-b.order);
-const maxM=Math.max(...games.map(g=>g.majors));
-const minM=Math.min(...games.map(g=>g.majors));
+// Bars, range and "vs avg" all use the weighting denominator (what a team could
+// win), so this table and the per-season pages tell the same story — 9 for
+// MW 2019's split format, the full schedule for an in-progress season.
+const maxM=Math.max(...games.map(g=>g.denom));
+const minM=Math.min(...games.map(g=>g.denom));
 const avg=D.meta.mbarAll;
 
-let hasSplit=false;
+let hasSplit=false, hasInprog=false;
 let rows=games.map(g=>{
-  const split = g.denom !== g.majors;        // structurally-restricted season (e.g. MW 2019)
+  const split = g.denom < g.majors;          // structurally-restricted season (e.g. MW 2019)
+  const inprog = g.denom > g.majors;         // season still being played (denom = scheduled)
   if(split) hasSplit=true;
-  const ratio=g.majors/avg;
+  if(inprog) hasInprog=true;
+  const ratio=g.denom/avg;
   const tag = g.preBo2?'<span class="pill warn small">pre-BO2</span>'
-            : split?`<span class="pill tag small">${g.denom} of ${g.majors} per team</span>`:'';
+            : split?`<span class="pill tag small">${g.denom} of ${g.majors} per team</span>`
+            : inprog?`<span class="pill tag small">in progress · ${g.majors} of ${g.denom} played</span>`:'';
   return `<tr>
     <td>${gameLink(g.game)} ${tag}</td>
     <td class="n faint">${yr(g.firstDate)}</td>
-    <td class="n"><strong>${g.majors}</strong></td>
+    <td class="n"><strong>${g.denom}</strong>${g.denom!==g.majors?`<span class="faint small"> (${g.majors} ${split?'held':'played'})</span>`:''}</td>
     <td class="n">${g.weight.toFixed(3)}</td>
-    <td style="min-width:160px"><div class="bar-track"><div class="bar-fill ${g.majors>=avg?'amber':''}" style="width:${(g.majors/maxM*100).toFixed(0)}%"></div></div></td>
-    <td class="n"><span class="${g.majors>avg?'delta down':'delta up'}">${g.majors>avg?'▲':'▼'} ${ratio.toFixed(2)}×</span></td>
+    <td style="min-width:160px"><div class="bar-track"><div class="bar-fill ${g.denom>=avg?'amber':''}" style="width:${(g.denom/maxM*100).toFixed(0)}%"></div></div></td>
+    <td class="n"><span class="${g.denom>avg?'delta down':'delta up'}">${g.denom>avg?'▲':'▼'} ${ratio.toFixed(2)}×</span></td>
   </tr>`;
 }).join('');
 
@@ -73,7 +76,9 @@ root.innerHTML=`
   </table>
   <p class="small muted">A "vs avg" above 1.0× (red) means that season had more majors than average, so each win there is worth
   proportionally less.${hasSplit?` <strong>Modern Warfare 2019</strong> held 13 majors but ran a split "Home Series" format — every
-  team played only 9 (8 Home Series + Champs) — so a win there is worth 1/9, not 1/13.`:''}</p>
+  team played only 9 (8 Home Series + Champs) — so a win there is worth 1/9, not 1/13.`:''}${hasInprog?` An
+  <strong>in-progress</strong> season is weighted by its full schedule of majors, not the number played so far, so
+  current-season wins aren't overstated before the season finishes.`:''}</p>
 `;
 mountFoot();
 </script>

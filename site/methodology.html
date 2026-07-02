@@ -18,11 +18,8 @@
 <meta name="twitter:title" content="Why weight CoD major wins by era?">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
 @media(max-width:760px){.cmp{grid-template-columns:1fr}}
@@ -58,12 +55,13 @@ const root=document.getElementById('root');
 const C=D.players['Crimsix'], S=D.players['Simp'];
 const avg=D.meta.mbarAll;
 const games=D.games.slice().sort((a,b)=>a.order-b.order);
-const maxM=Math.max(...games.map(g=>g.majors));
+const maxM=Math.max(...games.map(g=>g.denom));
 
-// timeline of majors per season
+// timeline of majors per season (the weighting denominator: what a team could win,
+// so MW 2019 shows 9 and an in-progress season shows its full schedule)
 const timeline = games.map(g=>`<div class="col">
-  <div class="nm">${g.majors}</div>
-  <div class="b ${g.majors>avg?'hi':''}" style="height:${(g.majors/maxM*120).toFixed(0)}px" title="${esc(g.game)}: ${g.majors} majors"></div>
+  <div class="nm">${g.denom}</div>
+  <div class="b ${g.denom>avg?'hi':''}" style="height:${(g.denom/maxM*120).toFixed(0)}px" title="${esc(g.game)}: ${g.denom} majors"></div>
   <div class="cap">${esc(g.game)}</div></div>`).join('');
 
 // per-player season-share mini bars
@@ -135,7 +133,8 @@ root.innerHTML=`
   <div class="note" style="background:var(--panel);border-color:var(--line);color:var(--muted)">
     <strong>What this does and doesn't measure.</strong> It adjusts for one thing: how many chances to win a major existed each season.
     (For the one season where teams couldn't enter every major — Modern Warfare 2019's split Home Series format — we divide by the
-    <strong>9</strong> each team actually played, not the 13 held.)
+    <strong>9</strong> each team actually played, not the 13 held. An <em>in-progress</em> season divides by its full schedule of
+    majors rather than the number played so far, so current wins aren't overstated before the season finishes.)
     It does <em>not</em> account for field strength, online vs. LAN, regional depth, roster format, or prize size. Read it as
     <em>opportunity-normalized</em> major wins, not a full "who was better" verdict.
   </div>

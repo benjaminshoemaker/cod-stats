@@ -23,7 +23,10 @@ npx playwright test              # browser/layout tests (desktop + mobile)
   - `assets/` (style.css, app.js, favicon.svg, og.png), `vendor/` (Tabulator, committed for offline), `data.js` (**generated**)
 - `build_data.py` — pure `build()` returns the data dict; `main()` writes `site/data.js`.
 - Source data (committed JSON from the CoD Esports Wiki Cargo API): `major_events.json`,
-  `player_event_wins.json`, `champs_wins.json`.
+  `player_event_wins.json`, `champs_wins.json`, `team_participation.json`.
+- `scripts/` — `fetch_source.py` (re-pull the source JSON from the live wiki; `--published`
+  prints the top-50 literal), `check_live_source.py` (daily drift check), `og-card.html`
+  (dev scratch that produced `assets/og.png`).
 - `tests/` — `test_build_data.py` (pytest), `leaderboard.spec.ts` (Playwright).
 
 ## Conventions & boundaries
@@ -32,13 +35,18 @@ npx playwright test              # browser/layout tests (desktop + mobile)
   JSON) and re-run it; commit the regenerated file.
 - A "major" = wiki `Tier` of `"Major"`/`"Premier"` + 1st place. The build **must** reproduce the
   50 published wiki totals exactly — `build()` raises otherwise, and CI fails. Don't weaken that guard.
-- Warzone/Mobile are excluded; only majors played on/before `ASOF` count (drops future BO7 events).
+- Warzone/Mobile are excluded; only majors played on/before `ASOF` count as wins. Future-dated
+  events still count toward an in-progress season's *denominator* (a BO7 win is 1/7, not 1/4),
+  and ranks use exact fractions with ties sharing the minimum rank.
 - **Default to TDD for the data/logic** (build_data): add/adjust a test in `tests/test_build_data.py`
   first. For UI changes, add or update a Playwright assertion in `leaderboard.spec.ts` — that suite
   exists because a mobile-layout regression once slipped through manual checks.
 - **Log user-facing changes** in the changelog: prepend an entry to the `ENTRIES` array in
   `site/changelog.html` (newest first). Anything that moves the rankings is tagged `Methodology`
   with its rationale **and** impact (who moved) — the numbers must never look arbitrary.
+  The changelog (and methodology page) covers only what users see under normal use: numbers,
+  pages, columns, copy. Internal work — error handling, monitoring, build tooling, test or
+  reliability hardening — stays out; it belongs in commit messages.
 - **Verify objective claims yourself** (run the tests / load the page) before asking the user to verify.
 - Fetching wiki data: WebFetch is blocked; use `curl` with a browser User-Agent, expect rate limiting,
   and read wikitext via `api.php?action=query` (the `?action=raw` route is Cloudflare-challenged).

@@ -6,20 +6,26 @@ wiki total. Run directly (`python3 build_data.py`) to (re)write site/data.js.
 """
 import json, re, os
 from collections import defaultdict, Counter
+from fractions import Fraction
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 def _p(*parts): return os.path.join(HERE, *parts)
 
-ASOF = '2026-06-29'              # only majors played on/before this count (drops future BO7 events)
+ASOF = '2026-06-29'              # only majors played on/before this count as wins; future-dated
+                                 # events still count toward an in-progress season's denominator
 DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 
-# Some seasons structurally restricted how many majors a team could enter, so a
-# player's share should divide by what they *could win*, not the raw count held.
-# Modern Warfare 2019 (CDL 2020) ran a split "Home Series" format: 13 majors were
-# held, but every team played exactly 9 (12 Home Series of 8 teams each = 8 per
-# team, plus the 12-team Champs), verified in team_participation.json. Open-era
-# seasons are deliberately NOT here — their majors were open/qualified events
-# everyone had the opportunity to enter (see team_participation.json analysis).
+# A player's share divides by what a team *could win* that season, which is not
+# always the number of majors played so far:
+#  * Structural restriction — Modern Warfare 2019 (CDL 2020) ran a split "Home
+#    Series" format: 13 majors were held, but every team played exactly 9 (12 Home
+#    Series of 8 teams each = 8 per team, plus the 12-team Champs), verified in
+#    team_participation.json. Open-era seasons are deliberately NOT here — their
+#    majors were open/qualified events everyone had the opportunity to enter.
+#  * In-progress season — the denominator is the number of *scheduled* majors
+#    (counted from major_events.json ignoring the ASOF date filter), not the
+#    number played so far; otherwise current-season wins are overstated until
+#    the season completes (a Black Ops 7 win counting 1/4 instead of 1/7).
 STRUCTURAL_DENOM = {'Modern Warfare': 9}
 
 # The wiki's published "Major Wins" leaderboard (display name, raw wins). The build
@@ -54,14 +60,17 @@ def build():
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
 
     played = lambda d: (d or '0000') <= ASOF
-    events = [e for e in events if e['Game'] not in DROP_GAMES and played(e.get('Date'))]
+    events_all = [e for e in events if e['Game'] not in DROP_GAMES]      # incl. future-dated (scheduled)
+    events = [e for e in events_all if played(e.get('Date'))]
     pwins  = [r for r in pwins  if r['Game'] not in DROP_GAMES and played(r.get('Date'))]
 
-    # held = majors actually held that season; denom = majors a team could win
-    # (reduced for structurally-restricted seasons). Shares/peak/rescale use denom.
+    # held = majors played so far that season; scheduled = all majors on the calendar
+    # (same file, no date filter); denom = majors a team could win. Shares/peak/rescale
+    # use denom, so an in-progress season divides by its full schedule.
     majors = Counter(e['Game'] for e in events)
     held = dict(majors)
-    denom = {g: STRUCTURAL_DENOM.get(g, held[g]) for g in held}
+    scheduled = Counter(e['Game'] for e in events_all)
+    denom = {g: STRUCTURAL_DENOM.get(g, scheduled[g]) for g in held}
     first_date = {}
     for e in events:
         g = e['Game']; d = e.get('Date') or '9999'
@@ -91,11 +100,25 @@ def build():
     champs_by = defaultdict(list)
     for r in champs_rows:
         t = r['title']
+        # GUARD: the champs join is by normalized name, so a wiki disambiguation like
+        # "Scump (someone else)" would silently merge into the top-50 player's count.
+        if mkey(t['Player']) in top50_mkeys and norm(t['Player']) != t['Player'].strip():
+            raise RuntimeError(f"ambiguous champs name needs review: {t['Player']!r}")
         champs_by[mkey(t['Player'])].append({'event': t['Event'], 'year': (t.get('Date') or '')[:4]})
     for k in champs_by:
         champs_by[k].sort(key=lambda e: e['year'])
 
+    # GUARD: every championship is itself a major, so a top-50 player's champ events
+    # must appear among their reconstructed major wins (unlike the wins join, the
+    # champs join has no published-total check — this is its integrity anchor).
+    for mk in top50_mkeys:
+        won = {w['Event'] for w in player_wins.get(mk, [])}
+        for ce in champs_by.get(mk, []):
+            if ce['event'] not in won:
+                raise RuntimeError(f"champ event not among {disp_by_mkey[mk]}'s major wins: {ce['event']!r}")
+
     players_out = {}   # keyed by display name (what player.html / leaderboard links use)
+    exact_share = {}   # name -> (all, post) as exact Fractions; ranking must not use rounded values
     for n, pub in PUBLISHED:
         mk = mkey(n)
         wins = sorted(player_wins.get(mk, []), key=lambda r: (r.get('Date') or ''))
@@ -110,15 +133,17 @@ def build():
             seasons.append({'game': g, 'wins': c, 'majors': denom[g], 'held': held[g],
                             'share': round(c / denom[g], 4),
                             'pre_bo2': g in pre_bo2, 'events': by_season[g]['events']})
-        share_all  = sum(s['share'] for s in seasons)
-        share_post = sum(s['share'] for s in seasons if not s['pre_bo2'])
+        sfrac = lambda s: Fraction(s['wins'], s['majors'])
+        share_all  = sum((sfrac(s) for s in seasons), Fraction(0))
+        share_post = sum((sfrac(s) for s in seasons if not s['pre_bo2']), Fraction(0))
+        exact_share[n] = (share_all, share_post)
 
         # Peak (best single season's share, rescaled to a wins-like number) + Longevity
         # (distinct titles won, plus career span in years). Computed for both modes.
         def peak_of(slist, mb):
             if not slist: return {'adj': 0.0, 'season': None, 'wins': 0, 'majors': 0}
-            best = max(slist, key=lambda s: s['share'])
-            return {'adj': round(best['share'] * mb, 2), 'season': best['game'], 'wins': best['wins'], 'majors': best['majors']}
+            best = max(slist, key=sfrac)
+            return {'adj': round(float(sfrac(best)) * mb, 2), 'season': best['game'], 'wins': best['wins'], 'majors': best['majors']}
         def span_of(slist):
             yrs = [int(e['date'][:4]) for s in slist for e in s['events'] if e['date']]
             return (max(yrs) - min(yrs) + 1, min(yrs), max(yrs)) if yrs else (0, None, None)
@@ -128,13 +153,14 @@ def build():
         span_post, first_post, last_post = span_of(seasons_post)
 
         players_out[n] = {'name': n, 'raw': pub, 'seasons': seasons,
-                          'share_all': round(share_all, 4), 'adj_all': round(share_all * MBAR_ALL, 2),
-                          'share_post': round(share_post, 4), 'adj_post': round(share_post * MBAR_POST, 2),
+                          'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * MBAR_ALL, 2),
+                          'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * MBAR_POST, 2),
                           'champs': len(champs_by.get(mk, [])), 'champ_events': champs_by.get(mk, []),
                           'peak_all': pk_all, 'peak_post': pk_post,
                           'titles_all': len(seasons), 'titles_post': len(seasons_post),
                           'span_all': span_all, 'span_post': span_post,
                           'first_year': first_all, 'last_year': last_all,
+                          'first_post': first_post, 'last_post': last_post,
                           'note': PLAYER_NOTES.get(n)}
 
     # GUARD: reconstructed wins must equal the published wiki total for every player
@@ -144,12 +170,13 @@ def build():
         raise RuntimeError('reconstruction != published total: ' +
                            ', '.join(f'{n} ({pub} vs {rec})' for n, pub, rec in mismatch))
 
-    def rank(metric):
-        order = sorted(players_out.values(), key=lambda p: -p[metric])
-        return {p['name']: i + 1 for i, p in enumerate(order)}
-    raw_rank  = {n: i + 1 for i, (n, _) in enumerate(PUBLISHED)}
-    adj_rank  = rank('adj_all')
-    post_rank = rank('adj_post')
+    # Competition ranking on exact values: rank = 1 + (players strictly better),
+    # so genuine ties share the minimum rank instead of getting arbitrary order.
+    def crank(vals):
+        return {n: 1 + sum(1 for w in vals.values() if w > v) for n, v in vals.items()}
+    raw_rank  = crank(dict(PUBLISHED))
+    adj_rank  = crank({n: s[0] for n, s in exact_share.items()})
+    post_rank = crank({n: s[1] for n, s in exact_share.items()})
 
     leaderboard = []
     for n, pub in PUBLISHED:
@@ -164,6 +191,7 @@ def build():
             'titlesAll': p['titles_all'], 'titlesPost': p['titles_post'],
             'spanAll': p['span_all'], 'spanPost': p['span_post'],
             'firstYear': p['first_year'], 'lastYear': p['last_year'],
+            'firstYearPost': p['first_post'], 'lastYearPost': p['last_post'],
         })
 
     games_out = []

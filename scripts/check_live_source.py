@@ -49,6 +49,10 @@ def live_major_wins():
         for row in data["cargoquery"]:
             t = row["title"]
             out[mkey(t["Player"])] = (int(t["Wins"]), t["Player"])
+        if len(data["cargoquery"]) >= 500:
+            # our 50 all have 4+ wins so they sort well inside the top 500, but a
+            # truncated result should never silently pass as a full comparison
+            print("WARNING: cargo query returned the 500-row cap; comparison may be partial")
         return out
     return None
 

@@ -16,11 +16,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap" id="root"></div>
@@ -51,16 +48,19 @@ if(!g){
     <td class="n"><strong>${(p.wins*g.weight).toFixed(3)}</strong></td>
   </tr>`).join('');
 
-  const den=g.denom, split=den!==g.majors;   // den = majors a team could win (9 for MW 2019)
+  // den = majors a team could win: 9 for MW 2019's split format (13 held), or the
+  // full schedule for an in-progress season (e.g. 7 for BO7 with 4 played so far).
+  const den=g.denom, split=den<g.majors, inprog=den>g.majors;
   const ratio=den/avg;
   const tag = g.preBo2?'<span class="pill warn">pre-BO2</span>'
-            : split?`<span class="pill tag">${den} of ${g.majors} per team</span>`:'';
+            : split?`<span class="pill tag">${den} of ${g.majors} per team</span>`
+            : inprog?`<span class="pill tag">in progress · ${g.majors} of ${den} played</span>`:'';
 
   root.innerHTML=`
     <p class="crumb"><a href="games.html">← Seasons</a></p>
     <h1>${esc(g.game)} ${tag}</h1>
     <div class="stat-row">
-      <div class="stat"><div class="k">Majors ${split?'held':'this season'}</div><div class="v">${g.majors}</div>${split?`<div class="small faint">${den} played per team</div>`:''}</div>
+      <div class="stat"><div class="k">Majors ${split?'held':inprog?'played so far':'this season'}</div><div class="v">${g.majors}</div>${split?`<div class="small faint">${den} played per team</div>`:inprog?`<div class="small faint">${den} scheduled</div>`:''}</div>
       <div class="stat"><div class="k">Each win worth</div><div class="v sm">1 / ${den}</div><div class="small faint">= ${g.weight.toFixed(3)} of a season</div></div>
       <div class="stat"><div class="k">vs avg season</div><div class="v sm"><span class="${den>avg?'delta down':'delta up'}">${ratio.toFixed(2)}×</span></div><div class="small faint">avg ${avg.toFixed(1)} majors</div></div>
       <div class="stat"><div class="k">Win the whole season</div><div class="v sm">1.00</div><div class="small faint">all ${den} = one "season"</div></div>
@@ -70,13 +70,17 @@ if(!g){
       ? `${g.majors} majors were held, but this season ran a split <strong>Home Series</strong> format — every team played only
          <strong>${den}</strong> (8 Home Series + Champs). So a win is worth <span class="num">1/${den} = ${g.weight.toFixed(3)}</span>
          of a season, not 1/${g.majors}. To "max out" the season you'd need to win all ${den} you could enter.`
+      : inprog
+      ? `this season is <strong>in progress</strong> — ${g.majors} of its <strong>${den}</strong> scheduled majors have been played.
+         A win is worth <span class="num">1/${den} = ${g.weight.toFixed(3)}</span> of the season (the full schedule every team
+         can enter), not 1/${g.majors}, so current wins aren't overstated while the season is unfinished.`
       : `this season had <strong>${g.majors}</strong> majors. Winning <em>any</em> one is worth
          <span class="num">1/${g.majors} = ${g.weight.toFixed(3)}</span> of a season. To "max out" you'd win all ${g.majors}.`}
     For comparison, a single win in a lean 6-major season is worth <strong>${(den/6).toFixed(2)}×</strong> a single win here.</div>
 
     <div class="grid cols-2" style="margin-top:1.4rem">
       <div>
-        <h2>All ${g.majors} majors</h2>
+        <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`}</h2>
         <table class="data">
           <thead><tr><th>Date</th><th>Event</th><th>Winner</th><th>Type</th><th class="n">Weight</th></tr></thead>
           <tbody>${evRows}</tbody>

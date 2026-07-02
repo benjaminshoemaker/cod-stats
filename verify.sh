@@ -7,7 +7,8 @@ echo "==> build data (reconstruction guard)"
 python3 build_data.py
 
 echo "==> committed site/data.js is up to date"
-git diff --quiet site/data.js || { echo "  site/data.js changed — commit the regenerated file"; exit 1; }
+# diff against HEAD (not the index) so a stale-but-staged data.js still fails
+git diff --quiet HEAD -- site/data.js || { echo "  site/data.js changed — commit the regenerated file"; exit 1; }
 
 echo "==> data-integrity tests"
 PYTEST="python3 -m pytest"; [ -x .venv/bin/pytest ] && PYTEST=".venv/bin/pytest"

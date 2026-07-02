@@ -11,8 +11,5 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0"
-  },
-  "dependencies": {
-    "@vercel/analytics": "^2.0.1"
   }
 }

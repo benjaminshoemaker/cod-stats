@@ -3,9 +3,11 @@ import { test, expect } from '@playwright/test';
 const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'peak', 'eras', 'rawRank', 'delta', 'raw', 'winsChange', 'champs'];
 
 test.describe('leaderboard', () => {
-  test('loads all 50 players', async ({ page }) => {
+  test('loads every leaderboard player', async ({ page }) => {
     await page.goto('/index.html');
-    await expect(page.locator('#table .tabulator-row')).toHaveCount(50);
+    const expected = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
+    expect(expected).toBeGreaterThanOrEqual(50);
+    await expect(page.locator('#table .tabulator-row')).toHaveCount(expected);
   });
 
   test('columns are in the expected order', async ({ page }) => {
@@ -96,14 +98,28 @@ test.describe('pages', () => {
   test('peak-vs-longevity scatter renders dots', async ({ page }) => {
     await page.goto('/scatter.html');
     await expect(page.getByRole('heading', { name: /Peak vs\.? Longevity/ })).toBeVisible();
-    // every top-50 player with wins should be a dot
-    await expect(page.locator('svg.scatter circle.dot')).toHaveCount(50);
+    // every leaderboard player with wins should be a dot
+    const expected = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
+    await expect(page.locator('svg.scatter circle.dot')).toHaveCount(expected);
+  });
+
+  test('BO7 season page shows in-progress weighting (1/7)', async ({ page }) => {
+    await page.goto('/game.html?g=Black%20Ops%207');
+    await expect(page.getByText(/in progress/).first()).toBeVisible();
+    await expect(page.getByText('1 / 7')).toBeVisible(); // scheduled majors, not the 4 played
+  });
+
+  test('exact ties share a leaderboard rank (aBeZy & Simp both #3)', async ({ page }) => {
+    await page.goto('/index.html');
+    const ranks = await page.$$eval('#table .tabulator-cell[tabulator-field="adjRank"]', els => els.map(e => e.textContent?.trim()));
+    expect(ranks.filter(r => r === '3')).toHaveLength(2);
+    expect(ranks).not.toContain('4'); // competition ranking: 1,2,3,3,5,…
   });
 
   test('changelog renders entries incl. the MW methodology change', async ({ page }) => {
     await page.goto('/changelog.html');
     await expect(page.getByRole('heading', { name: 'Changelog', exact: true })).toBeVisible();
     await expect(page.locator('.cl-entry').first()).toBeVisible();
-    await expect(page.getByText(/Modern Warfare 2019/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Modern Warfare 2019 scored by opportunity/ })).toBeVisible();
   });
 });

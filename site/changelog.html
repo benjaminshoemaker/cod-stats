@@ -17,11 +17,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .cl-entry{display:flex;gap:.9rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
   .cl-entry:last-child{border-bottom:none}
@@ -40,8 +37,26 @@
 <script>
 mountNav('changelog.html');
 
-// Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed.
+// Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-02', tag:'Methodology', title:'In-progress seasons weighted by their full schedule',
+   body:`Black Ops 7 is mid-season: 4 of its <strong>7</strong> scheduled majors have been played. Wins there were being
+   divided by the 4 played, making each worth 1/4 of a season — more than a win in any completed modern season — and the
+   value would have silently shrunk as the year went on. Wins in an in-progress season now divide by the full schedule
+   (1/7), matching the opportunity every team has. This moved the 2026 winners down — <strong>Drazah 13→16, HyDra 11→14,
+   Dashy 18→21, Huke 20→22</strong>, with Shotzzy and Envoy each down one — and nudged everyone else's adjusted total up
+   slightly (the average majors/season the scale is built on rose to 8.61). <a href="methodology.html">How the weighting works →</a>`},
+  {date:'2026-07-02', tag:'Methodology', title:'Ranks computed on exact values; ties share a rank',
+   body:`Ranks were being computed on values rounded to two decimals, so players whose totals rounded together were
+   ordered arbitrarily (at one point ranking Scrap below Rambo despite a higher exact share). Ranking now uses exact
+   fractions, and genuine ties share the same rank the way sports tables do: <strong>aBeZy and Simp are both #3</strong>,
+   and Clayster and TeeP share raw-wins rank #6 instead of being split 6/7 by list order.`},
+  {date:'2026-07-02', tag:'Fixed', title:'Season stats now consistent across pages',
+   body:`The Seasons table and each season's page now agree on "vs avg" (both use the weighting denominator, so
+   Modern Warfare 2019 no longer shows 1.54× on one page and 1.07× on the other). The Eras tooltip on the leaderboard
+   now shows the career span for the mode you're viewing (it previously included pre-BO2 years even when they were
+   excluded).`},
+
   {date:'2026-06-30', tag:'Methodology', title:'Modern Warfare 2019 scored by opportunity, not events held',
    body:`CDL 2020 ran a split "Home Series" format — 13 majors were held, but every team played only <strong>9</strong>
    (8 Home Series + Champs). We now divide those wins by 9, not 13, matching how the metric treats every other season.
@@ -50,10 +65,6 @@ const ENTRIES = [
   {date:'2026-06-30', tag:'Improved', title:'Peak shown as a percentage',
    body:`The Peak column now reads as the share of a season's majors a player won in their best year (e.g. 67%), which
    compares across players far more naturally than a rescaled number.`},
-  {date:'2026-06-30', tag:'New', title:'Daily accuracy check',
-   body:`Every day the site re-checks its Raw Wins against the live Call of Duty Esports Wiki and flags any drift, so the
-   numbers stay current with the source.`},
-
   {date:'2026-06-29', tag:'New', title:'Launched the era-adjusted leaderboard',
    body:`Re-ranks CoD pros by major tournament wins, normalized so every season counts equally — with per-player
    breakdowns, per-season pages, and a page explaining the method.`},

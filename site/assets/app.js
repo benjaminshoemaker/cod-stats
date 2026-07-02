@@ -1,5 +1,9 @@
-/* Sentry: JS error monitoring + feedback widget (loaded via CDN in each page <head>) */
-if (window.Sentry) {
+/* Monitoring — Sentry (error reporting + feedback widget) and Vercel analytics.
+   The Sentry bundle itself is loaded (with SRI) from each page's <head>; init and
+   the analytics injection are gated to the deployed site so local dev sessions and
+   Playwright runs don't send events or burn quota. */
+const DEPLOYED = /\.vercel\.app$/.test(location.hostname);
+if (DEPLOYED && window.Sentry) {
   Sentry.init({
     dsn: "https://31fc37624c1589dbbe233db42c843560@o4511651597975552.ingest.us.sentry.io/4511651631398912",
     integrations: [
@@ -17,23 +21,33 @@ if (window.Sentry) {
       }),
     ],
     tracesSampleRate: 0,             // no performance tracing — conserve free quota
-    allowUrls: [/cod-stats-one\.vercel\.app/, /localhost/, /127\.0\.0\.1/],
+    allowUrls: [/\.vercel\.app/],
   });
+}
+if (DEPLOYED) {
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  const va = document.createElement('script');
+  va.defer = true; va.src = '/_vercel/insights/script.js';
+  document.head.appendChild(va);
 }
 
 /* shared helpers */
 const D = window.APP_DATA;
+if (!D) {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div class="note" style="margin:1rem">Sorry — the data failed to load. ' +
+    'Try a hard refresh (Cmd/Ctrl+Shift+R); if it persists, use the feedback button.</div>');
+  throw new Error('APP_DATA missing — data.js failed to load');
+}
 
 function qs(name){return new URLSearchParams(location.search).get(name);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function fmt(n,d=2){return (n==null||isNaN(n))?'–':Number(n).toFixed(d);}
 function yr(date){return date?String(date).slice(0,4):'';}
 
-function deltaHtml(d){
-  if(d>0) return `<span class="delta up">▲ ${d}</span>`;
-  if(d<0) return `<span class="delta down">▼ ${Math.abs(d)}</span>`;
-  return `<span class="delta flat">–</span>`;
-}
+/* localStorage can throw (private browsing, storage disabled) — degrade to defaults */
+function getPref(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function setPref(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+
 function deltaPill(d){
   if(d>0) return `<span class="pill up">▲ ${d}</span>`;
   if(d<0) return `<span class="pill down">▼ ${Math.abs(d)}</span>`;
@@ -42,15 +56,17 @@ function deltaPill(d){
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 
-/* horizontal bar row */
-function barRow(label,value,max,opts={}){
-  const pct=max>0?Math.max(2,(value/max)*100):0;
-  const cls=opts.cls||'';
-  const valTxt=opts.valTxt!=null?opts.valTxt:value;
-  const lab=opts.link?gameLink(label):esc(label);
-  return `<div class="barline"><div class="lab">${lab}</div>
-    <div class="bar-track" style="flex:1"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>
-    <div class="val">${valTxt}</div></div>`;
+/* wire the "Exclude pre-BO2" checkbox (#excl): restore saved state (or `initial`
+   when given, e.g. from the URL), persist changes, call onChange(checked).
+   Returns the initial checked state so callers can do their first render. */
+function mountExclToggle(onChange, initial){
+  const box = document.getElementById('excl');
+  box.checked = initial != null ? initial : getPref('excl') === '1';
+  box.addEventListener('change', e => {
+    setPref('excl', e.target.checked ? '1' : '0');
+    onChange(e.target.checked);
+  });
+  return box.checked;
 }
 
 /* build header nav, marking active */

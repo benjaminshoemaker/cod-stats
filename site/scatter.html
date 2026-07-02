@@ -17,11 +17,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .scatter-wrap{overflow-x:auto}
   svg.scatter{display:block;min-width:680px;width:100%;height:auto;font-family:var(--sans)}
@@ -44,7 +41,6 @@
 <script>
 mountNav('scatter.html');
 const root=document.getElementById('root');
-const SS=window.localStorage;
 
 root.innerHTML=`
   <h1>Peak vs. Longevity</h1>
@@ -137,10 +133,7 @@ function render(excl){
   document.getElementById('chart').innerHTML=`<svg class="scatter" viewBox="0 0 ${W} ${H}" role="img" aria-label="Peak vs longevity scatter">${g}${dots}${lbl}</svg>`;
 }
 
-const box=document.getElementById('excl');
-box.checked = SS.getItem('excl')==='1';
-render(box.checked);
-box.addEventListener('change',e=>{ SS.setItem('excl', e.target.checked?'1':'0'); render(e.target.checked); });
+render(mountExclToggle(render));
 mountFoot();
 </script>
 </body>

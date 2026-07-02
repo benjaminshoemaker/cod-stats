@@ -20,11 +20,8 @@
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap wide">
@@ -68,7 +65,8 @@ function viewRows(excl){
       peak: (pkInfo && pkInfo.majors) ? pkInfo.wins/pkInfo.majors : 0,   // best season's share (sort key)
       peakInfo: pkInfo,                                  // {wins, majors, season} for the X/Y display
       eras: excl? r.titlesPost : r.titlesAll,           // distinct CoD titles with a major (longevity)
-      firstYear:r.firstYear, lastYear:r.lastYear,
+      firstYear: excl? r.firstYearPost : r.firstYear,   // career span within the current mode
+      lastYear:  excl? r.lastYearPost  : r.lastYear,
       winsChange: Math.round((adjusted - r.raw)*10)/10,   // adjusted minus raw wins
       delta: excl? r.deltaPost : r.delta,
     };
@@ -83,14 +81,13 @@ function changePill(d, decimals){
   return `<span class="pill flat">–</span>`;
 }
 
-const SS = window.localStorage;
 const searchInput = document.getElementById("search");
 const exclBox = document.getElementById("excl");
 
-// ---- read shareable state from the URL (falls back to localStorage / defaults) ----
+// ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
 const VALID = new Set(['adjRank','name','adjusted','peak','eras','raw','winsChange','rawRank','delta','champs']);
-const startExcl = params.has('excl') ? params.get('excl')==='1' : (SS.getItem('excl')==='1');
+const startExcl = params.has('excl') ? params.get('excl')==='1' : (getPref('excl')==='1');
 const startQ    = params.get('q') || '';
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
@@ -127,7 +124,8 @@ const table = new Tabulator("#table",{
     {title:"Eras", field:"eras", width:M?76:92, minWidth:M?76:92, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Distinct CoD titles with a major win (longevity)",
-      tooltip:(e,cell)=>{const d=cell.getRow().getData(); return `won majors in ${d.eras} CoD titles · career ${d.firstYear}–${d.lastYear}`;}},
+      tooltip:(e,cell)=>{const d=cell.getRow().getData();
+        return d.firstYear ? `won majors in ${d.eras} CoD titles · career ${d.firstYear}–${d.lastYear}` : 'no majors in the included seasons';}},
     {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:124, minWidth:M?84:124, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
     {title:M?"Rank Δ":"Rank Δ", field:"delta", width:M?92:104, minWidth:M?92:104, hozAlign:"right", headerHozAlign:"right",
@@ -179,11 +177,8 @@ function setNote(excl){
     ? `Mode: <strong>excluding pre-BO2</strong>. Adjusted = season-share &times; ${D.meta.mbarPost} (avg majors across the ${D.meta.consoleSeasons-D.meta.preBo2.length} post-BO2 seasons).`
     : `Mode: <strong>all seasons</strong>. Adjusted = season-share &times; ${D.meta.mbarAll} (avg majors across all ${D.meta.consoleSeasons} seasons).`;
 }
-exclBox.checked=startExcl;
 setNote(startExcl);
-exclBox.addEventListener("change",e=>{
-  const excl=e.target.checked;
-  SS.setItem('excl', excl?'1':'0');
+mountExclToggle(excl=>{
   // replaceData preserves the current sort on its own; re-sorting manually in a
   // .then() re-ran Tabulator's pipeline against a half-built state and threw
   // (COD-STATS-5), which in turn kicked off the empty-table resize loop
@@ -191,7 +186,7 @@ exclBox.addEventListener("change",e=>{
   table.replaceData(viewRows(excl)).catch(()=>{});
   setNote(excl);
   syncURL();
-});
+}, startExcl);
 
 mountFoot();
 </script>

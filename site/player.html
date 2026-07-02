@@ -16,23 +16,19 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js" crossorigin="anonymous"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="wrap" id="root"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
-mountNav('');
+mountNav('index.html');
 const name = qs('p');
 const lb = D.leaderboard.find(r=>r.name===name);
 const p = D.players[name];
 const root = document.getElementById('root');
-const SS = window.localStorage;
 
 if(!p || !lb){
   root.innerHTML = `<p class="crumb"><a href="index.html">← Leaderboard</a></p>
@@ -92,7 +88,7 @@ if(!p || !lb){
 
     // build-up table
     const rows = shown.map(s=>`<tr>
-        <td>${gameLink(s.game)} ${s.pre_bo2?'<span class="pill warn small">pre-BO2</span>':''}${s.held&&s.held!==s.majors?`<span class="pill tag small">${s.majors} of ${s.held} held</span>`:''}</td>
+        <td>${gameLink(s.game)} ${s.pre_bo2?'<span class="pill warn small">pre-BO2</span>':''}${s.held>s.majors?`<span class="pill tag small">${s.majors} of ${s.held} held</span>`:''}${s.held<s.majors?`<span class="pill tag small">in progress · ${s.held} of ${s.majors} played</span>`:''}</td>
         <td class="n">${s.wins}</td><td class="n">${s.majors}</td>
         <td class="n">${(1/s.majors).toFixed(3)}</td>
         <td class="n"><strong>${s.share.toFixed(3)}</strong></td>
@@ -145,10 +141,7 @@ if(!p || !lb){
       : `Showing <strong>all seasons</strong>: ${adj.toFixed(1)} adjusted wins, rank #${rank} ${deltaPill(delta)} (× ${mbar.toFixed(2)} avg majors/season).`;
   }
 
-  const box=document.getElementById('excl');
-  box.checked = SS.getItem('excl')==='1';
-  render(box.checked);
-  box.addEventListener('change',e=>{ SS.setItem('excl', e.target.checked?'1':'0'); render(e.target.checked); });
+  render(mountExclToggle(render));
 
   mountFoot();
 }

@@ -11,10 +11,12 @@ Static, no build step, works offline (the table library is vendored locally).
 
 | Page | What it shows |
 |------|----------------|
-| `index.html` | Sortable / searchable / filterable leaderboard (top 50) with Adjusted, Raw wins, rank-change, and **Championships** columns plus an **"Exclude pre-BO2"** toggle (state persists). Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
+| `index.html` | Sortable / searchable / filterable leaderboard (top 50) with Adjusted, Peak, Eras, Raw wins, rank-change, and **Championships** columns plus an **"Exclude pre-BO2"** toggle (state persists). Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
 | `player.html?p=Name` | A player's every major win, grouped by season, with each win's weight and the running adjusted total — plus their **Call of Duty World Championship** count (unweighted, one per year). |
 | `games.html` / `game.html?g=Game` | Per-season pages: how many majors there were, the per-win weight, the full event list with winners, and which top-50 players won. |
+| `scatter.html` | **Peak vs Longevity** scatter: best title-winning season against distinct CoD titles won. |
 | `methodology.html` | Visual rationale: the major-count timeline, three scoring options, and a Crimsix-vs-Simp head-to-head. |
+| `changelog.html` | What's changed, with **Methodology** entries logging rationale + ranking impact. |
 
 ### Run it
 ```bash
@@ -42,17 +44,27 @@ After that, every push to `main` auto-deploys to production, and pull requests g
   [CoD Esports Wiki](https://cod-esports.fandom.com), where the player finished **1st** (players + subs).
   This reproduces the wiki's published "Major Wins" totals **exactly** for all 50 players.
 - **Season** = the game title (Black Ops 2, Ghosts, …). Warzone (battle royale) and Mobile are excluded entirely.
-- **Denominator** = majors per season that have a recorded 1st place (same source as the wins, so they're consistent).
+- **Denominator** = majors a team *could win* that season: the majors held, except
+  Modern Warfare 2019's split Home Series format (9 playable of 13 held) and in-progress
+  seasons, which divide by their full schedule rather than the majors played so far.
 - **Adjusted wins** = `(Σ wins ÷ majors_that_season) × avg_majors_per_season`.
-  Rescaling by the average (8.83 all seasons / 9.64 excluding pre-BO2) keeps the ranking but puts it on a wins-like scale.
+  Rescaling by the average majors-per-season (shown in the site footer/methodology; it
+  shifts slightly as seasons are added) keeps the ranking but puts it on a wins-like scale.
+- **Ranks** are computed on exact fractions (not rounded display values); ties share the
+  minimum rank, competition-style.
 
 ## Rebuild the data
 
 Raw pulls from the wiki Cargo API are cached as JSON in the repo root. To regenerate `site/data.js`:
 ```bash
-python3 build_data.py          # reads major_events.json + player_event_wins.json + majors_per_game_results.json
+python3 build_data.py          # reads major_events.json + player_event_wins.json + champs_wins.json
 ```
-`era_adjusted_major_wins.csv` is a flat export of the leaderboard with per-season breakdowns.
+To refresh the cached JSON from the live wiki (e.g. after a drift alert):
+```bash
+python3 scripts/fetch_source.py               # re-pulls all four source JSON files
+python3 scripts/fetch_source.py --published   # prints the live top-50 as a PUBLISHED literal
+```
+Then update `PUBLISHED`/`ASOF` in `build_data.py` if the wiki list moved, re-run the build, and commit.
 
 ## Tests
 
@@ -77,11 +89,12 @@ snapshot). This script re-runs the wiki's own Cargo query against the live API a
 per-player Raw Wins, so it catches **source drift** (the wiki changed; our snapshot is stale).
 It runs **daily** via `.github/workflows/source-check.yml` — fails (and notifies) only on a real
 numeric mismatch, and skips quietly if the wiki is unreachable. On a mismatch, re-pull the data
-and update `PUBLISHED`.
+with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" above).
 
 ## Data files (repo root)
 - `player_event_wins.json` — every individual major win (player, event, game, date)
-- `major_events.json` — every major event (name, game, date, winner, type, prize, location)
-- `champs_wins.json` — Call of Duty World Championship wins per player (from the wiki's `{{CHATournaments}}` list, 2013+)
-- `majors_per_game_results.json` — majors per season (denominators)
-- `era_adjusted_major_wins.csv` — computed leaderboard export
+- `major_events.json` — every major event (name, game, date, winner, type, prize, location), including future-scheduled ones (used for in-progress season denominators; date-filtered for everything else)
+- `champs_wins.json` — Call of Duty World Championship wins per player (2013+)
+- `team_participation.json` — every team result row at majors (validates the MW 2019 structural denominator in tests)
+
+All four are refreshed by `scripts/fetch_source.py`.
