@@ -1,0 +1,18 @@
+# Python dependencies, by task. The data build (build_data.py) and the test
+# suite in tests/test_build_data.py are stdlib-only on purpose — pytest is the
+# only thing they need.
+pytest
+
+# The analysis pipeline (analysis/similarity.py, analysis/cluster_map.py,
+# analysis/path_features.py) additionally needs the scientific stack. These are
+# only required when REGENERATING site/similarity.js / site/clusters.js — the
+# site itself serves the committed artifacts. On a PEP 668 (externally managed)
+# Python, install into a venv:
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+#   .venv/bin/python analysis/similarity.py && .venv/bin/python analysis/cluster_map.py
+numpy
+scipy
+
+# Optional: analysis/similarity.py writes analysis/out/dendrogram.png when
+# matplotlib is importable, and skips it gracefully when not.
+# matplotlib

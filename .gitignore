@@ -13,3 +13,5 @@ __pycache__/
 /playwright/.cache/
 .vercel
 .env*.local
+.playwright-mcp/
+test-results/

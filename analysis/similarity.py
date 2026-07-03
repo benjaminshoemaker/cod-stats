@@ -14,7 +14,10 @@ On top of that distance:
   - ward / average linkage-> hierarchical dendrogram (the narrative view).
   - silhouette / bootstrap-> validation (is the structure real?).
 
-Only numpy + scipy required. Run `python analysis/similarity.py` for a report.
+Only numpy + scipy required (`pip install -r requirements.txt`; use a venv on
+PEP 668 Pythons). Run `python analysis/similarity.py` for a report — it also
+rewrites site/similarity.js, which tests/test_generated_artifacts.py checks
+against site/data.js so a stale regeneration can't ship silently.
 """
 from __future__ import annotations
 import json, os, re
@@ -24,6 +27,10 @@ from scipy.spatial.distance import squareform
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+
+# Co-win Jaccard above this = "basically teammates" — used everywhere a comp list
+# skips teammates (here, cluster_map.py, and mirrored in site/player.html's `mate`).
+TEAMMATE_COWIN_THR = 0.15
 
 
 # --------------------------------------------------------------------------- #
@@ -183,7 +190,7 @@ class FeatureSpace:
 # Comps
 # --------------------------------------------------------------------------- #
 def comps(fs: FeatureSpace, D, name, k=5, C=None,
-          exclude_teammates=False, teammate_thr=0.15):
+          exclude_teammates=False, teammate_thr=TEAMMATE_COWIN_THR):
     """Nearest-neighbour comps. If C (co-win matrix) is given, each comp carries
     its overlap; with exclude_teammates=True, comps whose overlap exceeds
     teammate_thr are skipped so you get the nearest player you DIDN'T win with."""
@@ -325,7 +332,7 @@ def emit_site(fs, D, C, players, k_solo=6):
             if j == i:
                 continue
             cw = float(C[i, j])
-            if solo and cw > 0.15:
+            if solo and cw > TEAMMATE_COWIN_THR:
                 continue
             out.append({"name": fs.names[j], "score": round(100 * (1 - D[i, j])),
                         "cowin": round(cw, 2)})
@@ -342,7 +349,9 @@ def emit_site(fs, D, C, players, k_solo=6):
             metrics[f] = {"v": None if np.isnan(v) else round(float(v), 2),
                           "p": None if np.isnan(p) else round(float(p))}
         players_out[name] = {
-            "debut": players[i].get("firstYear"),
+            # participation-based debut (first major ENTERED), matching the map
+            # and Signatures — not firstYear, which is the first WIN
+            "debut": players[i].get("firstPlayed"),
             "metrics": metrics,
             "solo": comps_list(i, True),
             "all": comps_list(i, False),
@@ -388,7 +397,7 @@ def main():
     print(f"  {', '.join(fs.feats)}\n")
 
     # ---- comps -------------------------------------------------------------
-    print("## Comps — nearest overall vs nearest NON-teammate (co-win < 0.15)\n")
+    print(f"## Comps — nearest overall vs nearest NON-teammate (co-win < {TEAMMATE_COWIN_THR})\n")
     print(f"  {'player':10s}   {'nearest overall (score, cw)':34s} nearest non-teammate")
     marquee = ["Crimsix", "Scump", "Simp", "aBeZy", "Cellium", "Karma",
                "Clayster", "FormaL", "Shotzzy", "Arcitys"]
