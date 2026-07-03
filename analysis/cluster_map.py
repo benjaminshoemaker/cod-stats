@@ -42,14 +42,8 @@ def mds_2d(D):
 
 
 def main():
-    players = S.load_players()
-    players, _ = S.merge_path_features(players)
-    reg = S.load_registry()
-    fs = S.FeatureSpace(players, reg)
-    D = fs.distance_matrix()
-    C = S.cowin_matrix(fs.names)
+    players, _, fs, D, C = S.build_space()
     names = fs.names
-    idx = {n: i for i, n in enumerate(names)}
     rec = {p["name"]: p for p in players}
 
     X, kept = mds_2d(D)
@@ -75,9 +69,7 @@ def main():
 
     def comps(i, k=4):
         out = []
-        for j in np.argsort(D[i]):
-            if j == i or C[i, j] > S.TEAMMATE_COWIN_THR:
-                continue
+        for j, _ in S.nearest(D, i, C, exclude_teammates=True):
             out.append({"name": names[j], "score": round(100 * (1 - D[i, j]))})
             if len(out) == k:
                 break

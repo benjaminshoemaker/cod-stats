@@ -20,7 +20,7 @@ rewrites site/similarity.js, which tests/test_generated_artifacts.py checks
 against site/data.js so a stale regeneration can't ship silently.
 """
 from __future__ import annotations
-import json, os, re
+import json, os
 import numpy as np
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import squareform
@@ -36,12 +36,11 @@ TEAMMATE_COWIN_THR = 0.15
 # --------------------------------------------------------------------------- #
 # Data loading
 # --------------------------------------------------------------------------- #
-def load_players(data_js=None):
-    """Parse the per-player resume records out of site/data.js."""
-    data_js = data_js or os.path.join(ROOT, "site", "data.js")
-    txt = open(data_js).read()
-    txt = txt[txt.index("=") + 1:].rstrip().rstrip(";")
-    return json.loads(txt)["leaderboard"]
+def load_players(data_json=None):
+    """Per-player resume records from site/data.json — the pure-JSON twin of
+    data.js that build_data.write() emits for non-browser consumers."""
+    data_json = data_json or os.path.join(ROOT, "site", "data.json")
+    return json.load(open(data_json))["leaderboard"]
 
 
 def load_registry(path=None):
@@ -189,20 +188,27 @@ class FeatureSpace:
 # --------------------------------------------------------------------------- #
 # Comps
 # --------------------------------------------------------------------------- #
+def nearest(D, i, C=None, exclude_teammates=False, teammate_thr=TEAMMATE_COWIN_THR):
+    """Yield (index, cowin) over the players nearest to i — the one walk order
+    every comp list (this report, similarity.js, clusters.js) shares, so the
+    self-skip and teammate-skip rules can't drift between consumers."""
+    for j in np.argsort(D[i]):
+        if j == i:
+            continue
+        cw = float(C[i, j]) if C is not None else None
+        if exclude_teammates and cw is not None and cw > teammate_thr:
+            continue
+        yield int(j), cw
+
+
 def comps(fs: FeatureSpace, D, name, k=5, C=None,
           exclude_teammates=False, teammate_thr=TEAMMATE_COWIN_THR):
     """Nearest-neighbour comps. If C (co-win matrix) is given, each comp carries
     its overlap; with exclude_teammates=True, comps whose overlap exceeds
     teammate_thr are skipped so you get the nearest player you DIDN'T win with."""
     i = fs.names.index(name)
-    order = np.argsort(D[i])
     out = []
-    for j in order:
-        if j == i:
-            continue
-        cw = float(C[i, j]) if C is not None else None
-        if exclude_teammates and cw is not None and cw > teammate_thr:
-            continue
+    for j, cw in nearest(D, i, C, exclude_teammates, teammate_thr):
         rec = {
             "name": fs.names[j],
             "score": round(100 * (1 - D[i, j]), 1),
@@ -227,7 +233,6 @@ def pam(D, k, max_iter=100):
         gains = np.maximum(0, nearest[:, None] - D).sum(0)
         gains[medoids] = -1
         medoids.append(int(np.argmax(gains)))
-    medoids = list(medoids)
     for _ in range(max_iter):
         labels = np.argmin(D[:, medoids], axis=1)
         cur = D[np.arange(n), [medoids[l] for l in labels]].sum()
@@ -324,16 +329,10 @@ def emit_site(fs, D, C, players, k_solo=6):
         order = col[ok].argsort(); r = np.empty(ok.sum()); r[order] = np.arange(ok.sum())
         pv = np.full(n, np.nan); pv[np.where(ok)[0]] = r / (ok.sum() - 1) * 100
         pct[:, j] = pv
-    fidx = {f: j for j, f in enumerate(fs.feats)}
 
     def comps_list(i, solo):
         out = []
-        for j in np.argsort(D[i]):
-            if j == i:
-                continue
-            cw = float(C[i, j])
-            if solo and cw > TEAMMATE_COWIN_THR:
-                continue
+        for j, cw in nearest(D, i, C, exclude_teammates=solo):
             out.append({"name": fs.names[j], "score": round(100 * (1 - D[i, j])),
                         "cowin": round(cw, 2)})
             if len(out) == k_solo:
@@ -343,8 +342,7 @@ def emit_site(fs, D, C, players, k_solo=6):
     players_out = {}
     for i, name in enumerate(fs.names):
         metrics = {}
-        for f in fs.feats:
-            j = fidx[f]
+        for j, f in enumerate(fs.feats):
             v = raw[i, j]; p = pct[i, j]
             metrics[f] = {"v": None if np.isnan(v) else round(float(v), 2),
                           "p": None if np.isnan(p) else round(float(p))}
@@ -356,7 +354,11 @@ def emit_site(fs, D, C, players, k_solo=6):
             "solo": comps_list(i, True),
             "all": comps_list(i, False),
         }
-    payload = {"config": {"groups": SITE_GROUPS}, "players": players_out}
+    # teammateThr rides along so player.html's "teammate" pill uses the same
+    # cutoff the solo lists were built with, instead of hardcoding its own
+    payload = {"config": {"groups": SITE_GROUPS,
+                          "teammateThr": TEAMMATE_COWIN_THR},
+               "players": players_out}
     path = os.path.join(ROOT, "site", "similarity.js")
     with open(path, "w") as fh:
         fh.write("window.SIM=" + json.dumps(payload, separators=(",", ":")) + ";\n")
@@ -381,16 +383,22 @@ def describe_cluster(fs, members):
     return ", ".join(bits)
 
 
+def build_space():
+    """The one shared recipe for constructing the feature space plus its
+    distance and co-win matrices. Both entry points (this report and
+    cluster_map.py) go through it, so similarity.js and clusters.js can never
+    be built from differently-assembled inputs."""
+    players = load_players()
+    players, hit = merge_path_features(players)
+    fs = FeatureSpace(players, load_registry())
+    return players, hit, fs, fs.distance_matrix(), cowin_matrix(fs.names)
+
+
 # --------------------------------------------------------------------------- #
 # Report
 # --------------------------------------------------------------------------- #
 def main():
-    players = load_players()
-    players, hit = merge_path_features(players)
-    reg = load_registry()
-    fs = FeatureSpace(players, reg)
-    D = fs.distance_matrix()
-    C = cowin_matrix(fs.names)
+    players, hit, fs, D, C = build_space()
     n = len(fs.names)
     print(f"# Player-similarity engine — {n} players, {len(fs.feats)} features "
           f"(path features merged for {hit}/{n})")

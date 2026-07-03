@@ -27,19 +27,12 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
 import build_data
 
-NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
-
-
-def _played(date):
-    return (date or "0000") <= build_data.ASOF
-
 
 def _keep(row):
-    return (
-        row["Game"] not in build_data.DROP_GAMES
-        and row["Event"] not in build_data.DROP_EVENTS
-        and _played(row.get("Date"))
-    )
+    """build_data's console-major universe, restricted to majors already played
+    — the same rule the win data is built on, composed the same way
+    (build_data.index_participation), so the two pipelines can't fork."""
+    return build_data._keep(row) and build_data._played(row.get("Date"))
 
 
 def _num(place_number, place):
@@ -70,7 +63,7 @@ def derive(participation_json=None, events_json=None):
             continue
         if r.get("Event") not in counted_events:
             continue
-        if r.get("Place") in NONPLAY:
+        if r.get("Place") in build_data.NONPLAY:
             continue
         byp[build_data.mkey(r["Player"])].append(r)
 

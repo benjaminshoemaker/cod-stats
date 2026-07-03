@@ -12,16 +12,15 @@ Run: python3 analysis/insights.py   (writes analysis/out/insights.json + prints)
 """
 from __future__ import annotations
 import json, os, datetime as dt
-from collections import Counter, defaultdict
+from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 
 def load():
-    txt = open(os.path.join(ROOT, "site", "data.js")).read()
-    txt = txt[txt.index("=") + 1:].rstrip().rstrip(";")
-    d = json.loads(txt)
+    # site/data.json is the pure-JSON twin of data.js that build_data emits
+    d = json.load(open(os.path.join(ROOT, "site", "data.json")))
     me = json.load(open(os.path.join(ROOT, "major_events.json")))
     return d, me
 
@@ -43,8 +42,6 @@ def build():
     meta = d["meta"]
     players = d["players"]          # dict name -> detail
     lb = {p["name"]: p for p in d["leaderboard"]}
-    seasonOrder = meta["seasonOrder"]
-    sidx = {g: i for i, g in enumerate(seasonOrder)}
 
     # event metadata index (by exact event name)
     ev = {}
@@ -79,19 +76,26 @@ def build():
         offline = sum(1 for w in wins if w["type"] and "Offline" in w["type"])
         online = sum(1 for w in wins if w["type"] == "Online")
         regions = Counter(w["region"] for w in wins if w["region"])
-        intl = sum(v for k, v in regions.items() if k == "International")
+        intl = regions.get("International", 0)
         pre = sum(1 for w in wins if w["pre_bo2"])
 
-        # career timing: mean fractional position of wins in [first_date,last_date]
+        lbp = lb.get(name, {})
+
+        # career timing: mean fractional position of wins across the PARTICIPATION
+        # span (first major entered -> last, won or not) — the same definition the
+        # Signatures page uses. First-win-to-last-win hid late bloomers who
+        # competed for years before breaking through.
         frontload = None
         career_days = None
         longest_drought = None
+        p0, p1 = lbp.get("firstPlayedDate"), lbp.get("lastPlayedDate")
         if nwin >= 2:
-            d0, d1 = wins[0]["date"], wins[-1]["date"]
-            span_days = days(d0, d1)
-            career_days = span_days
-            if span_days > 0:
-                frontload = sum(days(d0, w["date"]) / span_days for w in wins) / nwin
+            if p0 and p1:
+                span_days = days(p0, p1)
+                career_days = span_days
+                if span_days > 0:
+                    frontload = sum(min(max(days(p0, w["date"]) / span_days, 0), 1)
+                                    for w in wins) / nwin
             gaps = [days(wins[i]["date"], wins[i + 1]["date"]) for i in range(nwin - 1)]
             longest_drought = max(gaps) if gaps else 0
 
@@ -104,19 +108,23 @@ def build():
         ring_years = sorted(int(r["year"]) for r in ring_events)
         ring_span = (ring_years[-1] - ring_years[0]) if len(ring_years) >= 2 else 0
 
-        lbp = lb.get(name, {})
         rows.append({
             "name": name,
             "raw": raw, "adj": adj, "champs": champs, "peak": peak,
             "titles": titles, "span": span, "first": first, "last": last,
             "nwin": nwin,
+            # participation-based career (first major entered -> last), the
+            # site's canonical career definition since the Signatures rework
+            "career_span": lbp.get("careerSpan"),
+            "firstPlayed": lbp.get("firstPlayed"), "lastPlayed": lbp.get("lastPlayed"),
             "adjRank": lbp.get("adjRank"), "rawRank": lbp.get("rawRank"),
             "delta": lbp.get("delta"),
             "adjPost": p["adj_post"],
             # ratios
             "ring_rate": champs / adj if adj else 0,          # rings per adj win
             "peak_share": peak / adj if adj else 0,           # one-season concentration
-            "density": (adj / span) if span >= 1 else None,   # adj wins per active yr
+            # adj wins per year COMPETING (participation span, like Signatures)
+            "density": (adj / lbp["careerSpan"]) if lbp.get("careerSpan", 0) >= 1 else None,
             "era_infl": raw / adj if adj else 0,              # raw/adj deflation
             "pre_share": pre / nwin if nwin else 0,
             "offline_share": offline / nwin if nwin else 0,
@@ -192,10 +200,10 @@ def main():
             top(rows, "pre_share", filt=lambda r: r["nwin"] >= 3,
                 fmt=lambda r: f"{r['pre_share']*100:.0f}%  ({r['nwin']} wins, debut {r['first']})"))
 
-    # 8. Density — adj wins per active year
-    section("Compressed dominance — era-adj wins per active year (adj>=4, span>=2)",
-            top(rows, "density", filt=lambda r: r["adj"] >= 4 and r["span"] >= 2,
-                fmt=lambda r: f"{r['density']:.2f}/yr  ({r['adj']:.1f} adj / {r['span']}y)"))
+    # 8. Density — adj wins per year competing (participation span)
+    section("Compressed dominance — era-adj wins per year competing (adj>=4, career>=2y)",
+            top(rows, "density", filt=lambda r: r["adj"] >= 4 and (r["career_span"] or 0) >= 2,
+                fmt=lambda r: f"{r['density']:.2f}/yr  ({r['adj']:.1f} adj / {r['career_span']}y)"))
 
     # 9. Versatility across titles
     section("Journeymen — won across the most distinct CoD titles",
@@ -218,13 +226,13 @@ def main():
             top(rows, "n_regions", filt=lambda r: r["nwin"] >= 4,
                 fmt=lambda r: f"{r['n_regions']} regions, {r['intl_share']*100:.0f}% international ({r['nwin']} wins)"))
 
-    # 12. Career timing
+    # 12. Career timing (wins placed on the participation span, like Signatures)
     section("Late bloomers — most back-loaded win timing (nwin>=4, span present)",
             top(rows, "frontload", filt=lambda r: r["nwin"] >= 4 and r["frontload"] is not None,
-                fmt=lambda r: f"{r['frontload']*100:.0f}% (1=all-late)  {r['nwin']} wins {r['first']}-{r['last']}"))
+                fmt=lambda r: f"{r['frontload']*100:.0f}% (1=all-late)  {r['nwin']} wins {r['firstPlayed']}-{r['lastPlayed']}"))
     section("Prodigies — most front-loaded win timing (nwin>=4)",
             top(rows, "frontload", reverse=False, filt=lambda r: r["nwin"] >= 4 and r["frontload"] is not None,
-                fmt=lambda r: f"{r['frontload']*100:.0f}% (0=all-early)  {r['nwin']} wins {r['first']}-{r['last']}"))
+                fmt=lambda r: f"{r['frontload']*100:.0f}% (0=all-early)  {r['nwin']} wins {r['firstPlayed']}-{r['lastPlayed']}"))
 
     # 13. Droughts & comebacks
     section("Longest major droughts between wins (days), nwin>=4",
@@ -236,10 +244,10 @@ def main():
             top(rows, "best_year_n",
                 fmt=lambda r: f"{r['best_year_n']} majors in {r['best_year']}  (career {r['raw']} raw)"))
 
-    # 15. Longevity bridges
-    section("Longevity — longest span first->last major (days), any nwin",
+    # 15. Longevity bridges (participation span: first major entered -> last)
+    section("Longevity — longest span first->last major entered (days), any nwin",
             top(rows, "career_days", filt=lambda r: r["career_days"] is not None,
-                fmt=lambda r: f"{r['career_days']/365:.1f}y  {r['first']}-{r['last']} ({r['raw']} raw)"))
+                fmt=lambda r: f"{r['career_days']/365:.1f}y  {r['firstPlayed']}-{r['lastPlayed']} ({r['raw']} raw)"))
 
     # 16. Ring longevity
     section("Ring longevity — most years between first & last World Champ",
