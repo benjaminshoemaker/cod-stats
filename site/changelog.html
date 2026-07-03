@@ -39,6 +39,21 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-02', tag:'New', title:'Filter the leaderboard by era',
+   body:`A new <strong>Eras</strong> control lets you re-rank on any slice of Call of Duty history — presets for the
+   <strong>CDL era</strong>, the <strong>MLG–CWL era (BO2–BO4)</strong>, Post-BO2 or Pre-BO2, plus per-title checkboxes
+   for a custom set. The numbers fully <em>recompute</em> for the seasons you pick (adjusted wins, ranks, peak, longevity)
+   rather than just hiding rows — so a CDL-era view is led by <strong>aBeZy and Simp</strong>, not the all-time win
+   compilers. The old "Exclude pre-BO2" toggle is now simply the "Post-BO2" preset, and your selection is saved in the
+   URL so you can share an exact era view. <a href="methodology.html">How the weighting works →</a>`},
+  {date:'2026-07-02', tag:'New', title:'Show or hide columns',
+   body:`A <strong>Columns</strong> menu lets you hide any columns you don't need; the table resizes to fit what's left.
+   Your choice is remembered and shareable via the URL.`},
+  {date:'2026-07-02', tag:'Changed', title:'Documented the Scump major-count discrepancy',
+   body:`Some trackers list Scump at 30 major wins vs <strong>28</strong> here. The methodology page and Scump's player
+   page now explain why: we follow the CoD Esports Wiki's Major/Premier classification, while sources like breakingpoint
+   count a few sub-major or legacy events — and the exact events vary by source, so we defer to the wiki rather than
+   hand-pick tournaments. <a href="methodology.html#data-source">Data sources →</a>`},
   {date:'2026-07-02', tag:'New', title:'Leaderboard expanded to every player with 2+ major wins',
    body:`The board now covers all <strong>91</strong> players with at least two console major wins, up from the top 50.
    Every added player is verified against the wiki's published totals the same way, and gets the full treatment —

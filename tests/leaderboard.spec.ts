@@ -25,25 +25,113 @@ test.describe('leaderboard', () => {
     expect(pos).toBe('sticky');
   });
 
-  test('URL state (sort, exclude, search) round-trips on load', async ({ page }) => {
-    await page.goto('/index.html?excl=1&sort=raw&dir=desc&q=s');
-    await expect(page.locator('#excl')).toBeChecked();
+  test('URL state (sort, eras, search) round-trips on load', async ({ page }) => {
+    await page.goto('/index.html?eras=post&sort=raw&dir=desc&q=s');
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('Post-BO2');
     await expect(page.locator('#search')).toHaveValue('s');
     // only players containing "s" remain
     const names = await page.$$eval('#table .tabulator-cell[tabulator-field="name"]', els => els.map(e => e.textContent || ''));
     expect(names.length).toBeGreaterThan(0);
     for (const n of names) expect(n.toLowerCase()).toContain('s');
   });
+});
 
-  test('toggling exclude pre-BO2 updates the URL', async ({ page }) => {
+test.describe('era filter', () => {
+  test('recompute reproduces the baked leaderboard exactly (All & Post-BO2 oracle)', async ({ page }) => {
     await page.goto('/index.html');
-    await page.locator('#excl').check();
-    await expect(page).toHaveURL(/excl=1/);
+    const bad = await page.evaluate(() => {
+      const D = (window as any).APP_DATA;
+      const cr = (window as any).computeRows as (s: Set<string>) => any[];
+      const all = new Set<string>(D.meta.seasonOrder);
+      const post = new Set<string>(D.meta.seasonOrder.filter((g: string) => !D.meta.preBo2.includes(g)));
+      const byAll = Object.fromEntries(cr(all).map((r: any) => [r.name, r]));
+      const byPost = Object.fromEntries(cr(post).map((r: any) => [r.name, r]));
+      const out: string[] = [];
+      for (const lb of D.leaderboard) {
+        const a = byAll[lb.name], p = byPost[lb.name];
+        if (!a) { out.push(`${lb.name} missing from All`); continue; }
+        if (a.adjRank !== lb.adjRank) out.push(`${lb.name} adjRank`);
+        if (a.rawRank !== lb.rawRank) out.push(`${lb.name} rawRank`);
+        if (Math.abs(a.adjusted - lb.adjAll) > 0.011) out.push(`${lb.name} adjAll`);
+        if (a.champs !== lb.champs) out.push(`${lb.name} champs`);
+        // pre-BO2-only players are (correctly) dropped from the post view; ranks of
+        // survivors are unaffected since dropped players have share 0.
+        if (p) {
+          if (p.adjRank !== lb.postRank) out.push(`${lb.name} postRank`);
+          if (Math.abs(p.adjusted - lb.adjPost) > 0.011) out.push(`${lb.name} adjPost`);
+        } else if (lb.adjPost > 0.011) {
+          out.push(`${lb.name} dropped from post but adjPost=${lb.adjPost}`);
+        }
+      }
+      return out;
+    });
+    expect(bad).toEqual([]);
+  });
+
+  test('CDL preset recomputes ranks and round-trips via URL', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.locator('.eramenu .colmenu-btn').click();
+    await page.locator('.era-preset[data-preset="cdl"]').click();
+    await expect(page).toHaveURL(/eras=cdl/);
+    // CDL-era leader is aBeZy (career #3), i.e. a genuine recompute, not row-hiding
+    const first = page.locator('#table .tabulator-row').first();
+    await expect(first.locator('[tabulator-field="name"]')).toHaveText('aBeZy');
+    // reload from the URL restores the CDL selection
+    await page.goto('/index.html?eras=cdl');
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('CDL');
+  });
+
+  test('per-title checkboxes produce a custom (t:) selection', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.locator('.eramenu .colmenu-btn').click();
+    // uncheck one title from the default "all" set → custom selection (colon is URL-encoded)
+    await page.locator('.eramenu-panel input[data-title]').first().uncheck();
+    await expect(page).toHaveURL(/eras=t(:|%3A)/);
+  });
+});
+
+test.describe('column selector', () => {
+  test('hiding a column updates the URL and the header', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="champs"]')).toBeVisible();
+    await page.locator('#colmenu .colmenu-btn').click();
+    await page.locator('.colmenu-panel input[data-field="champs"]').uncheck();
+    await expect(page).toHaveURL(/hide=champs/);
+    await expect(page.locator('#table .tabulator-col[tabulator-field="champs"]')).toBeHidden();
+  });
+
+  test('hidden columns restore from the URL on load', async ({ page }) => {
+    await page.goto('/index.html?hide=champs,peak');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="champs"]')).toBeHidden();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="peak"]')).toBeHidden();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="adjusted"]')).toBeVisible();
+    await page.locator('#colmenu .colmenu-btn').click();
+    await expect(page.locator('.colmenu-panel input[data-field="champs"]')).not.toBeChecked();
+    await expect(page.locator('.colmenu-panel input[data-field="adjusted"]')).toBeChecked();
+  });
+
+  test('Player column stays fixed (not offered in the menu)', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.locator('#colmenu .colmenu-btn').click();
+    await expect(page.locator('.colmenu-panel input[data-field="name"]')).toHaveCount(0);
+  });
+
+  test('hiding columns narrows the table (resizes, no ballooning column)', async ({ page }) => {
+    await page.goto('/index.html');
+    const width = () => page.evaluate(() =>
+      (document.querySelector('#table .tabulator-table') as HTMLElement).offsetWidth);
+    const full = await width();
+    await page.locator('#colmenu .colmenu-btn').click();
+    for (const f of ['rawRank', 'delta', 'winsChange', 'peak', 'eras']) {
+      await page.locator(`.colmenu-panel input[data-field="${f}"]`).uncheck();
+    }
+    const reduced = await width();
+    expect(reduced).toBeLessThan(full);   // table shrinks to its remaining columns
   });
 });
 
 test.describe('desktop layout', () => {
-  test('table fills its container (no dead whitespace)', async ({ page }) => {
+  test('table sizes to content and never overflows the container', async ({ page }) => {
     test.skip(test.info().project.name !== 'desktop', 'desktop only');
     await page.goto('/index.html');
     const { inner, holder } = await page.evaluate(() => {
@@ -51,7 +139,9 @@ test.describe('desktop layout', () => {
       const h = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
       return { inner: t.offsetWidth, holder: h.clientWidth };
     });
-    expect(inner).toBeGreaterThanOrEqual(holder - 4);
+    // fitData: the table is as wide as its columns, and fits within the container
+    expect(inner).toBeLessThanOrEqual(holder + 2);
+    expect(inner).toBeGreaterThan(holder * 0.6);
   });
 });
 

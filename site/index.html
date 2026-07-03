@@ -33,8 +33,8 @@
 
   <div class="controls">
     <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off">
-    <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
-      <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
+    <div class="colmenu eramenu" id="eramenu"></div>
+    <div class="colmenu" id="colmenu"></div>
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
@@ -54,24 +54,71 @@
 <script>
 mountNav('index.html');
 
-function viewRows(excl){
-  return D.leaderboard.map(r=>{
-    const adjusted = excl? r.adjPost : r.adjAll;
-    const pkInfo = excl? r.peakInfoPost : r.peakInfoAll;
-    return {
-      name:r.name, raw:r.raw, rawRank:r.rawRank, champs:r.champs,
-      adjRank: excl? r.postRank : r.adjRank,
-      adjusted,
-      peak: (pkInfo && pkInfo.majors) ? pkInfo.wins/pkInfo.majors : 0,   // best season's share (sort key)
-      peakInfo: pkInfo,                                  // {wins, majors, season} for the X/Y display
-      eras: excl? r.titlesPost : r.titlesAll,           // distinct CoD titles with a major (longevity)
-      firstYear: excl? r.firstYearPost : r.firstYear,   // career span within the current mode
-      lastYear:  excl? r.lastYearPost  : r.lastYear,
-      winsChange: Math.round((adjusted - r.raw)*10)/10,   // adjusted minus raw wins
-      delta: excl? r.deltaPost : r.delta,
-    };
-  });
+// ---- era/title definitions -------------------------------------------------
+const ORDER = D.meta.seasonOrder;                       // titles, oldest→newest
+const PRE = new Set(D.meta.preBo2);                     // the 4 pre-BO2 titles
+const CDL_START = ORDER.indexOf('Modern Warfare');      // 2020 = first CDL season
+const eraOf = g => PRE.has(g) ? 'prebo2' : (ORDER.indexOf(g) >= CDL_START ? 'cdl' : 'mlgcwl');
+const ERAS = [                                          // display groups, oldest→newest
+  {key:'prebo2', label:'Pre-BO2 (open era)'},
+  {key:'mlgcwl', label:'MLG–CWL (BO2–BO4)'},
+  {key:'cdl',    label:'CDL era'},
+];
+const PRESETS = {                                       // named multi-selections
+  all:    ORDER.slice(),
+  post:   ORDER.filter(g=>!PRE.has(g)),
+  prebo2: ORDER.filter(g=>eraOf(g)==='prebo2'),
+  mlgcwl: ORDER.filter(g=>eraOf(g)==='mlgcwl'),
+  cdl:    ORDER.filter(g=>eraOf(g)==='cdl'),
+};
+const DENOM = {}; D.games.forEach(g=>{ DENOM[g.game]=g.denom; });
+
+// ---- recompute engine ------------------------------------------------------
+// Everything the leaderboard shows is defined relative to the *selected* seasons,
+// so a filter is a recompute, not a row-hide. This reproduces build_data.py's math
+// (exact-rational shares, competition ranks) for any subset of titles. Guarded by
+// a test that computeRows(all) / computeRows(post-BO2) match the baked leaderboard.
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
+function lcm(a,b){ return a/gcd(a,b)*b; }
+
+function computeRows(selected){          // selected: Set of title names
+  const games = ORDER.filter(g=>selected.has(g));
+  if(!games.length) return [];
+  const MBAR = games.reduce((a,g)=>a+DENOM[g],0) / games.length;
+  const L = games.reduce((acc,g)=>lcm(acc, DENOM[g]), 1);   // common denom for exact shares
+  const rows = [];
+  for(const name in D.players){
+    const p = D.players[name];
+    const sel = p.seasons.filter(s=>selected.has(s.game));  // seasons this player won in, within the set
+    const raw = sel.reduce((a,s)=>a+s.wins,0);
+    if(raw === 0) continue;                                 // no wins in these eras → off the board
+    const numer = sel.reduce((a,s)=>a + s.wins*(L/s.majors), 0);   // s.majors === DENOM[s.game]
+    const adjusted = Math.round(numer/L * MBAR * 100)/100;
+    let best = sel[0];                                      // peak = best single season's share (exact)
+    for(const s of sel){ if(s.wins*best.majors > best.wins*s.majors) best = s; }
+    const yrs = [];
+    for(const s of sel) for(const e of s.events) if(e.date) yrs.push(+e.date.slice(0,4));
+    const won = new Set(); sel.forEach(s=>s.events.forEach(e=>won.add(e.event)));
+    rows.push({
+      name, raw, _numer: numer, adjusted,
+      peak: best.wins/best.majors,
+      peakInfo: {adj: Math.round(best.wins/best.majors*MBAR*100)/100, season: best.game, wins: best.wins, majors: best.majors},
+      eras: sel.length,
+      firstYear: yrs.length?Math.min(...yrs):null,
+      lastYear:  yrs.length?Math.max(...yrs):null,
+      champs: (p.champ_events||[]).filter(c=>won.has(c.event)).length,
+    });
+  }
+  // competition ranks (1 + strictly-better), exact for adj via integer numerators
+  for(const r of rows){
+    r.adjRank = 1 + rows.filter(o=>o._numer > r._numer).length;
+    r.rawRank = 1 + rows.filter(o=>o.raw > r.raw).length;
+    r.delta = r.rawRank - r.adjRank;
+    r.winsChange = Math.round((r.adjusted - r.raw)*10)/10;
+  }
+  return rows;
 }
+window.computeRows = computeRows;   // exposed for the oracle test
 
 // arrow/pill formatter shared by Rank change & Wins change (green up / red down)
 function changePill(d, decimals){
@@ -82,15 +129,49 @@ function changePill(d, decimals){
 }
 
 const searchInput = document.getElementById("search");
-const exclBox = document.getElementById("excl");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
 const VALID = new Set(['adjRank','name','adjusted','peak','eras','raw','winsChange','rawRank','delta','champs']);
-const startExcl = params.has('excl') ? params.get('excl')==='1' : (getPref('excl')==='1');
 const startQ    = params.get('q') || '';
+
+// era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
+// or "t:<indices>" for a custom set. URL (?eras=) → saved pref → default "all".
+function sameSet(set, arr){ return set.size===arr.length && arr.every(g=>set.has(g)); }
+function selectionToken(sel){
+  for(const k of ['all','post','prebo2','mlgcwl','cdl']) if(sameSet(sel, PRESETS[k])) return k;
+  return 't:' + ORDER.map((g,i)=>sel.has(g)?i:-1).filter(i=>i>=0).join('-');
+}
+function parseSelection(token){
+  if(!token) return null;
+  if(PRESETS[token]) return new Set(PRESETS[token]);
+  if(token.startsWith('t:')){
+    const gs = token.slice(2).split('-').map(i=>ORDER[+i]).filter(Boolean);
+    return gs.length ? new Set(gs) : null;
+  }
+  return null;
+}
+let selected = parseSelection(params.get('eras') || getPref('eras')) || new Set(PRESETS.all);
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
+
+// Column selector: these are toggleable; "Player" stays fixed as the row label.
+// Hidden columns are read from the URL (?hide=field,field) or saved prefs, default none.
+const COLS = [
+  {field:'adjRank',   label:'Rank'},
+  {field:'adjusted',  label:'Adjusted'},
+  {field:'peak',      label:'Peak'},
+  {field:'eras',      label:'Eras'},
+  {field:'rawRank',   label:'Raw rank'},
+  {field:'delta',     label:'Rank Δ'},
+  {field:'raw',       label:'Raw wins'},
+  {field:'winsChange',label:'Wins Δ'},
+  {field:'champs',    label:'Champs'},
+];
+const COL_FIELDS = new Set(COLS.map(c=>c.field));
+const startHide = new Set(
+  (params.has('hide') ? params.get('hide') : (getPref('hideCols')||''))
+    .split(',').filter(f=>COL_FIELDS.has(f)));
 
 // On phones, keep every column reachable via horizontal scroll instead of hiding them.
 const mq = window.matchMedia('(max-width: 760px)');
@@ -103,12 +184,7 @@ const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">$
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
-const table = new Tabulator("#table",{
-  data: viewRows(startExcl),
-  layout: M ? "fitData" : "fitColumns",
-  placeholder:"No players match your search.",
-  initialSort:[{column:startSort,dir:startDir}],
-  columns:[
+const columns = [
     {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
@@ -137,7 +213,16 @@ const table = new Tabulator("#table",{
     {title:"Champs", field:"champs", width:M?96:106, minWidth:M?96:106, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
-  ],
+];
+// apply saved/URL column visibility before first render (no flicker)
+columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
+
+const table = new Tabulator("#table",{
+  data: computeRows(selected),
+  layout: "fitData",   // size to content so hiding columns narrows the table (vs. one column ballooning)
+  placeholder:"No players match your search.",
+  initialSort:[{column:startSort,dir:startDir}],
+  columns,
 });
 
 // ---- write current state into the URL so the view is shareable ----
@@ -145,9 +230,14 @@ function syncURL(){
   const p = new URLSearchParams();
   const s = table.getSorters()[0];
   if(s && !(s.field==='adjRank' && s.dir==='asc')){ p.set('sort',s.field); p.set('dir',s.dir); }
-  if(exclBox.checked) p.set('excl','1');
+  const token = selectionToken(selected);
+  if(token !== 'all') p.set('eras', token);
+  setPref('eras', token);
   const q = searchInput.value.trim();
   if(q) p.set('q', q);
+  const hidden = COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field);
+  if(hidden.length) p.set('hide', hidden.join(','));
+  setPref('hideCols', hidden.join(','));
   const qs = p.toString();
   history.replaceState(null,'', qs ? ('?'+qs) : location.pathname);
 }
@@ -162,6 +252,8 @@ table.on("tableBuilt",()=>{
   });
   // apply search from URL
   if(startQ){ searchInput.value = startQ; table.setFilter("name","like",startQ); }
+  // column show/hide menu (reflects the visibility already applied to `columns`)
+  mountColumnMenu(table, COLS, syncURL);
 });
 table.on("dataSorted",()=>syncURL());
 
@@ -172,21 +264,72 @@ searchInput.addEventListener("input",e=>{
 });
 
 const note=document.getElementById("modenote");
-function setNote(excl){
-  note.innerHTML = excl
-    ? `Mode: <strong>excluding pre-BO2</strong>. Adjusted = season-share &times; ${D.meta.mbarPost} (avg majors across the ${D.meta.consoleSeasons-D.meta.preBo2.length} post-BO2 seasons).`
-    : `Mode: <strong>all seasons</strong>. Adjusted = season-share &times; ${D.meta.mbarAll} (avg majors across all ${D.meta.consoleSeasons} seasons).`;
+const PRESET_LABEL={all:'all seasons',post:'post-BO2 seasons',prebo2:'pre-BO2 seasons',mlgcwl:'the MLG–CWL era (BO2–BO4)',cdl:'the CDL era'};
+function setNote(sel){
+  const games = ORDER.filter(g=>sel.has(g));
+  const mbar = games.reduce((a,g)=>a+DENOM[g],0)/games.length;
+  const what = PRESET_LABEL[selectionToken(sel)] || `${games.length} selected titles`;
+  note.innerHTML = `Showing <strong>${esc(what)}</strong>. Adjusted = season-share &times; ${mbar.toFixed(2)} `
+    + `(avg majors across the ${games.length} selected ${games.length===1?'season':'seasons'}).`;
 }
-setNote(startExcl);
-mountExclToggle(excl=>{
-  // replaceData preserves the current sort on its own; re-sorting manually in a
-  // .then() re-ran Tabulator's pipeline against a half-built state and threw
-  // (COD-STATS-5), which in turn kicked off the empty-table resize loop
-  // (COD-STATS-4). The .catch keeps any rejection from going unhandled.
-  table.replaceData(viewRows(excl)).catch(()=>{});
-  setNote(excl);
+
+// "Eras" dropdown: era-preset buttons + per-title checkboxes. Recomputes the whole
+// board on change (see computeRows). Reuses the .colmenu dropdown chrome.
+function mountEraMenu(initial, onChange){
+  const host = document.getElementById('eramenu');
+  const btn = document.createElement('button');
+  btn.type='button'; btn.className='colmenu-btn';
+  btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false');
+  const panel = document.createElement('div');
+  panel.className='colmenu-panel eramenu-panel'; panel.hidden=true; panel.setAttribute('role','menu');
+
+  const presetBtns=[['all','All'],['post','Post-BO2'],['prebo2','Pre-BO2'],['mlgcwl','MLG–CWL'],['cdl','CDL']];
+  const groups = ERAS.map(er=>{
+    const items = ORDER.filter(g=>eraOf(g)===er.key).map(g=>
+      `<label class="colmenu-item"><input type="checkbox" data-title="${ORDER.indexOf(g)}"> ${esc(g)}</label>`).join('');
+    return `<div class="era-group"><div class="era-group-h">${esc(er.label)}</div>${items}</div>`;
+  }).join('');
+  panel.innerHTML = `<div class="era-presets">${presetBtns.map(([k,l])=>
+      `<button type="button" class="era-preset" data-preset="${k}">${esc(l)}</button>`).join('')}`
+    + `<button type="button" class="era-preset era-clear" data-action="clear">Clear</button></div>`
+    + `<div class="era-groups">${groups}</div>`;
+  host.append(btn, panel);
+
+  const boxes=()=>Array.from(panel.querySelectorAll('input[data-title]'));
+  const currentSet=()=>{ const s=new Set(); boxes().forEach(b=>{ if(b.checked) s.add(ORDER[+b.dataset.title]); }); return s; };
+  const syncChecks=sel=>boxes().forEach(b=>{ b.checked=sel.has(ORDER[+b.dataset.title]); });
+  const label={all:'All',post:'Post-BO2',prebo2:'Pre-BO2',mlgcwl:'MLG–CWL',cdl:'CDL'};
+  const updateLabel=sel=>{ const t = sel.size===0 ? 'none' : (label[selectionToken(sel)]||sel.size+' titles');
+    btn.innerHTML=`Eras: ${esc(t)} <span aria-hidden="true">▾</span>`; };
+
+  syncChecks(initial); updateLabel(initial);
+  const close=()=>{ panel.hidden=true; btn.setAttribute('aria-expanded','false'); };
+  const open =()=>{ panel.hidden=false; btn.setAttribute('aria-expanded','true'); };
+  btn.addEventListener('click', e=>{ e.stopPropagation(); panel.hidden?open():close(); });
+  panel.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(e.target.dataset.action==='clear'){    // uncheck all to build a set from scratch
+      boxes().forEach(b=>b.checked=false); updateLabel(new Set()); return;
+    }
+    const k=e.target.dataset.preset; if(!k) return;
+    const sel=new Set(PRESETS[k]); syncChecks(sel); updateLabel(sel); onChange(sel);
+  });
+  panel.addEventListener('change', e=>{
+    if(!e.target.dataset.title) return;
+    const sel=currentSet(); updateLabel(sel);
+    if(sel.size>0) onChange(sel);   // 0 selected = mid-build; wait for a pick before recomputing
+  });
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+}
+
+setNote(selected);
+mountEraMenu(selected, sel=>{
+  selected = sel;
+  table.replaceData(computeRows(selected)).catch(()=>{});   // .catch: see COD-STATS-4/5
+  setNote(selected);
   syncURL();
-}, startExcl);
+});
 
 mountFoot();
 </script>

@@ -98,6 +98,31 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .toggle{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;cursor:pointer;user-select:none;
   background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem}
 .toggle input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.colmenu{position:relative}
+.colmenu-btn{font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink);
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem}
+.colmenu-btn:hover{background:var(--panel-2)}
+.colmenu-panel{position:absolute;top:calc(100% + 4px);left:0;z-index:30;min-width:172px;
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:.3rem;
+  box-shadow:0 8px 26px rgba(0,0,0,.12)}
+.colmenu-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;border-radius:6px;
+  font-size:.9rem;cursor:pointer;user-select:none;white-space:nowrap}
+.colmenu-item:hover{background:var(--panel-2)}
+.colmenu-item input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+.eramenu-panel{min-width:min(96vw,560px);max-height:min(80vh,560px);overflow:auto}
+.era-presets{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;padding:.15rem .2rem .45rem;
+  border-bottom:1px solid var(--line);margin-bottom:.4rem}
+.era-preset{font:inherit;font-size:.78rem;cursor:pointer;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:6px;padding:.25rem .5rem}
+.era-preset:hover{background:var(--accent-soft);border-color:var(--accent)}
+.era-clear{margin-left:auto;color:var(--muted)}
+.era-clear:hover{background:var(--panel-2);border-color:var(--line-2)}
+/* three era columns side by side so every group is visible without scrolling */
+.era-groups{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:.1rem .6rem}
+.era-group{min-width:0}
+.era-group-h{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--faint);padding:.2rem .5rem}
+@media(max-width:620px){.eramenu-panel{min-width:min(94vw,300px)}.era-groups{grid-template-columns:1fr}}
 .note{background:var(--accent-soft);border:1px solid #dbe5ff;border-radius:8px;padding:.6rem .85rem;
   font-size:.85rem;color:#1e40af}
 

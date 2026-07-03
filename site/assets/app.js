@@ -69,6 +69,41 @@ function mountExclToggle(onChange, initial){
   return box.checked;
 }
 
+/* Column show/hide dropdown for the leaderboard. Builds a button + checkbox panel
+   inside #colmenu, driven by Tabulator's column visibility. `cols` is [{field,label}]
+   (the toggleable columns); checkbox state mirrors current visibility. onChange fires
+   after each toggle so the caller can persist state (URL/prefs). */
+function mountColumnMenu(table, cols, onChange){
+  const host = document.getElementById('colmenu');
+  if(!host) return;
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'colmenu-btn';
+  btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false');
+  btn.innerHTML = 'Columns <span aria-hidden="true">▾</span>';
+  const panel = document.createElement('div');
+  panel.className = 'colmenu-panel'; panel.hidden = true; panel.setAttribute('role','menu');
+  panel.innerHTML = cols.map(c=>{
+    const col = table.getColumn(c.field);
+    const on = col ? col.isVisible() : true;
+    return `<label class="colmenu-item"><input type="checkbox" data-field="${esc(c.field)}"${on?' checked':''}> ${esc(c.label)}</label>`;
+  }).join('');
+  host.append(btn, panel);
+
+  const close = ()=>{ panel.hidden = true; btn.setAttribute('aria-expanded','false'); };
+  const open  = ()=>{ panel.hidden = false; btn.setAttribute('aria-expanded','true'); };
+  btn.addEventListener('click', e=>{ e.stopPropagation(); panel.hidden ? open() : close(); });
+  panel.addEventListener('click', e=>e.stopPropagation());
+  panel.addEventListener('change', e=>{
+    const field = e.target.dataset.field; if(!field) return;
+    const col = table.getColumn(field); if(!col) return;
+    e.target.checked ? col.show() : col.hide();
+    table.redraw(true);   // re-run fitColumns so remaining columns fill the freed width
+    if(onChange) onChange();
+  });
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+}
+
 /* build header nav, marking active */
 function mountNav(active){
   const links=[['index.html','Leaderboard'],['scatter.html','Peak vs Longevity'],['games.html','Seasons'],['methodology.html','Why weight?'],['changelog.html','Changelog']];
