@@ -95,7 +95,7 @@ function mountColumnMenu(table, cols, onChange){
 /* build header nav, marking active */
 function mountNav(active){
   // "Visualizations" groups the charts (Peak vs Longevity + the new ones) in a dropdown.
-  const VIZ=[['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['shift.html','Raw → Adjusted'],['trajectory.html','Career trajectories']];
+  const VIZ=[['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories']];
   const vizActive=VIZ.some(([h])=>h===active);
   const drop=`<div class="navdrop${vizActive?' active':''}">
       <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false">Visualizations <span aria-hidden="true">▾</span></button>

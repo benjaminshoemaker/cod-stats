@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Career trajectories · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Cumulative era-adjusted major wins over time for every Call of Duty major winner. A steep short line is a peak, a long climb is longevity.">
+<meta name="description" content="Cumulative era-adjusted major wins over time for every Call of Duty major winner — spotlight any player, watch championships accrue, compare careers across eras.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Career trajectories · CoD majors over time">
-<meta property="og:description" content="Cumulative era-adjusted wins over time: peaks vs long careers, the whole field at once.">
+<meta property="og:description" content="Cumulative era-adjusted wins over time — spotlight any player, watch championships accrue, compare careers.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/trajectory.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
 <meta property="og:image:width" content="1200">
@@ -20,68 +20,212 @@
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
-  .chart-wrap{overflow-x:auto}
-  svg.tj{display:block;min-width:640px;width:100%;height:auto;font-family:var(--sans)}
+  .chart-wrap{position:relative;overflow-x:auto}
+  svg.tj{display:block;width:100%;min-width:720px;height:auto;font-family:var(--sans)}
   svg.tj .grid{stroke:var(--line)}
   svg.tj .tick{fill:var(--faint);font-size:10px}
-  svg.tj .end{font-size:11px}
+  svg.tj .axtitle{fill:var(--muted);font-size:10.5px;font-weight:600}
+  svg.tj .xlab{fill:var(--faint);font-size:9.5px}
+  svg.tj .bandlab{fill:var(--faint);font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  svg.tj .banddiv{stroke:var(--line-2);stroke-dasharray:2 4}
+  svg.tj .end{font-size:11px;font-weight:600}
+  svg.tj .line .vis{fill:none;stroke:#e6ebf1;stroke-width:1.25;stroke-linejoin:round;stroke-linecap:round}
+  svg.tj .line .halo{fill:none;stroke:#fff;stroke-width:5;stroke-linejoin:round;stroke-linecap:round}
+  svg.tj .line .hit{fill:none;stroke:transparent;stroke-width:14;pointer-events:stroke}
+  svg.tj .line.sel .vis{stroke-width:2.6}
+  svg.tj.dim .line:not(.spot){opacity:.1}
+  svg.tj .line.spot .vis{stroke-width:3.4}
+  svg.tj .line.spot:not(.sel) .vis{stroke:var(--accent)}
+  svg.tj .xhair{stroke:var(--line-2);stroke-dasharray:3 3;opacity:0;pointer-events:none}
+  svg.tj .xdot{fill:#fff;stroke-width:2.5;opacity:0;pointer-events:none}
   svg.tj a{cursor:pointer}
-  svg.tj a:hover .end{text-decoration:underline}
+  svg.tj .line{cursor:pointer}
+  .picker{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.7rem 0 .2rem}
+  .picker input{padding:.4rem .6rem;border:1px solid var(--line-2);border-radius:8px;font:inherit;font-size:.85rem;min-width:170px}
+  .picker input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .segbtn{font:inherit;font-size:.8rem;cursor:pointer;color:var(--muted);background:transparent;
+    border:1px solid var(--line);border-radius:7px;padding:.32rem .58rem}
+  .segbtn:hover{background:var(--panel-2);color:var(--ink);border-color:var(--line-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0 .1rem;min-height:1.6rem}
+  .chip{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;padding:.2rem .3rem .2rem .55rem;
+    border-radius:20px;color:#fff;font-weight:600}
+  .chip button{border:0;background:rgba(255,255,255,.28);color:#fff;border-radius:50%;width:16px;height:16px;
+    line-height:1;cursor:pointer;font-size:.7rem;padding:0}
+  #tt{position:fixed;pointer-events:none;z-index:50;background:#111827;color:#fff;font-size:.8rem;
+    padding:.4rem .55rem;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;max-width:230px;line-height:1.35}
+  #tt .s{color:#cbd5e1}
 </style>
 </head>
 <body>
 <div class="wrap wide" id="root"></div>
+<div id="tt"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script type="module">
-import { eraContext, computeRows } from './assets/rank.js';
+import { eraContext } from './assets/rank.js';
 mountNav('trajectory.html');
 const D = window.APP_DATA;
-const { PRESETS } = eraContext(D);
-const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
+const { eraOf } = eraContext(D);
 const ORDER = D.meta.seasonOrder;
+const IDX = Object.fromEntries(ORDER.map((g,i)=>[g,i]));
+const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
 const MBAR = D.meta.mbarAll;
-const YEAR = Object.fromEntries(ORDER.map(g=>[g, +GAMES[g].firstDate.slice(0,4)]));
-const PAL=['#2f6df6','#d97706','#0d9488','#7c3aed','#db2777','#0891b2','#65a30d','#e11d48'];
+const ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
+const ERALAB = {prebo2:'Pre-BO2', mlgcwl:'MLG–CWL', cdl:'CDL era'};
+const ERAFILL = {prebo2:'#f2f5f9', mlgcwl:'#eef4fb', cdl:'#eef7f2'};
+// validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 17.9)
+const PAL = ['#2563eb','#d97706','#059669','#7c3aed','#e11d48','#0891b2','#65a30d','#db2777','#4f46e5','#b45309','#0369a1','#9333ea'];
+const GOLD = '#b8860b';
 
-const all = computeRows(D, new Set(PRESETS.all), 1).sort((a,b)=>b.adjusted-a.adjusted);
-const hi = all.slice(0,8), hiNames = new Set(hi.map(r=>r.name));
+const event2game = {};
+for(const g of D.games) for(const e of g.events) event2game[e.event]=g.game;
+const lbByName = Object.fromEntries(D.leaderboard.map(r=>[r.name,r]));
+const adjOf = nm => (lbByName[nm]?.adjAll ?? 0);
+const ALLNAMES = D.leaderboard.map(r=>r.name);
+const ymax = Math.max(...D.leaderboard.map(r=>r.adjAll));
 
+const seriesCache = {};
 function series(name){
-  const seasons = D.players[name].seasons.slice().sort((a,b)=>GAMES[a.game].order-GAMES[b.game].order);
-  let cum=0; return seasons.map(s=>{ cum+=s.share*MBAR; return [YEAR[s.game], cum]; });
+  if(seriesCache[name]) return seriesCache[name];
+  const ss = D.players[name].seasons.slice().sort((a,b)=>GAMES[a.game].order-GAMES[b.game].order);
+  let cum=0; const pts=[];
+  for(const s of ss){ cum+=s.share*MBAR; pts.push({idx:IDX[s.game], cum, season:s.game}); }
+  return seriesCache[name]=pts;
 }
-const years = ORDER.map(g=>YEAR[g]); const ymn=Math.min(...years), ymx=Math.max(...years);
-const ymax = Math.max(...all.map(r=>r.adjusted));
-const W=680,H=400,x0=44,y0=18,pw=W-x0-100,ph=H-y0-28;
-const xs=yr=>x0+(yr-ymn)/(ymx-ymn)*pw, ys=v=>y0+ph-v/ymax*ph;
-const poly=name=>series(name).map(([yr,c])=>`${xs(yr).toFixed(1)},${ys(c).toFixed(1)}`).join(' ');
+const hasEra = (name,era)=>D.players[name].seasons.some(s=>eraOf(s.game)===era);
+const runOf = name=>{ const p=series(name); return p.length? p[p.length-1].idx-p[0].idx : 0; };
+const slopeOf = name=> adjOf(name)/Math.max(1,runOf(name));   // adj wins per season of x-span
 
-let s=`<svg class="tj" viewBox="0 0 ${W} ${H}">`;
-for(let v=0; v<=ymax; v+=10){ s+=`<line class="grid" x1="${x0}" y1="${ys(v).toFixed(0)}" x2="${x0+pw}" y2="${ys(v).toFixed(0)}"/><text class="tick" x="${x0-6}" y="${(ys(v)+4).toFixed(0)}" text-anchor="end">${v}</text>`; }
-[ymn,2014,2018,2022,ymx].forEach(yr=>{ s+=`<text class="tick" x="${xs(yr).toFixed(0)}" y="${H-8}" text-anchor="middle">${yr}</text>`; });
-// the whole field, faint
-for(const r of all){ if(hiNames.has(r.name)) continue; const p=series(r.name); if(!p.length) continue;
-  s+=`<polyline points="${poly(r.name)}" fill="none" stroke="#e2e8f0" stroke-width="1.2"/>`; }
-// the top 8, highlighted + labelled (collect end points so tied labels can be de-collided)
-const ends=[];
-hi.forEach((r,k)=>{ const col=PAL[k%PAL.length], pts=series(r.name); const [ey,ec]=pts[pts.length-1];
-  s+=`<polyline points="${poly(r.name)}" fill="none" stroke="${col}" stroke-width="2.2"><title>${esc(r.name)}: ${r.adjusted.toFixed(1)} adjusted wins</title></polyline>`;
-  s+=`<circle cx="${xs(ey).toFixed(1)}" cy="${ys(ec).toFixed(1)}" r="3.4" fill="${col}"/>`;
-  ends.push({name:r.name, col, x:xs(ey)+6, y:ys(ec)+4}); });
-// push labels apart when careers tie at the same endpoint (e.g. aBeZy & Simp)
-ends.sort((a,b)=>a.y-b.y);
-for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13; }
-for(const e of ends) s+=`<a href="player.html?p=${encodeURIComponent(e.name)}"><text class="end" x="${e.x.toFixed(1)}" y="${e.y.toFixed(1)}" fill="${e.col}">${esc(e.name)}</text></a>`;
-s+='</svg>';
+// presets — chosen to produce distinct line SHAPES, not just overlapping top players
+const topN = n => ALLNAMES.slice().sort((a,b)=>adjOf(b)-adjOf(a)).slice(0,n);
+const PRESETS = {
+  top:   ()=>topN(8),
+  fast:  ()=>ALLNAMES.filter(n=>adjOf(n)>=4).sort((a,b)=>slopeOf(b)-slopeOf(a)).slice(0,8),          // steep: won a lot fast
+  slow:  ()=>ALLNAMES.filter(n=>adjOf(n)>=3 && runOf(n)>=5).sort((a,b)=>slopeOf(a)-slopeOf(b)).slice(0,8), // flat: gradual over a long career
+  cdl:   ()=>ALLNAMES.filter(n=>hasEra(n,'cdl')).sort((a,b)=>adjOf(b)-adjOf(a)).slice(0,8),
+  champ: ()=>ALLNAMES.filter(n=>(lbByName[n].champs||0)>0).sort((a,b)=>(lbByName[b].champs-lbByName[a].champs)||(adjOf(b)-adjOf(a))).slice(0,8),
+};
+const PBTN = [['top','Top 8','The 8 highest era-adjusted careers'],
+  ['fast','Fast risers','Steepest climbs — the most wins in the fewest seasons'],
+  ['slow','Slow burners','Flattest climbs — built up gradually over a long career'],
+  ['cdl','CDL stars','Top 8 of the CDL era'],
+  ['champ','Most rings','The 8 with the most World Championships'],
+  ['clear','Clear','Remove all highlights']];
+
+let selected = new Set(PRESETS.top());
+const colorOf = {};
+function recolor(){ [...selected].sort((a,b)=>adjOf(b)-adjOf(a)).forEach((n,i)=>colorOf[n]=PAL[i%PAL.length]); }
+
+const bands=[]; let cur=null;
+ORDER.forEach((g,i)=>{ const e=eraOf(g); if(!cur||cur.era!==e){cur={era:e,i0:i,i1:i};bands.push(cur);} else cur.i1=i; });
+
+let geom={};
+function draw(){
+  recolor();
+  const wrap=document.getElementById('chart');
+  const W=Math.max(720,Math.min(1240,wrap.clientWidth||1200)), H=470;
+  const PX0=56, PX1=W-104, PY0=34, PYb=H-42, PH=PYb-PY0;
+  const dx=(PX1-PX0)/(ORDER.length-1);
+  const X=idx=>PX0+idx*dx, Y=c=>PY0+PH-c/ymax*PH;
+  geom={W,PX0,PX1,dx,PY0,PYb,X,Y};
+  let s=`<svg class="tj" viewBox="0 0 ${W} ${H}">`;
+  // era bands + dividers + labels
+  bands.forEach((b,bi)=>{ const x0=Math.max(PX0-dx/2,X(b.i0)-dx/2), x1=Math.min(PX1+dx/2,X(b.i1)+dx/2);
+    s+=`<rect x="${x0.toFixed(1)}" y="${PY0}" width="${(x1-x0).toFixed(1)}" height="${PH}" fill="${ERAFILL[b.era]}"/>`;
+    if(bi>0) s+=`<line class="banddiv" x1="${x0.toFixed(1)}" y1="${PY0}" x2="${x0.toFixed(1)}" y2="${PYb}"/>`;
+    s+=`<text class="bandlab" x="${((x0+x1)/2).toFixed(1)}" y="${PY0-14}" text-anchor="middle">${ERALAB[b.era]}</text>`; });
+  // y grid + ticks + axis title
+  for(let v=0; v<=ymax; v+=5){ s+=`<line class="grid" x1="${PX0}" y1="${Y(v).toFixed(0)}" x2="${PX1}" y2="${Y(v).toFixed(0)}"/><text class="tick" x="${PX0-8}" y="${(Y(v)+4).toFixed(0)}" text-anchor="end">${v}</text>`; }
+  s+=`<text class="axtitle" transform="rotate(-90 16 ${(PY0+PH/2).toFixed(0)})" x="16" y="${(PY0+PH/2).toFixed(0)}" text-anchor="middle">cumulative adjusted wins</text>`;
+  // x labels
+  ORDER.forEach((g,i)=>{ const x=X(i); s+=`<text class="xlab" x="${x.toFixed(1)}" y="${H-24}" text-anchor="middle" transform="rotate(-42 ${x.toFixed(1)} ${H-24})">${esc(ABBR[g])}</text>`; });
+
+  const path = pts => pts.map((p,i)=>`${i?'L':'M'}${X(p.idx).toFixed(1)} ${Y(p.cum).toFixed(1)}`).join(' ');
+  const drawLine = name=>{
+    const pts=series(name); if(!pts.length) return '';
+    const sel=selected.has(name), d=path(pts);
+    let g=`<g class="line${sel?' sel':''}" data-name="${esc(name)}">`;
+    if(sel) g+=`<path class="halo" d="${d}"/>`;
+    g+=`<path class="vis" d="${d}"${sel?` style="stroke:${colorOf[name]}"`:''}/>`;
+    g+=`<path class="hit" d="${d}"/>`;
+    if(sel){ const byIdx=Object.fromEntries(pts.map(p=>[p.idx,p]));
+      for(const c of (D.players[name].champ_events||[])){ const p=byIdx[IDX[event2game[c.event]]];
+        if(p){ const cx=X(p.idx),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)} — ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
+    return g+'</g>';
+  };
+  for(const n of ALLNAMES) if(!selected.has(n)) s+=drawLine(n);
+  const selList=[...selected].sort((a,b)=>adjOf(b)-adjOf(a));
+  for(const n of selList) s+=drawLine(n);
+  // end labels (de-collided)
+  const ends=selList.map(n=>{const p=series(n),l=p[p.length-1];return {name:n,col:colorOf[n],x:X(l.idx)+8,y:Y(l.cum)+4};}).sort((a,b)=>a.y-b.y);
+  for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13; }
+  for(const e of ends) s+=`<a href="player.html?p=${encodeURIComponent(e.name)}"><text class="end" x="${e.x.toFixed(1)}" y="${e.y.toFixed(1)}" fill="${e.col}">${esc(e.name)}</text></a>`;
+  // crosshair (updated on hover)
+  s+=`<line class="xhair" x1="0" x2="0" y1="${PY0}" y2="${PYb}"/><circle class="xdot" r="4.5"/>`;
+  s+='</svg>';
+  wrap.innerHTML=s;
+  attachHover();
+}
+
+const tt=document.getElementById('tt');
+function attachHover(){
+  const svg=document.querySelector('svg.tj');
+  const xhair=svg.querySelector('.xhair'), xdot=svg.querySelector('.xdot');
+  svg.addEventListener('mousemove', e=>{
+    const g=e.target.closest('.line');
+    if(!g){ clear(); return; }
+    svg.classList.add('dim');
+    svg.querySelectorAll('.line.spot').forEach(x=>{ if(x!==g) x.classList.remove('spot'); });
+    g.classList.add('spot'); g.parentNode.appendChild(g);
+    const name=g.dataset.name, pts=series(name), col=colorOf[name]||'#2563eb';
+    const rect=svg.getBoundingClientRect(), vbx=(e.clientX-rect.left)*(geom.W/rect.width);
+    const mi=Math.round((vbx-geom.PX0)/geom.dx);
+    let p=pts[0]; for(const q of pts){ if(q.idx<=mi) p=q; }
+    const gx=geom.X(p.idx), gy=geom.Y(p.cum);
+    xhair.setAttribute('x1',gx); xhair.setAttribute('x2',gx); xhair.style.opacity='1';
+    xdot.setAttribute('cx',gx); xdot.setAttribute('cy',gy); xdot.setAttribute('stroke',col); xdot.style.opacity='1';
+    const champs=lbByName[name].champs||0;
+    tt.style.display='block'; tt.style.left=(e.clientX+14)+'px'; tt.style.top=(e.clientY+14)+'px';
+    tt.innerHTML=`<b>${esc(name)}</b>${champs?` <span style="color:${GOLD}">${champs}◆</span>`:''}<br>`+
+      `<span class="s">through ${esc(ABBR[p.season])}:</span> ${p.cum.toFixed(1)}<br>`+
+      `<span class="s">career:</span> ${adjOf(name).toFixed(1)} adj wins`;
+    function clear(){ svg.classList.remove('dim'); svg.querySelectorAll('.line.spot').forEach(x=>x.classList.remove('spot'));
+      tt.style.display='none'; xhair.style.opacity='0'; xdot.style.opacity='0'; }
+    svg._clear=clear;
+  });
+  svg.addEventListener('mouseleave', ()=>{ if(svg._clear) svg._clear(); });
+}
+
+function chipsHTML(){
+  return [...selected].sort((a,b)=>adjOf(b)-adjOf(a)).map(n=>
+    `<span class="chip" style="background:${colorOf[n]}">${esc(n)}<button data-rm="${esc(n)}" title="remove">✕</button></span>`).join('')
+    || '<span class="small faint">No players highlighted — hover any grey line, or add one.</span>';
+}
 
 document.getElementById('root').innerHTML = `
   <h1>Career trajectories</h1>
-  <p class="lede">Every major winner's <strong>cumulative era-adjusted wins</strong> over time: the whole field in grey, the top 8 highlighted.
-  A steep short line is a <strong>peak</strong> (a lot won fast); a long shallow climb is <strong>longevity</strong>. Where a line flattens, the wins stopped.
-  <a href="methodology.html">How adjusted wins work →</a></p>
-  <div class="chart-wrap">${s}</div>
-  <p class="small muted">All seasons. The y-axis is cumulative era-adjusted wins; each line ends at that player's career total.</p>`;
+  <p class="lede">Every major winner's <strong>cumulative era-adjusted wins</strong>, season by season. A steep climb is a
+  <strong>peak</strong>; a long shallow rise is <strong>longevity</strong>. <span style="color:${GOLD}">◆</span> marks a World Championship.
+  Hover any line to trace it; add players to keep them highlighted. <a href="methodology.html">How adjusted wins work →</a></p>
+  <div class="picker">
+    <input id="search" list="allplayers" placeholder="Add a player…" autocomplete="off">
+    <datalist id="allplayers">${ALLNAMES.map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
+    <span class="small muted">Presets:</span>
+    ${PBTN.map(([k,l,t])=>`<button type="button" class="segbtn" data-preset="${k}" title="${esc(t)}">${l}</button>`).join('')}
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="chart-wrap" id="chart"></div>
+  <p class="small muted">Seasons are evenly spaced oldest → newest (not by calendar year). Grey lines are the rest of the field — hover to identify. Championship markers show only on highlighted players.</p>`;
+
+function rerender(){ recolor(); document.getElementById('chips').innerHTML=chipsHTML(); draw(); }
+document.querySelectorAll('.segbtn[data-preset]').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.preset; selected = k==='clear' ? new Set() : new Set(PRESETS[k]()); rerender();
+}));
+const search=document.getElementById('search');
+search.addEventListener('change',()=>{ const v=search.value.trim(); if(lbByName[v]){ selected.add(v); search.value=''; rerender(); } });
+document.getElementById('chips').addEventListener('click',e=>{ const n=e.target.dataset?.rm; if(n){ selected.delete(n); rerender(); } });
+window.addEventListener('resize', draw);
+rerender();
 mountFoot();
 </script>
 </body>

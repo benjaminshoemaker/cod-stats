@@ -314,7 +314,7 @@ test.describe('pages', () => {
     await page.goto('/index.html');
     await page.click('.navdrop-btn');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['scatter.html', 'heatmap.html', 'shift.html', 'trajectory.html']);
+    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html']);
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
@@ -322,8 +322,7 @@ test.describe('pages', () => {
     page.on('pageerror', e => errors.push(e.message));
     for (const [file, sel, heading] of [
       ['heatmap.html', 'svg.hm rect.cell', /Dominance heatmap/],
-      ['shift.html', 'svg.db circle', /Raw . Adjusted/],
-      ['trajectory.html', 'svg.tj polyline', /Career trajectories/],
+      ['trajectory.html', 'svg.tj path.vis', /Career trajectories/],
     ] as [string, string, RegExp][]) {
       await page.goto('/' + file);
       await expect(page.getByRole('heading', { name: heading })).toBeVisible();
@@ -336,6 +335,17 @@ test.describe('pages', () => {
     await page.goto('/heatmap.html');
     // champions exist in the top-16, so at least one gold marker must render
     expect(await page.locator('svg.hm circle[fill="#b8860b"]').count()).toBeGreaterThan(0);
+  });
+
+  test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
+    await page.goto('/trajectory.html');
+    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(8);       // default Top 8
+    await page.click('.segbtn[data-preset="clear"]');
+    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(0);
+    await page.click('.segbtn[data-preset="champ"]');
+    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(8);
+    // every highlighted player keeps a removable chip
+    expect(await page.locator('#chips .chip').count()).toBe(8);
   });
 
   test('BO7 season page shows in-progress weighting (1/6)', async ({ page }) => {
