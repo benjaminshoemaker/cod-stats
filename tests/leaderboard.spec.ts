@@ -310,11 +310,11 @@ test.describe('pages', () => {
     await expect(page.locator('svg.scatter circle.dot')).toHaveCount(expected);
   });
 
-  test('Visualizations nav dropdown lists all four charts', async ({ page }) => {
+  test('Insights nav dropdown lists the chart pages', async ({ page }) => {
     await page.goto('/index.html');
     await page.click('.navdrop-btn');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html', 'signatures.html']);
+    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
@@ -335,6 +335,17 @@ test.describe('pages', () => {
     await page.goto('/heatmap.html');
     // champions exist in the top-16, so at least one gold marker must render
     expect(await page.locator('svg.hm circle[fill="#b8860b"]').count()).toBeGreaterThan(0);
+  });
+
+  test('player page links to the wiki and toggles wins vs every major entered', async ({ page }) => {
+    await page.goto('/player.html?p=Scump');
+    await expect(page.locator('a[href="https://cod-esports.fandom.com/wiki/Scump"]')).toBeVisible();
+    await expect(page.locator('#ml-title')).toHaveText(/Every major win \(28\)/);
+    const winRows = await page.locator('#winlist tr').count();
+    await page.click('#seg-all');
+    await expect(page.locator('#ml-title')).toHaveText(/Every major entered \(\d+\)/);
+    expect(await page.locator('#winlist tr').count()).toBeGreaterThan(winRows);
+    expect(await page.locator('#winlist tr.faint').count()).toBeGreaterThan(0); // losing placements shown
   });
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
