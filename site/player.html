@@ -16,10 +16,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="participation.js"></script>
@@ -43,7 +45,7 @@ if(!p || !lb){
   root.innerHTML = `
     <p class="crumb"><a href="index.html">← Leaderboard</a></p>
     <h1>${esc(p.name)}</h1>
-    <p class="small muted" style="margin:-.3rem 0 .7rem">Source:
+    <p class="small muted" style="margin:-.3rem 0 var(--space-3)">Source:
       <a href="https://cod-esports.fandom.com/wiki/${encodeURIComponent(p.wiki.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(p.name)} on the CoD Esports Wiki ↗</a></p>
     <div class="stat-row">
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
@@ -56,7 +58,7 @@ if(!p || !lb){
         <div class="small faint">${p.champs?p.champ_events.map(e=>e.year).join(' · '):'none'}</div></div>
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
-    ${p.note?`<div class="note" style="margin-top:.4rem;background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
+    ${p.note?`<div class="note" style="margin-top:var(--space-2);background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
 
     <div class="grid cols-2">
       <div>
@@ -71,7 +73,7 @@ if(!p || !lb){
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-top:1.6em">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-top:1.6em">
       <h2 style="margin:0" id="ml-title">Every major win (${p.raw})</h2>
       <div class="seg" role="group" aria-label="Show wins only or every major entered">
         <button id="seg-wins" aria-pressed="true">Wins (${p.raw})</button>
@@ -79,7 +81,7 @@ if(!p || !lb){
       </div>
     </div>
     <table class="data"><tbody id="winlist"></tbody></table>
-    <p class="small faint" id="ml-note" style="margin-top:.4rem"></p>
+    <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
 
     <section id="similar"></section>
   `;
@@ -111,7 +113,7 @@ if(!p || !lb){
       </table>`;
 
     // chart
-    document.getElementById('chart').innerHTML = shown.map(s=>`<div style="margin:.35rem 0">
+    document.getElementById('chart').innerHTML = shown.map(s=>`<div style="margin:var(--space-1) 0">
         <div class="small muted" style="display:flex;justify-content:space-between">
           <span>${esc(s.game)}</span><span class="num">${s.wins} / ${s.majors} majors</span></div>
         <div class="bar-track" style="height:14px;position:relative;background:var(--panel-2)">
@@ -269,7 +271,7 @@ function mountSimilar(name){
     });
     // era shown as context, explicitly not scored
     body += `<tr><td colspan="4" class="sim-gname">Context <span class="faint" style="text-transform:none;letter-spacing:0">· not scored</span></td></tr>
-      <tr><td class="sim-metric">Debut year</td><td class="sim-v va">${A.debut??'–'}</td>
+      <tr><td class="sim-metric">First major</td><td class="sim-v va">${A.debut??'–'}</td>
       <td class="sim-v vb">${B.debut??'–'}</td><td class="sim-tag"></td></tr>`;
     box.innerHTML = `
       <div class="sim-cmp-head">Comparing <span class="va">${esc(name)}</span> with <span class="vb">${esc(sel)}</span>

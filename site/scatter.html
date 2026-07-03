@@ -11,13 +11,14 @@
 <meta property="og:title" content="Peak vs Longevity · CoD majors">
 <meta property="og:description" content="Who won the most in a single season vs who kept winning across the most eras, era-adjusted. Two axes, one chart.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/scatter.html">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .scatter-wrap{overflow-x:auto}
@@ -35,6 +36,7 @@
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -47,7 +49,8 @@ root.innerHTML=`
   <p class="lede">Two players can share an adjusted total and have completely different résumés. This splits it into two
   axes, both measured by <strong>winning</strong> (tournament wins, not individual stats).
   <strong>Peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took);
-  <strong>longevity</strong> = how many different CoD titles you kept winning majors across.</p>
+  <strong>longevity</strong> = how many different CoD titles you kept winning majors across.
+  Shares divide by the majors a team could win that season. <a href="methodology.html">How the season share works →</a></p>
   <div class="controls">
     <span class="small muted">Hover a dot for detail; click to open the player.</span>
   </div>
@@ -57,7 +60,7 @@ root.innerHTML=`
     <span>bubble size = total adjusted wins</span>
   </div>
   <div class="scatter-wrap"><div id="chart"></div></div>
-  <p class="small muted" style="margin-top:1rem"><strong>How to read it:</strong> top-right = won big <em>and</em> kept winning
+  <p class="small muted" style="margin-top:var(--space-4)"><strong>How to read it:</strong> top-right = won big <em>and</em> kept winning
   (the all-time résumés). Top-left = a huge winning season over a short window. Bottom-right = long careers built on steady
   winning rather than one dominant season.</p>
 `;
@@ -83,13 +86,13 @@ function render(){
   const maxAdj=Math.max(...rows.map(p=>p.adj));
   const xS=e=>mL+((e-1)/(Math.max(1,xMax-1)))*plotW;
   const yS=p=>mT+plotH-(p/yMax)*plotH;
-  const rS=a=>4+(a/maxAdj)*11;
+  const rS=a=>4+Math.sqrt(a/maxAdj)*11;   // area ∝ adjusted wins, so big careers don't overwhelm
 
-  // label the notable ones: top 16 by adjusted, plus peak/eras leaders
+  // label the notable ones: top 16 by adjusted, plus the peak and longevity leaders
   const byAdj=[...rows].sort((a,b)=>b.adj-a.adj);
   const labelSet=new Set(byAdj.slice(0,16).map(p=>p.name));
-  labelSet.add(byAdj[0].name);
-  [...rows].sort((a,b)=>b.eras-a.eras)[0] && labelSet.add([...rows].sort((a,b)=>b.eras-a.eras)[0].name);
+  labelSet.add([...rows].sort((a,b)=>b.peak-a.peak)[0].name);
+  labelSet.add([...rows].sort((a,b)=>b.eras-a.eras)[0].name);
 
   // grid + ticks
   let g='';
@@ -106,11 +109,16 @@ function render(){
   g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+plotH-8}" text-anchor="end">long career, lower peak</text>`;
 
   // dots, plotted at exact (longevity, peak); smallest first so big ones draw on top
+  const GAMES=Object.fromEntries(D.games.map(g=>[g.game,g]));
   const sorted=[...rows].sort((a,b)=>a.adj-b.adj);
   let dots='';
   for(const p of sorted){
     const x=xS(p.eras), y=yS(p.peak), r=rS(p.adj);
-    const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
+    // where a season's scoring denominator differs from the events held (MW19's
+    // split format, an in-progress season), say so instead of looking miscounted
+    const held=GAMES[p.info.season]?.majors;
+    const denomNote=(held && held!==p.info.majors)?` winnable (${held} held)`:'';
+    const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors}${denomNote} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
     dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"><title>${esc(tip)}</title></circle></a>`;
   }
 

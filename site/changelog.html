@@ -17,20 +17,22 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
-  .cl-entry{display:flex;gap:.9rem;padding:.9rem 0;border-bottom:1px solid var(--line)}
+  .cl-entry{display:flex;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--line)}
   .cl-entry:last-child{border-bottom:none}
-  .cl-tag{flex:0 0 auto;width:104px;padding-top:.1rem}
-  .cl-body h3{font-size:1rem;margin:0 0 .2rem}
-  .cl-body p{margin:0;color:var(--muted);font-size:.92rem}
-  .cl-date{font-family:var(--mono);font-size:.8rem;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;
-    margin:1.6rem 0 .2rem;border-top:2px solid var(--line);padding-top:1rem}
-  @media(max-width:560px){.cl-entry{flex-direction:column;gap:.3rem}.cl-tag{width:auto}}
+  .cl-tag{flex:0 0 auto;width:104px;padding-top:var(--space-1)}
+  .cl-body h3{font-size:var(--text-md);margin:0 0 var(--space-1)}
+  .cl-body p{margin:0;color:var(--muted);font-size:var(--text-base)}
+  .cl-date{font-family:var(--mono);font-size:var(--text-sm);color:var(--faint);text-transform:uppercase;letter-spacing:.04em;
+    margin:var(--space-6) 0 var(--space-1);border-top:2px solid var(--line);padding-top:var(--space-4)}
+  @media(max-width:560px){.cl-entry{flex-direction:column;gap:var(--space-1)}.cl-tag{width:auto}}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap narrow" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -39,6 +41,15 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-03', tag:'Fixed', title:'Insights audit: consistent careers, honest scales',
+   body:`A sweep of every Insights page. The <a href="map.html">similarity map</a> had its vertical axis flipped
+   against its own annotations by a data rebuild; the build now pins the orientation so "long, well-traveled careers"
+   always point down. The map's debut and span figures now use the same participation-based career (first major
+   <em>entered</em>, years competing) as the rest of the site, instead of first-win-to-last-win. Signature boards no
+   longer cut ties arbitrarily: a player tied with the last spot now always shows (or neither does). The
+   <a href="heatmap.html">heatmap</a> legend states its scale (color runs to the highest share shown, not 100%), the
+   <a href="scatter.html">scatter</a> explains split-format season denominators like MW19's "4 of 9 winnable (13 held)"
+   and sizes bubbles by area, and "the most dominant season the model can score" is now honestly "on record".`},
   {date:'2026-07-03', tag:'Methodology', title:'Black Ops 7 major count corrected to 6',
    body:`The wiki's Majors portal listed the <strong>Call of Duty Challengers Finals 2026</strong>, an amateur
    Challengers event, as a Black Ops 7 major, so the season's schedule read as 7 majors instead of 6 (4 CDL Majors,

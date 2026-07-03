@@ -5,56 +5,58 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Signatures · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Player signatures derived from era-adjusted CoD major wins: World Championship rate, compressed dominance, career timing, longevity, and the model's single-season ceiling. Recomputed live from the data.">
+<meta name="description" content="Player signatures derived from era-adjusted CoD major wins: World Championship rate, compressed dominance, career timing, longevity, and the most dominant season on record. Recomputed live from the data.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Signatures · CoD majors">
 <meta property="og:description" content="The ratios hiding behind the leaderboard: rings per win, wins per year, when in a career the titles landed. Live from the data.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/signatures.html">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .sig{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    padding:1.1rem 1.25rem 1rem;margin:1.1rem 0}
-  .sig-top{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
-  .sig h2{font-size:1.15rem;margin:0 0 .1rem;letter-spacing:-.01em}
-  .sig .unit{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;
+    padding:var(--space-4) var(--space-5) var(--space-4);margin:var(--space-4) 0}
+  .sig-top{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4)}
+  .sig h2{font-size:var(--text-lg);margin:0 0 var(--space-1);letter-spacing:-.01em}
+  .sig .unit{font-family:var(--mono);font-size:var(--text-xs);letter-spacing:.05em;text-transform:uppercase;
     color:var(--faint);white-space:nowrap}
-  .sig .concept{color:var(--muted);font-size:.95rem;margin:.15rem 0 .1rem;max-width:74ch}
-  .sig .howto{color:var(--faint);font-size:.82rem;margin:.1rem 0 .8rem;max-width:74ch}
-  .sig-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.6rem}
-  @media(max-width:640px){.sig-pair{grid-template-columns:1fr;gap:.4rem}}
-  .sub-h{font-size:.76rem;font-weight:700;color:var(--ink);margin:.1rem 0 .35rem}
+  .sig .concept{color:var(--muted);font-size:var(--text-base);margin:var(--space-1) 0 var(--space-1);max-width:74ch}
+  .sig .howto{color:var(--faint);font-size:var(--text-sm);margin:var(--space-1) 0 var(--space-3);max-width:74ch}
+  .sig-pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4) var(--space-6)}
+  @media(max-width:640px){.sig-pair{grid-template-columns:1fr;gap:var(--space-2)}}
+  .sub-h{font-size:var(--text-xs);font-weight:700;color:var(--ink);margin:var(--space-1) 0 var(--space-1)}
   .sub-h .q{color:var(--faint);font-weight:500}
   .sigrow{display:grid;grid-template-columns:1.2rem minmax(56px,auto) 1fr auto;align-items:center;
-    gap:.55rem;padding:.3rem 0;border-top:1px solid var(--line)}
+    gap:var(--space-2);padding:var(--space-1) 0;border-top:1px solid var(--line)}
   .sigrow:first-of-type{border-top:0}
-  .sigrk{color:var(--faint);font-size:.76rem;text-align:right;font-variant-numeric:tabular-nums}
-  .signm{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  .sigrk{color:var(--faint);font-size:var(--text-xs);text-align:right;font-variant-numeric:tabular-nums}
+  .signm{font-weight:600;font-size:var(--text-base);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     color:var(--ink)}
   .signm:hover{color:var(--accent);text-decoration:none}
   .sigbar{background:var(--panel-2);border-radius:5px;height:7px;overflow:hidden}
   .sigfill{display:block;height:100%;background:var(--accent);border-radius:5px}
   .sigfill.alt{background:var(--warn)}
-  .sigval{font-size:.8rem;color:var(--ink);white-space:nowrap;text-align:right;
+  .sigval{font-size:var(--text-sm);color:var(--ink);white-space:nowrap;text-align:right;
     font-variant-numeric:tabular-nums;font-family:var(--mono)}
   .sigsub{color:var(--faint)}
-  .ceil{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;background:var(--accent-soft);
-    border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.2rem;margin:.5rem 0 .2rem}
-  .ceil .big{font-size:2.7rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;
+  .ceil{display:flex;gap:var(--space-6);flex-wrap:wrap;align-items:center;background:var(--accent-soft);
+    border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-4) var(--space-5);margin:var(--space-2) 0 var(--space-1)}
+  .ceil .big{font-size:var(--text-hero);font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;
     line-height:1;font-family:var(--mono)}
-  .ceil .grps{display:flex;flex-direction:column;gap:.35rem;font-size:.9rem}
+  .ceil .grps{display:flex;flex-direction:column;gap:var(--space-1);font-size:var(--text-base)}
   .ceil .season{font-weight:600;color:var(--ink)}
   .ceil .who{color:var(--muted)}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -90,38 +92,45 @@ function bars(rows){
   </div>`).join('');
 }
 const TOP=6;
+// Top N of a sorted list, extended through any tie at the cut, so source-data
+// order can never decide who makes a board (e.g. two 11-year careers both show
+// or both don't).
+function cut(rows, key, n=TOP){
+  const out=rows.slice(0,n);
+  for(let i=n;i<rows.length && key(rows[i])===key(out[out.length-1]);i++) out.push(rows[i]);
+  return out;
+}
 
 // ---- 1. Ring merchants & the uncrowned ----------------------------------
-const merchants=LB.filter(r=>r.champs>=2)
+const merchants=cut(LB.filter(r=>r.champs>=2)
   .map(r=>({name:r.name, rate:r.champs/r.adjAll, champs:r.champs, adj:r.adjAll}))
-  .sort((a,b)=>b.rate-a.rate).slice(0,TOP)
+  .sort((a,b)=>b.rate-a.rate), r=>r.rate)
   .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2),
             sub:`${r.champs} rings / ${r.adj.toFixed(1)} adj`}));
-const uncrowned=LB.filter(r=>r.champs===0)
-  .sort((a,b)=>b.adjAll-a.adjAll).slice(0,TOP)
+const uncrowned=cut(LB.filter(r=>r.champs===0)
+  .sort((a,b)=>b.adjAll-a.adjAll), r=>r.adjAll)
   .map(r=>({name:r.name, bar:r.adjAll, val:r.adjAll.toFixed(1), sub:`${r.raw} raw`, alt:true}));
 
 // ---- 2. Compressed dominance --------------------------------------------
 // Denominator is the CAREER span (first major entered to last, won or not) from
 // participation data — not the first-win-to-last-win span, which understates how
 // long players actually competed and over-rated short winning windows.
-const careerYrs=r=>Math.max(1, r.careerSpan);
-const density=LB.filter(r=>r.adjAll>=4 && r.careerSpan>=2)
-  .map(r=>({name:r.name, rate:r.adjAll/careerYrs(r), adj:r.adjAll, y:r.careerSpan}))
-  .sort((a,b)=>b.rate-a.rate).slice(0,TOP)
+const density=cut(LB.filter(r=>r.adjAll>=4 && r.careerSpan>=2)
+  .map(r=>({name:r.name, rate:r.adjAll/r.careerSpan, adj:r.adjAll, y:r.careerSpan}))
+  .sort((a,b)=>b.rate-a.rate), r=>r.rate)
   .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2), sub:`${r.adj.toFixed(1)} adj / ${r.y}y`}));
 
 // ---- 3. Prodigies & late bloomers ---------------------------------------
 const fl=LB.map(r=>{const f=frontload(r); return f?{name:r.name, v:f.v, n:f.n,
     range:`${r.firstPlayed}–${r.lastPlayed}`}:null;}).filter(Boolean);
-const prodigies=[...fl].sort((a,b)=>a.v-b.v).slice(0,5)
+const prodigies=cut([...fl].sort((a,b)=>a.v-b.v), r=>r.v)
   .map(r=>({name:r.name, bar:0.5-r.v, val:r.v.toFixed(2), sub:r.range}));
-const bloomers=[...fl].sort((a,b)=>b.v-a.v).slice(0,5)
+const bloomers=cut([...fl].sort((a,b)=>b.v-a.v), r=>r.v)
   .map(r=>({name:r.name, bar:r.v-0.5, val:r.v.toFixed(2), sub:r.range, alt:true}));
 
 // ---- 4. The long careers -------------------------------------------------
 // Career length = first major entered to last, from participation (won or not).
-const careers=[...LB].sort((a,b)=>b.careerSpan-a.careerSpan).slice(0,7)
+const careers=cut([...LB].sort((a,b)=>b.careerSpan-a.careerSpan), r=>r.careerSpan)
   .map(r=>({name:r.name, bar:r.careerSpan, val:`${r.careerSpan}y`,
             sub:`${r.firstPlayed}–${r.lastPlayed}`}));
 
@@ -186,11 +195,11 @@ root.innerHTML=`
   </div>
 
   <div class="sig">
-    <div class="sig-top"><h2>The most dominant season the model can score</h2><span class="unit">era-adjusted peak</span></div>
+    <div class="sig-top"><h2>The most dominant season on record</h2><span class="unit">era-adjusted peak</span></div>
     <p class="concept">A season's era-adjusted value is (wins ÷ majors that season) × the average majors per season.
-    Sweeping four of a six-major season is the practical ceiling.</p>
-    <p class="howto">It caps here because a lean-major season makes each win worth the most, so the same peak is
-    reachable in any era, not just recent ones.</p>
+    This is the best any player has scored.</p>
+    <p class="howto">A record, not a cap: a lean-major season makes each win worth the most, so the same peak is
+    reachable in any era, not just recent ones, and a bigger sweep would beat it.</p>
     <div class="ceil">
       <div class="big">${peakMax.toFixed(2)}</div>
       <div class="grps">${ceilGroups}</div>

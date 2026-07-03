@@ -17,20 +17,21 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   /* validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 72) */
   :root{ --c0:#64748b; --c1:#0d9488; --c2:#2563eb; --c3:#d97706; --seq0:#bcd3f5; --seq1:#1e3a8a; }
-  .mapctl{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin:1rem 0 .4rem}
-  .mapctl .lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600}
-  .mapctl input{font:inherit;font-size:.85rem;padding:.3rem .6rem;border:1px solid var(--line-2);border-radius:8px;
+  .mapctl{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin:var(--space-4) 0 var(--space-2)}
+  .mapctl .lbl{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600}
+  .mapctl input{font:inherit;font-size:var(--text-sm);padding:var(--space-1) var(--space-2);border:1px solid var(--line-2);border-radius:8px;
     background:var(--bg);min-width:11rem}
   .mapctl input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-  .maplayout{display:grid;grid-template-columns:1fr 17rem;gap:1.1rem;align-items:start}
-  .mapcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:.4rem}
+  .maplayout{display:grid;grid-template-columns:1fr 17rem;gap:var(--space-4);align-items:start}
+  .mapcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-2)}
   svg#map{width:100%;height:auto;display:block;touch-action:none}
-  .axis-note{position:absolute;font-size:.7rem;color:var(--faint);pointer-events:none}
+  .axis-note{position:absolute;font-size:var(--text-xs);color:var(--faint);pointer-events:none}
   .axis-note.bl{bottom:.6rem;left:.9rem} .axis-note.br{bottom:.6rem;right:.9rem}
   .axis-note.tv{top:.7rem;left:50%;transform:translateX(-50%)} .axis-note.bv{bottom:1.9rem;left:50%;transform:translateX(-50%)}
   circle.node{cursor:pointer;transition:opacity .12s}
@@ -38,37 +39,38 @@
   .nlbl{font-size:9px;fill:var(--muted);pointer-events:none}
   .nlink{stroke:var(--accent);stroke-width:1.4;opacity:.5}
   .maptip{position:absolute;pointer-events:none;z-index:9;background:var(--bg);border:1px solid var(--line-2);
-    border-radius:8px;box-shadow:0 6px 20px rgba(15,23,42,.14);padding:.5rem .6rem;font-size:.8rem;min-width:9rem;
+    border-radius:8px;box-shadow:0 6px 20px rgba(15,23,42,.14);padding:var(--space-2) var(--space-2);font-size:var(--text-sm);min-width:9rem;
     opacity:0;transition:opacity .1s}
   .maptip.on{opacity:1}
-  .maptip .tn{font-weight:700;margin-bottom:.15rem}
-  .maptip .tr{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.76rem}
+  .maptip .tn{font-weight:700;margin-bottom:var(--space-1)}
+  .maptip .tr{display:flex;justify-content:space-between;gap:var(--space-4);color:var(--muted);font-size:var(--text-xs)}
   .maptip .tr b{color:var(--ink);font-weight:600}
-  .maptip .tc{margin-top:.3rem;padding-top:.3rem;border-top:1px solid var(--line);font-size:.72rem;color:var(--faint)}
-  .side h2{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin:.2rem 0 .5rem}
-  .leg{display:flex;flex-direction:column;gap:.25rem}
-  .legrow{display:flex;gap:.55rem;align-items:flex-start;width:100%;text-align:left;background:transparent;
-    border:1px solid transparent;border-radius:8px;padding:.4rem .5rem;cursor:pointer;color:var(--ink);font:inherit}
+  .maptip .tc{margin-top:var(--space-1);padding-top:var(--space-1);border-top:1px solid var(--line);font-size:var(--text-xs);color:var(--faint)}
+  .side h2{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.06em;color:var(--faint);font-weight:700;margin:var(--space-1) 0 var(--space-2)}
+  .leg{display:flex;flex-direction:column;gap:var(--space-1)}
+  .legrow{display:flex;gap:var(--space-2);align-items:flex-start;width:100%;text-align:left;background:transparent;
+    border:1px solid transparent;border-radius:8px;padding:var(--space-2) var(--space-2);cursor:pointer;color:var(--ink);font:inherit}
   .legrow:hover{background:var(--panel-2)}
   .legrow[aria-pressed="true"]{border-color:var(--line-2);background:var(--panel-2)}
   .legrow:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-  .legdot{width:.7rem;height:.7rem;border-radius:50%;margin-top:.28rem;flex:none}
-  .legname{font-weight:700;font-size:.85rem} .legmeta{font-size:.72rem;color:var(--faint)}
-  .legdesc{font-size:.72rem;color:var(--muted)}
-  .legscale{padding:.3rem .5rem}
+  .legdot{width:.7rem;height:.7rem;border-radius:50%;margin-top:var(--space-1);flex:none}
+  .legname{font-weight:700;font-size:var(--text-sm)} .legmeta{font-size:var(--text-xs);color:var(--faint)}
+  .legdesc{font-size:var(--text-xs);color:var(--muted)}
+  .legscale{padding:var(--space-1) var(--space-2)}
   .legbar{height:.6rem;border-radius:4px;background:linear-gradient(90deg,var(--seq0),var(--seq1))}
-  .legscale-lab{display:flex;justify-content:space-between;font-size:.7rem;color:var(--faint);
-    margin-top:.25rem;font-family:var(--mono)}
-  .selpanel{margin-top:1rem;border-top:1px solid var(--line);padding-top:.8rem}
-  .selpanel h3{font-size:.95rem;margin:0 0 .1rem} .selpanel .sub{font-size:.75rem;color:var(--faint);margin-bottom:.5rem}
-  .compline{display:flex;justify-content:space-between;font-size:.82rem;padding:.18rem 0;border-top:1px solid var(--line)}
+  .legscale-lab{display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--faint);
+    margin-top:var(--space-1);font-family:var(--mono)}
+  .selpanel{margin-top:var(--space-4);border-top:1px solid var(--line);padding-top:var(--space-3)}
+  .selpanel h3{font-size:var(--text-base);margin:0 0 var(--space-1)} .selpanel .sub{font-size:var(--text-xs);color:var(--faint);margin-bottom:var(--space-2)}
+  .compline{display:flex;justify-content:space-between;font-size:var(--text-sm);padding:var(--space-1) 0;border-top:1px solid var(--line)}
   .compline .cs{font-family:var(--mono);color:var(--muted)}
-  .maphint{font-size:.78rem;color:var(--faint)}
+  .maphint{font-size:var(--text-sm);color:var(--faint)}
   @media(max-width:760px){.maplayout{grid-template-columns:1fr}}
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap wide" id="root" role="main" tabindex="-1">
   <p class="crumb"><a href="index.html">← Leaderboard</a></p>
   <h1>The map of CoD careers</h1>
@@ -103,7 +105,7 @@
     </div>
   </div>
 
-  <div class="grid cols-2" style="margin-top:2rem">
+  <div class="grid cols-2" style="margin-top:var(--space-8)">
     <div>
       <h2>How the map is built</h2>
       <p class="small muted">Nothing is plotted against a stat here. Every pair of players gets a
@@ -117,15 +119,15 @@
       <h2>What the axes mean</h2>
       <p class="small muted">The two directions aren't chosen. They fall out as the axes that separate
       players the most.</p>
-      <ul class="small muted" style="margin:.5rem 0;padding-left:1.1rem">
+      <ul class="small muted" style="margin:var(--space-2) 0;padding-left:var(--space-4)">
         <li><strong>Left → right is overall achievement.</strong> It tracks adjusted wins
-          (<span class="num">r = .93</span>), peak, finals rate and win conversion together. Weaker
+          (<span class="num" id="stat-r">r = .93</span>), peak, finals rate and win conversion together. Weaker
           résumés sit left, the all-time greats right.</li>
         <li><strong>Up ↔ down is career style.</strong> Efficient, peak-heavy careers sit high; long,
           many-team, accumulator careers sit low.</li>
       </ul>
       <p class="small muted">Left-right holds most of the signal, so read it first and treat up-down as a
-      hint. Flattening ten résumé stats into two directions keeps about <strong>70%</strong> of the real
+      hint. Flattening ten résumé stats into two directions keeps about <strong id="stat-kept">70%</strong> of the real
       distances, so <em>near</em> usually means similar but isn't a guarantee. For the exact comparison,
       use the comps and metric table on a player's page. The four colors are k-medoid groupings: handy
       labels, but the data is really a gradient, not four clean tribes.</p>
@@ -140,11 +142,20 @@
 mountNav('map.html');
 const DATA = window.CLUSTERS;
 const P = DATA.players, CL = DATA.clusters;
-const CLBL = ["The field","Steady winners","Decorated veterans","Dynasty peaks"];
+// cluster display names ship in clusters.js next to the clustering itself;
+// the literal array is only a fallback for a stale generated file
+const CLBL = [];
+CL.forEach(c=>{CLBL[c.id]=c.label||["The field","Steady winners","Decorated veterans","Dynasty peaks"][c.id];});
+// prose stats are recomputed by every clusters.js build; keep the page honest
+if(DATA.stats){
+  const r=document.getElementById('stat-r'), k=document.getElementById('stat-kept');
+  if(r&&DATA.stats.rAdj) r.textContent='r = '+DATA.stats.rAdj.toFixed(2).replace(/^(-?)0\./,'$1.');
+  if(k&&DATA.stats.kept) k.textContent=Math.round(DATA.stats.kept*100)+'%';
+}
 const ERAS = [
-  {lbl:"Pre-BO2", range:"debut 2008–2012", color:"#7c3aed"},
-  {lbl:"MLG–CWL", range:"debut 2013–2019", color:"#0891b2"},
-  {lbl:"CDL era", range:"debut 2020+",      color:"#d97706"},
+  {lbl:"Pre-BO2", range:"first major 2008–2012", color:"#7c3aed"},
+  {lbl:"MLG–CWL", range:"first major 2013–2019", color:"#0891b2"},
+  {lbl:"CDL era", range:"first major 2020+",      color:"#d97706"},
 ];
 const eraOf = y => y<=2012 ? 0 : (y<=2019 ? 1 : 2);
 const cvar = i => getComputedStyle(document.documentElement).getPropertyValue('--c'+i).trim();
@@ -213,10 +224,10 @@ function select(name){
       l.setAttribute('x1',SX(s.x));l.setAttribute('y1',SY(s.y));l.setAttribute('x2',SX(q.x));l.setAttribute('y2',SY(q.y));
       document.getElementById('links').appendChild(l); });
     panel.innerHTML=`<h3>${esc(s.name)}</h3>
-      <div class="sub">${CLBL[s.cluster]} · ${s.adj} adj wins · ${s.champs} champ${s.champs===1?'':'s'} · debut ${s.debut}</div>
-      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700;margin-bottom:.2rem">Closest comps</div>
+      <div class="sub">${CLBL[s.cluster]} · ${s.adj} adj wins · ${s.champs} champ${s.champs===1?'':'s'} · first major ${s.debut}</div>
+      <div style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:700;margin-bottom:var(--space-1)">Closest comps</div>
       ${s.comps.map(cp=>`<div class="compline"><a href="player.html?p=${encodeURIComponent(cp.name)}">${esc(cp.name)}</a><span class="cs">${cp.score}</span></div>`).join('')}
-      <div class="compline" style="border:0;padding-top:.5rem"><a class="small" href="player.html?p=${encodeURIComponent(s.name)}">Open ${esc(s.name)}'s page →</a></div>`;
+      <div class="compline" style="border:0;padding-top:var(--space-2)"><a class="small" href="player.html?p=${encodeURIComponent(s.name)}">Open ${esc(s.name)}'s page →</a></div>`;
   }else{
     panel.innerHTML=`<p class="maphint">Click any dot to see who a player is closest to. The map draws
       lines to their top comps and lists them here.</p>`;
@@ -227,8 +238,8 @@ function showTip(p,e){
   tip.innerHTML=`<div class="tn">${esc(p.name)}</div>
     <div class="tr"><span>Adjusted wins</span><b>${p.adj}</b></div>
     <div class="tr"><span>World champs</span><b>${p.champs}</b></div>
-    <div class="tr"><span>Titles · span</span><b>${p.titles} · ${p.span}y</b></div>
-    <div class="tr"><span>Debut</span><b>${p.debut}</b></div>
+    <div class="tr"><span>Titles · career</span><b>${p.titles} · ${p.span}y</b></div>
+    <div class="tr"><span>First major</span><b>${p.debut}</b></div>
     <div class="tc">${CLBL[p.cluster]} · closest: ${p.comps[0]?esc(p.comps[0].name):'–'}</div>`;
   tip.classList.add('on'); moveTip(e);
 }
@@ -246,7 +257,8 @@ document.querySelectorAll('#colorby button').forEach(b=>b.onclick=()=>{
 });
 document.getElementById('search').addEventListener('input',e=>{
   const v=e.target.value.trim().toLowerCase();
-  const hit=P.find(p=>p.name.toLowerCase()===v)||P.find(p=>v&&p.name.toLowerCase().startsWith(v));
+  if(!v){ select(null); return; }   // clearing the box clears the selection too
+  const hit=P.find(p=>p.name.toLowerCase()===v)||P.find(p=>p.name.toLowerCase().startsWith(v));
   if(hit) select(hit.name);
 });
 function renderLegend(){
@@ -255,7 +267,7 @@ function renderLegend(){
     head.textContent='Adjusted wins';
     box.innerHTML=`<div class="legscale"><div class="legbar"></div>
       <div class="legscale-lab"><span>0</span><span>${Math.round(adjMax)}</span></div>
-      <p class="legdesc" style="margin:.35rem 0 0">Lighter to darker = more era-adjusted wins.</p></div>`;
+      <p class="legdesc" style="margin:var(--space-1) 0 0">Lighter to darker = more era-adjusted wins.</p></div>`;
     return;
   }
   if(mode==='debut'){

@@ -17,7 +17,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .chart-wrap{overflow-x:auto}
@@ -28,12 +29,13 @@
   svg.hm a:hover .row{text-decoration:underline;fill:var(--accent)}
   svg.hm .cell{cursor:default}
   svg.hm .pct{font-size:9.5px;pointer-events:none}
-  .swatches{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);margin:.2rem 0 .3rem}
+  .swatches{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--muted);margin:var(--space-1) 0 var(--space-1)}
   .swatches .ramp{display:inline-block;width:120px;height:12px;border-radius:3px;
     background:linear-gradient(90deg,#eaf1fe,#1e3a8a)}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap wide" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -46,7 +48,7 @@ const GOLD = getComputedStyle(document.documentElement).getPropertyValue('--gold
 const { PRESETS } = eraContext(D);
 const ORDER = D.meta.seasonOrder;
 const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
-const ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
+const ABBR = Object.fromEntries(ORDER.map(g=>[g, window.GAME_ABBR[g]||g]));
 
 // map every event to its season, so a World-Championship win can be marked on the right cell
 const event2game = {};
@@ -91,7 +93,7 @@ document.getElementById('root').innerHTML = `
   <p class="lede">Each cell is a player's <strong>share of that title's majors</strong>, the same season-share the leaderboard is built on.
   Darker = more of the season won. A <span style="color:${GOLD}">◆ gold dot</span> marks a season they won the World Championship.
   Read a row for a career, a column for who owned that title. <a href="methodology.html">How the share works →</a></p>
-  <div class="swatches"><span>less</span><span class="ramp"></span><span>more of the season won</span></div>
+  <div class="swatches"><span>0%</span><span class="ramp"></span><span>${Math.round(mx*100)}% of a season won, the highest here (color is scaled to it)</span></div>
   <div class="chart-wrap">${s}</div>
   <p class="small muted">Top 16 by era-adjusted wins (all seasons). Hover a cell for the exact wins.</p>`;
 mountFoot();

@@ -17,7 +17,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .chart-wrap{position:relative;overflow-x:auto}
@@ -40,23 +41,24 @@
   svg.tj .xdot{fill:#fff;stroke-width:2.5;opacity:0;pointer-events:none}
   svg.tj a{cursor:pointer}
   svg.tj .line{cursor:pointer}
-  .picker{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.7rem 0 .2rem}
-  .picker input{padding:.4rem .6rem;border:1px solid var(--line-2);border-radius:8px;font:inherit;font-size:.85rem;min-width:170px}
+  .picker{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;margin:var(--space-3) 0 var(--space-1)}
+  .picker input{padding:var(--space-2) var(--space-2);border:1px solid var(--line-2);border-radius:8px;font:inherit;font-size:var(--text-sm);min-width:170px}
   .picker input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-  .segbtn{font:inherit;font-size:.8rem;cursor:pointer;color:var(--muted);background:transparent;
-    border:1px solid var(--line);border-radius:7px;padding:.32rem .58rem}
+  .segbtn{font:inherit;font-size:var(--text-sm);cursor:pointer;color:var(--muted);background:transparent;
+    border:1px solid var(--line);border-radius:7px;padding:var(--space-1) var(--space-2)}
   .segbtn:hover{background:var(--panel-2);color:var(--ink);border-color:var(--line-2)}
-  .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0 .1rem;min-height:1.6rem}
-  .chip{display:inline-flex;align-items:center;gap:.35rem;font-size:.8rem;padding:.2rem .3rem .2rem .55rem;
+  .chips{display:flex;flex-wrap:wrap;gap:var(--space-1);margin:var(--space-2) 0 var(--space-1);min-height:1.6rem}
+  .chip{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-sm);padding:var(--space-1) var(--space-1) var(--space-1) var(--space-2);
     border-radius:20px;color:#fff;font-weight:600}
   .chip button{border:0;background:rgba(255,255,255,.28);color:#fff;border-radius:50%;width:16px;height:16px;
-    line-height:1;cursor:pointer;font-size:.7rem;padding:0}
-  #tt{position:fixed;pointer-events:none;z-index:50;background:#111827;color:#fff;font-size:.8rem;
-    padding:.4rem .55rem;border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;max-width:230px;line-height:1.35}
+    line-height:1;cursor:pointer;font-size:var(--text-xs);padding:0}
+  #tt{position:fixed;pointer-events:none;z-index:50;background:#111827;color:#fff;font-size:var(--text-sm);
+    padding:var(--space-2) var(--space-2);border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;max-width:230px;line-height:1.35}
   #tt .s{color:#cbd5e1}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap wide" id="root" role="main" tabindex="-1"></div>
 <div id="tt"></div>
 <script src="data.js"></script>
@@ -70,7 +72,7 @@ const ORDER = D.meta.seasonOrder;
 const IDX = Object.fromEntries(ORDER.map((g,i)=>[g,i]));
 const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
 const MBAR = D.meta.mbarAll;
-const ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
+const ABBR = Object.fromEntries(ORDER.map(g=>[g, window.GAME_ABBR[g]||g]));
 const ERALAB = {prebo2:'Pre-BO2', mlgcwl:'MLG–CWL', cdl:'CDL era'};
 const ERAFILL = {prebo2:'#f2f5f9', mlgcwl:'#eef4fb', cdl:'#eef7f2'};
 // validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 17.9)

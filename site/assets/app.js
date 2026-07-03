@@ -1,9 +1,12 @@
 /* Monitoring: Sentry (error reporting + feedback widget) and Vercel analytics.
-   The Sentry bundle itself is loaded (with SRI) from each page's <head>; init and
-   the analytics injection are gated to the deployed site so local dev sessions and
-   Playwright runs don't send events or burn quota. */
+   The Sentry bundle is loaded (with SRI, deferred) from each page's <head>, so it
+   isn't executed yet when this classic script runs — init waits for DOMContentLoaded,
+   which fires after deferred scripts. Init and the analytics injection are gated to
+   the deployed site so local dev sessions and Playwright runs don't send events or
+   burn quota. */
 const DEPLOYED = /\.vercel\.app$/.test(location.hostname);
-if (DEPLOYED && window.Sentry) {
+window.addEventListener('DOMContentLoaded', () => {
+  if (!DEPLOYED || !window.Sentry) return;
   Sentry.init({
     dsn: "https://31fc37624c1589dbbe233db42c843560@o4511651597975552.ingest.us.sentry.io/4511651631398912",
     integrations: [
@@ -23,7 +26,7 @@ if (DEPLOYED && window.Sentry) {
     tracesSampleRate: 0,             // no performance tracing, conserve free quota
     allowUrls: [/\.vercel\.app/],
   });
-}
+});
 if (DEPLOYED) {
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   const va = document.createElement('script');
@@ -55,6 +58,11 @@ function deltaPill(d){
 }
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
+
+/* Short season labels, shared by the chart pages (heatmap, trajectory) so a new
+   title only needs adding once. Look up via D.meta.seasonOrder with a fallback
+   to the full name, so an unmapped new season can never render "undefined". */
+window.GAME_ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
 
 
 /* Column show/hide dropdown for the leaderboard. Builds a button + checkbox panel
@@ -92,39 +100,9 @@ function mountColumnMenu(table, cols, onChange){
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
 }
 
-/* build header nav, marking active */
-function mountNav(active){
-  // "Insights" groups the charts and the derived-signature page in a dropdown.
-  const VIZ=[['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['map.html','Similarity map'],['signatures.html','Signatures']];
-  const vizActive=VIZ.some(([h])=>h===active);
-  const drop=`<div class="navdrop${vizActive?' active':''}">
-      <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false">Insights <span aria-hidden="true">▾</span></button>
-      <div class="navdrop-menu">${VIZ.map(([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`).join('')}</div>
-    </div>`;
-  const before=[['index.html','Leaderboard']], after=[['games.html','Seasons'],['methodology.html','Why weight?'],['changelog.html','Changelog']];
-  const lnk=([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`;
-  const nav=before.map(lnk).join('')+drop+after.map(lnk).join('');
-  document.body.insertAdjacentHTML('afterbegin',
-    `<a class="skip" href="#root">Skip to content</a>`+
-    `<header class="site-head"><div class="inner">
-      <a class="brand" href="index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
-      <nav class="nav">${nav}</nav>
-    </div></header>`);
-  // dropdown open/close (click to toggle, click-away + Esc to close)
-  const dd=document.querySelector('.navdrop');
-  if(dd){
-    const b=dd.querySelector('.navdrop-btn');
-    b.addEventListener('click',e=>{e.stopPropagation();const o=dd.classList.toggle('open');b.setAttribute('aria-expanded',o);});
-    document.addEventListener('click',()=>dd.classList.remove('open'));
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')dd.classList.remove('open');});
-  }
-  // expose the nav's height so sticky table headers can sit just below it
-  const setNavH=()=>{const el=document.querySelector('.site-head');
-    if(el) document.documentElement.style.setProperty('--navh', el.offsetHeight+'px');};
-  setNavH();
-  window.addEventListener('resize', setNavH);
-  window.addEventListener('load', setNavH);
-}
+/* Header nav lives in assets/nav.js, mounted at the top of <body> before first
+   paint (avoids the layout shift of injecting it here). Pages' mountNav('...')
+   calls hit its already-mounted guard and are no-ops. */
 function mountFoot(){
   document.body.insertAdjacentHTML('beforeend',
     `<footer class="site-foot">Reconstructed from the
