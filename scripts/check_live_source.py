@@ -22,11 +22,14 @@ UA = "Mozilla/5.0 (compatible; cod-stats-source-check/1.0; +https://cod-stats-on
 API = "https://cod-esports.fandom.com/api.php"
 
 
+PAGE = 500
+
 def live_major_wins():
     """Live {mkey(player): (wins, display_name)} for every player with >=1 major win.
+    Paginates past the 500-row cap so the comparison is never silently partial.
     Returns None if the wiki can't be reached after retries."""
-    params = {
-        "action": "cargoquery", "format": "json", "limit": "500",
+    base = {
+        "action": "cargoquery", "format": "json", "limit": str(PAGE),
         "tables": "Tournaments=TO,TournamentResults=TR,TournamentPlayers=TP,PlayerRedirects=PR,Players=PL",
         "fields": "PL.OverviewPage=Player,COUNT(*)=Wins",
         "where": 'PL.OverviewPage IS NOT NULL AND (TP.Role IS NULL OR TP.Role="Substitute") '
@@ -35,26 +38,30 @@ def live_major_wins():
                    "TP.Link=PR.AllName,PR.OverviewPage=PL.OverviewPage",
         "group_by": "PR.OverviewPage", "order_by": "Wins DESC",
     }
-    url = API + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
-    for _ in range(6):
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA})
-            with urllib.request.urlopen(req, timeout=30) as r:
-                data = json.load(r)
-        except Exception:
-            time.sleep(12); continue
-        if "cargoquery" not in data:           # error / rate-limited
-            time.sleep(12); continue
-        out = {}
-        for row in data["cargoquery"]:
+    out, offset = {}, 0
+    while True:
+        params = dict(base, offset=str(offset))
+        url = API + "?" + urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+        rows = None
+        for _ in range(6):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": UA})
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    data = json.load(r)
+            except Exception:
+                time.sleep(12); continue
+            if "cargoquery" not in data:           # error / rate-limited
+                time.sleep(12); continue
+            rows = data["cargoquery"]; break
+        if rows is None:                           # gave up on this page
+            return None
+        for row in rows:
             t = row["title"]
             out[mkey(t["Player"])] = (int(t["Wins"]), t["Player"])
-        if len(data["cargoquery"]) >= 500:
-            # our 50 all have 4+ wins so they sort well inside the top 500, but a
-            # truncated result should never silently pass as a full comparison
-            print("WARNING: cargo query returned the 500-row cap; comparison may be partial")
-        return out
-    return None
+        if len(rows) < PAGE:                       # last page
+            return out
+        offset += PAGE
+        time.sleep(5)                              # courtesy pause between pages
 
 
 def main():

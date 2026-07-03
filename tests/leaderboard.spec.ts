@@ -88,6 +88,17 @@ test.describe('era filter', () => {
     await page.locator('.eramenu-panel input[data-title]').first().uncheck();
     await expect(page).toHaveURL(/eras=t(:|%3A)/);
   });
+
+  test('custom selection round-trips by stable slug; malformed t: falls back to All', async ({ page }) => {
+    await page.goto('/index.html?eras=t:blackops2-ghosts');
+    const expected = await page.evaluate(() =>
+      (window as any).computeRows(new Set(['Black Ops 2', 'Ghosts']), 1).length);
+    await expect(page.locator('#table .tabulator-row')).toHaveCount(expected);
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('2 titles');
+    // malformed / empty custom token must NOT silently select the first title — fall back to All
+    await page.goto('/index.html?eras=t:');
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
+  });
 });
 
 test.describe('champs weighting', () => {
@@ -123,6 +134,44 @@ test.describe('champs weighting', () => {
       return out;
     });
     expect(bad).toEqual([]);
+  });
+
+  test('ring-weighted ranking is exact, not rounded (regression guard)', async ({ page }) => {
+    await page.goto('/index.html');
+    const res = await page.evaluate(() => {
+      const D = (window as any).APP_DATA;
+      const cr = (window as any).computeRows as (s: Set<string>, n?: number) => any[];
+      const all = new Set<string>(D.meta.seasonOrder);
+      const N = 3;
+      // independent exact weighted key (BigInt), derived straight from D.players
+      const denom: Record<string, number> = {}; D.games.forEach((g: any) => denom[g.game] = g.denom);
+      const games = D.meta.seasonOrder as string[];
+      const denomSum = games.reduce((a, g) => a + denom[g], 0), G = games.length;
+      const gcd = (a: bigint, b: bigint): bigint => { a = a < 0n ? -a : a; b = b < 0n ? -b : b; while (b) { const t = a % b; a = b; b = t; } return a; };
+      const lcm = (a: bigint, b: bigint) => a / gcd(a, b) * b;
+      const L = games.reduce((acc, g) => lcm(acc, BigInt(denom[g])), 1n);
+      const key: Record<string, bigint> = {};
+      for (const name in D.players) {
+        const p = D.players[name];
+        const sel = p.seasons.filter((s: any) => all.has(s.game));
+        if (sel.reduce((a: number, s: any) => a + s.wins, 0) === 0) continue;
+        const numer = sel.reduce((a: bigint, s: any) => a + BigInt(s.wins) * (L / BigInt(s.majors)), 0n);
+        const won = new Set<string>(); sel.forEach((s: any) => s.events.forEach((e: any) => won.add(e.event)));
+        const champs = (p.champ_events || []).filter((c: any) => won.has(c.event)).length;
+        key[name] = numer * BigInt(denomSum) + BigInt(champs) * BigInt(N - 1) * L * BigInt(G);
+      }
+      const rows = cr(all, N);
+      let mismatch = 0, roundedDiffers = false;
+      for (const r of rows) {
+        const exactRank = 1 + rows.filter(o => key[o.name] > key[r.name]).length;
+        if (r.adjRank !== exactRank) mismatch++;
+        const roundedRank = 1 + rows.filter(o => o.adjWeighted > r.adjWeighted).length;
+        if (roundedRank !== exactRank) roundedDiffers = true;
+      }
+      return { mismatch, roundedDiffers };
+    });
+    expect(res.mismatch).toBe(0);          // computeRows ranks by the exact weighted total
+    expect(res.roundedDiffers).toBe(true); // and a naive rounded ranking would differ — proves we're exact
   });
 });
 

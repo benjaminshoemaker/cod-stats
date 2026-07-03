@@ -11,7 +11,7 @@ Static, no build step, works offline (the table library is vendored locally).
 
 | Page | What it shows |
 |------|----------------|
-| `index.html` | Sortable / searchable / filterable leaderboard (every player with 2+ major wins) with Adjusted, Peak, Eras, Raw wins, rank-change, and **Championships** columns plus an **"Exclude pre-BO2"** toggle (state persists). Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
+| `index.html` | Sortable / searchable / filterable leaderboard (every player with 2+ major wins) with Adjusted, Peak, Eras, Raw wins, rank-change, and **Championships** columns. Controls: an **"Eras"** filter (presets + per-title checkboxes; recomputes the ranking for the selected seasons), a **column selector**, and an optional **championship-weighting** slider — all shareable via the URL. Responsive-collapse + keyboard-sortable. Uses [Tabulator](https://tabulator.info). |
 | `player.html?p=Name` | A player's every major win, grouped by season, with each win's weight and the running adjusted total — plus their **Call of Duty World Championship** count (unweighted, one per year). |
 | `games.html` / `game.html?g=Game` | Per-season pages: how many majors there were, the per-win weight, the full event list with winners, and which leaderboard players won. |
 | `scatter.html` | **Peak vs Longevity** scatter: best title-winning season against distinct CoD titles won. |

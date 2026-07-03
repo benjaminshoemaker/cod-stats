@@ -77,55 +77,69 @@ const PRESETS = {                                       // named multi-selection
   cdl:    ORDER.filter(g=>eraOf(g)==='cdl'),
 };
 const DENOM = {}; D.games.forEach(g=>{ DENOM[g.game]=g.denom; });
+// stable slug per title for shareable custom-selection URLs (positional indices would
+// silently shift if the season list ever changed)
+const slugOf = g => g.toLowerCase().replace(/[^a-z0-9]/g,'');
+const BY_SLUG = {}; ORDER.forEach(g=>{ BY_SLUG[slugOf(g)] = g; });
 
 // ---- recompute engine ------------------------------------------------------
 // Everything the leaderboard shows is defined relative to the *selected* seasons,
 // so a filter is a recompute, not a row-hide. This reproduces build_data.py's math
 // (exact-rational shares, competition ranks) for any subset of titles. Guarded by
 // a test that computeRows(all) / computeRows(post-BO2) match the baked leaderboard.
-function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
+// BigInt gcd/lcm so exact-share numerators can't overflow Number's 2^53 as denominators grow.
+function gcd(a,b){ a=a<0n?-a:a; b=b<0n?-b:b; while(b){ const t=a%b; a=b; b=t; } return a; }
 function lcm(a,b){ return a/gcd(a,b)*b; }
 
 function computeRows(selected, ringWeight){   // selected: Set of title names; ringWeight: ring = N majors (1 = off)
   const N = ringWeight || 1;
   const games = ORDER.filter(g=>selected.has(g));
   if(!games.length) return [];
-  const MBAR = games.reduce((a,g)=>a+DENOM[g],0) / games.length;
-  const L = games.reduce((acc,g)=>lcm(acc, DENOM[g]), 1);   // common denom for exact shares
+  const denomSum = games.reduce((a,g)=>a+DENOM[g],0);      // Σ denominators (integer)
+  const G = games.length;
+  const MBAR = denomSum / G;
+  const L = games.reduce((acc,g)=>lcm(acc, BigInt(DENOM[g])), 1n);   // exact common denominator (BigInt)
+  const Lnum = Number(L);
   const rows = [];
   for(const name in D.players){
     const p = D.players[name];
     const sel = p.seasons.filter(s=>selected.has(s.game));  // seasons this player won in, within the set
     const raw = sel.reduce((a,s)=>a+s.wins,0);
     if(raw === 0) continue;                                 // no wins in these eras → off the board
-    const numer = sel.reduce((a,s)=>a + s.wins*(L/s.majors), 0);   // s.majors === DENOM[s.game]
-    const adjusted = Math.round(numer/L * MBAR * 100)/100;
+    const numer = sel.reduce((a,s)=> a + BigInt(s.wins)*(L/BigInt(s.majors)), 0n);  // exact share numerator
+    const adjusted = Math.round(Number(numer)/Lnum * MBAR * 100)/100;
     let best = sel[0];                                      // peak = best single season's share (exact)
     for(const s of sel){ if(s.wins*best.majors > best.wins*s.majors) best = s; }
     const yrs = [];
     for(const s of sel) for(const e of s.events) if(e.date) yrs.push(+e.date.slice(0,4));
     const won = new Set(); sel.forEach(s=>s.events.forEach(e=>won.add(e.event)));
     rows.push({
-      name, raw, _numer: numer, adjusted,
+      name, raw, _numer: numer,
+      champs: (p.champ_events||[]).filter(c=>won.has(c.event)).length,
+      adjusted,
       peak: best.wins/best.majors,
       peakInfo: {adj: Math.round(best.wins/best.majors*MBAR*100)/100, season: best.game, wins: best.wins, majors: best.majors},
       eras: sel.length,
       firstYear: yrs.length?Math.min(...yrs):null,
       lastYear:  yrs.length?Math.max(...yrs):null,
-      champs: (p.champ_events||[]).filter(c=>won.has(c.event)).length,
     });
   }
   // optional championship weighting: a ring counts as N majors. It already contributes
   // ~1 (as a major) inside `adjusted`, so we add only the extra (N-1) — no double-count,
   // and N=1 leaves the board identical. Denominators are untouched (the ring stays a
   // legitimate major in its season's pool); this is a pure overlay on top of `adjusted`.
+  // `adjWeighted` is rounded for display; ranking uses an EXACT integer key so ties/order
+  // match build_data.py's ethos (exact weighted ∝ numer·Σdenom + champs·(N-1)·L·G).
   const weighted = N > 1;
-  for(const r of rows) r.adjWeighted = Math.round((r.adjusted + r.champs*(N-1))*100)/100;
-  // competition ranks (1 + strictly-better); exact base ranking via integer numerators,
-  // or by the ring-weighted total when the slider is engaged.
+  const bExtra = BigInt(N-1), bSum = BigInt(denomSum), bG = BigInt(G);
+  for(const r of rows){
+    r.adjWeighted = Math.round((r.adjusted + r.champs*(N-1))*100)/100;
+    r._wnumer = r._numer*bSum + BigInt(r.champs)*bExtra*L*bG;
+  }
+  // competition ranks (1 + strictly-better), on exact integer keys (BigInt).
   for(const r of rows){
     r.adjRank = weighted
-      ? 1 + rows.filter(o=>o.adjWeighted > r.adjWeighted).length
+      ? 1 + rows.filter(o=>o._wnumer > r._wnumer).length
       : 1 + rows.filter(o=>o._numer > r._numer).length;
     r.rawRank = 1 + rows.filter(o=>o.raw > r.raw).length;
     r.delta = r.rawRank - r.adjRank;
@@ -147,7 +161,7 @@ const searchInput = document.getElementById("search");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','peak','eras','raw','winsChange','rawRank','delta','champs']);
+const VALID = new Set(['adjRank','name','adjusted','adjWeighted','peak','eras','raw','winsChange','rawRank','delta','champs']);
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
@@ -155,14 +169,14 @@ const startQ    = params.get('q') || '';
 function sameSet(set, arr){ return set.size===arr.length && arr.every(g=>set.has(g)); }
 function selectionToken(sel){
   for(const k of ['all','post','prebo2','mlgcwl','cdl']) if(sameSet(sel, PRESETS[k])) return k;
-  return 't:' + ORDER.map((g,i)=>sel.has(g)?i:-1).filter(i=>i>=0).join('-');
+  return 't:' + ORDER.filter(g=>sel.has(g)).map(slugOf).join('-');   // custom set, by stable slug
 }
 function parseSelection(token){
   if(!token) return null;
   if(PRESETS[token]) return new Set(PRESETS[token]);
   if(token.startsWith('t:')){
-    const gs = token.slice(2).split('-').map(i=>ORDER[+i]).filter(Boolean);
-    return gs.length ? new Set(gs) : null;
+    const gs = token.slice(2).split('-').map(s=>BY_SLUG[s]).filter(Boolean);   // unknown/empty slugs dropped
+    return gs.length ? new Set(gs) : null;                                     // malformed → null → default
   }
   return null;
 }
