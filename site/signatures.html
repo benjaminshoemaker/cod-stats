@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Signatures · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Player signatures derived from era-adjusted CoD major wins: World Championship rate, compressed dominance, career timing, longevity, and the model's single-season ceiling. Recomputed live from the data.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Signatures · CoD majors">
+<meta property="og:description" content="The ratios hiding behind the leaderboard — rings per win, wins per year, when in a career the titles landed. Live from the data.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/signatures.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+<style>
+  .sig{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:1.1rem 1.25rem 1rem;margin:1.1rem 0}
+  .sig-top{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
+  .sig h2{font-size:1.15rem;margin:0 0 .1rem;letter-spacing:-.01em}
+  .sig .unit{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--faint);white-space:nowrap}
+  .sig .concept{color:var(--muted);font-size:.95rem;margin:.15rem 0 .1rem;max-width:74ch}
+  .sig .howto{color:var(--faint);font-size:.82rem;margin:.1rem 0 .8rem;max-width:74ch}
+  .sig-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.6rem}
+  @media(max-width:640px){.sig-pair{grid-template-columns:1fr;gap:.4rem}}
+  .sub-h{font-size:.76rem;font-weight:700;color:var(--ink);margin:.1rem 0 .35rem}
+  .sub-h .q{color:var(--faint);font-weight:500}
+  .sigrow{display:grid;grid-template-columns:1.2rem minmax(56px,auto) 1fr auto;align-items:center;
+    gap:.55rem;padding:.3rem 0;border-top:1px solid var(--line)}
+  .sigrow:first-of-type{border-top:0}
+  .sigrk{color:var(--faint);font-size:.76rem;text-align:right;font-variant-numeric:tabular-nums}
+  .signm{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    color:var(--ink)}
+  .signm:hover{color:var(--accent);text-decoration:none}
+  .sigbar{background:var(--panel-2);border-radius:5px;height:7px;overflow:hidden}
+  .sigfill{display:block;height:100%;background:var(--accent);border-radius:5px}
+  .sigfill.alt{background:var(--warn)}
+  .sigval{font-size:.8rem;color:var(--ink);white-space:nowrap;text-align:right;
+    font-variant-numeric:tabular-nums;font-family:var(--mono)}
+  .sigsub{color:var(--faint)}
+  .ceil{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;background:var(--accent-soft);
+    border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.2rem;margin:.5rem 0 .2rem}
+  .ceil .big{font-size:2.7rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;
+    line-height:1;font-family:var(--mono)}
+  .ceil .grps{display:flex;flex-direction:column;gap:.35rem;font-size:.9rem}
+  .ceil .season{font-weight:600;color:var(--ink)}
+  .ceil .who{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('signatures.html');
+const root=document.getElementById('root');
+const LB=D.leaderboard, P=D.players;
+
+// ---- helpers -------------------------------------------------------------
+const yrsActive=r=>Math.max(1, r.lastYear-r.firstYear);
+function winDates(name){
+  const p=P[name]; if(!p) return [];
+  return p.seasons.flatMap(s=>s.events.map(e=>e.date)).sort();
+}
+function frontload(name){
+  const ds=winDates(name); if(ds.length<4) return null;
+  const t=s=>new Date(s+'T00:00:00').getTime();
+  const span=t(ds[ds.length-1])-t(ds[0]); if(span<=0) return null;
+  return {v: ds.reduce((a,d)=>a+(t(d)-t(ds[0]))/span,0)/ds.length, n: ds.length};
+}
+// render a ranked list: rows = [{name, bar, val, sub, alt}]
+function bars(rows){
+  const mx=Math.max(...rows.map(r=>r.bar))||1;
+  return rows.map((r,i)=>`<div class="sigrow">
+    <span class="sigrk">${i+1}</span>
+    <a class="signm" href="player.html?p=${encodeURIComponent(r.name)}">${esc(r.name)}</a>
+    <span class="sigbar"><span class="sigfill${r.alt?' alt':''}" style="width:${Math.max(4,r.bar/mx*100).toFixed(0)}%"></span></span>
+    <span class="sigval">${r.val}${r.sub?` <span class="sigsub">${r.sub}</span>`:''}</span>
+  </div>`).join('');
+}
+const TOP=6;
+
+// ---- 1. Ring merchants & the uncrowned ----------------------------------
+const merchants=LB.filter(r=>r.champs>=2)
+  .map(r=>({name:r.name, rate:r.champs/r.adjAll, champs:r.champs, adj:r.adjAll}))
+  .sort((a,b)=>b.rate-a.rate).slice(0,TOP)
+  .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2),
+            sub:`${r.champs} rings / ${r.adj.toFixed(1)} adj`}));
+const uncrowned=LB.filter(r=>r.champs===0)
+  .sort((a,b)=>b.adjAll-a.adjAll).slice(0,TOP)
+  .map(r=>({name:r.name, bar:r.adjAll, val:r.adjAll.toFixed(1), sub:`${r.raw} raw`, alt:true}));
+
+// ---- 2. Compressed dominance --------------------------------------------
+const density=LB.filter(r=>r.adjAll>=4 && yrsActive(r)>=2)
+  .map(r=>({name:r.name, rate:r.adjAll/yrsActive(r), adj:r.adjAll, y:yrsActive(r)}))
+  .sort((a,b)=>b.rate-a.rate).slice(0,TOP)
+  .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2), sub:`${r.adj.toFixed(1)} adj / ${r.y}y`}));
+
+// ---- 3. Prodigies & late bloomers ---------------------------------------
+const fl=LB.map(r=>{const f=frontload(r.name); return f?{name:r.name, v:f.v, n:f.n,
+    range:`${r.firstYear}–${r.lastYear}`}:null;}).filter(Boolean);
+const prodigies=[...fl].sort((a,b)=>a.v-b.v).slice(0,5)
+  .map(r=>({name:r.name, bar:0.5-r.v, val:r.v.toFixed(2), sub:r.range}));
+const bloomers=[...fl].sort((a,b)=>b.v-a.v).slice(0,5)
+  .map(r=>({name:r.name, bar:r.v-0.5, val:r.v.toFixed(2), sub:r.range, alt:true}));
+
+// ---- 4. The long careers -------------------------------------------------
+const careers=[...LB].sort((a,b)=>yrsActive(b)-yrsActive(a)).slice(0,7)
+  .map(r=>({name:r.name, bar:yrsActive(r), val:`${yrsActive(r)}y`,
+            sub:`${r.firstYear}–${r.lastYear}`}));
+
+// ---- 5. The single-season ceiling ---------------------------------------
+const peakMax=Math.max(...LB.map(r=>r.peakAll));
+const tied=LB.filter(r=>Math.abs(r.peakAll-peakMax)<1e-6);
+const bySeason={};
+tied.forEach(r=>{const s=r.peakInfoAll.season;
+  (bySeason[s]=bySeason[s]||{info:r.peakInfoAll, names:[]}).names.push(r.name);});
+const ceilGroups=Object.entries(bySeason).map(([s,g])=>
+  `<div><span class="season">${esc(s)}</span> · ${g.info.wins} of ${g.info.majors} majors<br>
+   <span class="who">${g.names.map(n=>`<a class="signm" href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a>`).join(', ')}</span></div>`
+).join('');
+
+// ---- render --------------------------------------------------------------
+root.innerHTML=`
+  <h1>Signatures</h1>
+  <p class="lede">The leaderboard ranks players by era-adjusted major wins. These are the <strong>ratios between</strong>
+  the numbers — rings to wins, wins to years, when in a career the titles landed. Every board below recomputes
+  live from the current data.</p>
+
+  <div class="sig">
+    <div class="sig-top"><h2>Ring merchants &amp; the uncrowned</h2><span class="unit">rings ÷ adj · adj wins</span></div>
+    <p class="concept">The World Championship is one per year and unweighted, the biggest single title in CoD.
+    This ranks a player's rings as a share of their era-adjusted wins: how much of a career is crowns.</p>
+    <p class="howto">Left needs 2 or more rings, so a one-time champion can't top the ratio. Right is the most
+    era-adjusted wins with no Championship at all.</p>
+    <div class="sig-pair">
+      <div><div class="sub-h">Most crown-heavy <span class="q">· rings ÷ adj wins</span></div>${bars(merchants)}</div>
+      <div><div class="sub-h">The uncrowned <span class="q">· adj wins, zero rings</span></div>${bars(uncrowned)}</div>
+    </div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-top"><h2>Compressed dominance</h2><span class="unit">adj wins ÷ year</span></div>
+    <p class="concept">Era-adjusted wins divided by years active, first major to last. Higher means more winning
+    packed into less time.</p>
+    <p class="howto">This rewards short, intense runs as much as long primes — a two-year burst can outrank a decade.
+    Minimum 4 adjusted wins and a two-year span, so single-season flashes don't top it.</p>
+    ${bars(density)}
+  </div>
+
+  <div class="sig">
+    <div class="sig-top"><h2>Prodigies &amp; late bloomers</h2><span class="unit">career-timing index</span></div>
+    <p class="concept">Place every win on a 0-to-1 line from a player's first major to their last, then average.
+    Below 0.5 the wins came early; above 0.5 they came late.</p>
+    <p class="howto">Minimum 4 wins. The index is order-of-timing only — it says nothing about how many titles, just when.</p>
+    <div class="sig-pair">
+      <div><div class="sub-h">Prodigies <span class="q">· won early, then tapered</span></div>${bars(prodigies)}</div>
+      <div><div class="sub-h">Late bloomers <span class="q">· aged into winning</span></div>${bars(bloomers)}</div>
+    </div>
+  </div>
+
+  <div class="sig">
+    <div class="sig-top"><h2>The long careers</h2><span class="unit">years, first → last major</span></div>
+    <p class="concept">Years between a player's first major win and their most recent one.</p>
+    <p class="howto">Longevity in a sport barely fifteen years old. Players still competing keep adding to these,
+    so the board moves each season.</p>
+    ${bars(careers)}
+  </div>
+
+  <div class="sig">
+    <div class="sig-top"><h2>The most dominant season the model can score</h2><span class="unit">era-adjusted peak</span></div>
+    <p class="concept">A season's era-adjusted value is (wins ÷ majors that season) × the average majors per season.
+    Sweeping four of a six-major season is the practical ceiling.</p>
+    <p class="howto">It caps here because a lean-major season makes each win worth the most, so the same peak is
+    reachable in any era, not just recent ones.</p>
+    <div class="ceil">
+      <div class="big">${peakMax.toFixed(2)}</div>
+      <div class="grps">${ceilGroups}</div>
+    </div>
+  </div>
+`;
+mountFoot();
+</script>
+</body>
+</html>

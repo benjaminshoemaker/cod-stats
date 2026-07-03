@@ -59,6 +59,10 @@ def merge_path_features(players, path_json=None):
             for k, v in pf.items():
                 if v is not None:
                     p.setdefault(k, v)
+        # era-neutral tenure: YEARS per team (not majors/team, which is era-biased)
+        dt, sp = p.get("distinct_teams"), p.get("spanAll")
+        if dt and sp is not None:
+            p["tenure_years"] = round(sp / dt, 2)
     return players, hit
 
 
@@ -287,17 +291,15 @@ def bootstrap_stability(fs, D, k, n_boot=200, seed=0):
 # --------------------------------------------------------------------------- #
 # short UI labels + display format per feature (order defines table rows)
 SITE_GROUPS = [
-    ("Success", [("adjAll", "Adjusted wins", "dec1"), ("raw", "Raw wins", "int"),
-                 ("champs", "World champs", "int")]),
+    ("Success", [("adjAll", "Adjusted wins", "dec1"), ("champs", "World champs", "int"),
+                 ("win_conversion", "Win conversion", "pct")]),
     ("Peak", [("peakAll", "Peak season", "dec1")]),
-    ("Consistency", [("finals_rate", "Finals rate", "pct"),
-                     ("deep_run_rate", "Deep-run rate", "pct"),
-                     ("win_conversion", "Win conversion", "pct")]),
+    ("Placement", [("finals_rate", "Finals rate", "pct"),
+                   ("deep_run_rate", "Deep-run rate", "pct")]),
     ("Longevity", [("titlesAll", "Distinct titles", "int"),
-                   ("spanAll", "Career span", "int"),
-                   ("attendances", "Majors attended", "int")]),
+                   ("spanAll", "Career span", "int")]),
     ("Path", [("distinct_teams", "Teams played for", "int"),
-              ("avg_tenure", "Avg tenure/team", "dec1")]),
+              ("tenure_years", "Avg tenure (yrs)", "dec1")]),
 ]
 
 

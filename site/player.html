@@ -150,8 +150,8 @@ function mountSimilar(name){
 
   host.innerHTML = `
     <h2>Similar players</h2>
-    <p class="small muted">Closest résumés by <strong>achievement</strong> — success, peak, consistency,
-      longevity, and career path. When a player debuted is deliberately not scored, so comps can cross eras.</p>
+    <p class="small muted">Closest résumés by <strong>achievement</strong> (success, peak, placement,
+      longevity, and career path), all measured era-independently. When a player debuted is not scored, so comps can cross eras.</p>
     <div class="sim-controls">
       <div class="seg" id="sim-seg">
         <button data-mode="solo" aria-pressed="true">Didn't win together</button>
@@ -164,7 +164,7 @@ function mountSimilar(name){
   function renderList(){
     const rows = me[mode];
     if(!rows.length){ document.getElementById('sim-list').innerHTML =
-      `<p class="small faint">No non-teammate comps — this player won alongside all their closest matches.</p>`; return; }
+      `<p class="small faint">No non-teammate comps: this player won alongside all their closest matches.</p>`; return; }
     document.getElementById('sim-list').innerHTML = rows.map((r,i)=>`
       <button class="sim-row${r.name===sel?' active':''}" data-comp="${esc(r.name)}" aria-expanded="${r.name===sel}">
         <span class="rk num">${i+1}</span>

@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Career trajectories · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Cumulative era-adjusted major wins over time for every Call of Duty major winner — spotlight any player, watch championships accrue, compare careers across eras.">
+<meta name="description" content="Cumulative era-adjusted major wins over time for every Call of Duty major winner. Spotlight any player, watch championships accrue, compare careers across eras.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Career trajectories · CoD majors over time">
-<meta property="og:description" content="Cumulative era-adjusted wins over time — spotlight any player, watch championships accrue, compare careers.">
+<meta property="og:description" content="Cumulative era-adjusted wins over time: spotlight any player, watch championships accrue, compare careers.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/trajectory.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
 <meta property="og:image:width" content="1200">
@@ -96,7 +96,7 @@ const hasEra = (name,era)=>D.players[name].seasons.some(s=>eraOf(s.game)===era);
 const runOf = name=>{ const p=series(name); return p.length? p[p.length-1].idx-p[0].idx : 0; };
 const slopeOf = name=> adjOf(name)/Math.max(1,runOf(name));   // adj wins per season of x-span
 
-// presets — chosen to produce distinct line SHAPES, not just overlapping top players
+// presets, chosen to produce distinct line SHAPES, not just overlapping top players
 const topN = n => ALLNAMES.slice().sort((a,b)=>adjOf(b)-adjOf(a)).slice(0,n);
 const PRESETS = {
   top:   ()=>topN(8),
@@ -106,8 +106,8 @@ const PRESETS = {
   champ: ()=>ALLNAMES.filter(n=>(lbByName[n].champs||0)>0).sort((a,b)=>(lbByName[b].champs-lbByName[a].champs)||(adjOf(b)-adjOf(a))).slice(0,8),
 };
 const PBTN = [['top','Top 8','The 8 highest era-adjusted careers'],
-  ['fast','Fast risers','Steepest climbs — the most wins in the fewest seasons'],
-  ['slow','Slow burners','Flattest climbs — built up gradually over a long career'],
+  ['fast','Fast risers','Steepest climbs: the most wins in the fewest seasons'],
+  ['slow','Slow burners','Flattest climbs: built up gradually over a long career'],
   ['cdl','CDL stars','Top 8 of the CDL era'],
   ['champ','Most rings','The 8 with the most World Championships'],
   ['clear','Clear','Remove all highlights']];
@@ -150,7 +150,7 @@ function draw(){
     g+=`<path class="hit" d="${d}"/>`;
     if(sel){ const byIdx=Object.fromEntries(pts.map(p=>[p.idx,p]));
       for(const c of (D.players[name].champ_events||[])){ const p=byIdx[IDX[event2game[c.event]]];
-        if(p){ const cx=X(p.idx),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)} — ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
+        if(p){ const cx=X(p.idx),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)}: ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
     return g+'</g>';
   };
   for(const n of ALLNAMES) if(!selected.has(n)) s+=drawLine(n);
@@ -199,7 +199,7 @@ function attachHover(){
 function chipsHTML(){
   return [...selected].sort((a,b)=>adjOf(b)-adjOf(a)).map(n=>
     `<span class="chip" style="background:${colorOf[n]}">${esc(n)}<button data-rm="${esc(n)}" title="remove">✕</button></span>`).join('')
-    || '<span class="small faint">No players highlighted — hover any grey line, or add one.</span>';
+    || '<span class="small faint">No players highlighted. Hover any grey line, or add one.</span>';
 }
 
 document.getElementById('root').innerHTML = `
@@ -215,7 +215,7 @@ document.getElementById('root').innerHTML = `
   </div>
   <div class="chips" id="chips"></div>
   <div class="chart-wrap" id="chart"></div>
-  <p class="small muted">Seasons are evenly spaced oldest → newest (not by calendar year). Grey lines are the rest of the field — hover to identify. Championship markers show only on highlighted players.</p>`;
+  <p class="small muted">Seasons are evenly spaced oldest → newest (not by calendar year). Grey lines are the rest of the field; hover to identify. Championship markers show only on highlighted players.</p>`;
 
 function rerender(){ recolor(); document.getElementById('chips').innerHTML=chipsHTML(); draw(); }
 document.querySelectorAll('.segbtn[data-preset]').forEach(b=>b.addEventListener('click',()=>{
