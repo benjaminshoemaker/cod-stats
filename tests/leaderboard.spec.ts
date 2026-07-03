@@ -14,9 +14,9 @@ test.describe('leaderboard', () => {
     await page.goto('/index.html');
     const fields = await page.$$eval(
       '#table .tabulator-header .tabulator-col[tabulator-field]',
-      els => els.map(e => e.getAttribute('tabulator-field')),
+      els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
     );
-    expect(fields).toEqual(COLUMN_ORDER);
+    expect(fields).toEqual(COLUMN_ORDER);   // adjWeighted is hidden until the ring slider is engaged
   });
 
   test('header is sticky to the window', async ({ page }) => {
@@ -87,6 +87,42 @@ test.describe('era filter', () => {
     // uncheck one title from the default "all" set → custom selection (colon is URL-encoded)
     await page.locator('.eramenu-panel input[data-title]').first().uncheck();
     await expect(page).toHaveURL(/eras=t(:|%3A)/);
+  });
+});
+
+test.describe('champs weighting', () => {
+  test('ring slider reveals the weighted column and updates the URL', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="adjWeighted"]')).toBeHidden();
+    await page.locator('#ringw-range').evaluate((el, v) => {
+      (el as HTMLInputElement).value = String(v);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }, 4);
+    await expect(page).toHaveURL(/rings=4/);
+    await expect(page.locator('#table .tabulator-col[tabulator-field="adjWeighted"]')).toBeVisible();
+  });
+
+  test('weighting = adjusted + champs×(N−1) and re-ranks by it (URL restore)', async ({ page }) => {
+    await page.goto('/index.html?rings=4');
+    const bad = await page.evaluate(() => {
+      const cr = (window as any).computeRows as (s: Set<string>, n?: number) => any[];
+      const D = (window as any).APP_DATA;
+      const all = new Set<string>(D.meta.seasonOrder);
+      const rows = cr(all, 4);
+      const base = Object.fromEntries(cr(all, 1).map((r: any) => [r.name, r]));
+      const out: string[] = [];
+      for (const r of rows) {
+        const b = base[r.name];
+        const expected = Math.round((b.adjusted + b.champs * 3) * 100) / 100;   // N-1 = 3
+        if (Math.abs(r.adjWeighted - expected) > 0.001) out.push(`${r.name} weighted ${r.adjWeighted}!=${expected}`);
+      }
+      // #1 by weighted rank must hold the max weighted total (re-ranked, not base order)
+      const maxW = Math.max(...rows.map((r: any) => r.adjWeighted));
+      const top = rows.slice().sort((a: any, b: any) => a.adjRank - b.adjRank)[0];
+      if (Math.abs(top.adjWeighted - maxW) > 0.001) out.push('rank #1 is not the max weighted total');
+      return out;
+    });
+    expect(bad).toEqual([]);
   });
 });
 

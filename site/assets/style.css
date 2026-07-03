@@ -123,6 +123,11 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .era-group-h{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
   color:var(--faint);padding:.2rem .5rem}
 @media(max-width:620px){.eramenu-panel{min-width:min(94vw,300px)}.era-groups{grid-template-columns:1fr}}
+.ringw{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--ink);user-select:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:.4rem .7rem}
+.ringw-lbl{color:var(--muted)}
+.ringw input[type=range]{accent-color:var(--accent);width:96px;cursor:pointer}
+.ringw-val{font-family:var(--mono);font-variant-numeric:tabular-nums;min-width:1.8em;text-align:right}
 .note{background:var(--accent-soft);border:1px solid #dbe5ff;border-radius:8px;padding:.6rem .85rem;
   font-size:.85rem;color:#1e40af}
 

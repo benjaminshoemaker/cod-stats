@@ -177,6 +177,13 @@ root.innerHTML=`
   <strong>"Eras"</strong> filter — pick a preset (Post-BO2, the MLG–CWL era, the CDL era) or any set of titles, and the
   adjusted numbers and ranks recompute for just those seasons. Excluding the sparse 2010–2012 pre-BO2 seasons (as few as
   3 tracked majors) is the "Post-BO2" preset.</div>
+
+  <div class="note" style="margin-top:.9rem;background:var(--panel);border-color:var(--line);color:var(--muted)">
+    <strong>Championships.</strong> A CoD World Championship is already counted as a major here (it's one of the season's
+    majors). Because whether a ring should count for <em>more</em> is subjective, the core number treats it like any other
+    major — but the leaderboard has an optional <strong>"Ring weight"</strong> slider: set a ring worth up to 6 regular
+    majors and it re-ranks by an <strong>"Adj +◆"</strong> total that adds the extra ring value on top. It's off by
+    default and never alters the neutral era-adjusted number.</div>
 `;
 mountFoot();
 </script>

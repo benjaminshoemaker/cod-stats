@@ -35,6 +35,11 @@
     <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off">
     <div class="colmenu eramenu" id="eramenu"></div>
     <div class="colmenu" id="colmenu"></div>
+    <label class="ringw" id="ringw" title="Weight Championships: a ring counts as N regular majors">
+      <span class="ringw-lbl">◆ Ring&nbsp;weight</span>
+      <input type="range" id="ringw-range" min="1" max="6" step="1">
+      <span class="ringw-val" id="ringw-val">×1</span>
+    </label>
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
@@ -81,7 +86,8 @@ const DENOM = {}; D.games.forEach(g=>{ DENOM[g.game]=g.denom; });
 function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
 function lcm(a,b){ return a/gcd(a,b)*b; }
 
-function computeRows(selected){          // selected: Set of title names
+function computeRows(selected, ringWeight){   // selected: Set of title names; ringWeight: ring = N majors (1 = off)
+  const N = ringWeight || 1;
   const games = ORDER.filter(g=>selected.has(g));
   if(!games.length) return [];
   const MBAR = games.reduce((a,g)=>a+DENOM[g],0) / games.length;
@@ -109,9 +115,18 @@ function computeRows(selected){          // selected: Set of title names
       champs: (p.champ_events||[]).filter(c=>won.has(c.event)).length,
     });
   }
-  // competition ranks (1 + strictly-better), exact for adj via integer numerators
+  // optional championship weighting: a ring counts as N majors. It already contributes
+  // ~1 (as a major) inside `adjusted`, so we add only the extra (N-1) — no double-count,
+  // and N=1 leaves the board identical. Denominators are untouched (the ring stays a
+  // legitimate major in its season's pool); this is a pure overlay on top of `adjusted`.
+  const weighted = N > 1;
+  for(const r of rows) r.adjWeighted = Math.round((r.adjusted + r.champs*(N-1))*100)/100;
+  // competition ranks (1 + strictly-better); exact base ranking via integer numerators,
+  // or by the ring-weighted total when the slider is engaged.
   for(const r of rows){
-    r.adjRank = 1 + rows.filter(o=>o._numer > r._numer).length;
+    r.adjRank = weighted
+      ? 1 + rows.filter(o=>o.adjWeighted > r.adjWeighted).length
+      : 1 + rows.filter(o=>o._numer > r._numer).length;
     r.rawRank = 1 + rows.filter(o=>o.raw > r.raw).length;
     r.delta = r.rawRank - r.adjRank;
     r.winsChange = Math.round((r.adjusted - r.raw)*10)/10;
@@ -152,6 +167,10 @@ function parseSelection(token){
   return null;
 }
 let selected = parseSelection(params.get('eras') || getPref('eras')) || new Set(PRESETS.all);
+
+// championship weighting: a ring counts as N majors (1 = off). URL (?rings=) → pref → 1.
+const RING_MAX = 6;
+let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || getPref('rings') || 1)) || 1));
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
 
@@ -192,6 +211,10 @@ const columns = [
     {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:116, minWidth:M?76:116, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
+    {title:M?"+◆":"Adj +◆", field:"adjWeighted", width:M?80:120, minWidth:M?80:120, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", visible: ringN>1,
+      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
+      headerTooltip:"Adjusted wins with the championship weighting applied (a ring counts as N majors)"},
     {title:"Peak", field:"peak", width:M?76:104, minWidth:M?76:104, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Most dominant season: % of that season's majors won",
@@ -218,7 +241,7 @@ const columns = [
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
-  data: computeRows(selected),
+  data: computeRows(selected, ringN),
   layout: "fitData",   // size to content so hiding columns narrows the table (vs. one column ballooning)
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
@@ -233,6 +256,8 @@ function syncURL(){
   const token = selectionToken(selected);
   if(token !== 'all') p.set('eras', token);
   setPref('eras', token);
+  if(ringN > 1) p.set('rings', ringN);
+  setPref('rings', ringN);
   const q = searchInput.value.trim();
   if(q) p.set('q', q);
   const hidden = COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field);
@@ -270,7 +295,8 @@ function setNote(sel){
   const mbar = games.reduce((a,g)=>a+DENOM[g],0)/games.length;
   const what = PRESET_LABEL[selectionToken(sel)] || `${games.length} selected titles`;
   note.innerHTML = `Showing <strong>${esc(what)}</strong>. Adjusted = season-share &times; ${mbar.toFixed(2)} `
-    + `(avg majors across the ${games.length} selected ${games.length===1?'season':'seasons'}).`;
+    + `(avg majors across the ${games.length} selected ${games.length===1?'season':'seasons'}).`
+    + (ringN>1 ? ` Championships weighted: <strong>Adj +◆</strong> counts each ring as ${ringN} majors.` : '');
 }
 
 // "Eras" dropdown: era-preset buttons + per-title checkboxes. Recomputes the whole
@@ -326,7 +352,23 @@ function mountEraMenu(initial, onChange){
 setNote(selected);
 mountEraMenu(selected, sel=>{
   selected = sel;
-  table.replaceData(computeRows(selected)).catch(()=>{});   // .catch: see COD-STATS-4/5
+  table.replaceData(computeRows(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
+  setNote(selected);
+  syncURL();
+});
+
+// championship weighting slider: a ring counts as N majors (1 = off). Shows/hides the
+// "Adj +◆" column and re-ranks by the weighted total.
+const ringRange = document.getElementById('ringw-range');
+const ringVal   = document.getElementById('ringw-val');
+ringRange.max = RING_MAX; ringRange.value = ringN; ringVal.textContent = '×'+ringN;
+ringRange.addEventListener('input', e=>{
+  ringN = +e.target.value;
+  ringVal.textContent = '×'+ringN;
+  const col = table.getColumn('adjWeighted');
+  if(col) (ringN>1 ? col.show() : col.hide());
+  table.replaceData(computeRows(selected, ringN)).catch(()=>{});
+  table.redraw(true);        // refit columns after showing/hiding the weighted column
   setNote(selected);
   syncURL();
 });
