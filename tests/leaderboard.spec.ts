@@ -101,6 +101,38 @@ test.describe('era filter', () => {
   });
 });
 
+test.describe('filters + url state', () => {
+  test('URL is the sole source of truth — the bare path loads defaults', async ({ page }) => {
+    await page.goto('/index.html?eras=cdl&rings=3&hide=peak');
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('CDL');
+    // reload the bare path — must be defaults, not the previous selection (no localStorage carryover)
+    await page.goto('/index.html');
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
+    await expect(page.locator('#ringw-val')).toHaveText('×1');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="peak"]')).toBeVisible();
+    const total = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
+    await expect(page.locator('#table .tabulator-row')).toHaveCount(total);
+  });
+
+  test('"Clear filters" clears the URL and resets everything', async ({ page }) => {
+    await page.goto('/index.html?eras=cdl&rings=3&sort=raw&dir=desc');
+    const clear = page.locator('#clearfilters');
+    await expect(clear).toBeVisible();
+    await clear.click();
+    await expect(page).toHaveURL(/\/index\.html$/);   // query string gone
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
+    await expect(clear).toBeHidden();                 // nothing active → hidden
+  });
+
+  test('Eras "Reset" returns the era filter to all', async ({ page }) => {
+    await page.goto('/index.html?eras=cdl');
+    await page.locator('.eramenu .colmenu-btn').click();
+    await page.locator('.era-preset[data-preset="all"]').click();   // the "Reset" button
+    await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
+    await expect(page).not.toHaveURL(/eras=/);
+  });
+});
+
 test.describe('champs weighting', () => {
   test('ring slider reveals the weighted column and updates the URL', async ({ page }) => {
     await page.goto('/index.html');

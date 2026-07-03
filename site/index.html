@@ -40,6 +40,7 @@
       <input type="range" id="ringw-range" min="1" max="6" step="1">
       <span class="ringw-val" id="ringw-val">×1</span>
     </label>
+    <button type="button" class="clearfilters" id="clearfilters" hidden>Clear filters</button>
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
@@ -180,11 +181,13 @@ function parseSelection(token){
   }
   return null;
 }
-let selected = parseSelection(params.get('eras') || getPref('eras')) || new Set(PRESETS.all);
+// The URL is the single source of truth for view state — no localStorage fallback,
+// so a bare/root URL always loads defaults and a link fully reproduces its view.
+let selected = parseSelection(params.get('eras')) || new Set(PRESETS.all);
 
-// championship weighting: a ring counts as N majors (1 = off). URL (?rings=) → pref → 1.
+// championship weighting: a ring counts as N majors (1 = off), from ?rings=.
 const RING_MAX = 6;
-let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || getPref('rings') || 1)) || 1));
+let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || 1)) || 1));
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
 
@@ -202,9 +205,7 @@ const COLS = [
   {field:'champs',    label:'Champs'},
 ];
 const COL_FIELDS = new Set(COLS.map(c=>c.field));
-const startHide = new Set(
-  (params.has('hide') ? params.get('hide') : (getPref('hideCols')||''))
-    .split(',').filter(f=>COL_FIELDS.has(f)));
+const startHide = new Set((params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)));
 
 // On phones, keep every column reachable via horizontal scroll instead of hiding them.
 const mq = window.matchMedia('(max-width: 760px)');
@@ -269,16 +270,15 @@ function syncURL(){
   if(s && !(s.field==='adjRank' && s.dir==='asc')){ p.set('sort',s.field); p.set('dir',s.dir); }
   const token = selectionToken(selected);
   if(token !== 'all') p.set('eras', token);
-  setPref('eras', token);
   if(ringN > 1) p.set('rings', ringN);
-  setPref('rings', ringN);
   const q = searchInput.value.trim();
   if(q) p.set('q', q);
   const hidden = COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field);
   if(hidden.length) p.set('hide', hidden.join(','));
-  setPref('hideCols', hidden.join(','));
   const qs = p.toString();
   history.replaceState(null,'', qs ? ('?'+qs) : location.pathname);
+  const clearBtn = document.getElementById('clearfilters');
+  if(clearBtn) clearBtn.hidden = !qs;   // "Clear filters" shows only when some state is active
 }
 
 table.on("tableBuilt",()=>{
@@ -323,15 +323,16 @@ function mountEraMenu(initial, onChange){
   const panel = document.createElement('div');
   panel.className='colmenu-panel eramenu-panel'; panel.hidden=true; panel.setAttribute('role','menu');
 
-  const presetBtns=[['all','All'],['post','Post-BO2'],['prebo2','Pre-BO2'],['mlgcwl','MLG–CWL'],['cdl','CDL']];
+  const presetBtns=[['post','Post-BO2'],['prebo2','Pre-BO2'],['mlgcwl','MLG–CWL'],['cdl','CDL']];
   const groups = ERAS.map(er=>{
     const items = ORDER.filter(g=>eraOf(g)===er.key).map(g=>
       `<label class="colmenu-item"><input type="checkbox" data-title="${ORDER.indexOf(g)}"> ${esc(g)}</label>`).join('');
     return `<div class="era-group"><div class="era-group-h">${esc(er.label)}</div>${items}</div>`;
   }).join('');
+  // "Reset" (right) returns to the default: all seasons selected.
   panel.innerHTML = `<div class="era-presets">${presetBtns.map(([k,l])=>
       `<button type="button" class="era-preset" data-preset="${k}">${esc(l)}</button>`).join('')}`
-    + `<button type="button" class="era-preset era-clear" data-action="clear">Clear</button></div>`
+    + `<button type="button" class="era-preset era-clear" data-preset="all">Reset</button></div>`
     + `<div class="era-groups">${groups}</div>`;
   host.append(btn, panel);
 
@@ -348,16 +349,14 @@ function mountEraMenu(initial, onChange){
   btn.addEventListener('click', e=>{ e.stopPropagation(); panel.hidden?open():close(); });
   panel.addEventListener('click', e=>{
     e.stopPropagation();
-    if(e.target.dataset.action==='clear'){    // uncheck all to build a set from scratch
-      boxes().forEach(b=>b.checked=false); updateLabel(new Set()); return;
-    }
     const k=e.target.dataset.preset; if(!k) return;
     const sel=new Set(PRESETS[k]); syncChecks(sel); updateLabel(sel); onChange(sel);
   });
   panel.addEventListener('change', e=>{
     if(!e.target.dataset.title) return;
-    const sel=currentSet(); updateLabel(sel);
-    if(sel.size>0) onChange(sel);   // 0 selected = mid-build; wait for a pick before recomputing
+    let sel=currentSet();
+    if(sel.size===0){ e.target.checked=true; sel=currentSet(); }   // keep ≥1; "Reset" is how you get back to all
+    updateLabel(sel); onChange(sel);
   });
   document.addEventListener('click', close);
   document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
@@ -386,6 +385,10 @@ ringRange.addEventListener('input', e=>{
   setNote(selected);
   syncURL();
 });
+
+// "Clear filters" just clears the URL — since the URL is the sole source of truth,
+// loading the bare path resets eras, columns, ring weight, search, and sort to defaults.
+document.getElementById('clearfilters').addEventListener('click', ()=>{ location.assign(location.pathname); });
 
 mountFoot();
 </script>
