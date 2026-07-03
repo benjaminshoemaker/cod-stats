@@ -15,7 +15,7 @@ Split:
 Writes analysis/out/path_features.json keyed by player (lower-cased).
 Run after `player_participation.json` is fetched.
 """
-import json, os, re
+import json, os, re, sys
 from collections import defaultdict
 
 # wiki OverviewPage disambiguates same-handle players: "Methodz (Anthony Zinni)".
@@ -24,6 +24,22 @@ _DISAMBIG = re.compile(r"\s*\([^)]*\)\s*$")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+sys.path.insert(0, ROOT)
+import build_data
+
+NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
+
+
+def _played(date):
+    return (date or "0000") <= build_data.ASOF
+
+
+def _keep(row):
+    return (
+        row["Game"] not in build_data.DROP_GAMES
+        and row["Event"] not in build_data.DROP_EVENTS
+        and _played(row.get("Date"))
+    )
 
 
 def _num(place_number, place):
@@ -41,14 +57,22 @@ def _num(place_number, place):
     return None
 
 
-def derive(participation_json=None):
+def derive(participation_json=None, events_json=None):
     participation_json = participation_json or os.path.join(
         ROOT, "player_participation.json")
+    events_json = events_json or os.path.join(ROOT, "major_events.json")
     rows = json.load(open(participation_json))
+    counted_events = {r["Event"] for r in json.load(open(events_json)) if _keep(r)}
 
     byp = defaultdict(list)
     for r in rows:
-        byp[r["Player"].lower()].append(r)
+        if not _keep(r):
+            continue
+        if r.get("Event") not in counted_events:
+            continue
+        if r.get("Place") in NONPLAY:
+            continue
+        byp[build_data.mkey(r["Player"])].append(r)
 
     out = {}
     for pl, evs in byp.items():

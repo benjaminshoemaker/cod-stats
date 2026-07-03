@@ -200,6 +200,41 @@ def test_structural_override_matches_participation():
         assert maxatt(g) == len(counted[g]), f"{g} unexpectedly structural (max {maxatt(g)} < {len(counted[g])})"
 
 
+def test_path_features_filter_to_played_console_major_universe(tmp_path):
+    from analysis import path_features
+
+    dropped = next(iter(build_data.DROP_EVENTS))
+    events = [
+        {"Event": "Counted Major 1", "Game": "Black Ops 2", "Date": "2020-01-01"},
+        {"Event": "Counted Major 2", "Game": "Black Ops 2", "Date": "2020-02-01"},
+        {"Event": "DNS Major", "Game": "Black Ops 2", "Date": "2020-03-01"},
+        {"Event": "Warzone Major", "Game": "Warzone", "Date": "2020-04-01"},
+        {"Event": dropped, "Game": "Black Ops 7", "Date": "2026-06-01"},
+        {"Event": "Future Major", "Game": "Black Ops 7", "Date": "2999-01-01"},
+    ]
+    rows = [
+        {"Player": "Testy", "Event": "Counted Major 1", "Game": "Black Ops 2", "Date": "2020-01-01", "Team": "A", "Place": "1", "PlaceNumber": "1"},
+        {"Player": "Testy", "Event": "Counted Major 2", "Game": "Black Ops 2", "Date": "2020-02-01", "Team": "B", "Place": "3", "PlaceNumber": "3"},
+        {"Player": "Testy", "Event": "DNS Major", "Game": "Black Ops 2", "Date": "2020-03-01", "Team": "C", "Place": "DNS", "PlaceNumber": ""},
+        {"Player": "Testy", "Event": "Warzone Major", "Game": "Warzone", "Date": "2020-04-01", "Team": "D", "Place": "1", "PlaceNumber": "1"},
+        {"Player": "Testy", "Event": dropped, "Game": "Black Ops 7", "Date": "2026-06-01", "Team": "E", "Place": "1", "PlaceNumber": "1"},
+        {"Player": "Testy", "Event": "Future Major", "Game": "Black Ops 7", "Date": "2999-01-01", "Team": "F", "Place": "1", "PlaceNumber": "1"},
+    ]
+    events_path = tmp_path / "major_events.json"
+    part_path = tmp_path / "player_participation.json"
+    json.dump(events, open(events_path, "w"))
+    json.dump(rows, open(part_path, "w"))
+
+    f = path_features.derive(str(part_path), events_json=str(events_path))["testy"]
+    assert f["attendances"] == 2
+    assert f["distinct_teams"] == 2
+    assert f["avg_tenure"] == 1.0
+    assert f["finals_rate"] == 0.5
+    assert f["deep_run_rate"] == 1.0
+    assert f["win_conversion"] == 0.5
+    assert f["best_place"] == 1
+
+
 def test_guard_raises_on_wrong_total(monkeypatch):
     monkeypatch.setattr(build_data, "PUBLISHED", build_data.PUBLISHED + [("NotARealPlayer", 5)])
     with pytest.raises(RuntimeError):
@@ -209,7 +244,7 @@ def test_guard_raises_on_wrong_total(monkeypatch):
 def _build_with_champs(monkeypatch, tmp_path, mutate):
     """Copy the source JSON to a tmp dir, mutate the champs rows, and build from there."""
     import shutil
-    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json"):
+    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json"):
         shutil.copy(build_data._p(f), tmp_path / f)
     champs = json.load(open(tmp_path / "champs_wins.json"))
     mutate(champs["cargoquery"])

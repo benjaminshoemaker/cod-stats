@@ -323,6 +323,7 @@ test.describe('pages', () => {
     for (const [file, sel, heading] of [
       ['heatmap.html', 'svg.hm rect.cell', /Dominance heatmap/],
       ['trajectory.html', 'svg.tj path.vis', /Career trajectories/],
+      ['map.html', 'svg#map circle.node', /map of CoD careers/],
     ] as [string, string, RegExp][]) {
       await page.goto('/' + file);
       await expect(page.getByRole('heading', { name: heading })).toBeVisible();
@@ -335,6 +336,13 @@ test.describe('pages', () => {
     await page.goto('/heatmap.html');
     // champions exist in the top-16, so at least one gold marker must render
     expect(await page.locator('svg.hm circle[fill="#b8860b"]').count()).toBeGreaterThan(0);
+  });
+
+  test('heatmap tooltips use scoring denominators, not held event counts', async ({ page }) => {
+    await page.goto('/heatmap.html');
+    const tips = await page.locator('svg.hm rect.cell title').allTextContents();
+    expect(tips).toContain('Shotzzy, MW19: 4/9 majors (44%) · World Champion');
+    expect(tips).toContain('HyDra, BO7: 1/6 majors (17%)');
   });
 
   test('player page links to the wiki and toggles wins vs every major entered', async ({ page }) => {

@@ -57,13 +57,13 @@ const lerp=(a,b,t)=>{a=a.slice(1);b=b.slice(1);const h=i=>parseInt(a.slice(i,i+2
 const seq=t=>lerp('#eaf1fe','#1e3a8a',Math.max(0,Math.min(1,t)));
 
 const rows = computeRows(D, new Set(PRESETS.all), 1).sort((a,b)=>a.adjRank-b.adjRank).slice(0,16);
-const shareOf = {}, champGames = {};
+const seasonOf = {}, champGames = {};
 for(const r of rows){
   const p = D.players[r.name];
-  shareOf[r.name] = Object.fromEntries(p.seasons.map(s=>[s.game,s.share]));
+  seasonOf[r.name] = Object.fromEntries(p.seasons.map(s=>[s.game,s]));
   champGames[r.name] = new Set((p.champ_events||[]).map(c=>event2game[c.event]).filter(Boolean));
 }
-let mx=0; for(const r of rows) for(const g of ORDER) mx=Math.max(mx, shareOf[r.name][g]||0);
+let mx=0; for(const r of rows) for(const g of ORDER) mx=Math.max(mx, seasonOf[r.name][g]?.share||0);
 
 const cw=44, rh=28, x0=140, y0=64, W=x0+cw*ORDER.length+16, H=y0+rh*rows.length+14;
 let s=`<svg class="hm" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dominance heatmap of the top 16 players by era-adjusted wins. Each cell is a player's share of that title's majors; darker cells mean more of the season won, and gold dots mark seasons they won the World Championship.">`;
@@ -73,10 +73,10 @@ rows.forEach((r,i)=>{
   const y=y0+i*rh; const nm=r.name;
   s+=`<a href="player.html?p=${encodeURIComponent(nm)}"><text class="row" x="${x0-8}" y="${y+rh/2+4}" text-anchor="end">${esc(nm)}</text></a>`;
   ORDER.forEach((g,j)=>{
-    const v=shareOf[nm][g]||0, x=x0+j*cw, isChamp=champGames[nm].has(g);
-    const G=GAMES[g], wins=Math.round(v*G.majors);
+    const season=seasonOf[nm][g], v=season?.share||0, x=x0+j*cw, isChamp=champGames[nm].has(g);
+    const wins=season?.wins||0, majors=season?.majors||GAMES[g].denom;
     const fill=v>0?seq(v/mx):'#f8fafc';
-    const tip=v>0?`${nm}, ${ABBR[g]}: ${wins}/${G.majors} majors (${Math.round(v*100)}%)${isChamp?' · World Champion':''}`:`${nm}, ${ABBR[g]}: no majors`;
+    const tip=v>0?`${nm}, ${ABBR[g]}: ${wins}/${majors} majors (${Math.round(v*100)}%)${isChamp?' · World Champion':''}`:`${nm}, ${ABBR[g]}: no majors`;
     s+=`<rect class="cell" x="${x+1}" y="${y+1}" width="${cw-2}" height="${rh-2}" rx="4" fill="${fill}"><title>${esc(tip)}</title></rect>`;
     if(v>=0.30 || (isChamp && v>0)){
       const dark=v/mx>0.5; s+=`<text class="pct" x="${x+cw/2}" y="${y+rh/2+4}" text-anchor="middle" fill="${dark?'#fff':'var(--ink)'}">${Math.round(v*100)}</text>`;
