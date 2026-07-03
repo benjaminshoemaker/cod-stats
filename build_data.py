@@ -15,6 +15,15 @@ ASOF = '2026-06-29'              # only majors played on/before this count as wi
                                  # events still count toward an in-progress season's denominator
 DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 
+# One-off corrections for events the wiki's Majors portal tiers as Major/Premier but
+# that aren't top-level pro majors. Dropped by exact event name, so the fix survives a
+# re-pull from the wiki (fetch_source.py) and becomes a harmless no-op once the wiki
+# reclassifies the event upstream.
+#  * "Call of Duty Challengers Finals 2026" — a Challengers (amateur) event, not a pro
+#    major. It inflated the Black Ops 7 denominator to 7; BO7 has 6 real majors (4 CDL
+#    Majors + Champs + EWC). Flagged by u/BcDownes on r/CoDCompetitive, 2026-07.
+DROP_EVENTS = {'Call of Duty Challengers Finals 2026'}
+
 # A player's share divides by what a team *could win* that season, which is not
 # always the number of majors played so far:
 #  * Structural restriction — Modern Warfare 2019 (CDL 2020) ran a split "Home
@@ -69,9 +78,10 @@ def build():
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
 
     played = lambda d: (d or '0000') <= ASOF
-    events_all = [e for e in events if e['Game'] not in DROP_GAMES]      # incl. future-dated (scheduled)
+    keep = lambda x: x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
+    events_all = [e for e in events if keep(e)]                          # incl. future-dated (scheduled)
     events = [e for e in events_all if played(e.get('Date'))]
-    pwins  = [r for r in pwins  if r['Game'] not in DROP_GAMES and played(r.get('Date'))]
+    pwins  = [r for r in pwins  if keep(r) and played(r.get('Date'))]
 
     # held = majors played so far that season; scheduled = all majors on the calendar
     # (same file, no date filter); denom = majors a team could win. Shares/peak/rescale

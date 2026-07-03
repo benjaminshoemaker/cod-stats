@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Peak vs Longevity — CoD Era-Adjusted</title>
+<title>Peak vs Longevity · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="Every CoD major winner plotted by peak (best title-winning season) against longevity (distinct titles won), era-adjusted. Measured by winning, not individual stats.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
-<meta property="og:title" content="Peak vs Longevity — CoD majors">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Peak vs Longevity · CoD majors">
 <meta property="og:description" content="Who won the most in a single season vs who kept winning across the most eras, era-adjusted. Two axes, one chart.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/scatter.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
@@ -45,9 +45,9 @@ const root=document.getElementById('root');
 root.innerHTML=`
   <h1>Peak vs. Longevity</h1>
   <p class="lede">Two players can share an adjusted total and have completely different résumés. This splits it into two
-  axes — both measured by <strong>winning</strong>, not individual play (it's tournament wins, not stats):
-  <strong>peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took),
-  and <strong>longevity</strong> = how many different CoD titles you kept winning majors across.</p>
+  axes, both measured by <strong>winning</strong> (tournament wins, not individual stats).
+  <strong>Peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took);
+  <strong>longevity</strong> = how many different CoD titles you kept winning majors across.</p>
   <div class="controls">
     <span class="small muted">Hover a dot for detail; click to open the player.</span>
   </div>
@@ -105,7 +105,7 @@ function render(){
   g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
   g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+plotH-8}" text-anchor="end">long career, lower peak</text>`;
 
-  // dots — plotted at exact (longevity, peak); smallest first so big ones draw on top
+  // dots, plotted at exact (longevity, peak); smallest first so big ones draw on top
   const sorted=[...rows].sort((a,b)=>a.adj-b.adj);
   let dots='';
   for(const p of sorted){

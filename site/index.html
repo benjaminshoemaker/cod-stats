@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CoD Major Wins — Era-Adjusted Leaderboard</title>
+<title>CoD Major Wins · Era-Adjusted Leaderboard</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="Call of Duty major tournament wins, re-ranked by era: every season weighted equally, then rescaled to a familiar wins number.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Who really dominated Call of Duty?">
 <meta property="og:description" content="Major tournament wins, re-weighted so every season counts equally. Sortable leaderboard with per-player breakdowns.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/">
@@ -91,7 +91,7 @@ const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
 // or "t:<slugs>" for a custom set (selectionToken/parseSelection come from rank.js).
-// The URL is the single source of truth for view state — no localStorage fallback,
+// The URL is the single source of truth for view state, with no localStorage fallback,
 // so a bare/root URL always loads defaults and a link fully reproduces its view.
 let selected = parseSelection(params.get('eras')) || new Set(PRESETS.all);
 
@@ -296,7 +296,7 @@ ringRange.addEventListener('input', e=>{
   syncURL();
 });
 
-// "Clear filters" just clears the URL — since the URL is the sole source of truth,
+// "Clear filters" just clears the URL. Since the URL is the sole source of truth,
 // loading the bare path resets eras, columns, ring weight, search, and sort to defaults.
 document.getElementById('clearfilters').addEventListener('click', ()=>{ location.assign(location.pathname); });
 

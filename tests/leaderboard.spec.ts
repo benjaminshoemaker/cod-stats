@@ -310,10 +310,38 @@ test.describe('pages', () => {
     await expect(page.locator('svg.scatter circle.dot')).toHaveCount(expected);
   });
 
-  test('BO7 season page shows in-progress weighting (1/7)', async ({ page }) => {
+  test('Visualizations nav dropdown lists all four charts', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.click('.navdrop-btn');
+    const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
+    expect(links).toEqual(['scatter.html', 'heatmap.html', 'shift.html', 'trajectory.html']);
+  });
+
+  test('viz pages render their SVG without JS errors', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', e => errors.push(e.message));
+    for (const [file, sel, heading] of [
+      ['heatmap.html', 'svg.hm rect.cell', /Dominance heatmap/],
+      ['shift.html', 'svg.db circle', /Raw . Adjusted/],
+      ['trajectory.html', 'svg.tj polyline', /Career trajectories/],
+    ] as [string, string, RegExp][]) {
+      await page.goto('/' + file);
+      await expect(page.getByRole('heading', { name: heading })).toBeVisible();
+      expect(await page.locator(sel).count()).toBeGreaterThan(0);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  test('heatmap marks championship seasons with a gold dot', async ({ page }) => {
+    await page.goto('/heatmap.html');
+    // champions exist in the top-16, so at least one gold marker must render
+    expect(await page.locator('svg.hm circle[fill="#b8860b"]').count()).toBeGreaterThan(0);
+  });
+
+  test('BO7 season page shows in-progress weighting (1/6)', async ({ page }) => {
     await page.goto('/game.html?g=Black%20Ops%207');
     await expect(page.getByText(/in progress/).first()).toBeVisible();
-    await expect(page.getByText('1 / 7')).toBeVisible(); // scheduled majors, not the 4 played
+    await expect(page.getByText('1 / 6')).toBeVisible(); // 6 scheduled majors (Challengers Finals dropped), not the 4 played
   });
 
   test('exact ties share a leaderboard rank (aBeZy & Simp both #3)', async ({ page }) => {

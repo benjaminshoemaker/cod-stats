@@ -120,6 +120,23 @@ def fetch_champs_wins():
     save("champs_wins.json", {"cargoquery": rows})
 
 
+def fetch_player_participation():
+    """Player-level participation at every major — ALL placements, not just wins.
+    This is the roster/path source: it lets us derive per-player features that
+    distinguish teammates by their CAREER PATH (teams played for, tenure) and by
+    placement depth (finals reached), rather than only shared trophies."""
+    rows = cargo_all({
+        "tables": PLAYER_TABLES,
+        "fields": ("PL.OverviewPage=Player,TO.Name=Event,TO.Game=Game,"
+                   "TO.DateStart=Date,TR.Team=Team,TR.Place=Place,"
+                   "TR.Place_Number=PlaceNumber"),
+        "where": f"PL.OverviewPage IS NOT NULL AND {ROLE_WHERE} AND {MAJOR_WHERE}",
+        "join_on": PLAYER_JOIN,
+        "order_by": "TO.DateStart,TO.Name,PL.OverviewPage",
+    })
+    save("player_participation.json", flat(rows))
+
+
 def fetch_team_participation():
     rows = cargo_all({
         "tables": "Tournaments=TO,TournamentResults=TR",
@@ -149,7 +166,8 @@ def print_published():
 def main():
     if "--published" in sys.argv:
         return print_published()
-    for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins, fetch_team_participation):
+    for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins,
+                 fetch_player_participation, fetch_team_participation):
         step()
         time.sleep(PAUSE)
     print("\nNow: review `git diff`, update PUBLISHED/ASOF in build_data.py if needed,")

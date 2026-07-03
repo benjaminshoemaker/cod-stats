@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Season — Era-Adjusted Major Wins</title>
+<title>Season · Era-Adjusted Major Wins</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty season's major tournaments, their winners, and how each win is weighted (1 ÷ majors that season).">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
-<meta property="og:title" content="Season majors & weighting — CoD Era-Adjusted">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Season majors & weighting · CoD Era-Adjusted">
 <meta property="og:description" content="Every major in the season, its winner, and the per-win weight used in the era adjustment.">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -33,11 +33,11 @@ const avg=D.meta.mbarAll;
 if(!g){
   root.innerHTML=`<p class="crumb"><a href="games.html">← Seasons</a></p><h1>Season not found</h1>`;
 }else{
-  document.title = `${g.game} — Majors & Weighting | CoD Era-Adjusted`;
+  document.title = `${g.game} · Majors & Weighting | CoD Era-Adjusted`;
   const evRows=g.events.map(e=>`<tr>
     <td class="faint num small">${esc(e.date||'')}</td>
     <td>${esc(e.event)}</td>
-    <td>${esc(e.winner||'—')}</td>
+    <td>${esc(e.winner||'–')}</td>
     <td class="small muted">${esc(e.type||'')}${e.location?' · '+esc(e.location):''}</td>
     <td class="n faint">+${g.weight.toFixed(3)}</td>
   </tr>`).join('');
@@ -67,11 +67,11 @@ if(!g){
     </div>
 
     <div class="note">How the weighting works here: ${split
-      ? `${g.majors} majors were held, but this season ran a split <strong>Home Series</strong> format — every team played only
+      ? `${g.majors} majors were held, but this season ran a split <strong>Home Series</strong> format, so every team played only
          <strong>${den}</strong> (8 Home Series + Champs). So a win is worth <span class="num">1/${den} = ${g.weight.toFixed(3)}</span>
          of a season, not 1/${g.majors}. To "max out" the season you'd need to win all ${den} you could enter.`
       : inprog
-      ? `this season is <strong>in progress</strong> — ${g.majors} of its <strong>${den}</strong> scheduled majors have been played.
+      ? `this season is <strong>in progress</strong>: ${g.majors} of its <strong>${den}</strong> scheduled majors have been played.
          A win is worth <span class="num">1/${den} = ${g.weight.toFixed(3)}</span> of the season (the full schedule every team
          can enter), not 1/${g.majors}, so current wins aren't overstated while the season is unfinished.`
       : `this season had <strong>${g.majors}</strong> majors. Winning <em>any</em> one is worth

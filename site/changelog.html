@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Changelog — CoD Era-Adjusted</title>
+<title>Changelog · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="What's changed in the era-adjusted Call of Duty major-wins site — including methodology changes that move the rankings, with their rationale.">
+<meta name="description" content="What's changed in the era-adjusted Call of Duty major-wins site, including methodology changes that move the rankings, with their rationale.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
-<meta property="og:title" content="Changelog — CoD Era-Adjusted">
-<meta property="og:description" content="What's changed — including methodology updates that move the rankings, logged with their rationale and impact.">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Changelog · CoD Era-Adjusted">
+<meta property="og:description" content="What's changed, including methodology updates that move the rankings, logged with their rationale and impact.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/changelog.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -39,22 +39,29 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-03', tag:'Fixed', title:'Black Ops 7 major count corrected to 6',
+   body:`The wiki's Majors portal listed the <strong>Call of Duty Challengers Finals 2026</strong>, an amateur
+   Challengers event, as a Black Ops 7 major, so the season's schedule read as 7 majors instead of 6 (4 CDL Majors,
+   Champs, and the EWC). That extra event was dividing every BO7 win by 7 instead of 6, under-weighting this season's
+   winners. It's now excluded, so BO7 winners tick up: <strong>HyDra #14→#12</strong>, with Drazah, Dashy and Scrap each
+   up one and the low-win names gaining most (Sib #58→#54). The average majors/season the scale rests on eased from 8.61
+   to 8.56. <a href="methodology.html#tournaments">Which tournaments count →</a>`},
   {date:'2026-07-03', tag:'New', title:'Shareable ranking cards',
    body:`Every view is now shareable as a social card. Hit <strong>Share ranking</strong> and the link's preview renders
-   <em>your</em> exact top 5 with your settings — so posting "CDL era, rings ×3 → Shotzzy #1" shows the ranking, not a
+   <em>your</em> exact top 5 with your settings. So posting "CDL era, rings ×3 → Shotzzy #1" shows the ranking, not a
    generic thumbnail. Built as an on-the-fly image from the same engine that powers the board, so the card always matches
    the live numbers.`},
   {date:'2026-07-02', tag:'New', title:'Optional championship weighting',
    body:`A <strong>Ring weight</strong> slider lets you weight CoD World Championships more heavily for the
-   rings-matter camp — set a ring worth up to <strong>6</strong> regular majors and the board re-ranks by an
+   rings-matter camp: set a ring worth up to <strong>6</strong> regular majors and the board re-ranks by an
    <strong>"Adj +◆"</strong> total (adjusted wins plus the extra ring value). At ×4, for example, <strong>Karma jumps to
    #2</strong> and Clayster into the top 6 on the strength of three championships each. It's off by default and never
-   changes the neutral era-adjusted number — an optional overlay, not a new metric. <a href="methodology.html">Methodology →</a>`},
+   changes the neutral era-adjusted number. An optional overlay, not a new metric. <a href="methodology.html">Methodology →</a>`},
   {date:'2026-07-02', tag:'New', title:'Filter the leaderboard by era',
-   body:`A new <strong>Eras</strong> control lets you re-rank on any slice of Call of Duty history — presets for the
+   body:`A new <strong>Eras</strong> control lets you re-rank on any slice of Call of Duty history: presets for the
    <strong>CDL era</strong>, the <strong>MLG–CWL era (BO2–BO4)</strong>, Post-BO2 or Pre-BO2, plus per-title checkboxes
    for a custom set. The numbers fully <em>recompute</em> for the seasons you pick (adjusted wins, ranks, peak, longevity)
-   rather than just hiding rows — so a CDL-era view is led by <strong>aBeZy and Simp</strong>, not the all-time win
+   rather than just hiding rows, so a CDL-era view is led by <strong>aBeZy and Simp</strong>, not the all-time win
    compilers. The old "Exclude pre-BO2" toggle is now simply the "Post-BO2" preset, and your selection is saved in the
    URL so you can share an exact era view. <a href="methodology.html">How the weighting works →</a>`},
   {date:'2026-07-02', tag:'New', title:'Show or hide columns',
@@ -63,20 +70,20 @@ const ENTRIES = [
   {date:'2026-07-02', tag:'Changed', title:'Documented the Scump major-count discrepancy',
    body:`Some trackers list Scump at 30 major wins vs <strong>28</strong> here. The methodology page and Scump's player
    page now explain why: we follow the CoD Esports Wiki's Major/Premier classification, while sources like breakingpoint
-   count a few sub-major or legacy events — and the exact events vary by source, so we defer to the wiki rather than
-   hand-pick tournaments. <a href="methodology.html#data-source">Data sources →</a>`},
+   count a few sub-major or legacy events, and the exact events vary by source, so we defer to the wiki rather than
+   hand-pick tournaments. <a href="methodology.html#tournaments">Data sources →</a>`},
   {date:'2026-07-02', tag:'New', title:'Leaderboard expanded to every player with 2+ major wins',
    body:`The board now covers all <strong>91</strong> players with at least two console major wins, up from the top 50.
-   Every added player is verified against the wiki's published totals the same way, and gets the full treatment —
+   Every added player is verified against the wiki's published totals the same way, and gets the full treatment:
    player page, season pages, and a dot on the Peak vs Longevity chart. Era adjustment matters here too: several
    additions out-rank long-listed names because their few wins came in lean seasons (<strong>GunShy</strong> debuts
    at #26 adjusted with 4 raw wins; <strong>DopedGoat</strong> at #35 with 2).`},
   {date:'2026-07-02', tag:'Methodology', title:'In-progress seasons weighted by their full schedule',
    body:`Black Ops 7 is mid-season: 4 of its <strong>7</strong> scheduled majors have been played. Wins there were being
-   divided by the 4 played, making each worth 1/4 of a season — more than a win in any completed modern season — and the
+   divided by the 4 played, making each worth 1/4 of a season (more than a win in any completed modern season), and the
    value would have silently shrunk as the year went on. Wins in an in-progress season now divide by the full schedule
-   (1/7), matching the opportunity every team has. This moved the 2026 winners down — <strong>Drazah 13→16, HyDra 11→14,
-   Dashy 18→21, Huke 20→22</strong>, with Shotzzy and Envoy each down one — and nudged everyone else's adjusted total up
+   (1/7), matching the opportunity every team has. This moved the 2026 winners down: <strong>Drazah 13→16, HyDra 11→14,
+   Dashy 18→21, Huke 20→22</strong>, with Shotzzy and Envoy each down one, and nudged everyone else's adjusted total up
    slightly (the average majors/season the scale is built on rose to 8.61). <a href="methodology.html">How the weighting works →</a>`},
   {date:'2026-07-02', tag:'Methodology', title:'Ranks computed on exact values; ties share a rank',
    body:`Ranks were being computed on values rounded to two decimals, so players whose totals rounded together were
@@ -90,19 +97,19 @@ const ENTRIES = [
    excluded).`},
 
   {date:'2026-06-30', tag:'Methodology', title:'Modern Warfare 2019 scored by opportunity, not events held',
-   body:`CDL 2020 ran a split "Home Series" format — 13 majors were held, but every team played only <strong>9</strong>
+   body:`CDL 2020 ran a split "Home Series" format: 13 majors were held, but every team played only <strong>9</strong>
    (8 Home Series + Champs). We now divide those wins by 9, not 13, matching how the metric treats every other season.
-   This lifted the 2020 cohort — <strong>iLLeY moved up 10 spots</strong>, and Clayster, Shotzzy and Huke all rose; their
+   This lifted the 2020 cohort: <strong>iLLeY moved up 10 spots</strong>, and Clayster, Shotzzy and Huke all rose; their
    best-season Peak went 31% → 44%. The top of the board was unchanged. <a href="methodology.html">Why we weight by era →</a>`},
   {date:'2026-06-30', tag:'Improved', title:'Peak shown as a percentage',
    body:`The Peak column now reads as the share of a season's majors a player won in their best year (e.g. 67%), which
    compares across players far more naturally than a rescaled number.`},
   {date:'2026-06-29', tag:'New', title:'Launched the era-adjusted leaderboard',
-   body:`Re-ranks CoD pros by major tournament wins, normalized so every season counts equally — with per-player
+   body:`Re-ranks CoD pros by major tournament wins, normalized so every season counts equally, with per-player
    breakdowns, per-season pages, and a page explaining the method.`},
   {date:'2026-06-29', tag:'New', title:'Peak vs Longevity',
    body:`A chart splitting each résumé into <strong>peak</strong> (most dominant single season) and <strong>longevity</strong>
-   (how many titles you kept winning across) — the two axes of every GOAT debate.`},
+   (how many titles you kept winning across), the two axes of every GOAT debate.`},
   {date:'2026-06-29', tag:'New', title:'World Championship counts and shareable links',
    body:`Each player's CoD World Championship count, plus sort / search / pre-BO2 state saved in the URL so you can share an
    exact view of the table.`},
@@ -117,7 +124,7 @@ const TAGCLASS = {Methodology:'warn', New:'tag', Improved:'flat', Changed:'flat'
 
 let html = `<h1>Changelog</h1>
   <p class="lede">What's changed on the site. <strong>Methodology</strong> entries (amber) are changes that move the
-  rankings — they're logged with their reasoning and impact, so the numbers are never a black box.</p>`;
+  rankings. They're logged with their reasoning and impact, so the numbers are never a black box.</p>`;
 
 let lastDate = null;
 for(const e of ENTRIES){

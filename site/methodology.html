@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Why Weight by Era? — CoD Major Wins</title>
+<title>Why Weight by Era? · CoD Major Wins</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="Why weighting Call of Duty major wins by era makes sense, with three scoring options and a Crimsix vs Simp example.">
+<meta name="description" content="How the era-adjustment works, which tournaments count and why (the wiki Major Wins list as source of truth), and why Scump shows 28 not 30.">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
-<meta property="og:title" content="Why weight CoD major wins by era?">
-<meta property="og:description" content="Some seasons had 3× as many majors, so a raw win count misleads. Here's the fix, with a Crimsix vs Simp example.">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Methodology: era-adjustment & which tournaments count">
+<meta property="og:description" content="Why weight by era, and which tournaments count. We mirror the wiki's Major Wins list rather than adjudicate. Includes the Scump 28-vs-30 explainer.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/methodology.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -43,6 +43,15 @@
 .tl .col .b.hi{background:#d97706}
 .tl .col .cap{font-size:.62rem;color:var(--faint);writing-mode:vertical-rl;transform:rotate(180deg);height:54px;white-space:nowrap;overflow:hidden}
 .tl .col .nm{font-size:.7rem;font-family:var(--mono);color:var(--muted)}
+.qa{border-top:1px solid var(--line);margin-top:1.3rem;padding-top:1.1rem}
+.qa:first-of-type{border-top:none;margin-top:.5rem;padding-top:0}
+.qa h3{margin:0 0 .4rem;font-size:1.02rem}
+.qa p{margin:.4rem 0}
+.jump{margin:.2rem 0 1.1rem}
+.src-split{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.7rem 0}
+@media(max-width:640px){.src-split{grid-template-columns:1fr}}
+.src-split .opt h3{font-size:.9rem;margin:0 0 .3rem}
+.src-split .opt .big{font-family:var(--mono);font-size:1.5rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -52,7 +61,7 @@
 <script>
 mountNav('methodology.html');
 const root=document.getElementById('root');
-const C=D.players['Crimsix'], S=D.players['Simp'];
+const C=D.players['Crimsix'], S=D.players['Simp'], SC=D.players['Scump'];
 const avg=D.meta.mbarAll;
 const games=D.games.slice().sort((a,b)=>a.order-b.order);
 const maxM=Math.max(...games.map(g=>g.denom));
@@ -93,6 +102,7 @@ root.innerHTML=`
   <h1>Why weight major wins by era?</h1>
   <p class="lede">Raw "major wins" counts a 2013 title and a 2023 title the same, but they weren't equally hard to win.
   Some seasons had three times as many majors. Below: the problem, three ways to score around it, and a Crimsix-vs-Simp example.</p>
+  <p class="jump small"><a href="#tournaments">Just here for "which tournaments count?" or "why does Scump show 28, not 30?" → jump to the source-of-truth section.</a></p>
 
   <h2>1. The problem: some eras had far more majors</h2>
   <p>Every bar is one season. Early Call of Duty had a packed circuit: <strong>${bo2} majors in Black Ops 2</strong>,
@@ -132,20 +142,11 @@ root.innerHTML=`
 
   <div class="note" style="background:var(--panel);border-color:var(--line);color:var(--muted)">
     <strong>What this does and doesn't measure.</strong> It adjusts for one thing: how many chances to win a major existed each season.
-    (For the one season where teams couldn't enter every major — Modern Warfare 2019's split Home Series format — we divide by the
+    (For the one season where teams couldn't enter every major, Modern Warfare 2019's split Home Series format, we divide by the
     <strong>9</strong> each team actually played, not the 13 held. An <em>in-progress</em> season divides by its full schedule of
     majors rather than the number played so far, so current wins aren't overstated before the season finishes.)
     It does <em>not</em> account for field strength, online vs. LAN, regional depth, roster format, or prize size. Read it as
     <em>opportunity-normalized</em> major wins, not a full "who was better" verdict.
-  </div>
-
-  <div class="note" id="data-source" style="margin-top:1rem;background:var(--panel);border-color:var(--line);color:var(--muted)">
-    <strong>Data source.</strong> Win totals follow the
-    <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">CoD Esports Wiki's Major Wins list</a>
-    (Major/Premier-tier events). Other trackers occasionally show a slightly higher total for a player by counting sub-major or
-    legacy events the wiki classifies as <em>minors</em> (and, in some cases, Warzone events we exclude) — e.g. Scump shows 30 on
-    breakingpoint/Dexerto vs 28 here. The exact events behind such gaps vary by source and often aren't itemized, so we defer to the
-    wiki's classification rather than hand-picking tournaments.
   </div>
 
   <h2>4. Head-to-head: Crimsix vs. Simp</h2>
@@ -162,11 +163,11 @@ root.innerHTML=`
 
   <div class="cmp" style="margin-top:1rem">
     <div>
-      <h3 style="color:#2563eb">Crimsix — ${C.raw} wins, ${C.share_all.toFixed(2)} share → ${C.adj_all.toFixed(1)} adj</h3>
+      <h3 style="color:#2563eb">Crimsix: ${C.raw} wins, ${C.share_all.toFixed(2)} share → ${C.adj_all.toFixed(1)} adj</h3>
       ${seasonMinis(C)}
     </div>
     <div>
-      <h3 style="color:#d97706">Simp — ${S.raw} wins, ${S.share_all.toFixed(2)} share → ${S.adj_all.toFixed(1)} adj</h3>
+      <h3 style="color:#d97706">Simp: ${S.raw} wins, ${S.share_all.toFixed(2)} share → ${S.adj_all.toFixed(1)} adj</h3>
       ${seasonMinis(S)}
     </div>
   </div>
@@ -174,16 +175,75 @@ root.innerHTML=`
   where each win is a small slice of the season; Simp's came in 6–7-major years, where each slice is much bigger.</p>
 
   <div class="note" style="margin-top:1.4rem">Want to slice by era? The <a href="index.html">leaderboard</a> has an
-  <strong>"Eras"</strong> filter — pick a preset (Post-BO2, the MLG–CWL era, the CDL era) or any set of titles, and the
+  <strong>"Eras"</strong> filter: pick a preset (Post-BO2, the MLG–CWL era, the CDL era) or any set of titles, and the
   adjusted numbers and ranks recompute for just those seasons. Excluding the sparse 2010–2012 pre-BO2 seasons (as few as
   3 tracked majors) is the "Post-BO2" preset.</div>
 
-  <div class="note" style="margin-top:.9rem;background:var(--panel);border-color:var(--line);color:var(--muted)">
-    <strong>Championships.</strong> A CoD World Championship is already counted as a major here (it's one of the season's
-    majors). Because whether a ring should count for <em>more</em> is subjective, the core number treats it like any other
-    major — but the leaderboard has an optional <strong>"Ring weight"</strong> slider: set a ring worth up to 6 regular
-    majors and it re-ranks by an <strong>"Adj +◆"</strong> total that adds the extra ring value on top. It's off by
-    default and never alters the neutral era-adjusted number.</div>
+  <a id="data-source"></a>
+  <h2 id="tournaments">5. Which tournaments count, and who decides</h2>
+  <p class="lede" style="font-size:1.05rem"><strong>The short version: we don't decide.</strong> An event counts here if and only if
+  the CoD Esports Wiki tags it <strong>Major</strong> or <strong>Premier</strong> tier and the player finished 1st. That's it. We mirror the
+  wiki's <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">Major Wins list</a>, the community's
+  generally-accepted source of truth, and stay out of the "was that event <em>really</em> a major?" debate entirely.</p>
+  <p>This is deliberate. The moment we start hand-picking which majors are "legit", say by dropping an EGL here or an online event there, the
+  number stops being reproducible and just becomes <em>our</em> opinion. Deferring to one public, editable list means anyone can check the
+  math, and the rankings move only when the source does. The full set of qualifying events is the wiki's
+  <a href="https://cod-esports.fandom.com/wiki/Portal:Tournaments/Majors">Majors portal</a>; think an event is wrongly in or out? That's a
+  case for the wiki editors: fix it there and it flows through here automatically.</p>
+
+  <div class="qa">
+    <h3>"Doesn't Scump have 30 wins, not 28?"</h3>
+    <p>This is the most common question, and the confusion is real, because <strong>the wiki itself shows both numbers in different
+    places.</strong> They come from two kinds of page that work completely differently:</p>
+    <div class="src-split">
+      <div class="opt pick">
+        <h3>Major Wins list <span class="pill up small">database-generated</span></h3>
+        <div class="big">${SC?SC.raw:28}</div>
+        <p class="small muted">A live query against the wiki's database (Major/Premier tier, 1st place). Reproducible: run it yourself and you
+        get the same number. This is what we use. Scump: nine major-tier + nineteen premier-tier wins.</p>
+      </div>
+      <div class="opt">
+        <h3>"Winningest Players" pages <span class="pill warn small">hand-typed</span></h3>
+        <div class="big">30 <span class="small muted">/ 28</span></div>
+        <p class="small muted">Static tables a person types by hand, on different dates, with looser rules ("offline/LAN events," not strictly
+        major-tier). The North America page says 30; the World page says 28. The two don't even agree with each other (aBeZy and Simp show 14
+        on one, 13 on the other).</p>
+      </div>
+    </div>
+    <p>Third-party trackers like breakingpoint reach 30 the same way: a broader, manually-curated definition that sweeps in a couple of
+    events the wiki classifies as minors (the usual suspects: UMG Fort Lee 2012, Frag Cup III), or counts home-series/legacy events
+    differently. None of it is wrong exactly. It's just a <em>different, hand-maintained rule</em>. We use the database-generated list because
+    it's the one total anyone can reproduce without trusting our judgment.</p>
+  </div>
+
+  <div class="qa">
+    <h3>"Then drop the homestands / online champs / EGLs / Melbourne."</h3>
+    <p>Same answer, every time: if the wiki tiers it as a major, it counts; if it doesn't, it doesn't. We're not going to relitigate EGL
+    Blackpool or Crown Melbourne or the 2020 Home Series one tournament at a time. That bottomless argument is <em>exactly</em> what deferring
+    to a single source avoids. (The 2020 Home Series does get one adjustment, but only to the era <em>denominator</em> (see §3),
+    never to whether those wins count.)</p>
+  </div>
+
+  <div class="qa">
+    <h3>"You're rewarding online / COVID-era wins."</h3>
+    <p>We don't weight online vs. LAN at all. The source counts the 2020–21 online majors as majors, so they count here too. Baking in an
+    "online discount" would mean re-deciding the tournament list ourselves (the one thing this project won't do), and it would have to hit
+    <em>everyone</em> who won online, not just the players a given argument wants to dock.</p>
+  </div>
+
+  <div class="qa">
+    <h3>"Shouldn't a Championship be worth more than a regular major?"</h3>
+    <p>By default it's treated like any other major. A World Championship is simply one of that season's majors. Whether a ring is worth
+    <em>more</em> is subjective, so rather than bake in a number we made it a knob: the <a href="index.html">leaderboard</a>'s optional
+    <strong>"Ring weight"</strong> slider lets you set a ring worth up to 6 regular majors and re-ranks by an <strong>"Adj +◆"</strong> total.
+    It's off by default and never touches the neutral era-adjusted number.</p>
+  </div>
+
+  <div class="note" style="margin-top:1.3rem">
+    <strong>Bottom line.</strong> This site answers one precise, checkable question: <em>of the majors the wiki recognizes each season, what
+    share did this player win, adjusted so every season counts equally?</em> If you disagree with which tournaments are on that list, you're
+    not really disagreeing with this project; you're disagreeing with the source, and that's the right place to take it up.
+  </div>
 `;
 mountFoot();
 </script>

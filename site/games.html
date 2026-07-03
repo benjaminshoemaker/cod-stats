@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Seasons & the Major Count — CoD Era-Adjusted</title>
+<title>Seasons & the Major Count · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="How many majors each Call of Duty season had, and how the era weighting (1 ÷ majors per season) works.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Seasons & the major count">
 <meta property="og:description" content="Majors per Call of Duty season ranged from 3 to 17, which is why raw win totals flatter early-era players.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/games.html">
@@ -30,7 +30,7 @@ mountNav('games.html');
 const root=document.getElementById('root');
 const games=D.games.slice().sort((a,b)=>a.order-b.order);
 // Bars, range and "vs avg" all use the weighting denominator (what a team could
-// win), so this table and the per-season pages tell the same story — 9 for
+// win), so this table and the per-season pages tell the same story: 9 for
 // MW 2019's split format, the full schedule for an in-progress season.
 const maxM=Math.max(...games.map(g=>g.denom));
 const minM=Math.min(...games.map(g=>g.denom));
@@ -59,7 +59,7 @@ let rows=games.map(g=>{
 root.innerHTML=`
   <h1>Seasons &amp; the major count</h1>
   <p class="lede">Each Call of Duty title is one competitive "season". The number of majors per season ranged
-  from <strong>17 (Black Ops 2)</strong> down to <strong>6</strong> in recent years. That swing is the whole reason raw win totals
+  from <strong>17 (Black Ops 2)</strong> down to <strong>6</strong> in recent years. That swing is why raw win totals
   flatter early-era players. The weighting makes a win worth <span class="num">1 ÷ majors</span> of its season.</p>
 
   <div class="stat-row">
@@ -75,8 +75,8 @@ root.innerHTML=`
     <tbody>${rows}</tbody>
   </table>
   <p class="small muted">A "vs avg" above 1.0× (red) means that season had more majors than average, so each win there is worth
-  proportionally less.${hasSplit?` <strong>Modern Warfare 2019</strong> held 13 majors but ran a split "Home Series" format — every
-  team played only 9 (8 Home Series + Champs) — so a win there is worth 1/9, not 1/13.`:''}${hasInprog?` An
+  proportionally less.${hasSplit?` <strong>Modern Warfare 2019</strong> held 13 majors but ran a split "Home Series" format, where every
+  team played only 9 (8 Home Series + Champs), so a win there is worth 1/9, not 1/13.`:''}${hasInprog?` An
   <strong>in-progress</strong> season is weighted by its full schedule of majors, not the number played so far, so
   current-season wins aren't overstated before the season finishes.`:''}</p>
 `;

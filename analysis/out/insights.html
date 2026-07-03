@@ -1,0 +1,319 @@
+<title>Fingerprints in the Data — CoD Major-Win Signatures</title>
+<style>
+  :root{
+    --ground:#FBFAF7; --surface:#FFFFFF; --ink:#1B1A16; --muted:#6E6C62;
+    --faint:#96938a; --hair:#E7E3DA; --hair2:#EFECE4;
+    --gold:#B45309; --gold-soft:#F4E4CB; --teal:#3F6B7D; --teal-soft:#E1EBEE;
+    --pos:#3F6B7D; --neg:#B45309;
+    --measure:66ch;
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ground:#15140F; --surface:#1D1C15; --ink:#F1EFE7; --muted:#A29F93;
+      --faint:#78766c; --hair:#2C2A21; --hair2:#242219;
+      --gold:#E7A544; --gold-soft:#3A2E17; --teal:#7FB2C6; --teal-soft:#1B2A30;
+      --pos:#7FB2C6; --neg:#E7A544;
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#FBFAF7; --surface:#FFFFFF; --ink:#1B1A16; --muted:#6E6C62;
+    --faint:#96938a; --hair:#E7E3DA; --hair2:#EFECE4;
+    --gold:#B45309; --gold-soft:#F4E4CB; --teal:#3F6B7D; --teal-soft:#E1EBEE;
+    --pos:#3F6B7D; --neg:#B45309;
+  }
+  :root[data-theme="dark"]{
+    --ground:#15140F; --surface:#1D1C15; --ink:#F1EFE7; --muted:#A29F93;
+    --faint:#78766c; --hair:#2C2A21; --hair2:#242219;
+    --gold:#E7A544; --gold-soft:#3A2E17; --teal:#7FB2C6; --teal-soft:#1B2A30;
+    --pos:#7FB2C6; --neg:#E7A544;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;margin:0;
+    font-size:16.5px;letter-spacing:-0.003em}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .reading{max-width:var(--measure)}
+
+  /* ---- header ---- */
+  header{border-bottom:1px solid var(--hair);padding:64px 0 40px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--gold);font-weight:600}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,6vw,3.9rem);
+    line-height:1.02;letter-spacing:-0.02em;margin:.34em 0 .28em;text-wrap:balance}
+  h1 em{font-style:italic;color:var(--muted)}
+  .standfirst{font-size:1.14rem;color:var(--muted);max-width:60ch;text-wrap:pretty}
+  .standfirst b{color:var(--ink);font-weight:600}
+  .metarow{display:flex;flex-wrap:wrap;gap:36px;margin-top:34px;
+    padding-top:26px;border-top:1px solid var(--hair2)}
+  .stat .n{font-family:var(--serif);font-size:1.9rem;font-weight:600;
+    letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1}
+  .stat .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--faint);margin-top:7px}
+
+  /* ---- section grid ---- */
+  main{padding:8px 0 40px}
+  .band{padding:44px 0;border-bottom:1px solid var(--hair)}
+  .band-head{margin-bottom:26px;max-width:var(--measure)}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--faint);font-weight:600}
+  h2{font-family:var(--serif);font-size:1.72rem;font-weight:600;letter-spacing:-.015em;
+    margin:.28em 0 .32em;line-height:1.1;text-wrap:balance}
+  .thesis{color:var(--muted);font-size:1.02rem;text-wrap:pretty}
+  .thesis b{color:var(--ink);font-weight:600}
+
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:720px){.pair{grid-template-columns:1fr}}
+
+  /* ---- ranked list card ---- */
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:12px;
+    padding:20px 20px 16px}
+  .card > .ct{display:flex;align-items:baseline;justify-content:space-between;
+    gap:12px;margin-bottom:14px}
+  .card h3{font-size:.82rem;font-weight:650;letter-spacing:.01em;margin:0;
+    text-transform:none;color:var(--ink)}
+  .card .unit{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);white-space:nowrap}
+  .accent-neg h3{color:var(--neg)} .accent-pos h3{color:var(--pos)}
+
+  .row{display:grid;grid-template-columns:1.1rem minmax(64px,auto) 1fr auto;
+    align-items:center;gap:10px;padding:5px 0;border-top:1px solid var(--hair2)}
+  .row:first-of-type{border-top:0}
+  .rk{font-family:var(--mono);font-size:10.5px;color:var(--faint);text-align:right}
+  .nm{font-weight:600;font-size:.94rem;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis}
+  .nm .tag{font-family:var(--mono);font-size:9.5px;color:var(--faint);
+    font-weight:500;margin-left:6px;letter-spacing:.02em}
+  .bar{height:7px;border-radius:4px;background:var(--gold);opacity:.9;min-width:3px}
+  .bar.teal{background:var(--teal)}
+  .barcell{width:100%}
+  .val{font-family:var(--mono);font-size:.82rem;font-variant-numeric:tabular-nums;
+    color:var(--ink);text-align:right;font-weight:600}
+  .val .sub{color:var(--faint);font-weight:400}
+
+  .note{font-size:.92rem;color:var(--muted);margin-top:16px;max-width:var(--measure);
+    text-wrap:pretty}
+  .note b{color:var(--ink);font-weight:600}
+
+  /* ---- meta blocks ---- */
+  .ceiling{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px}
+  @media(max-width:640px){.ceiling{grid-template-columns:1fr}}
+  .era{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:20px}
+  .era .yr{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold);font-weight:600}
+  .era .season{font-family:var(--serif);font-size:1.3rem;font-weight:600;margin:6px 0 2px}
+  .era .who2{color:var(--muted);font-size:.95rem}
+  .era .who2 b{color:var(--ink);font-weight:600}
+  .big5{font-family:var(--serif);font-size:2.6rem;font-weight:600;
+    font-variant-numeric:tabular-nums;line-height:1;color:var(--gold)}
+
+  footer{padding:38px 0 60px;color:var(--faint);font-size:.86rem}
+  footer code{font-family:var(--mono);font-size:.82rem;color:var(--muted)}
+  a{color:var(--gold)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">CoD Major Wins · Derived Signatures</div>
+    <h1>Fingerprints<br><em>in the data</em></h1>
+    <p class="standfirst">The leaderboard ranks players by era-adjusted major wins.
+      But the <b>ratios between</b> those numbers — rings to wins, peak to career,
+      raw rank to adjusted rank — carry a second layer of information. Seeded by one
+      observation (JKap wins a lopsided share of <b>World Championships</b> relative
+      to his overall résumé), here are the other signatures hiding in the same 156
+      majors.</p>
+    <div class="metarow" id="metarow"></div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer class="reading">
+    <p>Built from <code>site/data.js</code> (reconciled per-player season breakdowns)
+      joined to <code>major_events.json</code> for LAN/region metadata, via
+      <code>analysis/insights.py</code>. Ratio boards apply minimum-volume filters
+      (noted per card) so a single-win player can't top a rate stat. Runner-up and
+      finals records aren't shown — <code>team_participation.json</code> carries team
+      placements but no player rosters, so second-place finishes can't be traced to
+      individuals.</p>
+  </footer>
+</div>
+
+<script>
+const D = {
+  metastats:[
+    {n:"91",l:"ranked players"},
+    {n:"156",l:"console majors"},
+    {n:"18",l:"game seasons"},
+    {n:"5",l:"signatures"},
+  ],
+  bands:[
+    {
+      kicker:"The seed · big-stage overperformance",
+      h2:"Ring merchants and the uncrowned",
+      thesis:"<b>World Championships</b> are one-per-year, unweighted — the sport's true crown. Divide a player's rings by their era-adjusted overall wins and the two tails appear: those whose résumé is disproportionately made of crowns, and those who piled up wins but never got one.",
+      pair:[
+        {title:"Rings per era-adjusted win",unit:"rings ÷ adj",tone:"",
+         rows:[
+          ["Apathy",.476,"2 rings","·4.2 adj"],
+          ["JKap",.308,"2 rings","·6.5 adj"],
+          ["Shotzzy",.249,"3 rings","·12.0 adj"],
+          ["Clayster",.239,"3 rings","·12.6 adj"],
+          ["Karma",.174,"3 rings","·17.2 adj"],
+         ]},
+        {title:"Most adjusted wins · zero rings",unit:"adj wins",tone:"accent-neg",teal:false,
+         rows:[
+          ["BigTymeR",11.3,"11.3",""],
+          ["MerK",9.5,"9.5",""],
+          ["Rambo",7.9,"7.9",""],
+          ["GunShy",7.0,"7.0",""],
+          ["Scrap",7.0,"7.0",""],
+         ]},
+      ],
+      note:"<b>JKap</b> is the archetype the whole page grew from — but <b>Apathy</b> is even more ring-dense. The truly rare profile is <b>Shotzzy</b>: elite on <em>both</em> axes, 3 crowns <em>and</em> 12 adjusted wins. On the other side, <b>BigTymeR</b> is the uncrowned king — an 11-win career, most of it before the Championship existed."
+    },
+    {
+      kicker:"Rate of production · density",
+      h2:"Compressed dominance",
+      thesis:"Adjusted wins divided by years active. A high rate means a player didn't just win a lot — they won a lot <b>fast</b>, compressing a career's worth of titles into a short window.",
+      single:{title:"Era-adjusted wins per active year (min 4 adj, 2-yr span)",unit:"adj ÷ yr",tone:"",
+        rows:[
+          ["Karma",2.86,"2.86","17.1 adj / 6y"],
+          ["BigTymeR",2.80,"2.80","11.2 adj / 4y"],
+          ["TeeP",2.53,"2.53","10.1 adj / 4y"],
+          ["FormaL",2.51,"2.51","17.6 adj / 7y"],
+          ["Cellium",2.46,"2.46","14.7 adj / 6y"],
+          ["Crimsix",2.44,"2.44","26.9 adj / 11y"],
+        ]},
+      note:"<b>Karma</b> won 17 adjusted wins in six years, the highest rate of any full career. <b>Crimsix</b> is a hair behind but held the pace for eleven years, which is why he still tops the raw total. Single-season flashes are filtered out — a two-year minimum keeps this to sustained runs."
+    },
+    {
+      kicker:"Timing · when the wins land",
+      h2:"Prodigies and late bloomers",
+      thesis:"Place every win on a 0→1 line from a player's first major to their last, then average. Below 0.5, the trophies came early and tapered; above 0.5, they arrived late — a career that aged upward.",
+      pair:[
+        {title:"Front-loaded (won young, then faded)",unit:"0 = all early",tone:"",
+         rows:[
+          ["iLLeY",0.30,".30",""],
+          ["ProoFy",0.31,".31",""],
+          ["Crimsix",0.32,".32",""],
+          ["FormaL",0.32,".32",""],
+          ["ZooMaa",0.35,".35",""],
+         ]},
+        {title:"Back-loaded (aged into winning)",unit:"1 = all late",tone:"accent-pos",teal:true,
+         rows:[
+          ["Fero",0.72,".72",""],
+          ["Arcitys",0.70,".70",""],
+          ["TJHaLy",0.69,".69",""],
+          ["Nadeshot",0.68,".68",""],
+          ["Dashy",0.66,".66",""],
+         ]},
+      ],
+      note:"<b>Crimsix</b> and <b>FormaL</b> won their biggest hauls early and stayed elite — front-loaded but never done. <b>Arcitys</b> and <b>Dashy</b> are the opposite: quiet starts, then a surge as they matured into their rosters."
+    },
+    {
+      kicker:"Staying power · span",
+      h2:"The long careers",
+      thesis:"Years between a player's first major and their last. Longevity in a sport this young is its own achievement — and a few players stretched their relevance across nearly the whole modern era.",
+      single:{title:"Years from first major to last",unit:"years",tone:"",
+        rows:[
+          ["Scump",10.9,"10.9y","2011–2022"],
+          ["Crimsix",9.4,"9.4y","2012–2022"],
+          ["SlasheR",8.2,"8.2y","2014–2023"],
+          ["ACHES",7.6,"7.6y","2011–2018"],
+          ["Dashy",7.6,"7.6y","2018–2026"],
+        ]},
+      note:"On the crown specifically, <b>Crimsix</b> spans six years between his first and third ring (2014 → 2020); <b>Shotzzy</b> is mid-stretch, with rings in 2020, 2024 and 2025 and still active."
+    },
+  ],
+  ceiling:{
+    kicker:"The theoretical maximum · a six-way tie",
+    h2:"The most dominant season the model can score",
+    thesis:"A season's era-adjusted value is (wins ÷ majors held) × the league-average major count. That formula has a natural ceiling: sweep four of a six-major season. Six players hit exactly that number — <b>5.74</b> — and they split across the timeline in a way that collapses 'old' and 'modern' into the same point.",
+    value:"5.74",
+    eras:[
+      {yr:"2012 · Modern Warfare 3",season:"4 of 6 majors",who:"BigTymeR · MerK"},
+      {yr:"2021 · Black Ops Cold War",season:"4 of 6 majors",who:"aBeZy · Simp · Cellium · Arcitys"},
+    ],
+    note:"A <b>2012</b> season and a <b>2021</b> season produce the identical peak. Because the adjustment values a win by how scarce majors were that year, dominating a lean season — whenever it happened — beats out-grinding a crowded one. The old era touches the modern era at the very top."
+  }
+};
+
+/* ---------- render ---------- */
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+
+const mr=document.getElementById('metarow');
+D.metastats.forEach(s=>{
+  const d=el('div','stat');
+  d.appendChild(el('div','n',s.n));
+  d.appendChild(el('div','l',s.l));
+  mr.appendChild(d);
+});
+
+function card(c){
+  const wrap=el('div','card '+(c.tone||''));
+  const ct=el('div','ct');
+  ct.appendChild(el('h3',null,c.title));
+  ct.appendChild(el('span','unit',c.unit));
+  wrap.appendChild(ct);
+  const max=Math.max(...c.rows.map(r=>r[1]));
+  c.rows.forEach((r,i)=>{
+    const [nm,v,val,sub]=r;
+    const row=el('div','row');
+    row.appendChild(el('div','rk',String(i+1)));
+    row.appendChild(el('div','nm',nm));
+    const bc=el('div','barcell');
+    const bar=el('div','bar'+(c.teal?' teal':''));
+    bar.style.width=Math.max(3,(v/max)*100)+'%';
+    bc.appendChild(bar);
+    row.appendChild(bc);
+    row.appendChild(el('div','val',val+(sub?' <span class="sub">'+sub+'</span>':'')));
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+const main=document.getElementById('main');
+D.bands.forEach(b=>{
+  const band=el('section','band');
+  const w=el('div','wrap');
+  const head=el('div','band-head');
+  head.appendChild(el('div','kicker',b.kicker));
+  head.appendChild(el('h2',null,b.h2));
+  head.appendChild(el('p','thesis',b.thesis));
+  w.appendChild(head);
+  if(b.pair){
+    const p=el('div','pair');
+    b.pair.forEach(c=>p.appendChild(card(c)));
+    w.appendChild(p);
+  } else if(b.single){
+    w.appendChild(card(b.single));
+  }
+  if(b.note)w.appendChild(el('p','note',b.note));
+  band.appendChild(w);
+  main.appendChild(band);
+});
+
+/* ceiling */
+(()=>{
+  const t=D.ceiling,band=el('section','band'),w=el('div','wrap'),head=el('div','band-head');
+  head.appendChild(el('div','kicker',t.kicker));
+  head.appendChild(el('h2',null,t.h2));
+  head.appendChild(el('p','thesis',t.thesis));
+  w.appendChild(head);
+  const g=el('div','ceiling');
+  t.eras.forEach(e=>{
+    const c=el('div','era');
+    c.appendChild(el('div','yr',e.yr));
+    c.appendChild(el('div','big5',t.value));
+    c.appendChild(el('div','season',e.season));
+    c.appendChild(el('div','who2','<b>'+e.who.split(' · ').join('</b> · <b>')+'</b>'));
+    g.appendChild(c);
+  });
+  w.appendChild(g);
+  w.appendChild(el('p','note',t.note));
+  band.appendChild(w);main.appendChild(band);
+})();
+</script>

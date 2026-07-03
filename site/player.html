@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Player — Era-Adjusted Major Wins</title>
+<title>Player · Era-Adjusted Major Wins</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty player's major tournament wins, era-adjusted season by season, with their world championship count.">
 <meta property="og:type" content="profile">
-<meta property="og:site_name" content="CoD Major Wins — Era-Adjusted">
-<meta property="og:title" content="Era-Adjusted Major Wins — Player">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Era-Adjusted Major Wins · Player">
 <meta property="og:description" content="Every major win broken down by season, each weighted by how many majors that season had.">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -35,7 +35,7 @@ if(!p || !lb){
     <h1>Player not found</h1><p class="muted">No leaderboard data for "${esc(name||'')}".</p>`;
   mountFoot();
 }else{
-  document.title = `${p.name} — Era-Adjusted Major Wins`;
+  document.title = `${p.name} · Era-Adjusted Major Wins`;
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
 
   root.innerHTML = `
@@ -52,7 +52,7 @@ if(!p || !lb){
         <div class="small faint">${p.champs?p.champ_events.map(e=>e.year).join(' · '):'none'}</div></div>
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
-    ${p.note?`<div class="note" style="margin-top:.4rem;background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#data-source">See methodology →</a></div>`:''}
+    ${p.note?`<div class="note" style="margin-top:.4rem;background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
 
     <div class="grid cols-2">
       <div>
@@ -91,7 +91,7 @@ if(!p || !lb){
         <thead><tr><th>Season</th><th class="n">Wins</th><th class="n">Majors</th><th class="n">Per win</th><th class="n">Share</th><th>&nbsp;</th></tr></thead>
         <tbody>${rows}
           <tr style="border-top:2px solid var(--line-2)"><td><strong>Total</strong></td>
-            <td class="n"><strong>${winsShown}</strong></td><td class="n faint">—</td><td class="n faint">—</td>
+            <td class="n"><strong>${winsShown}</strong></td><td class="n faint">–</td><td class="n faint">–</td>
             <td class="n"><strong>${share.toFixed(3)}</strong></td>
             <td class="small muted">× ${mbar.toFixed(2)} = <strong>${adj.toFixed(1)}</strong></td></tr>
         </tbody>
@@ -111,15 +111,15 @@ if(!p || !lb){
       const evs = s.events.map(e=>`<tr>
           <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
           <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
-      return `<tr class="subhead"><td colspan="3">${esc(s.game)} — ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
+      return `<tr class="subhead"><td colspan="3">${esc(s.game)}: ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
     }).join('');
 
     // peak + eras tile sub-lines
     const pk = p.peak_all, titles = p.titles_all, span = p.span_all;
     document.getElementById('tile-peak').textContent = pk.majors ? `${Math.round(pk.wins/pk.majors*100)}%` : '–';
-    document.getElementById('tile-peak-sub').textContent = pk.season ? `${pk.wins} of ${pk.majors} · ${pk.season}` : '—';
+    document.getElementById('tile-peak-sub').textContent = pk.season ? `${pk.wins} of ${pk.majors} · ${pk.season}` : '–';
     document.getElementById('tile-eras').textContent = titles;
-    document.getElementById('tile-eras-sub').textContent = span ? `${span}-yr span` : '—';
+    document.getElementById('tile-eras-sub').textContent = span ? `${span}-yr span` : '–';
   }
 
   render();

@@ -1,4 +1,4 @@
-// Shared era-adjustment ranking engine — used by the leaderboard UI (index.html)
+// Shared era-adjustment ranking engine, used by the leaderboard UI (index.html)
 // and the /api/og card endpoint, so both produce identical numbers. Pure JS: takes
 // the data dict `D` (from data.json / window.APP_DATA) as a parameter, no DOM/global
 // dependencies. Mirrors build_data.py's exact-Fraction shares + competition ranks;

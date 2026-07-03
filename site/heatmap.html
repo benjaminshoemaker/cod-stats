@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dominance heatmap · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Every top CoD player's share of each title's majors, as a heatmap. See who owned which era. Gold marks a World Championship season.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Dominance heatmap · CoD majors by era">
+<meta property="og:description" content="Each player's share of every title's majors. See who owned which era. Gold marks a World Championship win.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/heatmap.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+<style>
+  .chart-wrap{overflow-x:auto}
+  svg.hm{display:block;min-width:760px;width:100%;height:auto;font-family:var(--sans)}
+  svg.hm .col{fill:var(--muted);font-size:9.5px}
+  svg.hm .row{fill:var(--ink);font-size:12px}
+  svg.hm a{cursor:pointer}
+  svg.hm a:hover .row{text-decoration:underline;fill:var(--accent)}
+  svg.hm .cell{cursor:default}
+  svg.hm .pct{font-size:9.5px;pointer-events:none}
+  .swatches{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);margin:.2rem 0 .3rem}
+  .swatches .ramp{display:inline-block;width:120px;height:12px;border-radius:3px;
+    background:linear-gradient(90deg,#eaf1fe,#1e3a8a)}
+</style>
+</head>
+<body>
+<div class="wrap wide" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script type="module">
+import { eraContext, computeRows } from './assets/rank.js';
+mountNav('heatmap.html');
+const D = window.APP_DATA;
+const { PRESETS } = eraContext(D);
+const ORDER = D.meta.seasonOrder;
+const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
+const ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
+
+// map every event to its season, so a World-Championship win can be marked on the right cell
+const event2game = {};
+for(const g of D.games) for(const e of g.events) event2game[e.event]=g.game;
+
+const lerp=(a,b,t)=>{a=a.slice(1);b=b.slice(1);const h=i=>parseInt(a.slice(i,i+2),16),k=i=>parseInt(b.slice(i,i+2),16);
+  const c=i=>Math.round(h(i)+(k(i)-h(i))*t).toString(16).padStart(2,'0');return '#'+c(0)+c(2)+c(4);};
+const seq=t=>lerp('#eaf1fe','#1e3a8a',Math.max(0,Math.min(1,t)));
+
+const rows = computeRows(D, new Set(PRESETS.all), 1).sort((a,b)=>a.adjRank-b.adjRank).slice(0,16);
+const shareOf = {}, champGames = {};
+for(const r of rows){
+  const p = D.players[r.name];
+  shareOf[r.name] = Object.fromEntries(p.seasons.map(s=>[s.game,s.share]));
+  champGames[r.name] = new Set((p.champ_events||[]).map(c=>event2game[c.event]).filter(Boolean));
+}
+let mx=0; for(const r of rows) for(const g of ORDER) mx=Math.max(mx, shareOf[r.name][g]||0);
+
+const cw=44, rh=28, x0=140, y0=64, W=x0+cw*ORDER.length+16, H=y0+rh*rows.length+14;
+let s=`<svg class="hm" viewBox="0 0 ${W} ${H}">`;
+ORDER.forEach((g,j)=>{const x=x0+j*cw+cw/2;
+  s+=`<text class="col" x="${x}" y="${y0-8}" transform="rotate(-45 ${x} ${y0-8})" text-anchor="start">${esc(ABBR[g])}</text>`;});
+rows.forEach((r,i)=>{
+  const y=y0+i*rh; const nm=r.name;
+  s+=`<a href="player.html?p=${encodeURIComponent(nm)}"><text class="row" x="${x0-8}" y="${y+rh/2+4}" text-anchor="end">${esc(nm)}</text></a>`;
+  ORDER.forEach((g,j)=>{
+    const v=shareOf[nm][g]||0, x=x0+j*cw, isChamp=champGames[nm].has(g);
+    const G=GAMES[g], wins=Math.round(v*G.majors);
+    const fill=v>0?seq(v/mx):'#f8fafc';
+    const tip=v>0?`${nm}, ${ABBR[g]}: ${wins}/${G.majors} majors (${Math.round(v*100)}%)${isChamp?' · World Champion':''}`:`${nm}, ${ABBR[g]}: no majors`;
+    s+=`<rect class="cell" x="${x+1}" y="${y+1}" width="${cw-2}" height="${rh-2}" rx="4" fill="${fill}"><title>${esc(tip)}</title></rect>`;
+    if(v>=0.30 || (isChamp && v>0)){
+      const dark=v/mx>0.5; s+=`<text class="pct" x="${x+cw/2}" y="${y+rh/2+4}" text-anchor="middle" fill="${dark?'#fff':'var(--ink)'}">${Math.round(v*100)}</text>`;
+    }
+    if(isChamp) s+=`<circle cx="${x+cw-6}" cy="${y+6}" r="3.4" fill="#b8860b" stroke="#fff" stroke-width="1"><title>${esc(nm)} won the ${ABBR[g]} World Championship</title></circle>`;
+  });
+});
+s+='</svg>';
+
+document.getElementById('root').innerHTML = `
+  <h1>Dominance heatmap</h1>
+  <p class="lede">Each cell is a player's <strong>share of that title's majors</strong>, the same season-share the leaderboard is built on.
+  Darker = more of the season won. A <span style="color:#b8860b">◆ gold dot</span> marks a season they won the World Championship.
+  Read a row for a career, a column for who owned that title. <a href="methodology.html">How the share works →</a></p>
+  <div class="swatches"><span>less</span><span class="ramp"></span><span>more of the season won</span></div>
+  <div class="chart-wrap">${s}</div>
+  <p class="small muted">Top 16 by era-adjusted wins (all seasons). Hover a cell for the exact wins.</p>`;
+mountFoot();
+</script>
+</body>
+</html>

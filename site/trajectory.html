@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Career trajectories · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Cumulative era-adjusted major wins over time for every Call of Duty major winner. A steep short line is a peak, a long climb is longevity.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Career trajectories · CoD majors over time">
+<meta property="og:description" content="Cumulative era-adjusted wins over time: peaks vs long careers, the whole field at once.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/trajectory.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+<style>
+  .chart-wrap{overflow-x:auto}
+  svg.tj{display:block;min-width:640px;width:100%;height:auto;font-family:var(--sans)}
+  svg.tj .grid{stroke:var(--line)}
+  svg.tj .tick{fill:var(--faint);font-size:10px}
+  svg.tj .end{font-size:11px}
+  svg.tj a{cursor:pointer}
+  svg.tj a:hover .end{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap wide" id="root"></div>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script type="module">
+import { eraContext, computeRows } from './assets/rank.js';
+mountNav('trajectory.html');
+const D = window.APP_DATA;
+const { PRESETS } = eraContext(D);
+const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
+const ORDER = D.meta.seasonOrder;
+const MBAR = D.meta.mbarAll;
+const YEAR = Object.fromEntries(ORDER.map(g=>[g, +GAMES[g].firstDate.slice(0,4)]));
+const PAL=['#2f6df6','#d97706','#0d9488','#7c3aed','#db2777','#0891b2','#65a30d','#e11d48'];
+
+const all = computeRows(D, new Set(PRESETS.all), 1).sort((a,b)=>b.adjusted-a.adjusted);
+const hi = all.slice(0,8), hiNames = new Set(hi.map(r=>r.name));
+
+function series(name){
+  const seasons = D.players[name].seasons.slice().sort((a,b)=>GAMES[a.game].order-GAMES[b.game].order);
+  let cum=0; return seasons.map(s=>{ cum+=s.share*MBAR; return [YEAR[s.game], cum]; });
+}
+const years = ORDER.map(g=>YEAR[g]); const ymn=Math.min(...years), ymx=Math.max(...years);
+const ymax = Math.max(...all.map(r=>r.adjusted));
+const W=680,H=400,x0=44,y0=18,pw=W-x0-100,ph=H-y0-28;
+const xs=yr=>x0+(yr-ymn)/(ymx-ymn)*pw, ys=v=>y0+ph-v/ymax*ph;
+const poly=name=>series(name).map(([yr,c])=>`${xs(yr).toFixed(1)},${ys(c).toFixed(1)}`).join(' ');
+
+let s=`<svg class="tj" viewBox="0 0 ${W} ${H}">`;
+for(let v=0; v<=ymax; v+=10){ s+=`<line class="grid" x1="${x0}" y1="${ys(v).toFixed(0)}" x2="${x0+pw}" y2="${ys(v).toFixed(0)}"/><text class="tick" x="${x0-6}" y="${(ys(v)+4).toFixed(0)}" text-anchor="end">${v}</text>`; }
+[ymn,2014,2018,2022,ymx].forEach(yr=>{ s+=`<text class="tick" x="${xs(yr).toFixed(0)}" y="${H-8}" text-anchor="middle">${yr}</text>`; });
+// the whole field, faint
+for(const r of all){ if(hiNames.has(r.name)) continue; const p=series(r.name); if(!p.length) continue;
+  s+=`<polyline points="${poly(r.name)}" fill="none" stroke="#e2e8f0" stroke-width="1.2"/>`; }
+// the top 8, highlighted + labelled (collect end points so tied labels can be de-collided)
+const ends=[];
+hi.forEach((r,k)=>{ const col=PAL[k%PAL.length], pts=series(r.name); const [ey,ec]=pts[pts.length-1];
+  s+=`<polyline points="${poly(r.name)}" fill="none" stroke="${col}" stroke-width="2.2"><title>${esc(r.name)}: ${r.adjusted.toFixed(1)} adjusted wins</title></polyline>`;
+  s+=`<circle cx="${xs(ey).toFixed(1)}" cy="${ys(ec).toFixed(1)}" r="3.4" fill="${col}"/>`;
+  ends.push({name:r.name, col, x:xs(ey)+6, y:ys(ec)+4}); });
+// push labels apart when careers tie at the same endpoint (e.g. aBeZy & Simp)
+ends.sort((a,b)=>a.y-b.y);
+for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13; }
+for(const e of ends) s+=`<a href="player.html?p=${encodeURIComponent(e.name)}"><text class="end" x="${e.x.toFixed(1)}" y="${e.y.toFixed(1)}" fill="${e.col}">${esc(e.name)}</text></a>`;
+s+='</svg>';
+
+document.getElementById('root').innerHTML = `
+  <h1>Career trajectories</h1>
+  <p class="lede">Every major winner's <strong>cumulative era-adjusted wins</strong> over time: the whole field in grey, the top 8 highlighted.
+  A steep short line is a <strong>peak</strong> (a lot won fast); a long shallow climb is <strong>longevity</strong>. Where a line flattens, the wins stopped.
+  <a href="methodology.html">How adjusted wins work →</a></p>
+  <div class="chart-wrap">${s}</div>
+  <p class="small muted">All seasons. The y-axis is cumulative era-adjusted wins; each line ends at that player's career total.</p>`;
+mountFoot();
+</script>
+</body>
+</html>
