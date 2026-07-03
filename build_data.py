@@ -7,6 +7,7 @@ wiki total. Run directly (`python3 build_data.py`) to (re)write site/data.js.
 import json, re, os
 from collections import defaultdict, Counter
 from fractions import Fraction
+from types import SimpleNamespace
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 def _p(*parts): return os.path.join(HERE, *parts)
@@ -69,24 +70,36 @@ PLAYER_NOTES = {
 def norm(n): return re.sub(r'\s*\(.*?\)\s*', '', n).strip()   # strip disambiguation parenthetical
 def mkey(n): return norm(n).lower()                           # case-insensitive join key (ABeZy vs aBeZy)
 
+def _played(d): return (d or '0000') <= ASOF
+def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
 
-def build():
-    """Compute the full APP_DATA dict. Raises RuntimeError if any player's
-    reconstructed wins do not equal their published wiki total."""
+
+# --------------------------------------------------------------------------- #
+# Source loading + season math
+# --------------------------------------------------------------------------- #
+def load_sources():
+    """Load the four wiki source files, restricted to the console-major universe
+    (DROP_GAMES / DROP_EVENTS out; wins on/before ASOF). Returns
+    (events_all, events, pwins, champs_rows, ppart) — events_all keeps
+    future-dated scheduled majors for in-progress denominators; ppart is
+    filtered per-row later (it also needs the DNS/place rules)."""
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
     pwins  = json.load(open(_p('player_event_wins.json')))   # [{Player,Event,Game,Date}]
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
     ppart  = json.load(open(_p('player_participation.json')))  # [{Player,Event,Game,Date,Place,...}] ALL placements
 
-    played = lambda d: (d or '0000') <= ASOF
-    keep = lambda x: x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
-    events_all = [e for e in events if keep(e)]                          # incl. future-dated (scheduled)
-    events = [e for e in events_all if played(e.get('Date'))]
-    pwins  = [r for r in pwins  if keep(r) and played(r.get('Date'))]
+    events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
+    events = [e for e in events_all if _played(e.get('Date'))]
+    pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
+    return events_all, events, pwins, champs_rows, ppart
 
-    # held = majors played so far that season; scheduled = all majors on the calendar
-    # (same file, no date filter); denom = majors a team could win. Shares/peak/rescale
-    # use denom, so an in-progress season divides by its full schedule.
+
+def season_context(events, events_all):
+    """Per-season counts, chronological order, the pre-BO2 split, and the era
+    weights (mbar). held = majors played so far that season; scheduled = all
+    majors on the calendar (same file, no date filter); denom = majors a team
+    could win. Shares/peak/rescale use denom, so an in-progress season divides
+    by its full schedule."""
     majors = Counter(e['Game'] for e in events)
     held = dict(majors)
     scheduled = Counter(e['Game'] for e in events_all)
@@ -98,47 +111,58 @@ def build():
     season_order = sorted(majors, key=lambda g: first_date[g])
     order_idx = {g: i for i, g in enumerate(season_order)}
 
-    console_seasons = list(season_order)
     bo2_date = first_date['Black Ops 2']
     pre_bo2 = {g for g in season_order if first_date[g] < bo2_date}
 
     def mbar(games): return sum(denom[g] for g in games) / len(games)
-    MBAR_ALL  = mbar(console_seasons)
-    MBAR_POST = mbar([g for g in console_seasons if g not in pre_bo2])
+    return SimpleNamespace(
+        majors=majors, held=held, denom=denom, first_date=first_date,
+        order=season_order, order_idx=order_idx, pre_bo2=pre_bo2,
+        mbar_all=mbar(season_order),
+        mbar_post=mbar([g for g in season_order if g not in pre_bo2]))
 
-    top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
-    disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
 
-    # Career span from PARTICIPATION (every major entered, won or not), not just wins:
-    # first_year/last_year above are first-win to last-win, which understates how long a
-    # player actually competed. career_* uses the same console-major universe (drop
-    # Warzone/Mobile & dropped events, on/before ASOF) so a player who kept competing
-    # after their last win — e.g. BigTymeR played through 2014 but last won in 2012 — has
-    # an honest active span, and majors_played gives a real denominator for win rate.
-    # A player rostered but who did not actually take the stage doesn't count as
-    # having competed. The wiki marks these 'DNS' (did not start); a blank place is
-    # likewise not a result. Everything else — including ">12"-style open placements —
-    # means they played. (Only 'MLG National Championship 2009' DNS rows exist today,
-    # for SiLLY and NAMELESS, but the guard survives a re-pull.)
-    NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
-    part_events, part_dates = defaultdict(set), defaultdict(list)
+# --------------------------------------------------------------------------- #
+# Source indexing (keyed by mkey, restricted to the published leaderboard)
+# --------------------------------------------------------------------------- #
+# A player rostered but who did not actually take the stage doesn't count as
+# having competed. The wiki marks these 'DNS' (did not start); a blank place is
+# likewise not a result. Everything else — including ">12"-style open placements —
+# means they played. (Only 'MLG National Championship 2009' DNS rows exist today,
+# for SiLLY and NAMELESS, but the guard survives a re-pull.)
+NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
+
+
+def index_participation(ppart, top50_mkeys):
+    """Career span from PARTICIPATION (every major entered, won or not), not just
+    wins: first-win-to-last-win understates how long a player actually competed.
+    Uses the same console-major universe (drop Warzone/Mobile & dropped events,
+    on/before ASOF) so a player who kept competing after their last win — e.g.
+    BigTymeR played through 2014 but last won in 2012 — has an honest active
+    span, and majors_played gives a real denominator for win rate."""
+    part_dates = defaultdict(list)
     part_rows = defaultdict(dict)   # mk -> {event: {event,game,date,place}} — every major entered (won or not)
     for r in ppart:
         if mkey(r['Player']) not in top50_mkeys: continue
-        if not keep(r) or not played(r.get('Date')): continue
+        if not _keep(r) or not _played(r.get('Date')): continue
         if r.get('Place') in NONPLAY: continue
-        k = mkey(r['Player']); part_events[k].add(r['Event'])
+        k = mkey(r['Player'])
         if r.get('Date'): part_dates[k].append(r['Date'])
         part_rows[k].setdefault(r['Event'], {'event': r['Event'], 'game': r['Game'],
                                              'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip()})
-    def career_of(mk):
-        ds = sorted(part_dates.get(mk, []))
-        if not ds: return (None, None, 0, 0, None, None)
-        y0, y1 = int(ds[0][:4]), int(ds[-1][:4])
-        # exact first/last dates feed the career-timeline signature (when wins land
-        # across the whole career, not just the winning window); years feed span.
-        return (y0, y1, y1 - y0, len(part_events.get(mk, ())), ds[0], ds[-1])
+    return part_dates, part_rows
 
+
+def career_of(mk, part_dates, part_rows):
+    ds = sorted(part_dates.get(mk, []))
+    if not ds: return (None, None, 0, 0, None, None)
+    y0, y1 = int(ds[0][:4]), int(ds[-1][:4])
+    # exact first/last dates feed the career-timeline signature (when wins land
+    # across the whole career, not just the winning window); years feed span.
+    return (y0, y1, y1 - y0, len(part_rows.get(mk, {})), ds[0], ds[-1])
+
+
+def index_wins(pwins, top50_mkeys):
     player_wins = defaultdict(list)
     wiki_name = {}   # mk -> raw wiki player id (for the per-player Fandom link)
     for r in pwins:
@@ -146,9 +170,10 @@ def build():
         if k in top50_mkeys:
             player_wins[k].append(r)
             wiki_name.setdefault(k, r['Player'])
+    return player_wins, wiki_name
 
-    def weight(g): return 1.0 / denom[g]
 
+def index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins):
     champs_by = defaultdict(list)
     for r in champs_rows:
         t = r['title']
@@ -168,82 +193,110 @@ def build():
         for ce in champs_by.get(mk, []):
             if ce['event'] not in won:
                 raise RuntimeError(f"champ event not among {disp_by_mkey[mk]}'s major wins: {ce['event']!r}")
+    return champs_by
 
-    players_out = {}   # keyed by display name (what player.html / leaderboard links use)
-    participation = {} # name -> every major entered (won or not); emitted to a separate file
-    exact_share = {}   # name -> (all, post) as exact Fractions; ranking must not use rounded values
-    for n, pub in PUBLISHED:
-        mk = mkey(n)
-        wins = sorted(player_wins.get(mk, []), key=lambda r: (r.get('Date') or ''))
-        by_season = defaultdict(lambda: {'count': 0, 'events': []})
-        for w in wins:
-            g = w['Game']
-            by_season[g]['count'] += 1
-            by_season[g]['events'].append({'event': w['Event'], 'date': w.get('Date') or '', 'weight': round(weight(g), 4)})
-        seasons = []
-        for g in sorted(by_season, key=lambda x: order_idx[x]):
-            c = by_season[g]['count']
-            seasons.append({'game': g, 'wins': c, 'majors': denom[g], 'held': held[g],
-                            'share': round(c / denom[g], 4),
-                            'pre_bo2': g in pre_bo2, 'events': by_season[g]['events']})
-        sfrac = lambda s: Fraction(s['wins'], s['majors'])
-        share_all  = sum((sfrac(s) for s in seasons), Fraction(0))
-        share_post = sum((sfrac(s) for s in seasons if not s['pre_bo2']), Fraction(0))
-        exact_share[n] = (share_all, share_post)
 
-        # Peak (best single season's share, rescaled to a wins-like number) + Longevity
-        # (distinct titles won, plus career span in years). Computed for both modes.
-        def peak_of(slist, mb):
-            if not slist: return {'adj': 0.0, 'season': None, 'wins': 0, 'majors': 0}
-            best = max(slist, key=sfrac)
-            return {'adj': round(float(sfrac(best)) * mb, 2), 'season': best['game'], 'wins': best['wins'], 'majors': best['majors']}
-        def span_of(slist):
-            yrs = [int(e['date'][:4]) for s in slist for e in s['events'] if e['date']]
-            return (max(yrs) - min(yrs) + 1, min(yrs), max(yrs)) if yrs else (0, None, None)
-        seasons_post = [s for s in seasons if not s['pre_bo2']]
-        pk_all, pk_post = peak_of(seasons, MBAR_ALL), peak_of(seasons_post, MBAR_POST)
-        span_all, first_all, last_all = span_of(seasons)
-        span_post, first_post, last_post = span_of(seasons_post)
-        first_played, last_played, career_span, majors_played, first_pdate, last_pdate = career_of(mk)
+# --------------------------------------------------------------------------- #
+# Per-player record
+# --------------------------------------------------------------------------- #
+def _sfrac(s): return Fraction(s['wins'], s['majors'])
 
-        # Every major ENTERED (won or not), for the auditable "all majors" toggle on the
-        # player page. Built from participation placements; wins are flagged. Any won
-        # event missing a participation row is added so all_majors always covers the wins.
-        won_events = {w['Event'] for w in wins}
-        all_majors = [dict(r, won=(r['event'] in won_events)) for r in part_rows.get(mk, {}).values()]
-        seen_ev = {r['event'] for r in all_majors}
-        for w in wins:
-            if w['Event'] not in seen_ev:
-                all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '', 'place': '1', 'won': True})
-        all_majors.sort(key=lambda r: r['date'])
-        participation[n] = all_majors
 
-        players_out[n] = {'name': n, 'raw': pub, 'seasons': seasons,
-                          'wiki': wiki_name.get(mk, n),
-                          'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * MBAR_ALL, 2),
-                          'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * MBAR_POST, 2),
-                          'champs': len(champs_by.get(mk, [])), 'champ_events': champs_by.get(mk, []),
-                          'peak_all': pk_all, 'peak_post': pk_post,
-                          'titles_all': len(seasons), 'titles_post': len(seasons_post),
-                          'span_all': span_all, 'span_post': span_post,
-                          'first_year': first_all, 'last_year': last_all,
-                          'first_post': first_post, 'last_post': last_post,
-                          'first_played': first_played, 'last_played': last_played,
-                          'first_played_date': first_pdate, 'last_played_date': last_pdate,
-                          'career_span': career_span, 'majors_played': majors_played,
-                          'note': PLAYER_NOTES.get(n)}
+def peak_of(slist, mb):
+    """Best single season's share, rescaled to a wins-like number."""
+    if not slist: return {'adj': 0.0, 'season': None, 'wins': 0, 'majors': 0}
+    best = max(slist, key=_sfrac)
+    return {'adj': round(float(_sfrac(best)) * mb, 2), 'season': best['game'], 'wins': best['wins'], 'majors': best['majors']}
 
-    # GUARD: reconstructed wins must equal the published wiki total for every player
-    mismatch = [(n, pub, sum(s['wins'] for s in players_out[n]['seasons'])) for n, pub in PUBLISHED
-                if sum(s['wins'] for s in players_out[n]['seasons']) != pub]
+
+def span_of(slist):
+    """(span in years, first year, last year) across a season list's win events."""
+    yrs = [int(e['date'][:4]) for s in slist for e in s['events'] if e['date']]
+    return (max(yrs) - min(yrs) + 1, min(yrs), max(yrs)) if yrs else (0, None, None)
+
+
+def player_seasons(wins, S):
+    """Group a player's (date-sorted) wins into per-season rows, chronological."""
+    by_season = defaultdict(lambda: {'count': 0, 'events': []})
+    for w in wins:
+        g = w['Game']
+        by_season[g]['count'] += 1
+        by_season[g]['events'].append({'event': w['Event'], 'date': w.get('Date') or '', 'weight': round(1.0 / S.denom[g], 4)})
+    seasons = []
+    for g in sorted(by_season, key=lambda x: S.order_idx[x]):
+        c = by_season[g]['count']
+        seasons.append({'game': g, 'wins': c, 'majors': S.denom[g], 'held': S.held[g],
+                        'share': round(c / S.denom[g], 4),
+                        'pre_bo2': g in S.pre_bo2, 'events': by_season[g]['events']})
+    return seasons
+
+
+def build_player(n, pub, S, idx):
+    """One player's full record. Returns (record, all_majors_entered,
+    (share_all, share_post) as exact Fractions — ranking must not use rounded
+    values)."""
+    mk = mkey(n)
+    wins = sorted(idx.player_wins.get(mk, []), key=lambda r: (r.get('Date') or ''))
+    seasons = player_seasons(wins, S)
+    share_all  = sum((_sfrac(s) for s in seasons), Fraction(0))
+    share_post = sum((_sfrac(s) for s in seasons if not s['pre_bo2']), Fraction(0))
+
+    # Peak (best single season's share, rescaled to a wins-like number) + Longevity
+    # (distinct titles won, plus career span in years). Computed for both modes.
+    seasons_post = [s for s in seasons if not s['pre_bo2']]
+    pk_all, pk_post = peak_of(seasons, S.mbar_all), peak_of(seasons_post, S.mbar_post)
+    span_all, first_all, last_all = span_of(seasons)
+    span_post, first_post, last_post = span_of(seasons_post)
+    first_played, last_played, career_span, majors_played, first_pdate, last_pdate = \
+        career_of(mk, idx.part_dates, idx.part_rows)
+
+    # Every major ENTERED (won or not), for the auditable "all majors" toggle on the
+    # player page. Built from participation placements; wins are flagged. Any won
+    # event missing a participation row is added so all_majors always covers the wins.
+    won_events = {w['Event'] for w in wins}
+    all_majors = [dict(r, won=(r['event'] in won_events)) for r in idx.part_rows.get(mk, {}).values()]
+    seen_ev = {r['event'] for r in all_majors}
+    for w in wins:
+        if w['Event'] not in seen_ev:
+            all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '', 'place': '1', 'won': True})
+    all_majors.sort(key=lambda r: r['date'])
+
+    rec = {'name': n, 'raw': pub, 'seasons': seasons,
+           'wiki': idx.wiki_name.get(mk, n),
+           'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * S.mbar_all, 2),
+           'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * S.mbar_post, 2),
+           'champs': len(idx.champs_by.get(mk, [])), 'champ_events': idx.champs_by.get(mk, []),
+           'peak_all': pk_all, 'peak_post': pk_post,
+           'titles_all': len(seasons), 'titles_post': len(seasons_post),
+           'span_all': span_all, 'span_post': span_post,
+           'first_year': first_all, 'last_year': last_all,
+           'first_post': first_post, 'last_post': last_post,
+           'first_played': first_played, 'last_played': last_played,
+           'first_played_date': first_pdate, 'last_played_date': last_pdate,
+           'career_span': career_span, 'majors_played': majors_played,
+           'note': PLAYER_NOTES.get(n)}
+    return rec, all_majors, (share_all, share_post)
+
+
+# --------------------------------------------------------------------------- #
+# Guards, ranking, and output sections
+# --------------------------------------------------------------------------- #
+def check_reconstruction(players_out):
+    """GUARD: reconstructed wins must equal the published wiki total for every player."""
+    recon = {n: sum(s['wins'] for s in players_out[n]['seasons']) for n, _ in PUBLISHED}
+    mismatch = [(n, pub, recon[n]) for n, pub in PUBLISHED if recon[n] != pub]
     if mismatch:
         raise RuntimeError('reconstruction != published total: ' +
                            ', '.join(f'{n} ({pub} vs {rec})' for n, pub, rec in mismatch))
 
-    # Competition ranking on exact values: rank = 1 + (players strictly better),
-    # so genuine ties share the minimum rank instead of getting arbitrary order.
-    def crank(vals):
-        return {n: 1 + sum(1 for w in vals.values() if w > v) for n, v in vals.items()}
+
+def crank(vals):
+    """Competition ranking on exact values: rank = 1 + (players strictly better),
+    so genuine ties share the minimum rank instead of getting arbitrary order."""
+    return {n: 1 + sum(1 for w in vals.values() if w > v) for n, v in vals.items()}
+
+
+def build_leaderboard(players_out, exact_share):
     raw_rank  = crank(dict(PUBLISHED))
     adj_rank  = crank({n: s[0] for n, s in exact_share.items()})
     post_rank = crank({n: s[1] for n, s in exact_share.items()})
@@ -266,37 +319,73 @@ def build():
             'firstPlayedDate': p['first_played_date'], 'lastPlayedDate': p['last_played_date'],
             'careerSpan': p['career_span'], 'majorsPlayed': p['majors_played'],
         })
+    return leaderboard
 
+
+def build_games(events, pwins, S, top50_mkeys, disp_by_mkey):
     games_out = []
-    for g in season_order:
+    for g in S.order:
         evs = sorted([e for e in events if e['Game'] == g], key=lambda x: (x.get('Date') or ''))
         wc = Counter()
         for r in pwins:
             if r['Game'] == g and mkey(r['Player']) in top50_mkeys:
                 wc[disp_by_mkey[mkey(r['Player'])]] += 1
-        games_out.append({'game': g, 'majors': held[g], 'denom': denom[g], 'weight': round(1.0 / denom[g], 4),
-            'order': order_idx[g], 'preBo2': g in pre_bo2, 'firstDate': first_date[g],
+        games_out.append({'game': g, 'majors': S.held[g], 'denom': S.denom[g], 'weight': round(1.0 / S.denom[g], 4),
+            'order': S.order_idx[g], 'preBo2': g in S.pre_bo2, 'firstDate': S.first_date[g],
             'events': [{'event': e['Event'], 'date': e.get('Date') or '', 'winner': e.get('Winner') or '',
                         'type': e.get('EventType') or '', 'prize': e.get('Prizepool') or '', 'location': e.get('Location') or '',
                         'region': e.get('Region') or ''} for e in evs],
             'topPlayers': [{'name': p, 'wins': c} for p, c in wc.most_common(8)]})
+    return games_out
 
-    meta = {'mbarAll': round(MBAR_ALL, 4), 'mbarPost': round(MBAR_POST, 4), 'asOf': ASOF,
-            'consoleSeasons': len(console_seasons), 'preBo2': sorted(pre_bo2, key=lambda g: order_idx[g]),
-            'seasonOrder': season_order, 'totalMajors': sum(majors.values()),
-            'consoleMajors': sum(majors[g] for g in console_seasons), 'numEvents': len(events)}
 
-    return {'meta': meta, 'leaderboard': leaderboard, 'players': players_out, 'games': games_out,
-            'majors': dict(majors), '_participation': participation}
+def build_meta(S, events):
+    return {'mbarAll': round(S.mbar_all, 4), 'mbarPost': round(S.mbar_post, 4), 'asOf': ASOF,
+            'consoleSeasons': len(S.order), 'preBo2': sorted(S.pre_bo2, key=lambda g: S.order_idx[g]),
+            'seasonOrder': S.order, 'totalMajors': sum(S.majors.values()),
+            'consoleMajors': sum(S.majors[g] for g in S.order), 'numEvents': len(events)}
+
+
+# --------------------------------------------------------------------------- #
+# Assembly
+# --------------------------------------------------------------------------- #
+def build():
+    """Compute the full APP_DATA dict. Raises RuntimeError if any player's
+    reconstructed wins do not equal their published wiki total."""
+    events_all, events, pwins, champs_rows, ppart = load_sources()
+    S = season_context(events, events_all)
+
+    top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
+    disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
+    part_dates, part_rows = index_participation(ppart, top50_mkeys)
+    player_wins, wiki_name = index_wins(pwins, top50_mkeys)
+    idx = SimpleNamespace(
+        part_dates=part_dates, part_rows=part_rows,
+        player_wins=player_wins, wiki_name=wiki_name,
+        champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins))
+
+    players_out = {}   # keyed by display name (what player.html / leaderboard links use)
+    participation = {} # name -> every major entered (won or not); emitted to a separate file
+    exact_share = {}   # name -> (all, post) as exact Fractions; ranking must not use rounded values
+    for n, pub in PUBLISHED:
+        players_out[n], participation[n], exact_share[n] = build_player(n, pub, S, idx)
+    check_reconstruction(players_out)
+
+    return {'meta': build_meta(S, events),
+            'leaderboard': build_leaderboard(players_out, exact_share),
+            'players': players_out,
+            'games': build_games(events, pwins, S, top50_mkeys, disp_by_mkey),
+            'majors': dict(S.majors), '_participation': participation}
 
 
 def write(data, path=None):
     path = path or _p('site', 'data.js')
-    # the full major-entry list per player is large and only used on player pages, so it
-    # rides in its own file (window.PART) instead of bloating data.js on every page.
+    # the full major-entry list per player is large (~0.5 MB) and only shown when a
+    # player page's "All entered" toggle is opened, so it's plain JSON the page
+    # fetches on demand instead of a script that would block every page load.
     participation = data.pop('_participation', {})
-    with open(_p('site', 'participation.js'), 'w') as f:
-        f.write('window.PART='); json.dump(participation, f); f.write(';')
+    with open(_p('site', 'participation.json'), 'w') as f:
+        json.dump(participation, f)
     with open(path, 'w') as f:
         f.write('window.APP_DATA='); json.dump(data, f); f.write(';')
     # also emit pure JSON so the /api/og edge function (and any module) can import it
