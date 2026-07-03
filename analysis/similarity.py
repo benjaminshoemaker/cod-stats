@@ -285,6 +285,73 @@ def bootstrap_stability(fs, D, k, n_boot=200, seed=0):
 # --------------------------------------------------------------------------- #
 # Auto-labelling a cluster from its average z-profile (for readability)
 # --------------------------------------------------------------------------- #
+# short UI labels + display format per feature (order defines table rows)
+SITE_GROUPS = [
+    ("Success", [("adjAll", "Adjusted wins", "dec1"), ("raw", "Raw wins", "int"),
+                 ("champs", "World champs", "int")]),
+    ("Peak", [("peakAll", "Peak season", "dec1")]),
+    ("Consistency", [("finals_rate", "Finals rate", "pct"),
+                     ("deep_run_rate", "Deep-run rate", "pct"),
+                     ("win_conversion", "Win conversion", "pct")]),
+    ("Longevity", [("titlesAll", "Distinct titles", "int"),
+                   ("spanAll", "Career span", "int"),
+                   ("attendances", "Majors attended", "int")]),
+    ("Path", [("distinct_teams", "Teams played for", "int"),
+              ("avg_tenure", "Avg tenure/team", "dec1")]),
+]
+
+
+def emit_site(fs, D, C, players, k_solo=6):
+    """Write site/similarity.js (window.SIM) — comps + per-player metric
+    percentiles for the player-page 'Similar players' block. Debut year rides
+    along as non-scored context (era is excluded from the score by design)."""
+    n = len(fs.names)
+    # percentiles across players for every scored feature
+    raw = np.array([[ (players[i].get(f) if players[i].get(f) is not None else np.nan)
+                      for f in fs.feats] for i in range(n)], float)
+    pct = np.full_like(raw, np.nan)
+    for j in range(raw.shape[1]):
+        col = raw[:, j]; ok = ~np.isnan(col)
+        order = col[ok].argsort(); r = np.empty(ok.sum()); r[order] = np.arange(ok.sum())
+        pv = np.full(n, np.nan); pv[np.where(ok)[0]] = r / (ok.sum() - 1) * 100
+        pct[:, j] = pv
+    fidx = {f: j for j, f in enumerate(fs.feats)}
+
+    def comps_list(i, solo):
+        out = []
+        for j in np.argsort(D[i]):
+            if j == i:
+                continue
+            cw = float(C[i, j])
+            if solo and cw > 0.15:
+                continue
+            out.append({"name": fs.names[j], "score": round(100 * (1 - D[i, j])),
+                        "cowin": round(cw, 2)})
+            if len(out) == k_solo:
+                break
+        return out
+
+    players_out = {}
+    for i, name in enumerate(fs.names):
+        metrics = {}
+        for f in fs.feats:
+            j = fidx[f]
+            v = raw[i, j]; p = pct[i, j]
+            metrics[f] = {"v": None if np.isnan(v) else round(float(v), 2),
+                          "p": None if np.isnan(p) else round(float(p))}
+        players_out[name] = {
+            "debut": players[i].get("firstYear"),
+            "metrics": metrics,
+            "solo": comps_list(i, True),
+            "all": comps_list(i, False),
+        }
+    payload = {"config": {"groups": SITE_GROUPS}, "players": players_out}
+    path = os.path.join(ROOT, "site", "similarity.js")
+    with open(path, "w") as fh:
+        fh.write("window.SIM=" + json.dumps(payload, separators=(",", ":")) + ";\n")
+    print(f"Wrote {path}  (comps + metrics for {n} players)")
+
+
 def cluster_cowin(C, members):
     """Mean pairwise co-win overlap inside a cluster — high => 'one roster'."""
     if len(members) < 2:
@@ -398,6 +465,8 @@ def main():
     outp = os.path.join(HERE, "out", "similarity.json")
     json.dump(out, open(outp, "w"), indent=2)
     print(f"Wrote {outp}  (comps for all {n} players + clusters + dendrogram data)")
+
+    emit_site(fs, D, C, players)
 
     # ---- dendrogram image (optional) --------------------------------------
     try:

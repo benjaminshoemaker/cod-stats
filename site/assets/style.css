@@ -194,3 +194,47 @@ a:focus-visible,.toggle:focus-within,input:focus-visible,
 
 .legend{display:flex;gap:1.1rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin:.5rem 0}
 .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:.35rem;vertical-align:-1px}
+
+/* ---- Similar players block (player.html) ---- */
+#similar{margin-top:2rem}
+.sim-controls{display:flex;justify-content:flex-end;margin:.2rem 0 .6rem}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;background:var(--bg)}
+.seg button{font:inherit;font-size:.78rem;font-weight:600;color:var(--muted);background:transparent;
+  border:0;padding:.3rem .65rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.sim-row{display:grid;grid-template-columns:1.1rem 9rem 1fr 2.4rem auto;align-items:center;gap:.7rem;
+  width:100%;text-align:left;background:transparent;border:0;border-top:1px solid var(--line);
+  padding:.5rem .35rem;cursor:pointer;font:inherit;color:var(--ink)}
+.sim-row:first-child{border-top:0}
+.sim-row:hover{background:var(--panel)}
+.sim-row.active{background:var(--accent-soft)}
+.sim-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.sim-row .rk{color:var(--faint);font-size:.78rem;text-align:right}
+.sim-row .nm{font-weight:600}
+.sim-row .track{position:relative;height:7px;border-radius:5px;background:var(--panel-2);overflow:hidden}
+.sim-row .track>i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--accent)}
+.sim-row .sc{font-family:var(--mono);font-weight:700;font-size:.95rem;text-align:right}
+.pill.mate{background:#fdf3e3;color:var(--warn)}
+.pill.solo{background:var(--pos-soft);color:var(--pos)}
+.sim-cmp-head{margin:1rem 0 .5rem;font-size:.9rem;font-weight:600;display:flex;gap:.6rem;
+  align-items:baseline;flex-wrap:wrap}
+.sim-cmp-head .va{color:var(--accent)} .sim-cmp-head .vb{color:var(--warn)}
+.sim-cmp-head a{margin-left:auto}
+.sim-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.sim-table th{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);
+  font-weight:600;text-align:right;padding:.3rem .35rem}
+.sim-table th.l{text-align:left}
+.sim-table td{padding:.32rem .35rem;border-top:1px solid var(--line)}
+.sim-metric{color:var(--muted)}
+.sim-v{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600}
+.sim-v.va{color:var(--accent)} .sim-v.vb{color:var(--warn)}
+.sim-gname{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);
+  font-weight:700;padding:.7rem .35rem .25rem}
+.sim-tag{text-align:right;font-size:.74rem;color:var(--muted);white-space:nowrap}
+.sim-tag .dot{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;margin-right:.32rem;vertical-align:middle}
+.sim-tag.aligned .dot{background:var(--pos)}
+.sim-tag.close .dot{background:var(--line-2)}
+.sim-tag.differs .dot{background:var(--warn)}
+@media (max-width:560px){.sim-row{grid-template-columns:1rem 6.5rem 1fr 2.2rem;gap:.5rem}
+  .sim-row .tags{grid-column:2/5}}

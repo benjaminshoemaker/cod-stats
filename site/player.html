@@ -22,6 +22,7 @@
 <body>
 <div class="wrap" id="root"></div>
 <script src="data.js"></script>
+<script src="similarity.js"></script>
 <script src="assets/app.js"></script>
 <script>
 mountNav('index.html');
@@ -69,6 +70,8 @@ if(!p || !lb){
 
     <h2>Every major win (${p.raw})</h2>
     <table class="data"><tbody id="winlist"></tbody></table>
+
+    <section id="similar"></section>
   `;
 
   function render(){
@@ -123,8 +126,98 @@ if(!p || !lb){
   }
 
   render();
+  mountSimilar(p.name);
 
   mountFoot();
+}
+
+// ---- Similar players block (data: window.SIM) ----
+function mountSimilar(name){
+  const host = document.getElementById('similar');
+  const SIM = window.SIM;
+  const me = SIM && SIM.players[name];
+  if(!me){ return; }                     // e.g. player outside the 91 with metrics
+
+  const fmt = (code,v)=>{
+    if(v==null) return '–';
+    if(code==='pct') return Math.round(v*100)+'%';
+    if(code==='dec1') return (Math.round(v*10)/10).toFixed(1);
+    return String(Math.round(v));
+  };
+  const mate = cw => cw>=0.15;
+  let mode = 'solo';                      // default: "didn't win together"
+  let sel  = null;
+
+  host.innerHTML = `
+    <h2>Similar players</h2>
+    <p class="small muted">Closest résumés by <strong>achievement</strong> — success, peak, consistency,
+      longevity, and career path. When a player debuted is deliberately not scored, so comps can cross eras.</p>
+    <div class="sim-controls">
+      <div class="seg" id="sim-seg">
+        <button data-mode="solo" aria-pressed="true">Didn't win together</button>
+        <button data-mode="all" aria-pressed="false">Everyone</button>
+      </div>
+    </div>
+    <div id="sim-list"></div>
+    <div id="sim-compare"></div>`;
+
+  function renderList(){
+    const rows = me[mode];
+    if(!rows.length){ document.getElementById('sim-list').innerHTML =
+      `<p class="small faint">No non-teammate comps — this player won alongside all their closest matches.</p>`; return; }
+    document.getElementById('sim-list').innerHTML = rows.map((r,i)=>`
+      <button class="sim-row${r.name===sel?' active':''}" data-comp="${esc(r.name)}" aria-expanded="${r.name===sel}">
+        <span class="rk num">${i+1}</span>
+        <span class="nm">${esc(r.name)}</span>
+        <span class="track"><i style="width:${r.score}%"></i></span>
+        <span class="sc num">${r.score}</span>
+        <span class="tags">${mate(r.cowin)
+          ? `<span class="pill mate">teammate · ${Math.round(r.cowin*100)}% shared</span>`
+          : `<span class="pill solo">no shared wins</span>`}</span>
+      </button>`).join('');
+    document.querySelectorAll('#sim-list .sim-row').forEach(b=>b.onclick=()=>{
+      sel = (sel===b.dataset.comp) ? null : b.dataset.comp;
+      renderList(); renderCompare();
+    });
+  }
+
+  function renderCompare(){
+    const box = document.getElementById('sim-compare');
+    if(!sel){ box.innerHTML=''; return; }
+    const B = SIM.players[sel]; if(!B){ box.innerHTML=''; return; }
+    const A = me;
+    let body = '';
+    SIM.config.groups.forEach(([g,mets])=>{
+      body += `<tr><td colspan="4" class="sim-gname">${esc(g)}</td></tr>`;
+      mets.forEach(([k,lab,code])=>{
+        const pa=A.metrics[k].p, pb=B.metrics[k].p;
+        const d = (pa==null||pb==null)?999:Math.abs(pa-pb);
+        const cls = d<=8?'aligned':d<=25?'close':'differs';
+        const txt = d<=8?'aligned':d<=25?'close':'differs';
+        body += `<tr><td class="sim-metric">${lab}</td>
+          <td class="sim-v va">${fmt(code,A.metrics[k].v)}</td>
+          <td class="sim-v vb">${fmt(code,B.metrics[k].v)}</td>
+          <td class="sim-tag ${cls}"><span class="dot"></span>${txt}</td></tr>`;
+      });
+    });
+    // era shown as context, explicitly not scored
+    body += `<tr><td colspan="4" class="sim-gname">Context <span class="faint" style="text-transform:none;letter-spacing:0">· not scored</span></td></tr>
+      <tr><td class="sim-metric">Debut year</td><td class="sim-v va">${A.debut??'–'}</td>
+      <td class="sim-v vb">${B.debut??'–'}</td><td class="sim-tag"></td></tr>`;
+    box.innerHTML = `
+      <div class="sim-cmp-head">Comparing <span class="va">${esc(name)}</span> with <span class="vb">${esc(sel)}</span>
+        <a class="small" href="player.html?p=${encodeURIComponent(sel)}">open profile →</a></div>
+      <div style="overflow-x:auto"><table class="sim-table">
+        <thead><tr><th class="l">Metric</th><th>${esc(name)}</th><th>${esc(sel)}</th><th>Match</th></tr></thead>
+        <tbody>${body}</tbody></table></div>`;
+  }
+
+  document.querySelectorAll('#sim-seg button').forEach(b=>b.onclick=()=>{
+    mode=b.dataset.mode; sel=null;
+    document.querySelectorAll('#sim-seg button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderList(); renderCompare();
+  });
+  renderList(); renderCompare();
 }
 </script>
 </body>
