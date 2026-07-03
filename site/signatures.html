@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="Signatures · CoD majors">
-<meta property="og:description" content="The ratios hiding behind the leaderboard — rings per win, wins per year, when in a career the titles landed. Live from the data.">
+<meta property="og:description" content="The ratios hiding behind the leaderboard: rings per win, wins per year, when in a career the titles landed. Live from the data.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/signatures.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -131,7 +131,7 @@ const ceilGroups=Object.entries(bySeason).map(([s,g])=>
 root.innerHTML=`
   <h1>Signatures</h1>
   <p class="lede">The leaderboard ranks players by era-adjusted major wins. These are the <strong>ratios between</strong>
-  the numbers — rings to wins, wins to years, when in a career the titles landed. Every board below recomputes
+  the numbers: rings to wins, wins to years, when in a career the titles landed. Every board below recomputes
   live from the current data.</p>
 
   <div class="sig">
@@ -150,7 +150,7 @@ root.innerHTML=`
     <div class="sig-top"><h2>Compressed dominance</h2><span class="unit">adj wins ÷ year</span></div>
     <p class="concept">Era-adjusted wins divided by years active, first major to last. Higher means more winning
     packed into less time.</p>
-    <p class="howto">This rewards short, intense runs as much as long primes — a two-year burst can outrank a decade.
+    <p class="howto">This rewards short, intense runs as much as long primes. A two-year burst can outrank a decade.
     Minimum 4 adjusted wins and a two-year span, so single-season flashes don't top it.</p>
     ${bars(density)}
   </div>
@@ -159,7 +159,7 @@ root.innerHTML=`
     <div class="sig-top"><h2>Prodigies &amp; late bloomers</h2><span class="unit">career-timing index</span></div>
     <p class="concept">Place every win on a 0-to-1 line from a player's first major to their last, then average.
     Below 0.5 the wins came early; above 0.5 they came late.</p>
-    <p class="howto">Minimum 4 wins. The index is order-of-timing only — it says nothing about how many titles, just when.</p>
+    <p class="howto">Minimum 4 wins. The index is order-of-timing only; it says nothing about how many titles, just when.</p>
     <div class="sig-pair">
       <div><div class="sub-h">Prodigies <span class="q">· won early, then tapered</span></div>${bars(prodigies)}</div>
       <div><div class="sub-h">Late bloomers <span class="q">· aged into winning</span></div>${bars(bloomers)}</div>
