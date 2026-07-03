@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'peak', 'eras', 'rawRank', 'delta', 'raw', 'winsChange', 'champs'];
+const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'raw', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
 
 test.describe('leaderboard', () => {
   test('loads every leaderboard player', async ({ page }) => {
