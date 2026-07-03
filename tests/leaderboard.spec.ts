@@ -314,7 +314,7 @@ test.describe('pages', () => {
     await page.goto('/index.html');
     await page.click('.navdrop-btn');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html']);
+    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html', 'signatures.html']);
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
