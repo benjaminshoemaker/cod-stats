@@ -22,20 +22,22 @@
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   /* validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 72) */
-  :root{ --c0:#64748b; --c1:#0d9488; --c2:#2563eb; --c3:#d97706; --seq0:#bcd3f5; --seq1:#1e3a8a; }
+  :root{ --c0:#64748b; --c1:#0d9488; --c2:#2563eb; --c3:#d97706; --seq0:#bcd3f5; --seq1:#1e3a8a;
+    /* debut-era categorical trio (legend + node colors read these, not literals) */
+    --era0:#7c3aed; --era1:#0891b2; --era2:#d97706; }
   .mapctl{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin:var(--space-4) 0 var(--space-2)}
   .mapctl .lbl{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600}
-  .mapctl input{font:inherit;font-size:var(--text-sm);padding:var(--space-1) var(--space-2);border:1px solid var(--line-2);border-radius:8px;
-    background:var(--bg);min-width:11rem}
-  .mapctl input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
   .maplayout{display:grid;grid-template-columns:1fr 17rem;gap:var(--space-4);align-items:start}
   .mapcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-2)}
-  svg#map{width:100%;height:auto;display:block;touch-action:none}
+  svg#map{width:100%;height:auto;display:block}
   .axis-note{position:absolute;font-size:var(--text-xs);color:var(--faint);pointer-events:none}
   .axis-note.bl{bottom:.6rem;left:.9rem} .axis-note.br{bottom:.6rem;right:.9rem}
   .axis-note.tv{top:.7rem;left:50%;transform:translateX(-50%)} .axis-note.bv{bottom:1.9rem;left:50%;transform:translateX(-50%)}
-  circle.node{cursor:pointer;transition:opacity .12s}
-  circle.node:hover{stroke:var(--ink);stroke-width:1.5}
+  circle.node{transition:opacity .12s}
+  g.nodeg{cursor:pointer}
+  g.nodeg:hover circle.node,g.nodeg:focus-visible circle.node{stroke:var(--ink);stroke-width:1.5}
+  /* invisible enlarged hit area so small dots stay clickable/tappable */
+  circle.hit{stroke:none}
   .nlbl{font-size:9px;fill:var(--muted);pointer-events:none}
   .nlink{stroke:var(--accent);stroke-width:1.4;opacity:.5}
   .maptip{position:absolute;pointer-events:none;z-index:9;background:var(--bg);border:1px solid var(--line-2);
@@ -65,19 +67,23 @@
   .compline{display:flex;justify-content:space-between;font-size:var(--text-sm);padding:var(--space-1) 0;border-top:1px solid var(--line)}
   .compline .cs{font-family:var(--mono);color:var(--muted)}
   .maphint{font-size:var(--text-sm);color:var(--faint)}
-  @media(max-width:760px){.maplayout{grid-template-columns:1fr}}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:760px){
+    .maplayout{grid-template-columns:1fr}
+    /* keep dots and labels legible on phones: scroll the card instead of shrinking the map */
+    .mapcard{overflow-x:auto}
+    svg#map{min-width:640px}
+  }
 </style>
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap wide" id="root" role="main" tabindex="-1">
+<main class="wrap wide" id="root" tabindex="-1">
   <p class="crumb"><a href="index.html">← Leaderboard</a></p>
   <h1>The map of CoD careers</h1>
   <p class="lede">Every player with two or more major wins, placed so that <strong>distance means
   similarity</strong>: the closer two dots sit, the more alike their careers. It's a flattened view of the
-  same era-independent résumé distance behind the comps on each player's page. Hover for a résumé, or click
-  a dot to draw its closest matches.</p>
+  same era-independent résumé distance behind the comps on each player's page. Hover or tap a dot for a
+  résumé; click it to draw its closest matches.</p>
 
   <div class="mapctl">
     <span class="lbl">Color by</span>
@@ -86,9 +92,11 @@
       <button data-m="adj" aria-pressed="false">Adjusted wins</button>
       <button data-m="debut" aria-pressed="false">Debut era</button>
     </div>
-    <input id="search" placeholder="Find a player…" autocomplete="off" aria-label="Find a player">
+    <input id="search" class="search" list="allplayers" placeholder="Find a player…" autocomplete="off" aria-label="Find a player">
+    <datalist id="allplayers"></datalist>
   </div>
 
+  <p class="scrollhint small faint">Swipe the map sideways →</p>
   <div class="maplayout">
     <div class="mapcard">
       <svg id="map" viewBox="0 0 720 520" role="img" aria-label="Scatter map of players by career similarity"></svg>
@@ -133,7 +141,7 @@
       labels, but the data is really a gradient, not four clean tribes.</p>
     </div>
   </div>
-</div>
+</main>
 
 <script src="data.js"></script>
 <script src="clusters.js"></script>
@@ -142,24 +150,27 @@
 mountNav('map.html');
 const DATA = window.CLUSTERS;
 const P = DATA.players, CL = DATA.clusters;
-// cluster display names ship in clusters.js next to the clustering itself;
-// the literal array is only a fallback for a stale generated file
+// cluster display names ship in clusters.js next to the clustering itself
+// (a stale regeneration is caught by tests/test_generated_artifacts.py)
 const CLBL = [];
-CL.forEach(c=>{CLBL[c.id]=c.label||["The field","Steady winners","Decorated veterans","Dynasty peaks"][c.id];});
+CL.forEach(c=>{CLBL[c.id]=c.label;});
 // prose stats are recomputed by every clusters.js build; keep the page honest
 if(DATA.stats){
   const r=document.getElementById('stat-r'), k=document.getElementById('stat-kept');
   if(r&&DATA.stats.rAdj) r.textContent='r = '+DATA.stats.rAdj.toFixed(2).replace(/^(-?)0\./,'$1.');
   if(k&&DATA.stats.kept) k.textContent=Math.round(DATA.stats.kept*100)+'%';
 }
+// static design tokens, read once (applyStyles runs per keystroke over all nodes)
+const css = getComputedStyle(document.documentElement);
 const ERAS = [
-  {lbl:"Pre-BO2", range:"first major 2008–2012", color:"#7c3aed"},
-  {lbl:"MLG–CWL", range:"first major 2013–2019", color:"#0891b2"},
-  {lbl:"CDL era", range:"first major 2020+",      color:"#d97706"},
+  {lbl:"Pre-BO2", range:"first major 2008–2012", color:css.getPropertyValue('--era0').trim()},
+  {lbl:"MLG–CWL", range:"first major 2013–2019", color:css.getPropertyValue('--era1').trim()},
+  {lbl:"CDL era", range:"first major 2020+",      color:css.getPropertyValue('--era2').trim()},
 ];
 const eraOf = y => y<=2012 ? 0 : (y<=2019 ? 1 : 2);
-const cvar = i => getComputedStyle(document.documentElement).getPropertyValue('--c'+i).trim();
-const seqv = i => getComputedStyle(document.documentElement).getPropertyValue('--seq'+i).trim();
+const CCOL = [];
+CL.forEach(c=>{CCOL[c.id]=css.getPropertyValue('--c'+c.id).trim();});
+const SEQ0 = css.getPropertyValue('--seq0').trim(), SEQ1 = css.getPropertyValue('--seq1').trim();
 const NS="http://www.w3.org/2000/svg";
 const map=document.getElementById('map'), tip=document.getElementById('tip');
 const W=720,H=520,PAD=34;
@@ -172,11 +183,9 @@ const byName=Object.fromEntries(P.map(p=>[p.name,p]));
 const nodes={};
 let mode='cluster', selected=null, hiCluster=null, hiEra=null;
 const adjMax=Math.max(...P.map(p=>p.adj));
-function mix(a,b,t){const pa=[1,3,5].map(i=>parseInt(a.slice(i,i+2),16)),pb=[1,3,5].map(i=>parseInt(b.slice(i,i+2),16));
-  return '#'+pa.map((v,i)=>Math.round(v+(pb[i]-v)*t).toString(16).padStart(2,'0')).join('');}
 function nodeColor(p){
-  if(mode==='cluster') return cvar(p.cluster);
-  if(mode==='adj') return mix(seqv(0),seqv(1),Math.sqrt(p.adj/adjMax));
+  if(mode==='cluster') return CCOL[p.cluster];
+  if(mode==='adj') return mixHex(SEQ0,SEQ1,Math.sqrt(p.adj/adjMax));
   return ERAS[eraOf(p.debut)].color;
 }
 function draw(){
@@ -186,13 +195,25 @@ function draw(){
   const glbl=document.createElementNS(NS,'g'); map.appendChild(glbl);
   const arch=new Set(CL.map(c=>c.archetype));
   P.forEach(p=>{
+    // group = visible dot + an invisible enlarged hit circle; the group is
+    // keyboard-focusable so the map isn't mouse-only
+    const gn=document.createElementNS(NS,'g');
+    gn.setAttribute('class','nodeg'); gn.setAttribute('tabindex','0'); gn.setAttribute('role','button');
+    gn.setAttribute('aria-label',`${p.name}: ${p.adj} adjusted wins, ${CLBL[p.cluster]}, first major ${p.debut}`);
     const c=document.createElementNS(NS,'circle');
     c.setAttribute('class','node'); c.setAttribute('cx',SX(p.x)); c.setAttribute('cy',SY(p.y));
     c.setAttribute('r',R(p)); c.setAttribute('data-n',p.name);
-    c.addEventListener('mouseenter',e=>showTip(p,e));
-    c.addEventListener('mousemove',moveTip); c.addEventListener('mouseleave',hideTip);
-    c.addEventListener('click',e=>{e.stopPropagation();select(p.name===selected?null:p.name);});
-    gdot.appendChild(c); nodes[p.name]=c;
+    const h=document.createElementNS(NS,'circle');
+    h.setAttribute('class','hit'); h.setAttribute('cx',SX(p.x)); h.setAttribute('cy',SY(p.y));
+    h.setAttribute('r',R(p)+8); h.setAttribute('fill','transparent');
+    gn.append(c,h);
+    gn.addEventListener('mouseenter',e=>showTip(p,e));
+    gn.addEventListener('mousemove',moveTip); gn.addEventListener('mouseleave',hideTip);
+    gn.addEventListener('focus',()=>showTipAt(p)); gn.addEventListener('blur',hideTip);
+    gn.addEventListener('click',e=>{e.stopPropagation();select(p.name===selected?null:p.name);});
+    gn.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){
+      e.preventDefault(); e.stopPropagation(); select(p.name===selected?null:p.name); }});
+    gdot.appendChild(gn); nodes[p.name]=c;
     if(arch.has(p.name)||p.adj>=11||p.champs>=2){
       const t=document.createElementNS(NS,'text');
       t.setAttribute('class','nlbl'); t.setAttribute('x',SX(p.x)+R(p)+2); t.setAttribute('y',SY(p.y)+3);
@@ -233,20 +254,40 @@ function select(name){
       lines to their top comps and lists them here.</p>`;
   }
   applyStyles();
+  // on phones the panel stacks below the map, so bring the result on screen
+  if(name && window.matchMedia('(max-width:760px)').matches){
+    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    panel.scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});
+  }
 }
-function showTip(p,e){
-  tip.innerHTML=`<div class="tn">${esc(p.name)}</div>
+function tipHTML(p){
+  return `<div class="tn">${esc(p.name)}</div>
     <div class="tr"><span>Adjusted wins</span><b>${p.adj}</b></div>
     <div class="tr"><span>World champs</span><b>${p.champs}</b></div>
     <div class="tr"><span>Titles · career</span><b>${p.titles} · ${p.span}y</b></div>
     <div class="tr"><span>First major</span><b>${p.debut}</b></div>
     <div class="tc">${CLBL[p.cluster]} · closest: ${p.comps[0]?esc(p.comps[0].name):'–'}</div>`;
+}
+function showTip(p,e){
+  tip.innerHTML=tipHTML(p);
   tip.classList.add('on'); moveTip(e);
+}
+/* keyboard path: position the tooltip at the focused node instead of the cursor */
+function showTipAt(p){
+  tip.innerHTML=tipHTML(p); tip.classList.add('on');
+  const r=map.getBoundingClientRect();
+  let x=SX(p.x)*r.width/W+14, y=SY(p.y)*r.height/H+12;
+  if(x>r.width-175) x-=195;
+  const th=tip.offsetHeight||120;
+  if(y>r.height-th-8) y=Math.max(0,y-th-24);
+  tip.style.left=x+'px'; tip.style.top=y+'px';
 }
 function moveTip(e){
   const r=map.getBoundingClientRect();
   let x=e.clientX-r.left+14, y=e.clientY-r.top+12;
   if(x>r.width-165) x=e.clientX-r.left-165;
+  const th=tip.offsetHeight||120;
+  if(y>r.height-th-8) y=e.clientY-r.top-th-12;   // clamp so the résumé card never clips below
   tip.style.left=x+'px'; tip.style.top=y+'px';
 }
 function hideTip(){ tip.classList.remove('on'); }
@@ -255,6 +296,7 @@ document.querySelectorAll('#colorby button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#colorby button').forEach(x=>x.setAttribute('aria-pressed',x===b));
   renderLegend(); applyStyles();
 });
+document.getElementById('allplayers').innerHTML=P.map(p=>`<option value="${esc(p.name)}">`).join('');
 document.getElementById('search').addEventListener('input',e=>{
   const v=e.target.value.trim().toLowerCase();
   if(!v){ select(null); return; }   // clearing the box clears the selection too
@@ -283,7 +325,7 @@ function renderLegend(){
   }
   head.textContent='Archetypes';
   box.innerHTML=CL.map(c=>`<button class="legrow" data-c="${c.id}" aria-pressed="${hiCluster===c.id}">
-    <span class="legdot" style="background:${cvar(c.id)}"></span>
+    <span class="legdot" style="background:${CCOL[c.id]}"></span>
     <span><span class="legname">${CLBL[c.id]}</span><span class="legmeta"> · ${c.size}</span>
       <div class="legdesc">e.g. ${esc(c.archetype)} · ${esc(c.profile.split(',').slice(0,2).join(', '))}</div></span></button>`).join('');
   box.querySelectorAll('.legrow').forEach(b=>b.onclick=()=>{
@@ -292,7 +334,6 @@ function renderLegend(){
 renderLegend();
 draw();
 select(null);
-window.addEventListener('resize',()=>{ const s=selected; draw(); select(s); });
 mountFoot();
 </script>
 </body>

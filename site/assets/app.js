@@ -64,6 +64,16 @@ function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}
    to the full name, so an unmapped new season can never render "undefined". */
 window.GAME_ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops':'BO','Modern Warfare 3':'MW3','Black Ops 2':'BO2','Ghosts':'GH','Advanced Warfare':'AW','Black Ops 3':'BO3','Infinite Warfare':'IW','World War II':'WWII','Black Ops 4':'BO4','Modern Warfare':'MW19','Black Ops Cold War':'CW','Vanguard':'VG','Modern Warfare II':'MW2·22','Modern Warfare III':'MW3·24','Black Ops 6':'BO6','Black Ops 7':'BO7'};
 
+/* event -> season lookup, shared by the chart pages (heatmap, trajectory) */
+window.EVENT2GAME = {};
+for(const g of D.games) for(const e of g.events) window.EVENT2GAME[e.event]=g.game;
+
+/* interpolate two #rrggbb colors — shared by the sequential ramps (heatmap, map) */
+window.mixHex = (a,b,t)=>{
+  const pa=[1,3,5].map(i=>parseInt(a.slice(i,i+2),16)), pb=[1,3,5].map(i=>parseInt(b.slice(i,i+2),16));
+  return '#'+pa.map((v,i)=>Math.round(v+(pb[i]-v)*t).toString(16).padStart(2,'0')).join('');
+};
+
 
 /* Column show/hide dropdown for the leaderboard. Builds a button + checkbox panel
    inside #colmenu, driven by Tabulator's column visibility. `cols` is [{field,label}]
@@ -77,7 +87,7 @@ function mountColumnMenu(table, cols, onChange){
   btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false');
   btn.innerHTML = 'Columns <span aria-hidden="true">▾</span>';
   const panel = document.createElement('div');
-  panel.className = 'colmenu-panel'; panel.hidden = true; panel.setAttribute('role','menu');
+  panel.className = 'colmenu-panel'; panel.hidden = true;
   panel.innerHTML = cols.map(c=>{
     const col = table.getColumn(c.field);
     const on = col ? col.isVisible() : true;
@@ -85,7 +95,9 @@ function mountColumnMenu(table, cols, onChange){
   }).join('');
   host.append(btn, panel);
 
-  const close = ()=>{ panel.hidden = true; btn.setAttribute('aria-expanded','false'); };
+  const close = (refocus)=>{ if(panel.hidden) return;
+    panel.hidden = true; btn.setAttribute('aria-expanded','false');
+    if(refocus) btn.focus(); };
   const open  = ()=>{ panel.hidden = false; btn.setAttribute('aria-expanded','true'); };
   btn.addEventListener('click', e=>{ e.stopPropagation(); panel.hidden ? open() : close(); });
   panel.addEventListener('click', e=>e.stopPropagation());
@@ -96,8 +108,8 @@ function mountColumnMenu(table, cols, onChange){
     table.redraw(true);   // re-run fitColumns so remaining columns fill the freed width
     if(onChange) onChange();
   });
-  document.addEventListener('click', close);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+  document.addEventListener('click', ()=>close(false));
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(true); });
 }
 
 /* Header nav lives in assets/nav.js, mounted at the top of <body> before first

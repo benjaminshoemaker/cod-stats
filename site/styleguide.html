@@ -27,18 +27,16 @@
   .sw-meta{padding:var(--space-2) var(--space-2)}
   .sw-name{font-family:var(--mono);font-size:var(--text-sm);color:var(--ink)}
   .sw-val{font-family:var(--mono);font-size:var(--text-xs);color:var(--faint);text-transform:uppercase}
-  /* two-up demo row: rendered example beside the class name that produces it */
-  .sg-demo{display:grid;grid-template-columns:1fr;gap:var(--space-2);margin:var(--space-4) 0}
+  /* rendered example beside the class name that produces it */
   .sg-render{padding:var(--space-4);border:1px dashed var(--line-2);border-radius:var(--radius);background:var(--bg)}
   .sg-code{font-family:var(--mono);font-size:var(--text-sm);color:var(--muted)}
-  .sg-swatch-line{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:var(--space-2);border:1px solid var(--line)}
   .type-row{display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
   .type-row .tag{font-family:var(--mono);font-size:var(--text-xs);color:var(--faint);min-width:5.5rem}
 </style>
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap wide" id="root" role="main" tabindex="-1">
+<main class="wrap wide" id="root" tabindex="-1">
   <p class="crumb"><a href="index.html">Home</a> › Style guide</p>
   <h1>Design System</h1>
   <p class="lede">The living reference for this site. Every swatch and component below is rendered
@@ -230,7 +228,7 @@
     </div>
     <p class="sg-code">.note · .legend › .sw (swatch dot)</p>
   </section>
-</div>
+</main>
 
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>

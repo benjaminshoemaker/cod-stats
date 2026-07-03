@@ -22,7 +22,8 @@
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .scatter-wrap{overflow-x:auto}
-  svg.scatter{display:block;min-width:680px;width:100%;height:auto;font-family:var(--sans)}
+  /* min-width matches the viewBox width so in-SVG text never renders below authored size */
+  svg.scatter{display:block;min-width:900px;width:100%;height:auto;font-family:var(--sans)}
   svg.scatter .axis{stroke:var(--line-2);stroke-width:1}
   svg.scatter .grid{stroke:var(--line);stroke-width:1}
   svg.scatter .tick{fill:var(--muted);font-size:12px}
@@ -37,7 +38,7 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap" id="root" role="main" tabindex="-1"></div>
+<main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -52,13 +53,14 @@ root.innerHTML=`
   <strong>longevity</strong> = how many different CoD titles you kept winning majors across.
   Shares divide by the majors a team could win that season. <a href="methodology.html">How the season share works →</a></p>
   <div class="controls">
-    <span class="small muted">Hover a dot for detail; click to open the player.</span>
+    <span class="small muted">Hover or tap a dot for detail; click it (tap again on touch) to open the player.</span>
   </div>
   <div class="legend">
     <span><span class="sw" style="background:var(--gold);border-radius:50%"></span>won a World Championship</span>
     <span><span class="sw" style="background:var(--accent);border-radius:50%;opacity:.6"></span>no Championship</span>
     <span>bubble size = total adjusted wins</span>
   </div>
+  <p class="scrollhint small faint">Swipe the chart sideways →</p>
   <div class="scatter-wrap"><div id="chart"></div></div>
   <p class="small muted" style="margin-top:var(--space-4)"><strong>How to read it:</strong> top-right = won big <em>and</em> kept winning
   (the all-time résumés). Top-left = a huge winning season over a short window. Bottom-right = long careers built on steady
@@ -119,7 +121,7 @@ function render(){
     const held=GAMES[p.info.season]?.majors;
     const denomNote=(held && held!==p.info.majors)?` winnable (${held} held)`:'';
     const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors}${denomNote} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
-    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"><title>${esc(tip)}</title></circle></a>`;
+    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}" aria-label="${esc(tip)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" data-tip="${esc(tip)}"></circle></a>`;
   }
 
   // labels in a separate layer; nudge down to avoid overlap (dots stay on their exact spot)
@@ -140,6 +142,38 @@ function render(){
 }
 
 render();
+
+// styled HTML tooltip on hover, tap AND keyboard focus (the dots are links, so
+// they're tabbable); replaces the slow, mouse-only native <title>
+const chartEl = document.getElementById('chart');
+const tipEl = document.createElement('div');
+tipEl.className = 'charttip fixed'; document.body.appendChild(tipEl);
+function showDotTip(c){
+  tipEl.textContent = c.dataset.tip; tipEl.classList.add('on');
+  const r = c.getBoundingClientRect();
+  let x = r.left + r.width/2 - tipEl.offsetWidth/2;
+  x = Math.max(8, Math.min(x, innerWidth - tipEl.offsetWidth - 8));
+  let y = r.top - tipEl.offsetHeight - 8;
+  if(y < 8) y = r.bottom + 8;
+  tipEl.style.left = x+'px'; tipEl.style.top = y+'px';
+}
+const hideDotTip = ()=>tipEl.classList.remove('on');
+chartEl.addEventListener('mouseover', e=>{
+  const c = e.target.closest('circle.dot'); c ? showDotTip(c) : hideDotTip(); });
+chartEl.addEventListener('mouseleave', hideDotTip);
+chartEl.addEventListener('focusin', e=>{
+  const c = e.target.closest('a')?.querySelector('circle.dot'); if(c) showDotTip(c); });
+chartEl.addEventListener('focusout', hideDotTip);
+// touch: first tap inspects, tapping the same dot again opens the player
+let lastTap = null;
+chartEl.addEventListener('click', e=>{
+  if(!window.matchMedia('(hover: none)').matches) return;
+  const a = e.target.closest('a'); if(!a) return;
+  if(a !== lastTap){
+    e.preventDefault(); lastTap = a;
+    const c = a.querySelector('circle.dot'); if(c) showDotTip(c);
+  }
+});
 mountFoot();
 </script>
 </body>

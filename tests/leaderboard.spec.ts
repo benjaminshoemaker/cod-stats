@@ -334,13 +334,18 @@ test.describe('pages', () => {
 
   test('heatmap marks championship seasons with a gold dot', async ({ page }) => {
     await page.goto('/heatmap.html');
-    // champions exist in the top-16, so at least one gold marker must render
-    expect(await page.locator('svg.hm circle[fill="#b8860b"]').count()).toBeGreaterThan(0);
+    // champions exist in the top-16, so at least one marker in the --gold token
+    // color must render (resolved at runtime so retoning the token can't break this)
+    const gold = await page.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--gold').trim());
+    expect(await page.locator(`svg.hm circle[fill="${gold}"]`).count()).toBeGreaterThan(0);
   });
 
   test('heatmap tooltips use scoring denominators, not held event counts', async ({ page }) => {
     await page.goto('/heatmap.html');
-    const tips = await page.locator('svg.hm rect.cell title').allTextContents();
+    // tooltip text lives in data-tip (rendered via the .charttip HTML tooltip)
+    const tips = await page.locator('svg.hm rect.cell').evaluateAll(
+      els => els.map(el => el.getAttribute('data-tip')));
     expect(tips).toContain('Shotzzy, MW19: 4/9 majors (44%) · World Champion');
     expect(tips).toContain('HyDra, BO7: 1/6 majors (17%)');
   });
@@ -352,8 +357,9 @@ test.describe('pages', () => {
     const winRows = await page.locator('#winlist tr').count();
     await page.click('#seg-all');
     await expect(page.locator('#ml-title')).toHaveText(/Every major entered \(\d+\)/);
+    // participation.json is fetched on first toggle; wait for a losing placement to land
+    await expect(page.locator('#winlist tr.faint').first()).toBeVisible();
     expect(await page.locator('#winlist tr').count()).toBeGreaterThan(winRows);
-    expect(await page.locator('#winlist tr.faint').count()).toBeGreaterThan(0); // losing placements shown
   });
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {

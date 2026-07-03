@@ -28,8 +28,9 @@ function mountNav(active){
   if(dd){
     const b=dd.querySelector('.navdrop-btn');
     b.addEventListener('click',e=>{e.stopPropagation();const o=dd.classList.toggle('open');b.setAttribute('aria-expanded',o);});
-    document.addEventListener('click',()=>dd.classList.remove('open'));
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')dd.classList.remove('open');});
+    document.addEventListener('click',()=>{dd.classList.remove('open');b.setAttribute('aria-expanded','false');});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&dd.classList.contains('open')){
+      dd.classList.remove('open');b.setAttribute('aria-expanded','false');b.focus();}});
   }
   // expose the nav's height so sticky table headers can sit just below it
   const setNavH=()=>{const el=document.querySelector('.site-head');

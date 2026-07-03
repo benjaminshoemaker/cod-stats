@@ -26,7 +26,7 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap wide" id="root" role="main" tabindex="-1">
+<main class="wrap wide" id="root" tabindex="-1">
   <h1>Era-Adjusted Major Tournament Wins</h1>
   <p class="lede">Call of Duty had far more majors in its early years, so a win was easier to come by.
   This leaderboard treats <strong>every season as equal weight</strong>: a win counts as a share of that
@@ -34,12 +34,13 @@
   <a href="methodology.html">See why &rarr;</a></p>
 
   <div class="controls">
-    <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off">
+    <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off" aria-label="Search players">
     <div class="colmenu eramenu" id="eramenu"></div>
     <div class="colmenu" id="colmenu"></div>
     <label class="ringw" id="ringw" title="Weight Championships: a ring counts as N regular majors">
       <span class="ringw-lbl">◆ Ring&nbsp;weight</span>
-      <input type="range" id="ringw-range" min="1" max="6" step="1">
+      <input type="range" id="ringw-range" min="1" max="6" step="1"
+        aria-label="Ring weight: a World Championship counts as this many regular majors">
       <span class="ringw-val" id="ringw-val">×1</span>
     </label>
     <button type="button" class="sharebtn" id="sharebtn">Share ranking</button>
@@ -47,6 +48,7 @@
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
+  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Wins Δ = adjusted − raw · Raw # = rank by raw wins</p>
   <div id="table"></div>
 
   <div class="legend">
@@ -55,7 +57,7 @@
     <span><span class="sw" style="background:var(--neg)"></span>▼ lost vs raw</span>
   </div>
   <p class="small muted" id="modenote"></p>
-</div>
+</main>
 
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>
@@ -121,16 +123,15 @@ const startHide = new Set((params.get('hide') || '').split(',').filter(f=>COL_FI
 
 // On phones, keep every column reachable via horizontal scroll instead of hiding them.
 const mq = window.matchMedia('(max-width: 760px)');
-const isMobile = mq.matches;
-mq.addEventListener('change', ()=>location.reload());
 
-const M = isMobile;
 const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
 const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
-const columns = [
+// Rebuilt in place when the viewport crosses the breakpoint, so crossing it keeps
+// scroll position and search text instead of reloading the page.
+const buildColumns = M => [
     {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
@@ -165,6 +166,7 @@ const columns = [
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
 ];
 // apply saved/URL column visibility before first render (no flicker)
+const columns = buildColumns(mq.matches);
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
@@ -193,20 +195,43 @@ function syncURL(){
   if(clearBtn) clearBtn.hidden = !qs;   // "Clear filters" shows only when some state is active
 }
 
-table.on("tableBuilt",()=>{
-  // keyboard-accessible sorting
+// keyboard-accessible sorting; re-run whenever the header DOM is rebuilt
+function wireHeaderA11y(){
   document.querySelectorAll('#table .tabulator-col[tabulator-field]').forEach(col=>{
+    if(col.getAttribute('tabindex')) return;
     col.setAttribute('tabindex','0'); col.setAttribute('role','button');
     col.addEventListener('keydown',e=>{
       if(e.key==='Enter'||e.key===' '){e.preventDefault();
         col.querySelector('.tabulator-col-content')?.click();}});
   });
+}
+// expose the active sort to AT (the arrow is visual-only)
+function markSort(){
+  const s = table.getSorters()[0];
+  document.querySelectorAll('#table .tabulator-col[tabulator-field]').forEach(col=>{
+    if(s && col.getAttribute('tabulator-field')===s.field)
+      col.setAttribute('aria-sort', s.dir==='asc' ? 'ascending' : 'descending');
+    else col.removeAttribute('aria-sort');
+  });
+}
+table.on("tableBuilt",()=>{
+  wireHeaderA11y(); markSort();
   // apply search from URL
   if(startQ){ searchInput.value = startQ; table.setFilter("name","like",startQ); }
   // column show/hide menu (reflects the visibility already applied to `columns`)
   mountColumnMenu(table, COLS, syncURL);
 });
-table.on("dataSorted",()=>syncURL());
+table.on("dataSorted",()=>{ syncURL(); markSort(); });
+
+// crossing the breakpoint swaps column definitions in place (widths + short labels),
+// carrying over the current visibility choices
+mq.addEventListener('change', ()=>{
+  const hidden = new Set(COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field));
+  const cols = buildColumns(mq.matches);
+  cols.forEach(c=>{ if(hidden.has(c.field)) c.visible = false; });
+  table.setColumns(cols);
+  wireHeaderA11y(); markSort();
+});
 
 searchInput.addEventListener("input",e=>{
   const v=e.target.value;
@@ -233,7 +258,7 @@ function mountEraMenu(initial, onChange){
   btn.type='button'; btn.className='colmenu-btn';
   btn.setAttribute('aria-haspopup','true'); btn.setAttribute('aria-expanded','false');
   const panel = document.createElement('div');
-  panel.className='colmenu-panel eramenu-panel'; panel.hidden=true; panel.setAttribute('role','menu');
+  panel.className='colmenu-panel eramenu-panel'; panel.hidden=true;
 
   const presetBtns=[['post','Post-BO2'],['prebo2','Pre-BO2'],['mlgcwl','MLG–CWL'],['cdl','CDL']];
   const groups = ERAS.map(er=>{
@@ -256,7 +281,9 @@ function mountEraMenu(initial, onChange){
     btn.innerHTML=`Eras: ${esc(t)} <span aria-hidden="true">▾</span>`; };
 
   syncChecks(initial); updateLabel(initial);
-  const close=()=>{ panel.hidden=true; btn.setAttribute('aria-expanded','false'); };
+  const close=(refocus)=>{ if(panel.hidden) return;
+    panel.hidden=true; btn.setAttribute('aria-expanded','false');
+    if(refocus) btn.focus(); };
   const open =()=>{ panel.hidden=false; btn.setAttribute('aria-expanded','true'); };
   btn.addEventListener('click', e=>{ e.stopPropagation(); panel.hidden?open():close(); });
   panel.addEventListener('click', e=>{
@@ -270,8 +297,8 @@ function mountEraMenu(initial, onChange){
     if(sel.size===0){ e.target.checked=true; sel=currentSet(); }   // keep ≥1; "Reset" is how you get back to all
     updateLabel(sel); onChange(sel);
   });
-  document.addEventListener('click', close);
-  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
+  document.addEventListener('click', ()=>close(false));
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(true); });
 }
 
 setNote(selected);
@@ -307,7 +334,16 @@ const shareBtn = document.getElementById('sharebtn');
 shareBtn.addEventListener('click', async ()=>{
   const link = location.origin + '/r' + (location.search || '');
   try { await navigator.clipboard.writeText(link); shareBtn.textContent = 'Link copied ✓'; }
-  catch { shareBtn.textContent = link; }
+  catch {
+    // clipboard API can be unavailable (permissions, older browsers): try the
+    // selection fallback rather than dumping the URL into the button text
+    try {
+      const t = document.createElement('input');
+      t.value = link; t.style.position='fixed'; t.style.opacity='0';
+      document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+      shareBtn.textContent = 'Link copied ✓';
+    } catch { shareBtn.textContent = 'Copy failed'; }
+  }
   setTimeout(()=>{ shareBtn.textContent = 'Share ranking'; }, 1800);
 });
 

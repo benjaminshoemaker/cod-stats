@@ -22,9 +22,8 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap" id="root" role="main" tabindex="-1"></div>
+<main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
-<script src="participation.js"></script>
 <script src="similarity.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -77,10 +76,10 @@ if(!p || !lb){
       <h2 style="margin:0" id="ml-title">Every major win (${p.raw})</h2>
       <div class="seg" role="group" aria-label="Show wins only or every major entered">
         <button id="seg-wins" aria-pressed="true">Wins (${p.raw})</button>
-        <button id="seg-all" aria-pressed="false">All entered (${(window.PART&&window.PART[p.name]||[]).length})</button>
+        <button id="seg-all" aria-pressed="false">All entered (${lb.majorsPlayed})</button>
       </div>
     </div>
-    <table class="data"><tbody id="winlist"></tbody></table>
+    <div class="scroll-x"><table class="data"><tbody id="winlist"></tbody></table></div>
     <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
 
     <section id="similar"></section>
@@ -98,11 +97,11 @@ if(!p || !lb){
         <td class="n">${s.wins}</td><td class="n">${s.majors}</td>
         <td class="n">${(1/s.majors).toFixed(3)}</td>
         <td class="n"><strong>${s.share.toFixed(3)}</strong></td>
-        <td><div class="bar-track" style="width:120px"><div class="bar-fill" style="width:${(s.share*100).toFixed(1)}%"></div></div></td>
+        <td><div class="bar-track bar-share"><div class="bar-fill" style="width:${(s.share*100).toFixed(1)}%"></div></div></td>
       </tr>`).join('');
     const winsShown = shown.reduce((a,s)=>a+s.wins,0);
     document.getElementById('buildup').innerHTML = `
-      <table class="data">
+      <div class="scroll-x"><table class="data">
         <thead><tr><th>Season</th><th class="n">Wins</th><th class="n">Majors</th><th class="n">Per win</th><th class="n">Share</th><th>&nbsp;</th></tr></thead>
         <tbody>${rows}
           <tr style="border-top:2px solid var(--line-2)"><td><strong>Total</strong></td>
@@ -110,7 +109,7 @@ if(!p || !lb){
             <td class="n"><strong>${share.toFixed(3)}</strong></td>
             <td class="small muted">× ${mbar.toFixed(2)} = <strong>${adj.toFixed(1)}</strong></td></tr>
         </tbody>
-      </table>`;
+      </table></div>`;
 
     // chart
     document.getElementById('chart').innerHTML = shown.map(s=>`<div style="margin:var(--space-1) 0">
@@ -133,7 +132,9 @@ if(!p || !lb){
   }
 
   // ---- "Every major" section: wins-only (default) vs every major entered ----
-  const PART = (window.PART && window.PART[p.name]) || [];
+  // participation.json is ~0.5 MB across all players, so it's fetched only when
+  // the "All entered" view is first opened, never on page load
+  let PART = null, partReq = null;
   const orderIdx = Object.fromEntries(D.meta.seasonOrder.map((g,i)=>[g,i]));
   let majorsMode = 'wins';
   const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n + (s[(v-20)%10] || s[v] || s[0]); };
@@ -148,6 +149,7 @@ if(!p || !lb){
     }).join('');
   }
   function allView(){
+    if(!PART) return `<tr><td class="small faint">Loading the full major list…</td></tr>`;
     if(!PART.length) return `<tr><td class="small faint">No participation data available for this player.</td></tr>`;
     const byGame = {}; PART.forEach(m=>{ (byGame[m.game]=byGame[m.game]||[]).push(m); });
     return Object.keys(byGame).sort((a,b)=>orderIdx[a]-orderIdx[b]).map(g=>{
@@ -161,8 +163,12 @@ if(!p || !lb){
   }
   function renderMajors(mode){
     majorsMode = mode;
+    if(mode==='all' && !PART){
+      partReq = partReq || fetch('participation.json').then(r=>r.json()).catch(()=>({}))
+        .then(all=>{ PART = all[p.name] || []; if(majorsMode==='all') renderMajors('all'); });
+    }
     document.getElementById('winlist').innerHTML = mode==='all' ? allView() : winsView();
-    document.getElementById('ml-title').textContent = mode==='all' ? `Every major entered (${PART.length})` : `Every major win (${p.raw})`;
+    document.getElementById('ml-title').textContent = mode==='all' ? `Every major entered (${lb.majorsPlayed})` : `Every major win (${p.raw})`;
     document.getElementById('seg-wins').setAttribute('aria-pressed', String(mode!=='all'));
     document.getElementById('seg-all').setAttribute('aria-pressed', String(mode==='all'));
     document.getElementById('ml-note').textContent = mode==='all'
@@ -191,7 +197,8 @@ function mountSimilar(name){
     if(code==='dec1') return (Math.round(v*10)/10).toFixed(1);
     return String(Math.round(v));
   };
-  const mate = cw => cw>=0.15;
+  // same cutoff the solo comp lists were built with — shipped in similarity.js
+  const mate = cw => cw >= SIM.config.teammateThr;
   let mode = 'solo';                      // default: "didn't win together"
   let sel  = null;
 
@@ -247,6 +254,11 @@ function mountSimilar(name){
     document.querySelectorAll('#sim-list .sim-row').forEach(b=>b.onclick=()=>{
       sel = (sel===b.dataset.comp) ? null : b.dataset.comp;
       renderList(); renderCompare();
+      // on phones the comparison renders below the list; bring it on screen
+      if(sel && window.matchMedia('(max-width:760px)').matches){
+        const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('sim-compare').scrollIntoView({block:'nearest',behavior:reduce?'auto':'smooth'});
+      }
     });
   }
 
@@ -262,11 +274,10 @@ function mountSimilar(name){
         const pa=A.metrics[k].p, pb=B.metrics[k].p;
         const d = (pa==null||pb==null)?999:Math.abs(pa-pb);
         const cls = d<=8?'aligned':d<=25?'close':'differs';
-        const txt = d<=8?'aligned':d<=25?'close':'differs';
         body += `<tr><td class="sim-metric">${lab}</td>
           <td class="sim-v va">${fmt(code,A.metrics[k].v)}</td>
           <td class="sim-v vb">${fmt(code,B.metrics[k].v)}</td>
-          <td class="sim-tag ${cls}"><span class="dot"></span>${txt}</td></tr>`;
+          <td class="sim-tag ${cls}"><span class="dot"></span>${cls}</td></tr>`;
       });
     });
     // era shown as context, explicitly not scored

@@ -24,7 +24,7 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap" id="root" role="main" tabindex="-1"></div>
+<main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -53,8 +53,8 @@ let rows=games.map(g=>{
     <td class="n faint">${yr(g.firstDate)}</td>
     <td class="n"><strong>${g.denom}</strong>${g.denom!==g.majors?`<span class="faint small"> (${g.majors} ${split?'held':'played'})</span>`:''}</td>
     <td class="n">${g.weight.toFixed(3)}</td>
-    <td style="min-width:160px"><div class="bar-track"><div class="bar-fill ${g.denom>=avg?'amber':''}" style="width:${(g.denom/maxM*100).toFixed(0)}%"></div></div></td>
-    <td class="n"><span class="${g.denom>avg?'delta down':'delta up'}">${g.denom>avg?'▲':'▼'} ${ratio.toFixed(2)}×</span></td>
+    <td class="bar-cell"><div class="bar-track"><div class="bar-fill ${g.denom>=avg?'amber':''}" style="width:${(g.denom/maxM*100).toFixed(0)}%"></div></div></td>
+    <td class="n"><span class="delta flat">${g.denom>avg?'▲':'▼'} ${ratio.toFixed(2)}×</span></td>
   </tr>`;
 }).join('');
 
@@ -71,12 +71,12 @@ root.innerHTML=`
     <div class="stat"><div class="k">Range</div><div class="v sm">${minM}–${maxM}</div></div>
   </div>
 
-  <table class="data">
+  <div class="scroll-x"><table class="data">
     <thead><tr><th>Season</th><th class="n">First major</th><th class="n">Majors</th>
       <th class="n">Per win</th><th>Relative volume</th><th class="n">vs avg</th></tr></thead>
     <tbody>${rows}</tbody>
-  </table>
-  <p class="small muted">A "vs avg" above 1.0× (red) means that season had more majors than average, so each win there is worth
+  </table></div>
+  <p class="small muted">A "vs avg" above 1.0× means that season had more majors than average, so each win there is worth
   proportionally less.${hasSplit?` <strong>Modern Warfare 2019</strong> held 13 majors but ran a split "Home Series" format, where every
   team played only 9 (8 Home Series + Champs), so a win there is worth 1/9, not 1/13.`:''}${hasInprog?` An
   <strong>in-progress</strong> season is weighted by its full schedule of majors, not the number played so far, so

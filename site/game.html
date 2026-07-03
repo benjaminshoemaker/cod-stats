@@ -22,7 +22,7 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap" id="root" role="main" tabindex="-1"></div>
+<main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -64,7 +64,7 @@ if(!g){
     <div class="stat-row">
       <div class="stat"><div class="k">Majors ${split?'held':inprog?'played so far':'this season'}</div><div class="v">${g.majors}</div>${split?`<div class="small faint">${den} played per team</div>`:inprog?`<div class="small faint">${den} scheduled</div>`:''}</div>
       <div class="stat"><div class="k">Each win worth</div><div class="v sm">1 / ${den}</div><div class="small faint">= ${g.weight.toFixed(3)} of a season</div></div>
-      <div class="stat"><div class="k">vs avg season</div><div class="v sm"><span class="${den>avg?'delta down':'delta up'}">${ratio.toFixed(2)}×</span></div><div class="small faint">avg ${avg.toFixed(1)} majors</div></div>
+      <div class="stat"><div class="k">vs avg season</div><div class="v sm"><span class="delta flat">${ratio.toFixed(2)}×</span></div><div class="small faint">avg ${avg.toFixed(1)} majors</div></div>
       <div class="stat"><div class="k">Win the whole season</div><div class="v sm">1.00</div><div class="small faint">all ${den} = one "season"</div></div>
     </div>
 
@@ -83,18 +83,18 @@ if(!g){
     <div class="grid cols-2" style="margin-top:var(--space-6)">
       <div>
         <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`}</h2>
-        <table class="data">
+        <div class="scroll-x"><table class="data">
           <thead><tr><th>Date</th><th>Event</th><th>Winner</th><th>Type</th><th class="n">Weight</th></tr></thead>
           <tbody>${evRows}</tbody>
-        </table>
+        </table></div>
       </div>
       <div>
         <h2>Leaderboard players this season</h2>
         <p class="small muted">Their wins here, and the season-share each earned.</p>
-        <table class="data">
+        <div class="scroll-x"><table class="data">
           <thead><tr><th>Player</th><th class="n">Wins</th><th class="n">Share earned</th></tr></thead>
           <tbody>${players||'<tr><td colspan=3 class="muted">No leaderboard players won this season.</td></tr>'}</tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   `;

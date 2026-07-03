@@ -57,7 +57,7 @@
 </head>
 <body>
 <script src="assets/nav.js"></script>
-<div class="wrap narrow" id="root" role="main" tabindex="-1"></div>
+<main class="wrap narrow" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -110,6 +110,7 @@ root.innerHTML=`
   <p>Every bar is one season. Early Call of Duty had a packed circuit: <strong>${bo2} majors in Black Ops 2</strong>,
   versus <strong>6–7</strong> in modern seasons. More events means more chances to win one.
   <span class="pill warn small">amber</span> = above the ${avg.toFixed(1)}-major average.</p>
+  <p class="scrollhint small faint">Swipe the timeline sideways →</p>
   <div class="scroll-x"><div class="tl">${timeline}</div></div>
   <p class="small muted">So a player active in 2013–2015 could rack up wins a modern player never had the chance at.
   Raw totals reward <em>showing up in a busy era</em> as much as dominance.</p>
