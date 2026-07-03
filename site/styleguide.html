@@ -9,33 +9,35 @@
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/nav.js" as="script">
 <style>
   /* Style-guide scaffolding only. Uses design tokens (var(--…)) exclusively —
      no hardcoded colors — so this page can never drift from style.css. */
-  .sg-toc{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 2rem}
-  .sg-toc a{font-size:.85rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);
-    border-radius:20px;padding:.25rem .7rem}
+  .sg-toc{display:flex;flex-wrap:wrap;gap:var(--space-2);margin:var(--space-2) 0 var(--space-8)}
+  .sg-toc a{font-size:var(--text-sm);color:var(--muted);background:var(--panel);border:1px solid var(--line);
+    border-radius:20px;padding:var(--space-1) var(--space-3)}
   .sg-toc a:hover{background:var(--panel-2);color:var(--ink);text-decoration:none}
-  .sg-sec{margin:2.6rem 0;scroll-margin-top:5rem}
-  .sg-sec>h2{border-bottom:1px solid var(--line);padding-bottom:.35rem}
-  .sg-note{color:var(--muted);font-size:.9rem;max-width:70ch;margin:.2rem 0 1rem}
+  .sg-sec{margin:var(--space-10) 0;scroll-margin-top:var(--space-20)}
+  .sg-sec>h2{border-bottom:1px solid var(--line);padding-bottom:var(--space-1)}
+  .sg-note{color:var(--muted);font-size:var(--text-base);max-width:70ch;margin:var(--space-1) 0 var(--space-4)}
   /* swatch grid */
-  .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;margin:1rem 0}
+  .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--space-3);margin:var(--space-4) 0}
   .sw-card{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
   .sw-chip{height:56px;border-bottom:1px solid var(--line)}
-  .sw-meta{padding:.5rem .6rem}
-  .sw-name{font-family:var(--mono);font-size:.8rem;color:var(--ink)}
-  .sw-val{font-family:var(--mono);font-size:.72rem;color:var(--faint);text-transform:uppercase}
+  .sw-meta{padding:var(--space-2) var(--space-2)}
+  .sw-name{font-family:var(--mono);font-size:var(--text-sm);color:var(--ink)}
+  .sw-val{font-family:var(--mono);font-size:var(--text-xs);color:var(--faint);text-transform:uppercase}
   /* two-up demo row: rendered example beside the class name that produces it */
-  .sg-demo{display:grid;grid-template-columns:1fr;gap:.4rem;margin:1rem 0}
-  .sg-render{padding:1.1rem;border:1px dashed var(--line-2);border-radius:var(--radius);background:var(--bg)}
-  .sg-code{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
-  .sg-swatch-line{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:.4rem;border:1px solid var(--line)}
-  .type-row{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding:.4rem 0;border-bottom:1px solid var(--line)}
-  .type-row .tag{font-family:var(--mono);font-size:.72rem;color:var(--faint);min-width:5.5rem}
+  .sg-demo{display:grid;grid-template-columns:1fr;gap:var(--space-2);margin:var(--space-4) 0}
+  .sg-render{padding:var(--space-4);border:1px dashed var(--line-2);border-radius:var(--radius);background:var(--bg)}
+  .sg-code{font-family:var(--mono);font-size:var(--text-sm);color:var(--muted)}
+  .sg-swatch-line{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:var(--space-2);border:1px solid var(--line)}
+  .type-row{display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-2) 0;border-bottom:1px solid var(--line)}
+  .type-row .tag{font-family:var(--mono);font-size:var(--text-xs);color:var(--faint);min-width:5.5rem}
 </style>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap wide" id="root" role="main" tabindex="-1">
   <p class="crumb"><a href="index.html">Home</a> › Style guide</p>
   <h1>Design System</h1>
@@ -77,29 +79,32 @@
   <!-- ============ SCALE & FOUNDATIONS ============ -->
   <section class="sg-sec" id="scale">
     <h2>Scale &amp; foundations</h2>
-    <p class="sg-note">Non-color primitives. The radius, elevation, and motion tokens are applied
-    throughout; the <span class="num">--space-*</span> and <span class="num">--text-*</span> ramps are
-    the canonical scale for new work. A few hand-tuned optical values in the legacy CSS are left as
-    literals on purpose (density tuning), so those two ramps are the standard, not yet a full sweep.</p>
+    <p class="sg-note">Non-color primitives, all applied app-wide. Every font-size and every
+    margin/padding/gap now resolves to a <span class="num">--text-*</span> or
+    <span class="num">--space-*</span> token — no ad-hoc rem values remain, and
+    <span class="num">analysis/audit_scale.py</span> (wired into the test suite) fails the build if one
+    creeps back. Ramp steps were tuned to the app's actual usage clusters, so snapping every value onto
+    them moved nothing more than ~2px. SVG chart text (px) and a few relative <span class="num">em</span>
+    heading margins stay literal on purpose.</p>
 
     <h3>Radius</h3>
-    <div class="sg-render" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+    <div class="sg-render" style="display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:flex-end">
       <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-sm)"></span><span class="sw-val">--radius-sm</span></span>
       <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-md)"></span><span class="sw-val">--radius-md</span></span>
       <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-lg)"></span><span class="sw-val">--radius-lg</span></span>
       <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-pill)"></span><span class="sw-val">--radius-pill</span></span>
     </div>
 
-    <h3 style="margin-top:1.4rem">Elevation &amp; motion</h3>
-    <div class="sg-render" style="display:flex;gap:1.6rem;flex-wrap:wrap;align-items:center">
+    <h3 style="margin-top:var(--space-6)">Elevation &amp; motion</h3>
+    <div class="sg-render" style="display:flex;gap:var(--space-6);flex-wrap:wrap;align-items:center">
       <span><span style="display:block;width:120px;height:44px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow)"></span><span class="sw-val">--shadow</span></span>
       <button type="button" class="colmenu-btn">--transition on hover</button>
     </div>
 
-    <h3 style="margin-top:1.4rem">Spacing ramp</h3>
-    <div class="sg-render" id="space-ramp" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end"></div>
+    <h3 style="margin-top:var(--space-6)">Spacing ramp</h3>
+    <div class="sg-render" id="space-ramp" style="display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:flex-end"></div>
 
-    <h3 style="margin-top:1.4rem">Type ramp</h3>
+    <h3 style="margin-top:var(--space-6)">Type ramp</h3>
     <div class="sg-render" id="type-ramp"></div>
   </section>
 
@@ -122,10 +127,10 @@
   <!-- ============ PANELS ============ -->
   <section class="sg-sec" id="panels">
     <h2>Panels &amp; grid</h2>
-    <div class="grid cols-3" style="margin:1rem 0">
-      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0">Bordered surface on the panel background.</p></div>
-      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0">Used for cards, tiles, and menus.</p></div>
-      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0"><span class="num">.grid.cols-3</span> collapses to 1 col under 760px.</p></div>
+    <div class="grid cols-3" style="margin:var(--space-4) 0">
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:var(--space-2) 0 0">Bordered surface on the panel background.</p></div>
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:var(--space-2) 0 0">Used for cards, tiles, and menus.</p></div>
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:var(--space-2) 0 0"><span class="num">.grid.cols-3</span> collapses to 1 col under 760px.</p></div>
     </div>
     <p class="sg-code">.grid.cols-2 · .grid.cols-3 · .wrap / .wrap.narrow / .wrap.wide</p>
   </section>
@@ -147,7 +152,7 @@
     <h2>Tables</h2>
     <p class="sg-note"><span class="num">table.data</span> is the plain-table style; the leaderboard
     uses the themed Tabulator (rendered below).</p>
-    <table class="data" style="margin:1rem 0">
+    <table class="data" style="margin:var(--space-4) 0">
       <thead><tr><th>Player</th><th class="n">Adjusted</th><th class="n">Raw</th><th class="n">Δ</th></tr></thead>
       <tbody>
         <tr class="subhead"><td colspan="4">CDL era</td></tr>
@@ -155,14 +160,14 @@
         <tr><td>Player B</td><td class="n">38.1</td><td class="n">29</td><td class="n">+9.1</td></tr>
       </tbody>
     </table>
-    <div id="demo-table" style="margin:1rem 0"></div>
+    <div id="demo-table" style="margin:var(--space-4) 0"></div>
     <p class="sg-code">table.data (th / td.n / tr.subhead) · .tabulator theme (see #demo-table)</p>
   </section>
 
   <!-- ============ PILLS & DELTAS ============ -->
   <section class="sg-sec" id="pills">
     <h2>Pills &amp; deltas</h2>
-    <div class="sg-render" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+    <div class="sg-render" style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center">
       <span class="pill up">▲ 12</span>
       <span class="pill down">▼ 4</span>
       <span class="pill flat">–</span>
@@ -173,7 +178,7 @@
       <span class="pill solo">solo</span>
     </div>
     <p class="sg-code">.pill.up / .down / .flat / .tag / .warn / .champ / .mate / .solo</p>
-    <div class="sg-render" style="display:flex;gap:1.2rem;flex-wrap:wrap">
+    <div class="sg-render" style="display:flex;gap:var(--space-5);flex-wrap:wrap">
       <span class="delta up">+11.7</span>
       <span class="delta down">-4.0</span>
       <span class="delta flat">0.0</span>
@@ -186,8 +191,8 @@
     <h2>Bars</h2>
     <div class="sg-render">
       <div class="barline"><span class="lab">Accent</span><div class="bar-track" style="flex:1"><div class="bar-fill" style="width:72%"></div></div><span class="val">72%</span></div>
-      <div class="barline" style="margin-top:.6rem"><span class="lab">Positive</span><div class="bar-track" style="flex:1"><div class="bar-fill pos" style="width:54%"></div></div><span class="val">54%</span></div>
-      <div class="barline" style="margin-top:.6rem"><span class="lab">Amber</span><div class="bar-track" style="flex:1"><div class="bar-fill amber" style="width:33%"></div></div><span class="val">33%</span></div>
+      <div class="barline" style="margin-top:var(--space-2)"><span class="lab">Positive</span><div class="bar-track" style="flex:1"><div class="bar-fill pos" style="width:54%"></div></div><span class="val">54%</span></div>
+      <div class="barline" style="margin-top:var(--space-2)"><span class="lab">Amber</span><div class="bar-track" style="flex:1"><div class="bar-fill amber" style="width:33%"></div></div><span class="val">33%</span></div>
     </div>
     <p class="sg-code">.barline › .bar-track › .bar-fill (.pos / .amber)</p>
   </section>
@@ -204,7 +209,7 @@
       <button type="button" class="clearfilters">Clear filters</button>
     </div>
     <p class="sg-code">.search · .toggle · .colmenu-btn · .ringw · .sharebtn · .clearfilters</p>
-    <div class="sg-render" style="margin-top:1rem">
+    <div class="sg-render" style="margin-top:var(--space-4)">
       <div class="seg" role="group" aria-label="demo segmented">
         <button type="button" aria-pressed="true">Overall</button>
         <button type="button" aria-pressed="false">Mates</button>
@@ -217,7 +222,7 @@
   <!-- ============ MISC ============ -->
   <section class="sg-sec" id="misc">
     <h2>Notes &amp; legend</h2>
-    <div class="note" style="margin:1rem 0">Info note (<span class="num">.note</span>): accent-soft callout for context and caveats.</div>
+    <div class="note" style="margin:var(--space-4) 0">Info note (<span class="num">.note</span>): accent-soft callout for context and caveats.</div>
     <div class="legend">
       <span><span class="sw" style="background:var(--accent)"></span>Adjusted</span>
       <span><span class="sw" style="background:var(--pos)"></span>Gained</span>
@@ -257,7 +262,7 @@ document.getElementById('space-ramp').innerHTML = SPACE.map(t=>{
   const v = cs.getPropertyValue(t).trim();
   return `<span style="text-align:center">
     <span style="display:block;height:${v};width:16px;background:var(--accent);border-radius:2px"></span>
-    <span class="sw-val" style="display:block;margin-top:.3rem">${t.replace('--space','')}</span>
+    <span class="sw-val" style="display:block;margin-top:var(--space-1)">${t.replace('--space','')}</span>
     <span class="sw-val">${v}</span></span>`;
 }).join('');
 
@@ -265,7 +270,7 @@ document.getElementById('space-ramp').innerHTML = SPACE.map(t=>{
 const TEXT = ['--text-xs','--text-sm','--text-base','--text-md','--text-lg','--text-xl'];
 document.getElementById('type-ramp').innerHTML = TEXT.map(t=>{
   const v = cs.getPropertyValue(t).trim();
-  return `<div style="display:flex;align-items:baseline;gap:1rem;padding:.25rem 0">
+  return `<div style="display:flex;align-items:baseline;gap:var(--space-4);padding:var(--space-1) 0">
     <span class="sw-val" style="min-width:6rem">${t} · ${v}</span>
     <span style="font-size:${v}">The quick brown fox</span></div>`;
 }).join('');

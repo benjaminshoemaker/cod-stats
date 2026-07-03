@@ -16,10 +16,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
-<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<link rel="preload" href="assets/nav.js" as="script">
+<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
+<script src="assets/nav.js"></script>
 <div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -78,7 +80,7 @@ if(!g){
          <span class="num">1/${g.majors} = ${g.weight.toFixed(3)}</span> of a season. To "max out" you'd win all ${g.majors}.`}
     For comparison, a single win in a lean 6-major season is worth <strong>${(den/6).toFixed(2)}×</strong> a single win here.</div>
 
-    <div class="grid cols-2" style="margin-top:1.4rem">
+    <div class="grid cols-2" style="margin-top:var(--space-6)">
       <div>
         <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`}</h2>
         <table class="data">
