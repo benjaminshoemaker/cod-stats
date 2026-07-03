@@ -55,7 +55,7 @@
 </style>
 </head>
 <body>
-<div class="wrap" id="root"></div>
+<div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -64,16 +64,20 @@ const root=document.getElementById('root');
 const LB=D.leaderboard, P=D.players;
 
 // ---- helpers -------------------------------------------------------------
-const yrsActive=r=>Math.max(1, r.lastYear-r.firstYear);
 function winDates(name){
   const p=P[name]; if(!p) return [];
   return p.seasons.flatMap(s=>s.events.map(e=>e.date)).sort();
 }
-function frontload(name){
-  const ds=winDates(name); if(ds.length<4) return null;
+// Place each WIN on the line from a player's first major PLAYED to their last
+// (the whole career, entered or won) — not first-win to last-win, which hid late
+// bloomers who competed for years before breaking through.
+function frontload(r){
+  const wins=winDates(r.name); if(wins.length<4) return null;
+  if(!r.firstPlayedDate||!r.lastPlayedDate) return null;
   const t=s=>new Date(s+'T00:00:00').getTime();
-  const span=t(ds[ds.length-1])-t(ds[0]); if(span<=0) return null;
-  return {v: ds.reduce((a,d)=>a+(t(d)-t(ds[0]))/span,0)/ds.length, n: ds.length};
+  const c0=t(r.firstPlayedDate), span=t(r.lastPlayedDate)-c0; if(span<=0) return null;
+  const clamp=x=>Math.max(0,Math.min(1,x));
+  return {v: wins.reduce((a,d)=>a+clamp((t(d)-c0)/span),0)/wins.length, n: wins.length};
 }
 // render a ranked list: rows = [{name, bar, val, sub, alt}]
 function bars(rows){
@@ -98,23 +102,28 @@ const uncrowned=LB.filter(r=>r.champs===0)
   .map(r=>({name:r.name, bar:r.adjAll, val:r.adjAll.toFixed(1), sub:`${r.raw} raw`, alt:true}));
 
 // ---- 2. Compressed dominance --------------------------------------------
-const density=LB.filter(r=>r.adjAll>=4 && yrsActive(r)>=2)
-  .map(r=>({name:r.name, rate:r.adjAll/yrsActive(r), adj:r.adjAll, y:yrsActive(r)}))
+// Denominator is the CAREER span (first major entered to last, won or not) from
+// participation data — not the first-win-to-last-win span, which understates how
+// long players actually competed and over-rated short winning windows.
+const careerYrs=r=>Math.max(1, r.careerSpan);
+const density=LB.filter(r=>r.adjAll>=4 && r.careerSpan>=2)
+  .map(r=>({name:r.name, rate:r.adjAll/careerYrs(r), adj:r.adjAll, y:r.careerSpan}))
   .sort((a,b)=>b.rate-a.rate).slice(0,TOP)
   .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2), sub:`${r.adj.toFixed(1)} adj / ${r.y}y`}));
 
 // ---- 3. Prodigies & late bloomers ---------------------------------------
-const fl=LB.map(r=>{const f=frontload(r.name); return f?{name:r.name, v:f.v, n:f.n,
-    range:`${r.firstYear}–${r.lastYear}`}:null;}).filter(Boolean);
+const fl=LB.map(r=>{const f=frontload(r); return f?{name:r.name, v:f.v, n:f.n,
+    range:`${r.firstPlayed}–${r.lastPlayed}`}:null;}).filter(Boolean);
 const prodigies=[...fl].sort((a,b)=>a.v-b.v).slice(0,5)
   .map(r=>({name:r.name, bar:0.5-r.v, val:r.v.toFixed(2), sub:r.range}));
 const bloomers=[...fl].sort((a,b)=>b.v-a.v).slice(0,5)
   .map(r=>({name:r.name, bar:r.v-0.5, val:r.v.toFixed(2), sub:r.range, alt:true}));
 
 // ---- 4. The long careers -------------------------------------------------
-const careers=[...LB].sort((a,b)=>yrsActive(b)-yrsActive(a)).slice(0,7)
-  .map(r=>({name:r.name, bar:yrsActive(r), val:`${yrsActive(r)}y`,
-            sub:`${r.firstYear}–${r.lastYear}`}));
+// Career length = first major entered to last, from participation (won or not).
+const careers=[...LB].sort((a,b)=>b.careerSpan-a.careerSpan).slice(0,7)
+  .map(r=>({name:r.name, bar:r.careerSpan, val:`${r.careerSpan}y`,
+            sub:`${r.firstPlayed}–${r.lastPlayed}`}));
 
 // ---- 5. The single-season ceiling ---------------------------------------
 const peakMax=Math.max(...LB.map(r=>r.peakAll));
@@ -148,18 +157,19 @@ root.innerHTML=`
 
   <div class="sig">
     <div class="sig-top"><h2>Compressed dominance</h2><span class="unit">adj wins ÷ year</span></div>
-    <p class="concept">Era-adjusted wins divided by years active, first major to last. Higher means more winning
-    packed into less time.</p>
-    <p class="howto">This rewards short, intense runs as much as long primes. A two-year burst can outrank a decade.
-    Minimum 4 adjusted wins and a two-year span, so single-season flashes don't top it.</p>
+    <p class="concept">Era-adjusted wins divided by years competing: the first major a player entered to their last,
+    won or not. Higher means more winning packed into the years they were around.</p>
+    <p class="howto">Career span counts every major entered, not just the ones won, so a player who kept competing after
+    their last title isn't credited with a shorter, denser career. Minimum 4 adjusted wins and a two-year span.</p>
     ${bars(density)}
   </div>
 
   <div class="sig">
     <div class="sig-top"><h2>Prodigies &amp; late bloomers</h2><span class="unit">career-timing index</span></div>
-    <p class="concept">Place every win on a 0-to-1 line from a player's first major to their last, then average.
-    Below 0.5 the wins came early; above 0.5 they came late.</p>
-    <p class="howto">Minimum 4 wins. The index is order-of-timing only; it says nothing about how many titles, just when.</p>
+    <p class="concept">Place every win on a 0-to-1 line spanning a player's whole career, from the first major they
+    entered to their last, then average. Below 0.5 the wins came early in the career; above 0.5 they came late.</p>
+    <p class="howto">The line is the full career, entered or won, so a player who competed for years before breaking
+    through reads as a late bloomer. Minimum 4 wins; it measures when titles landed, not how many.</p>
     <div class="sig-pair">
       <div><div class="sub-h">Prodigies <span class="q">· won early, then tapered</span></div>${bars(prodigies)}</div>
       <div><div class="sub-h">Late bloomers <span class="q">· aged into winning</span></div>${bars(bloomers)}</div>
@@ -168,9 +178,10 @@ root.innerHTML=`
 
   <div class="sig">
     <div class="sig-top"><h2>The long careers</h2><span class="unit">years, first → last major</span></div>
-    <p class="concept">Years between a player's first major win and their most recent one.</p>
-    <p class="howto">Longevity in a sport barely fifteen years old. Players still competing keep adding to these,
-    so the board moves each season.</p>
+    <p class="concept">Years between a player's first major and their most recent one, counting every event they
+    entered, won or not.</p>
+    <p class="howto">Longevity in a sport barely fifteen years old. This is time spent competing, not just the
+    span of their wins, and players still active keep adding to it.</p>
     ${bars(careers)}
   </div>
 
