@@ -22,6 +22,7 @@
 <body>
 <div class="wrap" id="root"></div>
 <script src="data.js"></script>
+<script src="participation.js"></script>
 <script src="similarity.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -42,6 +43,8 @@ if(!p || !lb){
   root.innerHTML = `
     <p class="crumb"><a href="index.html">← Leaderboard</a></p>
     <h1>${esc(p.name)}</h1>
+    <p class="small muted" style="margin:-.3rem 0 .7rem">Source:
+      <a href="https://cod-esports.fandom.com/wiki/${encodeURIComponent(p.wiki.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(p.name)} on the CoD Esports Wiki ↗</a></p>
     <div class="stat-row">
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
@@ -68,8 +71,15 @@ if(!p || !lb){
       </div>
     </div>
 
-    <h2>Every major win (${p.raw})</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-top:1.6em">
+      <h2 style="margin:0" id="ml-title">Every major win (${p.raw})</h2>
+      <div class="seg" role="group" aria-label="Show wins only or every major entered">
+        <button id="seg-wins" aria-pressed="true">Wins (${p.raw})</button>
+        <button id="seg-all" aria-pressed="false">All entered (${(window.PART&&window.PART[p.name]||[]).length})</button>
+      </div>
+    </div>
     <table class="data"><tbody id="winlist"></tbody></table>
+    <p class="small faint" id="ml-note" style="margin-top:.4rem"></p>
 
     <section id="similar"></section>
   `;
@@ -109,13 +119,8 @@ if(!p || !lb){
           <div class="bar-fill" style="width:${(s.wins/maxMajors*100).toFixed(1)}%;position:absolute;top:0;left:0"></div>
         </div></div>`).join('') || '<p class="small faint">No included seasons.</p>';
 
-    // full win list
-    document.getElementById('winlist').innerHTML = p.seasons.map(s=>{
-      const evs = s.events.map(e=>`<tr>
-          <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
-          <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
-      return `<tr class="subhead"><td colspan="3">${esc(s.game)}: ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
-    }).join('');
+    // full major list — wins only (default) or every major entered (auditable)
+    renderMajors(majorsMode);
 
     // peak + eras tile sub-lines
     const pk = p.peak_all, titles = p.titles_all, span = p.span_all;
@@ -125,7 +130,47 @@ if(!p || !lb){
     document.getElementById('tile-eras-sub').textContent = span ? `${span}-yr span` : '–';
   }
 
+  // ---- "Every major" section: wins-only (default) vs every major entered ----
+  const PART = (window.PART && window.PART[p.name]) || [];
+  const orderIdx = Object.fromEntries(D.meta.seasonOrder.map((g,i)=>[g,i]));
+  let majorsMode = 'wins';
+  const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n + (s[(v-20)%10] || s[v] || s[0]); };
+  const placeLabel = pl => /^\d+$/.test(pl) ? ord(+pl) : (pl || '—');
+
+  function winsView(){
+    return p.seasons.map(s=>{
+      const evs = s.events.map(e=>`<tr>
+          <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
+          <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
+      return `<tr class="subhead"><td colspan="3">${esc(s.game)}: ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
+    }).join('');
+  }
+  function allView(){
+    if(!PART.length) return `<tr><td class="small faint">No participation data available for this player.</td></tr>`;
+    const byGame = {}; PART.forEach(m=>{ (byGame[m.game]=byGame[m.game]||[]).push(m); });
+    return Object.keys(byGame).sort((a,b)=>orderIdx[a]-orderIdx[b]).map(g=>{
+      const rows = byGame[g].slice().sort((a,b)=> (a.date<b.date?-1:1));
+      const won = rows.filter(m=>m.won).length;
+      const body = rows.map(m=>`<tr${m.won?'':' class="faint"'}>
+          <td class="num small">${yr(m.date)}</td><td>${esc(m.event)}</td>
+          <td class="n">${m.won?'<span class="pill champ">1st</span>':esc(placeLabel(m.place))}</td></tr>`).join('');
+      return `<tr class="subhead"><td colspan="3">${esc(g)}: won ${won} of ${rows.length} major${rows.length>1?'s':''} entered</td></tr>${body}`;
+    }).join('');
+  }
+  function renderMajors(mode){
+    majorsMode = mode;
+    document.getElementById('winlist').innerHTML = mode==='all' ? allView() : winsView();
+    document.getElementById('ml-title').textContent = mode==='all' ? `Every major entered (${PART.length})` : `Every major win (${p.raw})`;
+    document.getElementById('seg-wins').setAttribute('aria-pressed', String(mode!=='all'));
+    document.getElementById('seg-all').setAttribute('aria-pressed', String(mode==='all'));
+    document.getElementById('ml-note').textContent = mode==='all'
+      ? '“1st” = a counted major win; other placements are shown for context (not weighted). Warzone/Mobile excluded, same as the wins.'
+      : '';
+  }
+
   render();
+  document.getElementById('seg-wins').addEventListener('click', ()=>renderMajors('wins'));
+  document.getElementById('seg-all').addEventListener('click', ()=>renderMajors('all'));
   mountSimilar(p.name);
 
   mountFoot();
@@ -152,6 +197,28 @@ function mountSimilar(name){
     <h2>Similar players</h2>
     <p class="small muted">Closest résumés by <strong>achievement</strong> (success, peak, placement,
       longevity, and career path), all measured era-independently. When a player debuted is not scored, so comps can cross eras.</p>
+    <details class="sim-method">
+      <summary>How these are computed</summary>
+      <div class="sim-method-body">
+        <p>Each player is a résumé vector across five groups, and the score is the weighted distance
+        between two players, rescaled to <span class="num">0–100</span> (100 = identical résumé):</p>
+        <ul>
+          <li><strong>Success</strong> — era-adjusted wins, World Championships, and win conversion (share of majors entered that were won).</li>
+          <li><strong>Peak</strong> — best single season, era-adjusted.</li>
+          <li><strong>Placement</strong> — how often they reached a final (top&#8209;2) or a top&#8209;4. Held at low weight, since bracket sizes differ by era.</li>
+          <li><strong>Longevity</strong> — distinct titles won and career span in years.</li>
+          <li><strong>Career path</strong> — teams played for and average years per team.</li>
+        </ul>
+        <p><strong>Everything is era-independent by design.</strong> Each stat is either era-adjusted,
+        a rate, or a count of years, so a 2013 career and a 2023 career meet on equal footing.
+        <strong>Raw win totals and majors-attended are deliberately excluded</strong> — early seasons
+        held ~17 majors a year versus 6–7 today, so those numbers mostly measure the era's calendar,
+        not the player. Debut year is shown only as context and never scored.</p>
+        <p><strong>“Didn't win together”</strong> hides players who shared most of their titles with
+        this one — a dynasty teammate is an obvious match, not an insight. <strong>“Everyone”</strong>
+        brings them back, tagged with their share of shared wins.</p>
+      </div>
+    </details>
     <div class="sim-controls">
       <div class="seg" id="sim-seg">
         <button data-mode="solo" aria-pressed="true">Didn't win together</button>

@@ -76,6 +76,7 @@ def build():
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
     pwins  = json.load(open(_p('player_event_wins.json')))   # [{Player,Event,Game,Date}]
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
+    ppart  = json.load(open(_p('player_participation.json')))  # [{Player,Event,Game,Date,Place,...}] ALL placements
 
     played = lambda d: (d or '0000') <= ASOF
     keep = lambda x: x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
@@ -108,11 +109,43 @@ def build():
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
     disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
 
+    # Career span from PARTICIPATION (every major entered, won or not), not just wins:
+    # first_year/last_year above are first-win to last-win, which understates how long a
+    # player actually competed. career_* uses the same console-major universe (drop
+    # Warzone/Mobile & dropped events, on/before ASOF) so a player who kept competing
+    # after their last win — e.g. BigTymeR played through 2014 but last won in 2012 — has
+    # an honest active span, and majors_played gives a real denominator for win rate.
+    # A player rostered but who did not actually take the stage doesn't count as
+    # having competed. The wiki marks these 'DNS' (did not start); a blank place is
+    # likewise not a result. Everything else — including ">12"-style open placements —
+    # means they played. (Only 'MLG National Championship 2009' DNS rows exist today,
+    # for SiLLY and NAMELESS, but the guard survives a re-pull.)
+    NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
+    part_events, part_dates = defaultdict(set), defaultdict(list)
+    part_rows = defaultdict(dict)   # mk -> {event: {event,game,date,place}} — every major entered (won or not)
+    for r in ppart:
+        if mkey(r['Player']) not in top50_mkeys: continue
+        if not keep(r) or not played(r.get('Date')): continue
+        if r.get('Place') in NONPLAY: continue
+        k = mkey(r['Player']); part_events[k].add(r['Event'])
+        if r.get('Date'): part_dates[k].append(r['Date'])
+        part_rows[k].setdefault(r['Event'], {'event': r['Event'], 'game': r['Game'],
+                                             'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip()})
+    def career_of(mk):
+        ds = sorted(part_dates.get(mk, []))
+        if not ds: return (None, None, 0, 0, None, None)
+        y0, y1 = int(ds[0][:4]), int(ds[-1][:4])
+        # exact first/last dates feed the career-timeline signature (when wins land
+        # across the whole career, not just the winning window); years feed span.
+        return (y0, y1, y1 - y0, len(part_events.get(mk, ())), ds[0], ds[-1])
+
     player_wins = defaultdict(list)
+    wiki_name = {}   # mk -> raw wiki player id (for the per-player Fandom link)
     for r in pwins:
         k = mkey(r['Player'])
         if k in top50_mkeys:
             player_wins[k].append(r)
+            wiki_name.setdefault(k, r['Player'])
 
     def weight(g): return 1.0 / denom[g]
 
@@ -137,6 +170,7 @@ def build():
                 raise RuntimeError(f"champ event not among {disp_by_mkey[mk]}'s major wins: {ce['event']!r}")
 
     players_out = {}   # keyed by display name (what player.html / leaderboard links use)
+    participation = {} # name -> every major entered (won or not); emitted to a separate file
     exact_share = {}   # name -> (all, post) as exact Fractions; ranking must not use rounded values
     for n, pub in PUBLISHED:
         mk = mkey(n)
@@ -170,8 +204,22 @@ def build():
         pk_all, pk_post = peak_of(seasons, MBAR_ALL), peak_of(seasons_post, MBAR_POST)
         span_all, first_all, last_all = span_of(seasons)
         span_post, first_post, last_post = span_of(seasons_post)
+        first_played, last_played, career_span, majors_played, first_pdate, last_pdate = career_of(mk)
+
+        # Every major ENTERED (won or not), for the auditable "all majors" toggle on the
+        # player page. Built from participation placements; wins are flagged. Any won
+        # event missing a participation row is added so all_majors always covers the wins.
+        won_events = {w['Event'] for w in wins}
+        all_majors = [dict(r, won=(r['event'] in won_events)) for r in part_rows.get(mk, {}).values()]
+        seen_ev = {r['event'] for r in all_majors}
+        for w in wins:
+            if w['Event'] not in seen_ev:
+                all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '', 'place': '1', 'won': True})
+        all_majors.sort(key=lambda r: r['date'])
+        participation[n] = all_majors
 
         players_out[n] = {'name': n, 'raw': pub, 'seasons': seasons,
+                          'wiki': wiki_name.get(mk, n),
                           'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * MBAR_ALL, 2),
                           'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * MBAR_POST, 2),
                           'champs': len(champs_by.get(mk, [])), 'champ_events': champs_by.get(mk, []),
@@ -180,6 +228,9 @@ def build():
                           'span_all': span_all, 'span_post': span_post,
                           'first_year': first_all, 'last_year': last_all,
                           'first_post': first_post, 'last_post': last_post,
+                          'first_played': first_played, 'last_played': last_played,
+                          'first_played_date': first_pdate, 'last_played_date': last_pdate,
+                          'career_span': career_span, 'majors_played': majors_played,
                           'note': PLAYER_NOTES.get(n)}
 
     # GUARD: reconstructed wins must equal the published wiki total for every player
@@ -211,6 +262,9 @@ def build():
             'spanAll': p['span_all'], 'spanPost': p['span_post'],
             'firstYear': p['first_year'], 'lastYear': p['last_year'],
             'firstYearPost': p['first_post'], 'lastYearPost': p['last_post'],
+            'firstPlayed': p['first_played'], 'lastPlayed': p['last_played'],
+            'firstPlayedDate': p['first_played_date'], 'lastPlayedDate': p['last_played_date'],
+            'careerSpan': p['career_span'], 'majorsPlayed': p['majors_played'],
         })
 
     games_out = []
@@ -232,11 +286,17 @@ def build():
             'seasonOrder': season_order, 'totalMajors': sum(majors.values()),
             'consoleMajors': sum(majors[g] for g in console_seasons), 'numEvents': len(events)}
 
-    return {'meta': meta, 'leaderboard': leaderboard, 'players': players_out, 'games': games_out, 'majors': dict(majors)}
+    return {'meta': meta, 'leaderboard': leaderboard, 'players': players_out, 'games': games_out,
+            'majors': dict(majors), '_participation': participation}
 
 
 def write(data, path=None):
     path = path or _p('site', 'data.js')
+    # the full major-entry list per player is large and only used on player pages, so it
+    # rides in its own file (window.PART) instead of bloating data.js on every page.
+    participation = data.pop('_participation', {})
+    with open(_p('site', 'participation.js'), 'w') as f:
+        f.write('window.PART='); json.dump(participation, f); f.write(';')
     with open(path, 'w') as f:
         f.write('window.APP_DATA='); json.dump(data, f); f.write(';')
     # also emit pure JSON so the /api/og edge function (and any module) can import it
