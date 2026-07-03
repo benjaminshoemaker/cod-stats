@@ -34,13 +34,15 @@
 </style>
 </head>
 <body>
-<div class="wrap wide" id="root"></div>
+<div class="wrap wide" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script type="module">
 import { eraContext, computeRows } from './assets/rank.js';
 mountNav('heatmap.html');
 const D = window.APP_DATA;
+// championship gold, sourced from the --gold design token (single source of truth)
+const GOLD = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
 const { PRESETS } = eraContext(D);
 const ORDER = D.meta.seasonOrder;
 const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
@@ -64,7 +66,7 @@ for(const r of rows){
 let mx=0; for(const r of rows) for(const g of ORDER) mx=Math.max(mx, shareOf[r.name][g]||0);
 
 const cw=44, rh=28, x0=140, y0=64, W=x0+cw*ORDER.length+16, H=y0+rh*rows.length+14;
-let s=`<svg class="hm" viewBox="0 0 ${W} ${H}">`;
+let s=`<svg class="hm" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dominance heatmap of the top 16 players by era-adjusted wins. Each cell is a player's share of that title's majors; darker cells mean more of the season won, and gold dots mark seasons they won the World Championship.">`;
 ORDER.forEach((g,j)=>{const x=x0+j*cw+cw/2;
   s+=`<text class="col" x="${x}" y="${y0-8}" transform="rotate(-45 ${x} ${y0-8})" text-anchor="start">${esc(ABBR[g])}</text>`;});
 rows.forEach((r,i)=>{
@@ -79,7 +81,7 @@ rows.forEach((r,i)=>{
     if(v>=0.30 || (isChamp && v>0)){
       const dark=v/mx>0.5; s+=`<text class="pct" x="${x+cw/2}" y="${y+rh/2+4}" text-anchor="middle" fill="${dark?'#fff':'var(--ink)'}">${Math.round(v*100)}</text>`;
     }
-    if(isChamp) s+=`<circle cx="${x+cw-6}" cy="${y+6}" r="3.4" fill="#b8860b" stroke="#fff" stroke-width="1"><title>${esc(nm)} won the ${ABBR[g]} World Championship</title></circle>`;
+    if(isChamp) s+=`<circle cx="${x+cw-6}" cy="${y+6}" r="3.4" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(nm)} won the ${ABBR[g]} World Championship</title></circle>`;
   });
 });
 s+='</svg>';
@@ -87,7 +89,7 @@ s+='</svg>';
 document.getElementById('root').innerHTML = `
   <h1>Dominance heatmap</h1>
   <p class="lede">Each cell is a player's <strong>share of that title's majors</strong>, the same season-share the leaderboard is built on.
-  Darker = more of the season won. A <span style="color:#b8860b">◆ gold dot</span> marks a season they won the World Championship.
+  Darker = more of the season won. A <span style="color:${GOLD}">◆ gold dot</span> marks a season they won the World Championship.
   Read a row for a career, a column for who owned that title. <a href="methodology.html">How the share works →</a></p>
   <div class="swatches"><span>less</span><span class="ramp"></span><span>more of the season won</span></div>
   <div class="chart-wrap">${s}</div>

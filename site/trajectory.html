@@ -57,7 +57,7 @@
 </style>
 </head>
 <body>
-<div class="wrap wide" id="root"></div>
+<div class="wrap wide" id="root" role="main" tabindex="-1"></div>
 <div id="tt"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
@@ -75,7 +75,8 @@ const ERALAB = {prebo2:'Pre-BO2', mlgcwl:'MLG–CWL', cdl:'CDL era'};
 const ERAFILL = {prebo2:'#f2f5f9', mlgcwl:'#eef4fb', cdl:'#eef7f2'};
 // validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 17.9)
 const PAL = ['#2563eb','#d97706','#059669','#7c3aed','#e11d48','#0891b2','#65a30d','#db2777','#4f46e5','#b45309','#0369a1','#9333ea'];
-const GOLD = '#b8860b';
+// championship gold, sourced from the --gold design token (single source of truth)
+const GOLD = getComputedStyle(document.documentElement).getPropertyValue('--gold').trim();
 
 const event2game = {};
 for(const g of D.games) for(const e of g.events) event2game[e.event]=g.game;
@@ -128,7 +129,7 @@ function draw(){
   const dx=(PX1-PX0)/(ORDER.length-1);
   const X=idx=>PX0+idx*dx, Y=c=>PY0+PH-c/ymax*PH;
   geom={W,PX0,PX1,dx,PY0,PYb,X,Y};
-  let s=`<svg class="tj" viewBox="0 0 ${W} ${H}">`;
+  let s=`<svg class="tj" viewBox="0 0 ${W} ${H}" role="img" aria-label="Career trajectory chart: each line is a player's cumulative era-adjusted wins across their career, oldest title to newest. Gold diamonds mark World Championship wins.">`;
   // era bands + dividers + labels
   bands.forEach((b,bi)=>{ const x0=Math.max(PX0-dx/2,X(b.i0)-dx/2), x1=Math.min(PX1+dx/2,X(b.i1)+dx/2);
     s+=`<rect x="${x0.toFixed(1)}" y="${PY0}" width="${(x1-x0).toFixed(1)}" height="${PH}" fill="${ERAFILL[b.era]}"/>`;

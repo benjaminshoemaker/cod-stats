@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Player · Era-Adjusted Major Wins</title>
+<title>Player · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty player's major tournament wins, era-adjusted season by season, with their world championship count.">
 <meta property="og:type" content="profile">
@@ -20,7 +20,7 @@
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="wrap" id="root"></div>
+<div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="participation.js"></script>
 <script src="similarity.js"></script>
@@ -37,7 +37,7 @@ if(!p || !lb){
     <h1>Player not found</h1><p class="muted">No leaderboard data for "${esc(name||'')}".</p>`;
   mountFoot();
 }else{
-  document.title = `${p.name} · Era-Adjusted Major Wins`;
+  document.title = `${p.name} · CoD Era-Adjusted`;
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
 
   root.innerHTML = `

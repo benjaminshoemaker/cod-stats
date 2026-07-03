@@ -95,7 +95,7 @@ function mountColumnMenu(table, cols, onChange){
 /* build header nav, marking active */
 function mountNav(active){
   // "Insights" groups the charts and the derived-signature page in a dropdown.
-  const VIZ=[['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['signatures.html','Signatures']];
+  const VIZ=[['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['map.html','Similarity map'],['signatures.html','Signatures']];
   const vizActive=VIZ.some(([h])=>h===active);
   const drop=`<div class="navdrop${vizActive?' active':''}">
       <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false">Insights <span aria-hidden="true">▾</span></button>
@@ -105,6 +105,7 @@ function mountNav(active){
   const lnk=([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`;
   const nav=before.map(lnk).join('')+drop+after.map(lnk).join('');
   document.body.insertAdjacentHTML('afterbegin',
+    `<a class="skip" href="#root">Skip to content</a>`+
     `<header class="site-head"><div class="inner">
       <a class="brand" href="index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
       <nav class="nav">${nav}</nav>

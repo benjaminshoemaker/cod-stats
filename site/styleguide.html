@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Style Guide · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Living reference for the CoD Major Wins design system: every design token and component rendered from the real stylesheet.">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="vendor/tabulator.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Style-guide scaffolding only. Uses design tokens (var(--…)) exclusively —
+     no hardcoded colors — so this page can never drift from style.css. */
+  .sg-toc{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0 2rem}
+  .sg-toc a{font-size:.85rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);
+    border-radius:20px;padding:.25rem .7rem}
+  .sg-toc a:hover{background:var(--panel-2);color:var(--ink);text-decoration:none}
+  .sg-sec{margin:2.6rem 0;scroll-margin-top:5rem}
+  .sg-sec>h2{border-bottom:1px solid var(--line);padding-bottom:.35rem}
+  .sg-note{color:var(--muted);font-size:.9rem;max-width:70ch;margin:.2rem 0 1rem}
+  /* swatch grid */
+  .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem;margin:1rem 0}
+  .sw-card{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+  .sw-chip{height:56px;border-bottom:1px solid var(--line)}
+  .sw-meta{padding:.5rem .6rem}
+  .sw-name{font-family:var(--mono);font-size:.8rem;color:var(--ink)}
+  .sw-val{font-family:var(--mono);font-size:.72rem;color:var(--faint);text-transform:uppercase}
+  /* two-up demo row: rendered example beside the class name that produces it */
+  .sg-demo{display:grid;grid-template-columns:1fr;gap:.4rem;margin:1rem 0}
+  .sg-render{padding:1.1rem;border:1px dashed var(--line-2);border-radius:var(--radius);background:var(--bg)}
+  .sg-code{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+  .sg-swatch-line{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:.4rem;border:1px solid var(--line)}
+  .type-row{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;padding:.4rem 0;border-bottom:1px solid var(--line)}
+  .type-row .tag{font-family:var(--mono);font-size:.72rem;color:var(--faint);min-width:5.5rem}
+</style>
+</head>
+<body>
+<div class="wrap wide" id="root" role="main" tabindex="-1">
+  <p class="crumb"><a href="index.html">Home</a> › Style guide</p>
+  <h1>Design System</h1>
+  <p class="lede">The living reference for this site. Every swatch and component below is rendered
+  straight from <span class="num">assets/style.css</span>, and token values are read from the
+  live stylesheet at load, so this page cannot drift from the real design system.
+  If a swatch looks wrong here, the token is wrong everywhere.</p>
+
+  <nav class="sg-toc" aria-label="Sections">
+    <a href="#colors">Colors</a>
+    <a href="#scale">Scale</a>
+    <a href="#type">Type</a>
+    <a href="#panels">Panels &amp; grid</a>
+    <a href="#stats">Stat tiles</a>
+    <a href="#tables">Tables</a>
+    <a href="#pills">Pills &amp; deltas</a>
+    <a href="#bars">Bars</a>
+    <a href="#controls">Controls</a>
+    <a href="#misc">Notes &amp; legend</a>
+  </nav>
+
+  <!-- ============ COLORS ============ -->
+  <section class="sg-sec" id="colors">
+    <h2>Color tokens</h2>
+    <p class="sg-note">Defined in <span class="num">:root</span>. Backgrounds below are set with
+    <span class="num">var(--token)</span>; the hex shown is the computed value read from the page,
+    so it always matches what ships.</p>
+    <div class="sw-grid" id="sw-grid"></div>
+    <p class="sg-note"><strong>Vivid vs. ink.</strong> The saturated tokens
+    (<span class="num">--pos</span>, <span class="num">--neg</span>, <span class="num">--amber</span>)
+    are for <em>fills and marks</em> — bars, chart dots, swatches. As small text they fail WCAG AA,
+    so text and pills use the darker <span class="num">--pos-ink</span> / <span class="num">--neg-ink</span> /
+    <span class="num">--amber-ink</span> variants (all ≥ 4.5:1 on white and on their soft backgrounds).</p>
+    <p class="sg-note">Still intentionally local: the validated categorical chart palettes in
+    <span class="num">map.html</span> / <span class="num">trajectory.html</span> (self-contained,
+    CVD-checked sets) and bare <span class="num">#fff</span> fills in SVG chart chrome.</p>
+  </section>
+
+  <!-- ============ SCALE & FOUNDATIONS ============ -->
+  <section class="sg-sec" id="scale">
+    <h2>Scale &amp; foundations</h2>
+    <p class="sg-note">Non-color primitives. The radius, elevation, and motion tokens are applied
+    throughout; the <span class="num">--space-*</span> and <span class="num">--text-*</span> ramps are
+    the canonical scale for new work. A few hand-tuned optical values in the legacy CSS are left as
+    literals on purpose (density tuning), so those two ramps are the standard, not yet a full sweep.</p>
+
+    <h3>Radius</h3>
+    <div class="sg-render" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
+      <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-sm)"></span><span class="sw-val">--radius-sm</span></span>
+      <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-md)"></span><span class="sw-val">--radius-md</span></span>
+      <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-lg)"></span><span class="sw-val">--radius-lg</span></span>
+      <span><span style="display:block;width:64px;height:44px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:var(--radius-pill)"></span><span class="sw-val">--radius-pill</span></span>
+    </div>
+
+    <h3 style="margin-top:1.4rem">Elevation &amp; motion</h3>
+    <div class="sg-render" style="display:flex;gap:1.6rem;flex-wrap:wrap;align-items:center">
+      <span><span style="display:block;width:120px;height:44px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow)"></span><span class="sw-val">--shadow</span></span>
+      <button type="button" class="colmenu-btn">--transition on hover</button>
+    </div>
+
+    <h3 style="margin-top:1.4rem">Spacing ramp</h3>
+    <div class="sg-render" id="space-ramp" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end"></div>
+
+    <h3 style="margin-top:1.4rem">Type ramp</h3>
+    <div class="sg-render" id="type-ramp"></div>
+  </section>
+
+  <!-- ============ TYPE ============ -->
+  <section class="sg-sec" id="type">
+    <h2>Typography</h2>
+    <p class="sg-note">Sans stack for prose and UI; mono stack (<span class="num">.num</span>) for
+    every number, so figures stay tabular and aligned.</p>
+    <div class="type-row"><span class="tag">h1</span><h1 style="margin:0">Era-Adjusted Wins</h1></div>
+    <div class="type-row"><span class="tag">h2</span><h2 style="margin:0">Section heading</h2></div>
+    <div class="type-row"><span class="tag">h3</span><h3 style="margin:0">Sub-heading</h3></div>
+    <div class="type-row"><span class="tag">body</span><span>Regular body copy at 15px / 1.55.</span></div>
+    <div class="type-row"><span class="tag">.lede</span><span class="lede" style="margin:0">Intro lede, muted and wider-set.</span></div>
+    <div class="type-row"><span class="tag">.muted</span><span class="muted">Muted secondary text.</span></div>
+    <div class="type-row"><span class="tag">.faint</span><span class="faint">Faint tertiary text.</span></div>
+    <div class="type-row"><span class="tag">.small</span><span class="small">Small print / captions.</span></div>
+    <div class="type-row"><span class="tag">.num</span><span class="num">1,234.5 · 98.7% · +12</span></div>
+  </section>
+
+  <!-- ============ PANELS ============ -->
+  <section class="sg-sec" id="panels">
+    <h2>Panels &amp; grid</h2>
+    <div class="grid cols-3" style="margin:1rem 0">
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0">Bordered surface on the panel background.</p></div>
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0">Used for cards, tiles, and menus.</p></div>
+      <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:.4rem 0 0"><span class="num">.grid.cols-3</span> collapses to 1 col under 760px.</p></div>
+    </div>
+    <p class="sg-code">.grid.cols-2 · .grid.cols-3 · .wrap / .wrap.narrow / .wrap.wide</p>
+  </section>
+
+  <!-- ============ STAT TILES ============ -->
+  <section class="sg-sec" id="stats">
+    <h2>Stat tiles</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="k">Adjusted wins</div><div class="v">42.7</div></div>
+      <div class="stat"><div class="k">Raw wins</div><div class="v">31</div></div>
+      <div class="stat active"><div class="k">Peak season</div><div class="v sm">98%</div></div>
+      <div class="stat"><div class="k">Eras</div><div class="v sm">4</div></div>
+    </div>
+    <p class="sg-code">.stat-row › .stat (.k label / .v value / .v.sm) · .stat.active for selection</p>
+  </section>
+
+  <!-- ============ TABLES ============ -->
+  <section class="sg-sec" id="tables">
+    <h2>Tables</h2>
+    <p class="sg-note"><span class="num">table.data</span> is the plain-table style; the leaderboard
+    uses the themed Tabulator (rendered below).</p>
+    <table class="data" style="margin:1rem 0">
+      <thead><tr><th>Player</th><th class="n">Adjusted</th><th class="n">Raw</th><th class="n">Δ</th></tr></thead>
+      <tbody>
+        <tr class="subhead"><td colspan="4">CDL era</td></tr>
+        <tr><td>Player A</td><td class="n">42.7</td><td class="n">31</td><td class="n">+11.7</td></tr>
+        <tr><td>Player B</td><td class="n">38.1</td><td class="n">29</td><td class="n">+9.1</td></tr>
+      </tbody>
+    </table>
+    <div id="demo-table" style="margin:1rem 0"></div>
+    <p class="sg-code">table.data (th / td.n / tr.subhead) · .tabulator theme (see #demo-table)</p>
+  </section>
+
+  <!-- ============ PILLS & DELTAS ============ -->
+  <section class="sg-sec" id="pills">
+    <h2>Pills &amp; deltas</h2>
+    <div class="sg-render" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+      <span class="pill up">▲ 12</span>
+      <span class="pill down">▼ 4</span>
+      <span class="pill flat">–</span>
+      <span class="pill tag">tag</span>
+      <span class="pill warn">warn</span>
+      <span class="pill champ">3 ◆</span>
+      <span class="pill mate">mate</span>
+      <span class="pill solo">solo</span>
+    </div>
+    <p class="sg-code">.pill.up / .down / .flat / .tag / .warn / .champ / .mate / .solo</p>
+    <div class="sg-render" style="display:flex;gap:1.2rem;flex-wrap:wrap">
+      <span class="delta up">+11.7</span>
+      <span class="delta down">-4.0</span>
+      <span class="delta flat">0.0</span>
+    </div>
+    <p class="sg-code">.delta.up / .down / .flat (inline mono, no background)</p>
+  </section>
+
+  <!-- ============ BARS ============ -->
+  <section class="sg-sec" id="bars">
+    <h2>Bars</h2>
+    <div class="sg-render">
+      <div class="barline"><span class="lab">Accent</span><div class="bar-track" style="flex:1"><div class="bar-fill" style="width:72%"></div></div><span class="val">72%</span></div>
+      <div class="barline" style="margin-top:.6rem"><span class="lab">Positive</span><div class="bar-track" style="flex:1"><div class="bar-fill pos" style="width:54%"></div></div><span class="val">54%</span></div>
+      <div class="barline" style="margin-top:.6rem"><span class="lab">Amber</span><div class="bar-track" style="flex:1"><div class="bar-fill amber" style="width:33%"></div></div><span class="val">33%</span></div>
+    </div>
+    <p class="sg-code">.barline › .bar-track › .bar-fill (.pos / .amber)</p>
+  </section>
+
+  <!-- ============ CONTROLS ============ -->
+  <section class="sg-sec" id="controls">
+    <h2>Controls</h2>
+    <div class="controls sg-render" style="margin:0">
+      <input class="search" type="text" placeholder="Search player…">
+      <label class="toggle"><input type="checkbox" checked> Show deltas</label>
+      <button type="button" class="colmenu-btn">Columns ▾</button>
+      <label class="ringw"><span class="ringw-lbl">◆ Ring weight</span><input type="range" min="1" max="6" value="3"><span class="ringw-val">×3</span></label>
+      <button type="button" class="sharebtn">Share ranking</button>
+      <button type="button" class="clearfilters">Clear filters</button>
+    </div>
+    <p class="sg-code">.search · .toggle · .colmenu-btn · .ringw · .sharebtn · .clearfilters</p>
+    <div class="sg-render" style="margin-top:1rem">
+      <div class="seg" role="group" aria-label="demo segmented">
+        <button type="button" aria-pressed="true">Overall</button>
+        <button type="button" aria-pressed="false">Mates</button>
+        <button type="button" aria-pressed="false">Solo</button>
+      </div>
+    </div>
+    <p class="sg-code">.seg › button[aria-pressed] (segmented toggle, used in similar-players)</p>
+  </section>
+
+  <!-- ============ MISC ============ -->
+  <section class="sg-sec" id="misc">
+    <h2>Notes &amp; legend</h2>
+    <div class="note" style="margin:1rem 0">Info note (<span class="num">.note</span>): accent-soft callout for context and caveats.</div>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--accent)"></span>Adjusted</span>
+      <span><span class="sw" style="background:var(--pos)"></span>Gained</span>
+      <span><span class="sw" style="background:var(--neg)"></span>Lost</span>
+    </div>
+    <p class="sg-code">.note · .legend › .sw (swatch dot)</p>
+  </section>
+</div>
+
+<script src="data.js"></script>
+<script src="vendor/tabulator.min.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('styleguide.html');   // not in the public nav — reachable by URL only
+
+// ---- Color swatches: read the live computed value of each token so the page
+//      always reflects what actually ships in style.css. ----
+const TOKENS = [
+  '--bg','--panel','--panel-2','--ink','--muted','--faint',
+  '--line','--line-2','--accent','--accent-soft',
+  '--pos','--pos-soft','--pos-ink','--neg','--neg-soft','--neg-ink',
+  '--warn','--warn-soft','--amber','--amber-ink',
+  '--gold','--gold-soft','--gold-ink','--gold-line',
+];
+const cs = getComputedStyle(document.documentElement);
+document.getElementById('sw-grid').innerHTML = TOKENS.map(t=>{
+  const val = cs.getPropertyValue(t).trim();
+  return `<div class="sw-card">
+    <div class="sw-chip" style="background:var(${t})"></div>
+    <div class="sw-meta"><div class="sw-name">${t}</div><div class="sw-val">${esc(val)}</div></div>
+  </div>`;
+}).join('');
+
+// ---- Spacing ramp: read each --space-* token and draw a bar of that width. ----
+const SPACE = ['--space-1','--space-2','--space-3','--space-4','--space-5','--space-6','--space-8'];
+document.getElementById('space-ramp').innerHTML = SPACE.map(t=>{
+  const v = cs.getPropertyValue(t).trim();
+  return `<span style="text-align:center">
+    <span style="display:block;height:${v};width:16px;background:var(--accent);border-radius:2px"></span>
+    <span class="sw-val" style="display:block;margin-top:.3rem">${t.replace('--space','')}</span>
+    <span class="sw-val">${v}</span></span>`;
+}).join('');
+
+// ---- Type ramp: read each --text-* token and render a line at that size. ----
+const TEXT = ['--text-xs','--text-sm','--text-base','--text-md','--text-lg','--text-xl'];
+document.getElementById('type-ramp').innerHTML = TEXT.map(t=>{
+  const v = cs.getPropertyValue(t).trim();
+  return `<div style="display:flex;align-items:baseline;gap:1rem;padding:.25rem 0">
+    <span class="sw-val" style="min-width:6rem">${t} · ${v}</span>
+    <span style="font-size:${v}">The quick brown fox</span></div>`;
+}).join('');
+
+// ---- A tiny Tabulator so the themed table style is on the page too. ----
+new Tabulator('#demo-table', {
+  layout:'fitColumns',
+  data:[
+    {rank:1, name:'Player A', adjusted:42.7, raw:31},
+    {rank:2, name:'Player B', adjusted:38.1, raw:29},
+    {rank:3, name:'Player C', adjusted:35.4, raw:33},
+  ],
+  columns:[
+    {title:'#', field:'rank', width:60, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+    {title:'Player', field:'name', minWidth:140, widthGrow:2},
+    {title:'Adjusted', field:'adjusted', hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`},
+    {title:'Raw wins', field:'raw', hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+  ],
+});
+
+mountFoot();
+</script>
+</body>
+</html>

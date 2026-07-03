@@ -29,13 +29,13 @@
   svg.scatter .quad{fill:var(--faint);font-size:12px;font-weight:600;opacity:.7}
   svg.scatter .dot{fill:var(--accent);fill-opacity:.55;stroke:#fff;stroke-width:1;cursor:pointer}
   svg.scatter .dot:hover{fill-opacity:.9}
-  svg.scatter .dot.champ{fill:#d4a017;fill-opacity:.6}
+  svg.scatter .dot.champ{fill:var(--gold);fill-opacity:.6}
   svg.scatter .lbl{fill:var(--ink);font-size:12px;pointer-events:none}
   svg.scatter a{cursor:pointer}
 </style>
 </head>
 <body>
-<div class="wrap" id="root"></div>
+<div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -52,7 +52,7 @@ root.innerHTML=`
     <span class="small muted">Hover a dot for detail; click to open the player.</span>
   </div>
   <div class="legend">
-    <span><span class="sw" style="background:#d4a017;border-radius:50%"></span>won a World Championship</span>
+    <span><span class="sw" style="background:var(--gold);border-radius:50%"></span>won a World Championship</span>
     <span><span class="sw" style="background:var(--accent);border-radius:50%;opacity:.6"></span>no Championship</span>
     <span>bubble size = total adjusted wins</span>
   </div>

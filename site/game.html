@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Season · Era-Adjusted Major Wins</title>
+<title>Season · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty season's major tournaments, their winners, and how each win is weighted (1 ÷ majors that season).">
 <meta property="og:type" content="website">
@@ -20,7 +20,7 @@
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="wrap" id="root"></div>
+<div class="wrap" id="root" role="main" tabindex="-1"></div>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script>
@@ -33,7 +33,7 @@ const avg=D.meta.mbarAll;
 if(!g){
   root.innerHTML=`<p class="crumb"><a href="games.html">← Seasons</a></p><h1>Season not found</h1>`;
 }else{
-  document.title = `${g.game} · Majors & Weighting | CoD Era-Adjusted`;
+  document.title = `${g.game} · CoD Era-Adjusted`;
   const evRows=g.events.map(e=>`<tr>
     <td class="faint num small">${esc(e.date||'')}</td>
     <td>${esc(e.event)}</td>
