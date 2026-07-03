@@ -1,0 +1,7 @@
+{
+  "name": "cod-stats-site",
+  "private": true,
+  "dependencies": {
+    "@vercel/og": "^0.6.2"
+  }
+}

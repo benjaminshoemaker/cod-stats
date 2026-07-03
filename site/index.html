@@ -11,13 +11,13 @@
 <meta property="og:title" content="Who really dominated Call of Duty?">
 <meta property="og:description" content="Major tournament wins, re-weighted so every season counts equally. Sortable leaderboard with per-player breakdowns.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/og">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Who really dominated Call of Duty?">
 <meta name="twitter:description" content="Major tournament wins, re-weighted so every season counts equally.">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -40,6 +40,7 @@
       <input type="range" id="ringw-range" min="1" max="6" step="1">
       <span class="ringw-val" id="ringw-val">×1</span>
     </label>
+    <button type="button" class="sharebtn" id="sharebtn">Share ranking</button>
     <button type="button" class="clearfilters" id="clearfilters" hidden>Clear filters</button>
   </div>
 
@@ -57,98 +58,21 @@
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
-<script>
+<script type="module">
+import { computeRows, eraContext } from './assets/rank.js';
 mountNav('index.html');
 
-// ---- era/title definitions -------------------------------------------------
-const ORDER = D.meta.seasonOrder;                       // titles, oldest→newest
-const PRE = new Set(D.meta.preBo2);                     // the 4 pre-BO2 titles
-const CDL_START = ORDER.indexOf('Modern Warfare');      // 2020 = first CDL season
-const eraOf = g => PRE.has(g) ? 'prebo2' : (ORDER.indexOf(g) >= CDL_START ? 'cdl' : 'mlgcwl');
+const D = window.APP_DATA;
+// era/title selection helpers (shared with the /api/og card endpoint via rank.js)
+const { ORDER, eraOf, PRESETS, DENOM, slugOf, selectionToken, parseSelection } = eraContext(D);
 const ERAS = [                                          // display groups, oldest→newest
   {key:'prebo2', label:'Pre-BO2 (open era)'},
   {key:'mlgcwl', label:'MLG–CWL (BO2–BO4)'},
   {key:'cdl',    label:'CDL era'},
 ];
-const PRESETS = {                                       // named multi-selections
-  all:    ORDER.slice(),
-  post:   ORDER.filter(g=>!PRE.has(g)),
-  prebo2: ORDER.filter(g=>eraOf(g)==='prebo2'),
-  mlgcwl: ORDER.filter(g=>eraOf(g)==='mlgcwl'),
-  cdl:    ORDER.filter(g=>eraOf(g)==='cdl'),
-};
-const DENOM = {}; D.games.forEach(g=>{ DENOM[g.game]=g.denom; });
-// stable slug per title for shareable custom-selection URLs (positional indices would
-// silently shift if the season list ever changed)
-const slugOf = g => g.toLowerCase().replace(/[^a-z0-9]/g,'');
-const BY_SLUG = {}; ORDER.forEach(g=>{ BY_SLUG[slugOf(g)] = g; });
-
-// ---- recompute engine ------------------------------------------------------
-// Everything the leaderboard shows is defined relative to the *selected* seasons,
-// so a filter is a recompute, not a row-hide. This reproduces build_data.py's math
-// (exact-rational shares, competition ranks) for any subset of titles. Guarded by
-// a test that computeRows(all) / computeRows(post-BO2) match the baked leaderboard.
-// BigInt gcd/lcm so exact-share numerators can't overflow Number's 2^53 as denominators grow.
-function gcd(a,b){ a=a<0n?-a:a; b=b<0n?-b:b; while(b){ const t=a%b; a=b; b=t; } return a; }
-function lcm(a,b){ return a/gcd(a,b)*b; }
-
-function computeRows(selected, ringWeight){   // selected: Set of title names; ringWeight: ring = N majors (1 = off)
-  const N = ringWeight || 1;
-  const games = ORDER.filter(g=>selected.has(g));
-  if(!games.length) return [];
-  const denomSum = games.reduce((a,g)=>a+DENOM[g],0);      // Σ denominators (integer)
-  const G = games.length;
-  const MBAR = denomSum / G;
-  const L = games.reduce((acc,g)=>lcm(acc, BigInt(DENOM[g])), 1n);   // exact common denominator (BigInt)
-  const Lnum = Number(L);
-  const rows = [];
-  for(const name in D.players){
-    const p = D.players[name];
-    const sel = p.seasons.filter(s=>selected.has(s.game));  // seasons this player won in, within the set
-    const raw = sel.reduce((a,s)=>a+s.wins,0);
-    if(raw === 0) continue;                                 // no wins in these eras → off the board
-    const numer = sel.reduce((a,s)=> a + BigInt(s.wins)*(L/BigInt(s.majors)), 0n);  // exact share numerator
-    const adjusted = Math.round(Number(numer)/Lnum * MBAR * 100)/100;
-    let best = sel[0];                                      // peak = best single season's share (exact)
-    for(const s of sel){ if(s.wins*best.majors > best.wins*s.majors) best = s; }
-    const yrs = [];
-    for(const s of sel) for(const e of s.events) if(e.date) yrs.push(+e.date.slice(0,4));
-    const won = new Set(); sel.forEach(s=>s.events.forEach(e=>won.add(e.event)));
-    rows.push({
-      name, raw, _numer: numer,
-      champs: (p.champ_events||[]).filter(c=>won.has(c.event)).length,
-      adjusted,
-      peak: best.wins/best.majors,
-      peakInfo: {adj: Math.round(best.wins/best.majors*MBAR*100)/100, season: best.game, wins: best.wins, majors: best.majors},
-      eras: sel.length,
-      firstYear: yrs.length?Math.min(...yrs):null,
-      lastYear:  yrs.length?Math.max(...yrs):null,
-    });
-  }
-  // optional championship weighting: a ring counts as N majors. It already contributes
-  // ~1 (as a major) inside `adjusted`, so we add only the extra (N-1) — no double-count,
-  // and N=1 leaves the board identical. Denominators are untouched (the ring stays a
-  // legitimate major in its season's pool); this is a pure overlay on top of `adjusted`.
-  // `adjWeighted` is rounded for display; ranking uses an EXACT integer key so ties/order
-  // match build_data.py's ethos (exact weighted ∝ numer·Σdenom + champs·(N-1)·L·G).
-  const weighted = N > 1;
-  const bExtra = BigInt(N-1), bSum = BigInt(denomSum), bG = BigInt(G);
-  for(const r of rows){
-    r.adjWeighted = Math.round((r.adjusted + r.champs*(N-1))*100)/100;
-    r._wnumer = r._numer*bSum + BigInt(r.champs)*bExtra*L*bG;
-  }
-  // competition ranks (1 + strictly-better), on exact integer keys (BigInt).
-  for(const r of rows){
-    r.adjRank = weighted
-      ? 1 + rows.filter(o=>o._wnumer > r._wnumer).length
-      : 1 + rows.filter(o=>o._numer > r._numer).length;
-    r.rawRank = 1 + rows.filter(o=>o.raw > r.raw).length;
-    r.delta = r.rawRank - r.adjRank;
-    r.winsChange = Math.round((r.adjusted - r.raw)*10)/10;
-  }
-  return rows;
-}
-window.computeRows = computeRows;   // exposed for the oracle test
+// recompute the board for the current selection (see rank.js). Exposed for the oracle test.
+const cr = (selected, ringWeight) => computeRows(D, selected, ringWeight);
+window.computeRows = cr;
 
 // arrow/pill formatter shared by Rank change & Wins change (green up / red down)
 function changePill(d, decimals){
@@ -166,21 +90,7 @@ const VALID = new Set(['adjRank','name','adjusted','adjWeighted','peak','eras','
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
-// or "t:<indices>" for a custom set. URL (?eras=) → saved pref → default "all".
-function sameSet(set, arr){ return set.size===arr.length && arr.every(g=>set.has(g)); }
-function selectionToken(sel){
-  for(const k of ['all','post','prebo2','mlgcwl','cdl']) if(sameSet(sel, PRESETS[k])) return k;
-  return 't:' + ORDER.filter(g=>sel.has(g)).map(slugOf).join('-');   // custom set, by stable slug
-}
-function parseSelection(token){
-  if(!token) return null;
-  if(PRESETS[token]) return new Set(PRESETS[token]);
-  if(token.startsWith('t:')){
-    const gs = token.slice(2).split('-').map(s=>BY_SLUG[s]).filter(Boolean);   // unknown/empty slugs dropped
-    return gs.length ? new Set(gs) : null;                                     // malformed → null → default
-  }
-  return null;
-}
+// or "t:<slugs>" for a custom set (selectionToken/parseSelection come from rank.js).
 // The URL is the single source of truth for view state — no localStorage fallback,
 // so a bare/root URL always loads defaults and a link fully reproduces its view.
 let selected = parseSelection(params.get('eras')) || new Set(PRESETS.all);
@@ -256,7 +166,7 @@ const columns = [
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
-  data: computeRows(selected, ringN),
+  data: cr(selected, ringN),
   layout: "fitData",   // size to content so hiding columns narrows the table (vs. one column ballooning)
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
@@ -365,7 +275,7 @@ function mountEraMenu(initial, onChange){
 setNote(selected);
 mountEraMenu(selected, sel=>{
   selected = sel;
-  table.replaceData(computeRows(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
+  table.replaceData(cr(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
   setNote(selected);
   syncURL();
 });
@@ -380,7 +290,7 @@ ringRange.addEventListener('input', e=>{
   ringVal.textContent = '×'+ringN;
   const col = table.getColumn('adjWeighted');
   if(col) (ringN>1 ? col.show() : col.hide());
-  table.replaceData(computeRows(selected, ringN)).catch(()=>{});
+  table.replaceData(cr(selected, ringN)).catch(()=>{});
   table.redraw(true);        // refit columns after showing/hiding the weighted column
   setNote(selected);
   syncURL();
@@ -389,6 +299,15 @@ ringRange.addEventListener('input', e=>{
 // "Clear filters" just clears the URL — since the URL is the sole source of truth,
 // loading the bare path resets eras, columns, ring weight, search, and sort to defaults.
 document.getElementById('clearfilters').addEventListener('click', ()=>{ location.assign(location.pathname); });
+
+// "Share ranking" → copy a /r link that carries the current view's dynamic social card
+const shareBtn = document.getElementById('sharebtn');
+shareBtn.addEventListener('click', async ()=>{
+  const link = location.origin + '/r' + (location.search || '');
+  try { await navigator.clipboard.writeText(link); shareBtn.textContent = 'Link copied ✓'; }
+  catch { shareBtn.textContent = link; }
+  setTimeout(()=>{ shareBtn.textContent = 'Share ranking'; }, 1800);
+});
 
 mountFoot();
 </script>

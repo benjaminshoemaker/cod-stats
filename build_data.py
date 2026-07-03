@@ -229,6 +229,9 @@ def write(data, path=None):
     path = path or _p('site', 'data.js')
     with open(path, 'w') as f:
         f.write('window.APP_DATA='); json.dump(data, f); f.write(';')
+    # also emit pure JSON so the /api/og edge function (and any module) can import it
+    with open(_p('site', 'data.json'), 'w') as f:
+        json.dump(data, f)
 
 
 def main():

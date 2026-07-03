@@ -136,6 +136,9 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .clearfilters{font:inherit;font-size:.85rem;cursor:pointer;color:var(--muted);
   background:transparent;border:1px solid var(--line);border-radius:8px;padding:.4rem .7rem}
 .clearfilters:hover{background:var(--panel-2);color:var(--ink);border-color:var(--line-2)}
+.sharebtn{font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;color:#fff;
+  background:var(--accent);border:1px solid var(--accent);border-radius:8px;padding:.4rem .8rem}
+.sharebtn:hover{filter:brightness(1.06)}
 .note{background:var(--accent-soft);border:1px solid #dbe5ff;border-radius:8px;padding:.6rem .85rem;
   font-size:.85rem;color:#1e40af}
 

@@ -11,3 +11,5 @@ __pycache__/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.vercel
+.env*.local

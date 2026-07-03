@@ -1,0 +1,4 @@
+node_modules
+test-results
+.venv
+__pycache__
