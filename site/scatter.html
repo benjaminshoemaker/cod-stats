@@ -49,8 +49,6 @@ root.innerHTML=`
   <strong>peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took),
   and <strong>longevity</strong> = how many different CoD titles you kept winning majors across.</p>
   <div class="controls">
-    <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
-      <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
     <span class="small muted">Hover a dot for detail; click to open the player.</span>
   </div>
   <div class="legend">
@@ -67,14 +65,14 @@ root.innerHTML=`
 const W=900, H=560, mL=58, mR=26, mT=28, mB=52;
 const plotW=W-mL-mR, plotH=H-mT-mB;
 
-function render(excl){
+function render(){
   const rows=D.leaderboard.map(r=>{
-    const info = excl? r.peakInfoPost : r.peakInfoAll;
+    const info = r.peakInfoAll;
     return {
       name:r.name,
       peak: (info && info.majors) ? info.wins/info.majors : 0,   // share of best season's majors
-      eras: excl? r.titlesPost : r.titlesAll,
-      adj:  excl? r.adjPost : r.adjAll,
+      eras: r.titlesAll,
+      adj:  r.adjAll,
       champs:r.champs, info,
     };
   }).filter(p=>p.eras>0 && p.peak>0);
@@ -133,7 +131,7 @@ function render(excl){
   document.getElementById('chart').innerHTML=`<svg class="scatter" viewBox="0 0 ${W} ${H}" role="img" aria-label="Peak vs longevity scatter">${g}${dots}${lbl}</svg>`;
 }
 
-render(mountExclToggle(render));
+render();
 mountFoot();
 </script>
 </body>

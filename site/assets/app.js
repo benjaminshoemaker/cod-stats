@@ -56,18 +56,6 @@ function deltaPill(d){
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 
-/* wire the "Exclude pre-BO2" checkbox (#excl): restore saved state (or `initial`
-   when given, e.g. from the URL), persist changes, call onChange(checked).
-   Returns the initial checked state so callers can do their first render. */
-function mountExclToggle(onChange, initial){
-  const box = document.getElementById('excl');
-  box.checked = initial != null ? initial : getPref('excl') === '1';
-  box.addEventListener('change', e => {
-    setPref('excl', e.target.checked ? '1' : '0');
-    onChange(e.target.checked);
-  });
-  return box.checked;
-}
 
 /* Column show/hide dropdown for the leaderboard. Builds a button + checkbox panel
    inside #colmenu, driven by Tabulator's column visibility. `cols` is [{field,label}]

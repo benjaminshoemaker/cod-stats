@@ -44,7 +44,6 @@ if(!p || !lb){
     <div class="stat-row">
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
-      <div class="stat" id="tile-post"><div class="k">Excl. pre-BO2</div><div class="v sm">${p.adj_post.toFixed(1)}</div><div class="small faint">rank #${lb.postRank} ${deltaPill(lb.deltaPost)}</div></div>
       <div class="stat"><div class="k">Peak season</div><div class="v" id="tile-peak">${Math.round(p.peak_all.wins/p.peak_all.majors*100)}%</div>
         <div class="small faint" id="tile-peak-sub">&nbsp;</div></div>
       <div class="stat"><div class="k">Eras (titles)</div><div class="v" id="tile-eras">${p.titles_all}</div>
@@ -54,12 +53,6 @@ if(!p || !lb){
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
     ${p.note?`<div class="note" style="margin-top:.4rem;background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#data-source">See methodology →</a></div>`:''}
-
-    <div class="controls">
-      <label class="toggle"><input type="checkbox" id="excl"> Exclude pre-BO2 results
-        <span class="faint small">(CoD4, MW2, Black Ops, MW3)</span></label>
-      <span class="small muted" id="modeline"></span>
-    </div>
 
     <div class="grid cols-2">
       <div>
@@ -78,13 +71,11 @@ if(!p || !lb){
     <table class="data"><tbody id="winlist"></tbody></table>
   `;
 
-  function render(excl){
-    const shown = excl ? p.seasons.filter(s=>!s.pre_bo2) : p.seasons;
-    const mbar  = excl ? D.meta.mbarPost : D.meta.mbarAll;
-    const share = excl ? p.share_post : p.share_all;
-    const adj   = excl ? p.adj_post   : p.adj_all;
-    const rank  = excl ? lb.postRank  : lb.adjRank;
-    const delta = excl ? lb.deltaPost : lb.delta;
+  function render(){
+    const shown = p.seasons;
+    const mbar  = D.meta.mbarAll;
+    const share = p.share_all;
+    const adj   = p.adj_all;
 
     // build-up table
     const rows = shown.map(s=>`<tr>
@@ -115,33 +106,23 @@ if(!p || !lb){
           <div class="bar-fill" style="width:${(s.wins/maxMajors*100).toFixed(1)}%;position:absolute;top:0;left:0"></div>
         </div></div>`).join('') || '<p class="small faint">No included seasons.</p>';
 
-    // full win list (pre-BO2 groups greyed + tagged when excluded)
+    // full win list
     document.getElementById('winlist').innerHTML = p.seasons.map(s=>{
-      const muted = excl && s.pre_bo2;
-      const evs = s.events.map(e=>`<tr${muted?' style="opacity:.45"':''}>
+      const evs = s.events.map(e=>`<tr>
           <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
           <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
-      return `<tr class="subhead"${muted?' style="opacity:.6"':''}><td colspan="3">${esc(s.game)} — ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}${muted?' · excluded':''}</td></tr>${evs}`;
+      return `<tr class="subhead"><td colspan="3">${esc(s.game)} — ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
     }).join('');
 
-    // peak + eras tiles (mode-aware)
-    const pk = excl ? p.peak_post : p.peak_all;
-    const titles = excl ? p.titles_post : p.titles_all;
-    const span = excl ? p.span_post : p.span_all;
+    // peak + eras tile sub-lines
+    const pk = p.peak_all, titles = p.titles_all, span = p.span_all;
     document.getElementById('tile-peak').textContent = pk.majors ? `${Math.round(pk.wins/pk.majors*100)}%` : '–';
     document.getElementById('tile-peak-sub').textContent = pk.season ? `${pk.wins} of ${pk.majors} · ${pk.season}` : '—';
     document.getElementById('tile-eras').textContent = titles;
     document.getElementById('tile-eras-sub').textContent = span ? `${span}-yr span` : '—';
-
-    // active tile + mode line
-    document.getElementById('tile-all').classList.toggle('active', !excl);
-    document.getElementById('tile-post').classList.toggle('active', excl);
-    document.getElementById('modeline').innerHTML = excl
-      ? `Showing <strong>excluding pre-BO2</strong>: ${adj.toFixed(1)} adjusted wins, rank #${rank} ${deltaPill(delta)} (× ${mbar.toFixed(2)} avg majors/season).`
-      : `Showing <strong>all seasons</strong>: ${adj.toFixed(1)} adjusted wins, rank #${rank} ${deltaPill(delta)} (× ${mbar.toFixed(2)} avg majors/season).`;
   }
 
-  render(mountExclToggle(render));
+  render();
 
   mountFoot();
 }
