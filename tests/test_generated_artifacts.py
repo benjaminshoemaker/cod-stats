@@ -145,6 +145,6 @@ def test_similarity_stats_match_leaderboard(sim, lb):
         m = p["metrics"]
         for key, want in (("adjAll", round(r["adjAll"], 2)), ("champs", r["champs"]),
                           ("peakAll", r["peakAll"]), ("titlesAll", r["titlesAll"]),
-                          ("spanAll", r["spanAll"])):
+                          ("careerSpan", r["careerSpan"])):
             got = m[key]["v"]
             assert got == pytest.approx(want), f"{name}.{key}: {got} != {want}"

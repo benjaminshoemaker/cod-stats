@@ -1,12 +1,9 @@
 /* Monitoring: Sentry (error reporting + feedback widget) and Vercel analytics.
-   The Sentry bundle is loaded (with SRI, deferred) from each page's <head>, so it
-   isn't executed yet when this classic script runs — init waits for DOMContentLoaded,
-   which fires after deferred scripts. Init and the analytics injection are gated to
-   the deployed site so local dev sessions and Playwright runs don't send events or
-   burn quota. */
+   The Sentry bundle is loaded synchronously from each page's <head>, so init runs
+   before page render code below. Everything is still gated to the deployed site
+   so local dev sessions and Playwright runs don't send events or burn quota. */
 const DEPLOYED = /\.vercel\.app$/.test(location.hostname);
-window.addEventListener('DOMContentLoaded', () => {
-  if (!DEPLOYED || !window.Sentry) return;
+if (DEPLOYED && window.Sentry) {
   Sentry.init({
     dsn: "https://31fc37624c1589dbbe233db42c843560@o4511651597975552.ingest.us.sentry.io/4511651631398912",
     integrations: [
@@ -26,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
     tracesSampleRate: 0,             // no performance tracing, conserve free quota
     allowUrls: [/\.vercel\.app/],
   });
-});
+}
 if (DEPLOYED) {
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   const va = document.createElement('script');

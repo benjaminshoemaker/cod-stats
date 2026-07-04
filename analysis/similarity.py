@@ -66,7 +66,7 @@ def merge_path_features(players, path_json=None):
                 if v is not None:
                     p.setdefault(k, v)
         # era-neutral tenure: YEARS per team (not majors/team, which is era-biased)
-        dt, sp = p.get("distinct_teams"), p.get("spanAll")
+        dt, sp = p.get("distinct_teams"), p.get("careerSpan")
         if dt and sp is not None:
             p["tenure_years"] = round(sp / dt, 2)
     return players, hit
@@ -171,9 +171,12 @@ class FeatureSpace:
     def contributions(self, i, k):
         """Per-feature share of the distance between i and k (for explanations)."""
         both = self.present[i] & self.present[k]
-        diff = np.abs(self.scaled[i] - self.scaled[k])
+        if not both.any():
+            return []
+        diff = np.abs(self.scaled[i, both] - self.scaled[k, both])
         d = np.minimum(diff / self.cap, 1.0)
-        contrib = self.weights * d * both
+        contrib = np.zeros_like(self.weights)
+        contrib[both] = self.weights[both] * d
         tot = contrib.sum() or 1.0
         order = np.argsort(-contrib)
         return [(self.labels[j], round(float(contrib[j] / tot), 3))
@@ -309,10 +312,39 @@ SITE_GROUPS = [
     ("Placement", [("finals_rate", "Finals rate", "pct"),
                    ("deep_run_rate", "Deep-run rate", "pct")]),
     ("Longevity", [("titlesAll", "Distinct titles", "int"),
-                   ("spanAll", "Career span", "int")]),
+                   ("careerSpan", "Career span", "int")]),
     ("Path", [("distinct_teams", "Teams played for", "int"),
               ("tenure_years", "Avg tenure (yrs)", "dec1")]),
 ]
+
+
+def shared_percentiles(col):
+    """0-100 percentile ranks where equal raw values share one rank.
+
+    Using the average rank for ties keeps identical displayed metrics from
+    being classified differently in the player-page comparison table.
+    """
+    ok = ~np.isnan(col)
+    vals = col[ok]
+    out = np.full(len(col), np.nan)
+    n = len(vals)
+    if n == 0:
+        return out
+    if n == 1:
+        out[np.where(ok)[0][0]] = 100.0
+        return out
+    order = np.argsort(vals, kind="mergesort")
+    sorted_vals = vals[order]
+    ranks = np.empty(n)
+    start = 0
+    while start < n:
+        end = start + 1
+        while end < n and sorted_vals[end] == sorted_vals[start]:
+            end += 1
+        ranks[order[start:end]] = (start + end - 1) / 2
+        start = end
+    out[np.where(ok)[0]] = ranks / (n - 1) * 100
+    return out
 
 
 def emit_site(fs, D, C, players, k_solo=6):
@@ -325,10 +357,7 @@ def emit_site(fs, D, C, players, k_solo=6):
                       for f in fs.feats] for i in range(n)], float)
     pct = np.full_like(raw, np.nan)
     for j in range(raw.shape[1]):
-        col = raw[:, j]; ok = ~np.isnan(col)
-        order = col[ok].argsort(); r = np.empty(ok.sum()); r[order] = np.arange(ok.sum())
-        pv = np.full(n, np.nan); pv[np.where(ok)[0]] = r / (ok.sum() - 1) * 100
-        pct[:, j] = pv
+        pct[:, j] = shared_percentiles(raw[:, j])
 
     def comps_list(i, solo):
         out = []

@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/og">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
-<script defer src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
   .sig{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
@@ -92,23 +92,24 @@ function bars(rows){
   </div>`).join('');
 }
 const TOP=6;
-// Top N of a sorted list, extended through any tie at the cut, so source-data
-// order can never decide who makes a board (e.g. two 11-year careers both show
-// or both don't).
+// Top N of a sorted list, extended through any tie at the displayed cut value,
+// so source-data order and sub-decimal float noise cannot decide the board.
 function cut(rows, key, n=TOP){
   const out=rows.slice(0,n);
-  for(let i=n;i<rows.length && key(rows[i])===key(out[out.length-1]);i++) out.push(rows[i]);
+  if(!out.length) return out;
+  const cutVal=key(out[out.length-1]);
+  for(let i=n;i<rows.length && key(rows[i])===cutVal;i++) out.push(rows[i]);
   return out;
 }
 
 // ---- 1. Ring merchants & the uncrowned ----------------------------------
 const merchants=cut(LB.filter(r=>r.champs>=2)
   .map(r=>({name:r.name, rate:r.champs/r.adjAll, champs:r.champs, adj:r.adjAll}))
-  .sort((a,b)=>b.rate-a.rate), r=>r.rate)
+  .sort((a,b)=>b.rate-a.rate), r=>Number(r.rate.toFixed(2)))
   .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2),
             sub:`${r.champs} rings / ${r.adj.toFixed(1)} adj`}));
 const uncrowned=cut(LB.filter(r=>r.champs===0)
-  .sort((a,b)=>b.adjAll-a.adjAll), r=>r.adjAll)
+  .sort((a,b)=>b.adjAll-a.adjAll), r=>Number(r.adjAll.toFixed(1)))
   .map(r=>({name:r.name, bar:r.adjAll, val:r.adjAll.toFixed(1), sub:`${r.raw} raw`, alt:true}));
 
 // ---- 2. Compressed dominance --------------------------------------------
@@ -117,20 +118,20 @@ const uncrowned=cut(LB.filter(r=>r.champs===0)
 // long players actually competed and over-rated short winning windows.
 const density=cut(LB.filter(r=>r.adjAll>=4 && r.careerSpan>=2)
   .map(r=>({name:r.name, rate:r.adjAll/r.careerSpan, adj:r.adjAll, y:r.careerSpan}))
-  .sort((a,b)=>b.rate-a.rate), r=>r.rate)
+  .sort((a,b)=>b.rate-a.rate), r=>Number(r.rate.toFixed(2)))
   .map(r=>({name:r.name, bar:r.rate, val:r.rate.toFixed(2), sub:`${r.adj.toFixed(1)} adj / ${r.y}y`}));
 
 // ---- 3. Prodigies & late bloomers ---------------------------------------
 const fl=LB.map(r=>{const f=frontload(r); return f?{name:r.name, v:f.v, n:f.n,
     range:`${r.firstPlayed}–${r.lastPlayed}`}:null;}).filter(Boolean);
-const prodigies=cut([...fl].sort((a,b)=>a.v-b.v), r=>r.v)
+const prodigies=cut([...fl].sort((a,b)=>a.v-b.v), r=>Number(r.v.toFixed(2)), 5)
   .map(r=>({name:r.name, bar:0.5-r.v, val:r.v.toFixed(2), sub:r.range}));
-const bloomers=cut([...fl].sort((a,b)=>b.v-a.v), r=>r.v)
+const bloomers=cut([...fl].sort((a,b)=>b.v-a.v), r=>Number(r.v.toFixed(2)), 5)
   .map(r=>({name:r.name, bar:r.v-0.5, val:r.v.toFixed(2), sub:r.range, alt:true}));
 
 // ---- 4. The long careers -------------------------------------------------
 // Career length = first major entered to last, from participation (won or not).
-const careers=cut([...LB].sort((a,b)=>b.careerSpan-a.careerSpan), r=>r.careerSpan)
+const careers=cut([...LB].sort((a,b)=>b.careerSpan-a.careerSpan), r=>r.careerSpan, 7)
   .map(r=>({name:r.name, bar:r.careerSpan, val:`${r.careerSpan}y`,
             sub:`${r.firstPlayed}–${r.lastPlayed}`}));
 
