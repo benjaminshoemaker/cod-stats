@@ -46,6 +46,17 @@ const ENTRIES = [
    page scope: adjusted wins, tournament/source rules, tracker differences, and optional ring weighting. Player pages now
    group the season-share table and opportunity chart under a broader adjusted-wins explainer so the per-player math has
    context before the details.`},
+  {date:'2026-07-04', tag:'New', title:'Player honors',
+   body:`Player pages now include an <strong>Honors</strong> section sourced from the CoD Esports Wiki awards table:
+   Champs/Event MVPs, Season MVP, Rookie of the Year, CDL First/Second Team, and CWL All-Star selections. The section is
+   source-linked, kept separate from the era-adjusted wins metric, and presented as profile context rather than a GOAT score input.
+   The copy notes that early-era award coverage is incomplete and non-standardized, so missing honors do not imply a true zero.`},
+  {date:'2026-07-04', tag:'New', title:'Curated player roles',
+   body:`Player pages, the compare page, and an optional leaderboard column now show curated primary roles
+   (<strong>AR</strong>, <strong>Flex</strong>, or <strong>SMG</strong>) by season. The labels were added manually,
+   with older VOD research used for players whose historical roles were less obvious. Role data is also a small input
+   to Similar players, comparing only overlapping seasons with known roles so unknown seasons are not guessed.
+   Every player-season role row includes a dispute link that opens a GitHub issue form requiring evidence.`},
   {date:'2026-07-04', tag:'Fixed', title:'Expanded leaderboard columns fit on desktop',
    body:`The leaderboard now keeps the ring-weighted, Events placed, and Average placement columns visible on desktop
    without hiding right-side headers behind a bottom-only horizontal scroll. Header labels can wrap cleanly, and numeric

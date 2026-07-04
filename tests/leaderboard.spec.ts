@@ -22,15 +22,19 @@ test.describe('leaderboard', () => {
 
   test('placement columns are opt-in and shareable', async ({ page }) => {
     await page.goto('/index.html');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="primaryRole"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeHidden();
 
     await page.locator('#colmenu .colmenu-btn').click();
+    await page.locator('.colmenu-panel input[data-field="primaryRole"]').check();
     await page.locator('.colmenu-panel input[data-field="eventsPlaced"]').check();
     await page.locator('.colmenu-panel input[data-field="avgPlace"]').check();
-    await expect(page).toHaveURL(/show=eventsPlaced%2CavgPlace|show=eventsPlaced,avgPlace/);
+    await expect(page).toHaveURL(/show=primaryRole%2CeventsPlaced%2CavgPlace|show=primaryRole,eventsPlaced,avgPlace/);
+    await expect(page.locator('#table .tabulator-col[tabulator-field="primaryRole"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeVisible();
+    await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Scump' }).locator('.pill.role-smg')).toHaveText('SMG');
 
     await page.goto('/index.html?show=eventsPlaced,avgPlace');
     const fields = await page.$$eval(
@@ -280,10 +284,12 @@ test.describe('column selector', () => {
     await page.goto('/index.html?hide=champs,peak');
     await expect(page.locator('#table .tabulator-col[tabulator-field="champs"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="peak"]')).toBeHidden();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="primaryRole"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="adjusted"]')).toBeVisible();
     await page.locator('#colmenu .colmenu-btn').click();
     await expect(page.locator('.colmenu-panel input[data-field="champs"]')).not.toBeChecked();
+    await expect(page.locator('.colmenu-panel input[data-field="primaryRole"]')).not.toBeChecked();
     await expect(page.locator('.colmenu-panel input[data-field="avgPlace"]')).not.toBeChecked();
     await expect(page.locator('.colmenu-panel input[data-field="adjusted"]')).toBeChecked();
   });
@@ -488,6 +494,10 @@ test.describe('pages', () => {
   test('player page links to the wiki and toggles wins vs every major entered', async ({ page }) => {
     await page.goto('/player.html?p=Scump');
     await expect(page.locator('a[href="https://cod-esports.fandom.com/wiki/Scump"]')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Honors' })).toBeVisible();
+    await expect(page.locator('.honors-table')).toContainText('CWL All-Star');
+    await expect(page.locator('.honors-table')).toContainText('CWL Dallas Open 2017');
+    await expect(page.getByText('a blank list means no row in the current source set')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'How adjusted wins work for Scump' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Season-share buildup' })).toBeVisible();
     await expect(page.locator('#ml-title')).toHaveText(/Every major win \(28\)/);
@@ -498,6 +508,21 @@ test.describe('pages', () => {
     await page.locator('#team-summary').click();
     await expect(page.locator('#team-strip .team-badge').filter({ hasText: 'OpTic Texas' })).toBeVisible();
     await expect(page.locator('#team-strip img.team-logo[title="OpTic Texas"]')).toHaveJSProperty('naturalWidth', 48);
+    await expect(page.getByRole('heading', { name: 'Primary role by season' })).toBeVisible();
+    const rolePosition = await page.evaluate(() => {
+      const major = document.querySelector('#ml-title')!;
+      const honors = Array.from(document.querySelectorAll('h2')).find(h => h.textContent === 'Honors')!;
+      const role = Array.from(document.querySelectorAll('h2')).find(h => h.textContent === 'Primary role by season')!;
+      const similar = document.querySelector('#similar')!;
+      return Boolean(major.compareDocumentPosition(honors) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+        Boolean(honors.compareDocumentPosition(role) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+        Boolean(role.compareDocumentPosition(similar) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(rolePosition).toBe(true);
+    const bo2Role = page.locator('.role-table tbody tr').filter({ hasText: 'Black Ops 2' }).locator('td').nth(1);
+    await expect(bo2Role.locator('.pill.role-smg')).toHaveText('SMG');
+    await expect(bo2Role.getByRole('link', { name: 'Dispute' }))
+      .toHaveAttribute('href', /template=role_dispute\.yml/);
     await expect(page.locator('#winlist .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
     await expect(page.locator('#winlist img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
     const winRows = await page.locator('#winlist tr').count();
@@ -533,10 +558,10 @@ test.describe('pages', () => {
 
   test('similar player detail can compare both players', async ({ page }) => {
     await page.goto('/player.html?p=Shotzzy');
-    await page.locator('.sim-row[data-comp="Cellium"]').click();
+    await page.locator('.sim-row[data-comp="Simp"]').click();
     await page.getByRole('link', { name: 'compare both →' }).click();
-    await expect(page).toHaveURL(/compare\.html\?p=Shotzzy&p=Cellium/);
-    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'Cellium']);
+    await expect(page).toHaveURL(/compare\.html\?p=Shotzzy&p=Simp/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'Simp']);
   });
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
@@ -581,6 +606,7 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-card')).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody th')).toContainText([
       'Adjusted wins',
+      'Role',
       'Champs',
       'Peak',
       'Eras',
@@ -591,6 +617,7 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary tbody th', { hasText: 'Raw wins' })).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody th', { hasText: 'Post-BO2 adjusted' })).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' })).not.toContainText(/▲|▼/);
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Role' }).locator('.pill.role-smg')).toHaveCount(2);
     await expect(page.locator('.compare-summary .summary-meter')).toHaveCount(14);
     const adjustedScores = await page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('td').evaluateAll(
       els => els.map(el => getComputedStyle(el).getPropertyValue('--summary-score').trim()),
@@ -604,6 +631,9 @@ test.describe('compare page', () => {
     const bo7Heat = await bo7.locator('td.season-heat').first().evaluate(el => getComputedStyle(el).getPropertyValue('--heat').trim());
     expect(bo7Heat).toMatch(/%$/);
     await expect(bo7.locator('.season-teams .team-badge').filter({ hasText: 'OpTic Texas' })).toBeVisible();
+    await expect(bo7.locator('.season-role .pill.role-smg').first()).toHaveText('SMG');
+    await expect(bo7.locator('.season-role').first().getByRole('link', { name: 'Dispute' }))
+      .toHaveAttribute('href', /template=role_dispute\.yml/);
     await expect(bo7.locator('img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
     const mw19 = page.locator('#season-table tbody tr', { hasText: 'Modern Warfare' });
     await expect(mw19.locator('.season-teams .team-badge').filter({ hasText: 'Dallas Empire' })).toBeVisible();
@@ -617,6 +647,7 @@ test.describe('compare page', () => {
     await expect(page).toHaveURL(/rows=/);
     await expect(page.locator('.compare-summary tbody th')).toContainText([
       'Adjusted wins',
+      'Role',
       'Raw wins',
       'Champs',
       'Peak',
@@ -649,10 +680,10 @@ test.describe('compare page', () => {
 
   test('similar-player suggestions add players to the comparison', async ({ page }) => {
     await page.goto('/compare.html?p=Shotzzy&p=HyDra');
-    await expect(page.locator('.suggestion-btn[data-add="Cellium"]')).toBeVisible();
-    await page.locator('.suggestion-btn[data-add="Cellium"]').click();
-    await expect(page).toHaveURL(/p=Cellium/);
-    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Cellium']);
+    await expect(page.locator('.suggestion-btn[data-add="Simp"]')).toBeVisible();
+    await page.locator('.suggestion-btn[data-add="Simp"]').click();
+    await expect(page).toHaveURL(/p=Simp/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Simp']);
   });
 
   test('season matrix remains horizontally scrollable on mobile', async ({ page }) => {

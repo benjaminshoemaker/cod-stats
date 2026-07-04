@@ -130,6 +130,49 @@ def test_championships_known_values_and_all_modern(data):
             assert ev["year"] >= "2013"
 
 
+def test_formal_accolades_are_normalized_for_player_pages(data):
+    simp = data["players"]["Simp"]["honors"]
+    assert any(h["type"] == "champs_mvp"
+               and h["event"] == "Call of Duty World League Championship 2019"
+               and h["label"] == "Champs MVP"
+               for h in simp)
+    assert any(h["type"] == "season_mvp"
+               and h["event"] == "Call of Duty League 2024 Season"
+               and h["year"] == "2024"
+               for h in simp)
+    assert any(h["type"] == "cdl_first_team"
+               and h["event"] == "Call of Duty League 2025 Season"
+               and h["year"] == "2025"
+               for h in simp)
+
+    scump = data["players"]["Scump"]["honors"]
+    assert any(h["type"] == "cwl_all_star" for h in scump)
+    assert any(h["type"] == "event_mvp" and h["event"] == "CWL Dallas Open 2017" for h in scump)
+
+    clayster = data["players"]["Clayster"]["honors"]
+    assert any(h["type"] == "champs_mvp"
+               and h["event"] == "Call of Duty Championship 2015"
+               for h in clayster)
+
+
+def test_accolades_keep_formal_boundary(data):
+    allowed = {
+        "event_mvp", "champs_mvp", "grand_finals_mvp", "season_mvp",
+        "rookie_of_the_year", "cdl_first_team", "cdl_second_team", "cwl_all_star",
+    }
+    for name, pl in data["players"].items():
+        for h in pl["honors"]:
+            assert h["type"] in allowed, name
+            assert h["sourceTier"] in {1, 2}
+            assert h["source"]
+            assert h["sourceUrl"].startswith("https://")
+            assert "Breaking_Point_Awards" not in h["sourceUrl"]
+            assert "Top 20" not in h["label"]
+            assert "KDR" not in h and "kdr" not in h
+            assert h["game"] not in build_data.DROP_GAMES
+            assert h["event"] not in build_data.DROP_EVENTS
+
+
 def test_abezy_and_illey_not_zeroed(data):
     # regression guard for the case-insensitive join bug (ABeZy vs aBeZy)
     for name in ("aBeZy", "iLLeY"):
@@ -219,6 +262,75 @@ def test_game_events_include_full_winner_team_for_logos(data):
     major4 = next(e for e in bo7["events"] if e["event"] == "Call of Duty League 2026 - Major 4")
     assert major4["winner"] == "OTX"
     assert major4["winnerTeam"] == "OpTic Texas"
+
+
+def test_skill_stats_aggregate_kills_deaths_snd_and_respawn(monkeypatch, tmp_path):
+    import shutil
+    for f in (
+        "major_events.json",
+        "player_event_wins.json",
+        "champs_wins.json",
+        "player_participation.json",
+        "team_participation.json",
+    ):
+        shutil.copy(build_data._p(f), tmp_path / f)
+    rows = [
+        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Search and Destroy", "Kills": "9", "Deaths": "6"},
+        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "24", "Deaths": "20"},
+        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Capture the Flag", "Kills": "18", "Deaths": "17"},
+        {"Player": "Scump", "Event": "Synthetic Future", "Game": "Black Ops 7",
+         "Date": "2999-01-01", "Mode": "Hardpoint", "Kills": "99", "Deaths": "1"},
+        {"Player": "NotARealPlayer", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "99", "Deaths": "1"},
+    ]
+    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+
+    built = build_data.build()
+    stats = built["players"]["Scump"]["skillStats"]
+    assert stats["overall"] == {"kills": 51, "deaths": 43, "interactions": 94, "maps": 3, "kd": 1.186}
+    assert stats["splits"]["snd"] == {"kills": 9, "deaths": 6, "interactions": 15, "maps": 1, "kd": 1.5}
+    assert stats["splits"]["respawn"] == {"kills": 42, "deaths": 37, "interactions": 79, "maps": 2, "kd": 1.135}
+    assert stats["modes"]["Hardpoint"]["maps"] == 1
+    assert stats["coverage"]["events"] == 1
+    assert stats["coverage"]["firstDate"] == "2013-01-01"
+    assert stats["coverage"]["lastDate"] == "2013-01-01"
+    assert built["players"]["Crimsix"]["skillStats"] is None
+
+
+def test_player_stats_source_is_slimmed_to_reproducible_kill_death_rows():
+    from scripts.fetch_source import slim_player_stat_rows
+
+    rows = [
+        {"Player": "Scump", "PlayerName": "Scump", "PlayerLink": "Scump",
+         "Event": "Synthetic Stats", "Game": "Black Ops 2", "Mode": "Hardpoint",
+         "Date": "2013-01-01", "Team": "OpTic Gaming", "TeamVs": "coL",
+         "Map": "Raid", "SeriesId": "abc", "Kills": "24", "Deaths": "20",
+         "HPTime": "120", "SDFirstKill": "0"},
+        {"Player": "Mak", "Event": "Synthetic Blank", "Game": "Black Ops",
+         "Date": "2011-01-01", "Mode": "", "Kills": "", "Deaths": ""},
+        {"Player": "Tobi", "Event": "Synthetic Partial", "Game": "Black Ops",
+         "Date": "2011-01-01", "Mode": "", "Kills": "5", "Deaths": ""},
+    ]
+
+    assert slim_player_stat_rows(rows) == [{
+        "Player": "Scump",
+        "PlayerName": "Scump",
+        "PlayerLink": "Scump",
+        "Event": "Synthetic Stats",
+        "Game": "Black Ops 2",
+        "Mode": "Hardpoint",
+        "Date": "2013-01-01",
+        "Team": "OpTic Gaming",
+        "TeamVs": "coL",
+        "Map": "Raid",
+        "SeriesId": "abc",
+        "Kills": 24,
+        "Deaths": 20,
+    }]
 
 
 def test_curated_primary_roles_emit_by_active_game(data):
@@ -313,6 +425,9 @@ def test_recent_curated_unknowns_now_have_roles(data):
         "Dedo": "AR",
         "Frosty": "AR",
         "Mack": "Flex",
+        "GunShy": "AR",
+        "Tommey": "SMG",
+        "NAMELESS": "AR",
     }
     for name, role in expected.items():
         assert data["players"][name]["primary_role"] == role
@@ -332,7 +447,7 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
     monkeypatch.setattr(build_data, "HERE", str(tmp_path))
-    events_all, events, pwins, champs_rows, ppart, _ = build_data.load_sources()
+    events_all, events, pwins, champs_rows, ppart, *_ = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
     _, part_rows = build_data.index_participation(ppart, top)
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["place"] == "3-4"

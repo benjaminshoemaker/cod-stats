@@ -42,6 +42,12 @@ if(!p || !lb){
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
   const avgPlace = p.avg_place == null ? '–' : p.avg_place.toFixed(1);
   const compareHref = `compare.html?p=${encodeURIComponent(p.name)}`;
+  const profileRole = roleSummary(p);
+  const roleTable = (p.role_by_game || []).map(r => `<tr>
+      <td>${gameLink(r.game)}</td>
+      <td><span class="role-cell">${rolePill(r.role)} ${roleDisputeLink(p.name, r.game, r.role)}</span></td>
+      <td class="n">${r.year || ''}</td>
+    </tr>`).join('');
   const teamLogo = team => {
     const logo = D.teamLogos && D.teamLogos[team];
     return logo && logo.src
@@ -56,6 +62,21 @@ if(!p || !lb){
       </button>
       <div class="team-strip" id="team-strip" hidden aria-label="${esc(p.name)} teams">${teams.map(t=>teamBadge(t)).join('')}</div>
     </div>` : '';
+  const honors = p.honors || [];
+  const honorsRows = honors.map(h=>`<tr>
+      <td><span class="pill tag">${esc(h.label)}</span></td>
+      <td>${esc(h.event)}${h.game?`<div class="small faint">${esc(h.game)}</div>`:''}</td>
+      <td class="n">${esc(h.year)}</td>
+      <td><a href="${esc(h.sourceUrl)}" target="_blank" rel="noopener">${esc(h.source)} ↗</a></td>
+    </tr>`).join('');
+  const honorsSection = `<section class="honors-block">
+      <h2>Honors</h2>
+      <p class="small muted">MVP, All-Star, All-Pro and Rookie/Player of the Year recognition from the CoD Esports Wiki awards table. This is profile context only, not part of the era-adjusted score. Early-era award coverage is incomplete and non-standardized, so a blank list means no row in the current source set, not necessarily zero career honors.</p>
+      ${honors.length ? `<div class="scroll-x"><table class="data honors-table">
+        <thead><tr><th>Award</th><th>Event or season</th><th class="n">Year</th><th>Source</th></tr></thead>
+        <tbody>${honorsRows}</tbody>
+      </table></div>` : '<p class="small faint">No honors found in the current source set.</p>'}
+    </section>`;
 
   root.innerHTML = `
     <p class="crumb"><a href="index.html">← Leaderboard</a></p>
@@ -70,6 +91,7 @@ if(!p || !lb){
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat"><div class="k">Events placed</div><div class="v">${p.events_placed}</div><div class="small faint">counted major finishes</div></div>
       <div class="stat"><div class="k">Average placement</div><div class="v">${avgPlace}</div><div class="small faint">lower is better</div></div>
+      <div class="stat"><div class="k">Primary role</div><div class="v sm">${rolePill(profileRole)}</div><div class="small faint">${profileRole==='Mixed'?'varies by season':'curated'}</div></div>
       <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
       <div class="stat"><div class="k">Peak season</div><div class="v" id="tile-peak">${Math.round(p.peak_all.wins/p.peak_all.majors*100)}%</div>
         <div class="small faint" id="tile-peak-sub">&nbsp;</div></div>
@@ -80,7 +102,6 @@ if(!p || !lb){
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
     ${p.note?`<div class="note" style="margin-top:var(--space-2);background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
-
     <section class="adjusted-explainer">
       <h2>How adjusted wins work for ${esc(p.name)}</h2>
       <p class="lede">Adjusted wins measure how much of each season's available majors this player won. Each season gets
@@ -108,6 +129,17 @@ if(!p || !lb){
     </div>
     <div class="scroll-x"><table class="data"><tbody id="winlist"></tbody></table></div>
     <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
+
+    ${honorsSection}
+
+    <section>
+      <h2>Primary role by season</h2>
+      <p class="small muted">Roles are curated as AR, Flex, or SMG. Unknown or disputed seasons can be challenged with evidence.</p>
+      <div class="scroll-x"><table class="data role-table">
+        <thead><tr><th>Season</th><th>Role</th><th class="n">Year</th></tr></thead>
+        <tbody>${roleTable || '<tr><td colspan="3" class="small faint">No role rows available.</td></tr>'}</tbody>
+      </table></div>
+    </section>
 
     <section id="similar"></section>
   `;
@@ -258,6 +290,7 @@ function mountSimilar(name){
           <li><strong>Placement</strong> — how often they reached a final (top&#8209;2) or a top&#8209;4. Held at low weight, since bracket sizes differ by era.</li>
           <li><strong>Longevity</strong> — distinct titles won and career span in years.</li>
           <li><strong>Career path</strong> — teams played for and average years per team.</li>
+          <li><strong>Role</strong> — a small season-overlap adjustment for AR/Flex/SMG similarity; unknown seasons are ignored.</li>
         </ul>
         <p><strong>Everything is era-independent by design.</strong> Each stat is either era-adjusted,
         a rate, or a count of years, so a 2013 career and a 2023 career meet on equal footing.

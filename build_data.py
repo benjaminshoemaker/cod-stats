@@ -25,6 +25,26 @@ DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 #    Majors + Champs + EWC). Flagged by u/BcDownes on r/CoDCompetitive, 2026-07.
 DROP_EVENTS = {'Call of Duty Challengers Finals 2026'}
 VALID_PRIMARY_ROLES = {'AR', 'Flex', 'SMG', 'Unknown'}
+FORMAL_ACCOLADE_TYPES = {
+    'Event MVP',
+    'Grand Finals MVP',
+    'Season MVP',
+    'Rookie of the Year',
+    'CDL First Team',
+    'CDL Second Team',
+    'CWL All-Star',
+}
+ACCOLADE_LABELS = {
+    'event_mvp': 'Event MVP',
+    'champs_mvp': 'Champs MVP',
+    'grand_finals_mvp': 'Grand Finals MVP',
+    'season_mvp': 'Season MVP',
+    'rookie_of_the_year': 'Rookie of the Year',
+    'cdl_first_team': 'CDL First Team',
+    'cdl_second_team': 'CDL Second Team',
+    'cwl_all_star': 'CWL All-Star',
+}
+ACCOLADE_SOURCE_TIER = 2
 
 # A player's share divides by what a team *could win* that season, which is not
 # always the number of majors played so far:
@@ -81,7 +101,7 @@ def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVEN
 def load_sources():
     """Load the four wiki source files, restricted to the console-major universe
     (DROP_GAMES / DROP_EVENTS out; wins on/before ASOF). Returns
-    (events_all, events, pwins, champs_rows, ppart, tpart) — events_all keeps
+    (events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats) — events_all keeps
     future-dated scheduled majors for in-progress denominators; ppart is
     filtered per-row later (it also needs the DNS/place rules)."""
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
@@ -89,11 +109,15 @@ def load_sources():
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
     ppart  = json.load(open(_p('player_participation.json')))  # [{Player,Event,Game,Date,Place,...}] ALL placements
     tpart  = json.load(open(_p('team_participation.json')))    # [{Team,Event,Game,Place}] ALL team placements
+    apath = _p('player_accolades.json')
+    accolades = json.load(open(apath)) if os.path.exists(apath) else []
+    spath = _p('player_stats.json')
+    player_stats = json.load(open(spath)) if os.path.exists(spath) else []
 
     events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
     events = [e for e in events_all if _played(e.get('Date'))]
     pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
-    return events_all, events, pwins, champs_rows, ppart, tpart
+    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats
 
 
 def season_context(events, events_all):
@@ -227,6 +251,187 @@ def index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins):
             if ce['event'] not in won:
                 raise RuntimeError(f"champ event not among {disp_by_mkey[mk]}'s major wins: {ce['event']!r}")
     return champs_by
+
+
+def _wiki_url(page):
+    return 'https://cod-esports.fandom.com/wiki/' + urllib_quote(page)
+
+
+def urllib_quote(page):
+    from urllib.parse import quote
+    return quote(str(page or '').replace(' ', '_'), safe='/')
+
+
+def is_champs_event(event):
+    return bool(re.fullmatch(r'Call of Duty (?:World League |League )?Championship 20\d\d', event or ''))
+
+
+def accolade_type(row):
+    t = row.get('Type')
+    if t == 'Event MVP' and is_champs_event(row.get('Event') or row.get('Page')):
+        return 'champs_mvp'
+    return {
+        'Event MVP': 'event_mvp',
+        'Grand Finals MVP': 'grand_finals_mvp',
+        'Season MVP': 'season_mvp',
+        'Rookie of the Year': 'rookie_of_the_year',
+        'CDL First Team': 'cdl_first_team',
+        'CDL Second Team': 'cdl_second_team',
+        'CWL All-Star': 'cwl_all_star',
+    }.get(t)
+
+
+def accolade_year(row):
+    text = ' '.join(str(row.get(k) or '') for k in ('Page', 'Event'))
+    m = re.search(r'(?:^|/)20(\d\d) Season\b', text)
+    if m:
+        return '20' + m.group(1)
+    m = re.search(r'\b(20\d\d)\b', text)
+    if m:
+        return m.group(1)
+    return (row.get('Date') or '')[:4]
+
+
+def keep_accolade(row):
+    t = row.get('Type')
+    if t not in FORMAL_ACCOLADE_TYPES:
+        return False
+    if not row.get('Player') or not row.get('Page') or not row.get('Date'):
+        return False
+    if not _keep(row) or not _played(row.get('Date')):
+        return False
+    page = row.get('Page') or ''
+    if 'Breaking Point Awards' in page:
+        return False
+    if t in {'Event MVP', 'Grand Finals MVP'}:
+        return row.get('Tier') in {'Major', 'Premier'}
+    if t in {'Season MVP', 'Rookie of the Year', 'CDL First Team', 'CDL Second Team'}:
+        return bool(re.fullmatch(r'Call of Duty League/20\d\d Season', page))
+    if t == 'CWL All-Star':
+        return page.startswith('CWL/')
+    return False
+
+
+def index_accolades(rows, top50_mkeys):
+    """Normalize honors from the CoD Esports Wiki awards table.
+
+    Media rankings, Breaking Point awards, blank award types, minors, Warzone, and
+    Mobile rows stay in the raw source file but are deliberately not emitted here.
+    """
+    by_player = defaultdict(list)
+    for r in rows:
+        if not keep_accolade(r):
+            continue
+        player = r.get('PlayerLink') or r.get('Player')
+        mk = mkey(player)
+        if mk not in top50_mkeys:
+            continue
+        atype = accolade_type(r)
+        if not atype:
+            continue
+        event = r.get('Event') or r.get('Page') or ''
+        page = r.get('Page') or event
+        by_player[mk].append({
+            'type': atype,
+            'label': ACCOLADE_LABELS[atype],
+            'event': event,
+            'page': page,
+            'game': r.get('Game') or '',
+            'date': r.get('Date') or '',
+            'year': accolade_year(r),
+            'sourceTier': int(r.get('SourceTier') or ACCOLADE_SOURCE_TIER),
+            'source': r.get('Source') or 'CoD Esports Wiki',
+            'sourceUrl': r.get('SourceUrl') or _wiki_url(page),
+        })
+    for rows in by_player.values():
+        rows.sort(key=lambda r: (r['date'], r['label'], r['event']))
+    return by_player
+
+
+def _stat_int(value):
+    text = str(value if value is not None else '').strip().replace(',', '')
+    if not text or not re.fullmatch(r'-?\d+', text):
+        return None
+    return int(text)
+
+
+def _empty_stat_bucket():
+    return {'kills': 0, 'deaths': 0, 'maps': 0}
+
+
+def _add_stat(bucket, kills, deaths):
+    bucket['kills'] += kills
+    bucket['deaths'] += deaths
+    bucket['maps'] += 1
+
+
+def _finish_stat_bucket(bucket):
+    kills, deaths = bucket['kills'], bucket['deaths']
+    out = {'kills': kills, 'deaths': deaths, 'interactions': kills + deaths, 'maps': bucket['maps']}
+    out['kd'] = round(kills / deaths, 3) if deaths else None
+    return out
+
+
+def _is_snd_mode(mode):
+    text = str(mode or '').lower().replace('&', 'and')
+    return 'search' in text and 'destroy' in text
+
+
+def index_skill_stats(rows, top50_mkeys, S):
+    """Aggregate objective PlayerStats rows into simple, source-backed splits.
+
+    The stable cross-era denominator is map rows with kills/deaths. S&D gets its
+    own split; every other mode is grouped as respawn while remaining available
+    by individual mode for later UI detail.
+    """
+    work = {}
+    for r in rows:
+        player = r.get('Player') or r.get('PlayerLink') or r.get('PlayerName')
+        mk = mkey(player or '')
+        if mk not in top50_mkeys:
+            continue
+        if not _keep(r) or not _played(r.get('Date')):
+            continue
+        kills, deaths = _stat_int(r.get('Kills')), _stat_int(r.get('Deaths'))
+        if kills is None or deaths is None:
+            continue
+        mode = str(r.get('Mode') or r.get('Gamemode') or 'Unknown').strip() or 'Unknown'
+        split = 'snd' if _is_snd_mode(mode) else 'respawn'
+        row = work.setdefault(mk, {
+            'overall': _empty_stat_bucket(),
+            'splits': {'snd': _empty_stat_bucket(), 'respawn': _empty_stat_bucket()},
+            'modes': defaultdict(_empty_stat_bucket),
+            'events': set(),
+            'games': set(),
+            'dates': [],
+        })
+        _add_stat(row['overall'], kills, deaths)
+        _add_stat(row['splits'][split], kills, deaths)
+        _add_stat(row['modes'][mode], kills, deaths)
+        if r.get('Event'):
+            row['events'].add(r['Event'])
+        if r.get('Game'):
+            row['games'].add(r['Game'])
+        if r.get('Date'):
+            row['dates'].append(r['Date'])
+
+    out = {}
+    for mk, row in work.items():
+        dates = sorted(row['dates'])
+        games = sorted(row['games'], key=lambda g: S.order_idx.get(g, 999))
+        out[mk] = {
+            'source': 'CoD Esports Wiki PlayerStats',
+            'coverage': {
+                'firstDate': dates[0] if dates else None,
+                'lastDate': dates[-1] if dates else None,
+                'events': len(row['events']),
+                'games': games,
+            },
+            'overall': _finish_stat_bucket(row['overall']),
+            'splits': {k: _finish_stat_bucket(v) for k, v in row['splits'].items()},
+            'modes': {k: _finish_stat_bucket(v) for k, v in sorted(row['modes'].items())},
+        }
+    return out
 
 
 def load_role_stints():
@@ -427,6 +632,8 @@ def build_player(n, pub, S, idx):
            'placements': placements, 'events_placed': events_placed,
            'place_x2_sum': place_x2_sum, 'avg_place': avg_place,
            'teams': teams_of(all_majors),
+           'honors': idx.accolades_by.get(mk, []),
+           'skillStats': idx.skill_stats_by.get(mk),
            'note': PLAYER_NOTES.get(n)}
     rec['role_by_game'] = role_by_game(n, [r['game'] for r in all_majors], S, idx.role_stints)
     rec['primary_role'] = primary_role(rec['role_by_game'])
@@ -521,7 +728,7 @@ def build_meta(S, events):
 def build():
     """Compute the full APP_DATA dict. Raises RuntimeError if any player's
     reconstructed wins do not equal their published wiki total."""
-    events_all, events, pwins, champs_rows, ppart, tpart = load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats = load_sources()
     S = season_context(events, events_all)
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
@@ -532,6 +739,8 @@ def build():
         part_dates=part_dates, part_rows=part_rows,
         player_wins=player_wins, wiki_name=wiki_name,
         champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins),
+        accolades_by=index_accolades(accolades, top50_mkeys),
+        skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S),
         role_stints=index_role_stints(load_role_stints(), disp_by_mkey, S))
 
     players_out = {}   # keyed by display name (what player.html / leaderboard links use)
