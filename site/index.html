@@ -48,7 +48,7 @@
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
-  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Wins Δ = adjusted − raw · Raw # = rank by raw wins</p>
+  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Avg place = mean finish across included majors · Raw # = rank by raw wins</p>
   <div id="table"></div>
 
   <div class="legend">
@@ -90,7 +90,7 @@ const searchInput = document.getElementById("search");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','adjWeighted','peak','eras','raw','winsChange','rawRank','delta','champs']);
+const VALID = new Set(['adjRank','name','adjusted','adjWeighted','peak','eras','raw','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs']);
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
@@ -111,6 +111,8 @@ const COLS = [
   {field:'adjRank',   label:'Rank'},
   {field:'adjusted',  label:'Adjusted'},
   {field:'raw',       label:'Raw wins'},
+  {field:'eventsPlaced',label:'Events placed'},
+  {field:'avgPlace',  label:'Average placement'},
   {field:'winsChange',label:'Wins Δ'},
   {field:'rawRank',   label:'Raw rank'},
   {field:'delta',     label:'Rank Δ'},
@@ -119,13 +121,18 @@ const COLS = [
   {field:'champs',    label:'Champs'},
 ];
 const COL_FIELDS = new Set(COLS.map(c=>c.field));
-const startHide = new Set((params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)));
+const DEFAULT_HIDE = new Set(['eventsPlaced','avgPlace']);
+const startHide = new Set([
+  ...Array.from(DEFAULT_HIDE).filter(f => !(params.get('show') || '').split(',').includes(f)),
+  ...(params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)),
+]);
 
 // On phones, keep every column reachable via horizontal scroll instead of hiding them.
 const mq = window.matchMedia('(max-width: 760px)');
 
 const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
 const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
+const placeFmt  = c=>{const v=c.getValue(); return v==null?'<span class="faint">–</span>':v.toFixed(1);};
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
@@ -135,33 +142,38 @@ const buildColumns = M => [
     {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
-      : {title:"Player", field:"name", minWidth:160, widthGrow:3, sorter:"string", formatter:playerFmt},
-    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:116, minWidth:M?76:116, hozAlign:"right", headerHozAlign:"right",
+      : {title:"Player", field:"name", width:168, minWidth:168, sorter:"string", formatter:playerFmt},
+    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:128, minWidth:M?76:128, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
-    {title:M?"+◆":"Adj +◆", field:"adjWeighted", width:M?80:120, minWidth:M?80:120, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"+◆":"Adj +◆", field:"adjWeighted", width:M?80:124, minWidth:M?80:124, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", visible: ringN>1,
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
       headerTooltip:"Adjusted wins with the championship weighting applied (a ring counts as N majors)"},
-    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:124, minWidth:M?76:124, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:120, minWidth:M?76:120, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
-    {title:M?"Wins Δ":"Wins Δ", field:"winsChange", width:M?92:104, minWidth:M?92:104, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Events":"Events placed", field:"eventsPlaced", width:M?86:152, minWidth:M?86:152, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", headerTooltip:"Included majors where this player has a counted placement"},
+    {title:M?"Avg plc":"Average placement", field:"avgPlace", width:M?88:188, minWidth:M?88:188, hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:placeFmt,
+      headerTooltip:"Mean finish across included majors. Tied ranges use their midpoint."},
+    {title:M?"Wins Δ":"Wins Δ", field:"winsChange", width:M?92:112, minWidth:M?92:112, hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Adjusted wins minus raw wins", formatter:c=>changePill(c.getValue(), true)},
-    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:124, minWidth:M?84:124, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:120, minWidth:M?84:120, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
-    {title:M?"Rank Δ":"Rank Δ", field:"delta", width:M?92:104, minWidth:M?92:104, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Rank Δ":"Rank Δ", field:"delta", width:M?92:112, minWidth:M?92:112, hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Movement vs raw rank", formatter:c=>changePill(c.getValue(), false)},
-    {title:"Peak", field:"peak", width:M?76:104, minWidth:M?76:104, hozAlign:"right", headerHozAlign:"right",
+    {title:"Peak", field:"peak", width:M?76:96, minWidth:M?76:96, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Most dominant season: % of that season's majors won",
       tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors)`:'';},
       formatter:c=>{const i=c.getRow().getData().peakInfo; return (i&&i.majors)?`${Math.round(i.wins/i.majors*100)}%`:'<span class="faint">–</span>';}},
-    {title:"Eras", field:"eras", width:M?76:92, minWidth:M?76:92, hozAlign:"right", headerHozAlign:"right",
+    {title:"Eras", field:"eras", width:M?76:96, minWidth:M?76:96, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Distinct CoD titles with a major win (longevity)",
       tooltip:(e,cell)=>{const d=cell.getRow().getData();
         return d.firstYear ? `won majors in ${d.eras} CoD titles · career ${d.firstYear}–${d.lastYear}` : 'no majors in the included seasons';}},
-    {title:"Champs", field:"champs", width:M?96:106, minWidth:M?96:106, hozAlign:"right", headerHozAlign:"right",
+    {title:"Champs", field:"champs", width:M?96:112, minWidth:M?96:112, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
 ];
@@ -188,7 +200,11 @@ function syncURL(){
   const q = searchInput.value.trim();
   if(q) p.set('q', q);
   const hidden = COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field);
-  if(hidden.length) p.set('hide', hidden.join(','));
+  const hiddenSet = new Set(hidden);
+  const explicitHidden = hidden.filter(f=>!DEFAULT_HIDE.has(f));
+  const shownDefaults = Array.from(DEFAULT_HIDE).filter(f=>!hiddenSet.has(f));
+  if(explicitHidden.length) p.set('hide', explicitHidden.join(','));
+  if(shownDefaults.length) p.set('show', shownDefaults.join(','));
   const qs = p.toString();
   history.replaceState(null,'', qs ? ('?'+qs) : location.pathname);
   const clearBtn = document.getElementById('clearfilters');

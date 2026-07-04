@@ -133,6 +133,29 @@ def season_context(events, events_all):
 NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
 
 
+def place_x2(r):
+    """Return 2x the numeric placement so tied ranges keep exact .5 midpoints."""
+    place = str(r.get('Place') or '').strip().replace('*', '')
+    m = re.fullmatch(r'(\d+)\s*-\s*(\d+)', place)
+    if m:
+        return int(m.group(1)) + int(m.group(2))
+    m = re.fullmatch(r'>(\d+)', place)
+    if m:
+        return 2 * (int(m.group(1)) + 1)
+    if re.fullmatch(r'\d+', place):
+        return 2 * int(place)
+    pn = str(r.get('PlaceNumber') or '').strip()
+    if re.fullmatch(r'\d+', pn):
+        return 2 * int(pn)
+    return None
+
+
+def avg_place_from_x2(place_x2_sum, events):
+    if not events:
+        return None
+    return ((place_x2_sum * 100 + events) // (2 * events)) / 100
+
+
 def index_participation(ppart, top50_mkeys):
     """Career span from PARTICIPATION (every major entered, won or not), not just
     wins: first-win-to-last-win understates how long a player actually competed.
@@ -140,16 +163,24 @@ def index_participation(ppart, top50_mkeys):
     on/before ASOF) so a player who kept competing after their last win — e.g.
     BigTymeR played through 2014 but last won in 2012 — has an honest active
     span, and majors_played gives a real denominator for win rate."""
-    part_dates = defaultdict(list)
     part_rows = defaultdict(dict)   # mk -> {event: {event,game,date,place}} — every major entered (won or not)
     for r in ppart:
         if mkey(r['Player']) not in top50_mkeys: continue
         if not _keep(r) or not _played(r.get('Date')): continue
         if r.get('Place') in NONPLAY: continue
         k = mkey(r['Player'])
-        if r.get('Date'): part_dates[k].append(r['Date'])
-        part_rows[k].setdefault(r['Event'], {'event': r['Event'], 'game': r['Game'],
-                                             'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip()})
+        px2 = place_x2(r)
+        if px2 is None:
+            raise RuntimeError(f"unparseable placement for {r['Player']} at {r['Event']}: {r.get('Place')!r}")
+        row = {'event': r['Event'], 'game': r['Game'],
+               'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip(),
+               'placeX2': px2}
+        old = part_rows[k].get(r['Event'])
+        if old is None or row['placeX2'] < old['placeX2']:
+            part_rows[k][r['Event']] = row
+    part_dates = defaultdict(list)
+    for k, rows in part_rows.items():
+        part_dates[k] = [r['date'] for r in rows.values() if r.get('date')]
     return part_dates, part_rows
 
 
@@ -215,6 +246,23 @@ def span_of(slist):
     return (max(yrs) - min(yrs) + 1, min(yrs), max(yrs)) if yrs else (0, None, None)
 
 
+def placement_of(rows, S):
+    by_game = defaultdict(lambda: {'events': 0, 'placeX2Sum': 0})
+    for r in rows:
+        g = by_game[r['game']]
+        g['events'] += 1
+        g['placeX2Sum'] += r['placeX2']
+    placements = []
+    for g in sorted(by_game, key=lambda x: S.order_idx[x]):
+        v = by_game[g]
+        placements.append({'game': g, 'events': v['events'], 'placeX2Sum': v['placeX2Sum'],
+                           'avgPlace': avg_place_from_x2(v['placeX2Sum'], v['events'])})
+    events = sum(r['events'] for r in placements)
+    px2_sum = sum(r['placeX2Sum'] for r in placements)
+    avg = avg_place_from_x2(px2_sum, events)
+    return placements, events, px2_sum, avg
+
+
 def player_seasons(wins, S):
     """Group a player's (date-sorted) wins into per-season rows, chronological."""
     by_season = defaultdict(lambda: {'count': 0, 'events': []})
@@ -258,8 +306,10 @@ def build_player(n, pub, S, idx):
     seen_ev = {r['event'] for r in all_majors}
     for w in wins:
         if w['Event'] not in seen_ev:
-            all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '', 'place': '1', 'won': True})
+            all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '',
+                               'place': '1', 'placeX2': 2, 'won': True})
     all_majors.sort(key=lambda r: r['date'])
+    placements, events_placed, place_x2_sum, avg_place = placement_of(all_majors, S)
 
     rec = {'name': n, 'raw': pub, 'seasons': seasons,
            'wiki': idx.wiki_name.get(mk, n),
@@ -274,6 +324,8 @@ def build_player(n, pub, S, idx):
            'first_played': first_played, 'last_played': last_played,
            'first_played_date': first_pdate, 'last_played_date': last_pdate,
            'career_span': career_span, 'majors_played': majors_played,
+           'placements': placements, 'events_placed': events_placed,
+           'place_x2_sum': place_x2_sum, 'avg_place': avg_place,
            'note': PLAYER_NOTES.get(n)}
     return rec, all_majors, (share_all, share_post)
 
@@ -318,6 +370,7 @@ def build_leaderboard(players_out, exact_share):
             'firstPlayed': p['first_played'], 'lastPlayed': p['last_played'],
             'firstPlayedDate': p['first_played_date'], 'lastPlayedDate': p['last_played_date'],
             'careerSpan': p['career_span'], 'majorsPlayed': p['majors_played'],
+            'eventsPlaced': p['events_placed'], 'placeX2Sum': p['place_x2_sum'], 'avgPlace': p['avg_place'],
         })
     return leaderboard
 

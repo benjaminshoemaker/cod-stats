@@ -182,8 +182,21 @@ root.innerHTML=`
   adjusted numbers and ranks recompute for just those seasons. Excluding the sparse 2010–2012 pre-BO2 seasons (as few as
   3 tracked majors) is the "Post-BO2" preset.</div>
 
+  <h2>5. Average placement and events placed</h2>
+  <p><strong>Average placement</strong> is a consistency stat, not part of the era-adjusted wins formula. It answers:
+  when this player entered a counted major, where did their team usually finish? <strong>Events placed</strong> is the
+  denominator: the number of included majors with a counted finish for that player.</p>
+  <p>The source is the same normalized participation list used by the player page's <strong>Every major entered</strong>
+  view. A team finish is assigned to each rostered player, non-starts like DNS/DNP/DQ are excluded, and the tournament
+  universe is the same as the wins metric: console Major/Premier events on or before the as-of date, with Warzone/Mobile
+  and explicitly dropped non-pro events excluded.</p>
+  <p>Tied placement ranges use their midpoint: <span class="formula">5-6 → 5.5</span>,
+  <span class="formula">9-12 → 10.5</span>. If the wiki lists a player more than once in the same event because of an
+  open-event roster move, the best finish is used once. The leaderboard columns recompute with the Eras/title filter just
+  like adjusted wins, so a CDL-only view shows only CDL-era finishes.</p>
+
   <a id="data-source"></a>
-  <h2 id="tournaments">5. Which tournaments count, and who decides</h2>
+  <h2 id="tournaments">6. Which tournaments count, and who decides</h2>
   <p class="lede" style="font-size:var(--text-md)"><strong>The short version: we don't decide.</strong> An event counts here if and only if
   the CoD Esports Wiki tags it <strong>Major</strong> or <strong>Premier</strong> tier and the player finished 1st. That's it. We mirror the
   wiki's <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">Major Wins list</a>, the community's

@@ -7,6 +7,7 @@
 // BigInt gcd/lcm so exact-share numerators can't overflow Number's 2^53.
 function gcd(a, b){ a = a < 0n ? -a : a; b = b < 0n ? -b : b; while(b){ const t = a % b; a = b; b = t; } return a; }
 function lcm(a, b){ return a / gcd(a, b) * b; }
+function avgPlaceFromX2(sum, events){ return events ? Math.floor((sum * 100 + events) / (2 * events)) / 100 : null; }
 
 // Era/title selection helpers derived from the dataset (title order, presets, slug
 // encoding for shareable custom sets). One place so UI and endpoint agree.
@@ -70,10 +71,15 @@ export function computeRows(D, selected, ringWeight){
     const yrs = [];
     for(const s of sel) for(const e of s.events) if(e.date) yrs.push(+e.date.slice(0, 4));
     const won = new Set(); sel.forEach(s => s.events.forEach(e => won.add(e.event)));
+    const places = (p.placements || []).filter(pl => selected.has(pl.game));
+    const eventsPlaced = places.reduce((a, pl) => a + pl.events, 0);
+    const placeX2Sum = places.reduce((a, pl) => a + pl.placeX2Sum, 0);
     rows.push({
       name, raw, _numer: numer,
       champs: (p.champ_events || []).filter(c => won.has(c.event)).length,
       adjusted,
+      eventsPlaced,
+      avgPlace: avgPlaceFromX2(placeX2Sum, eventsPlaced),
       peak: best.wins / best.majors,
       peakInfo: { adj: Math.round(best.wins / best.majors * MBAR * 100) / 100, season: best.game, wins: best.wins, majors: best.majors },
       eras: sel.length,

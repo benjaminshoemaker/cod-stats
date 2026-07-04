@@ -41,6 +41,17 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-04', tag:'New', title:'Average placement and events placed columns',
+   body:`The leaderboard now includes <strong>Events placed</strong> and <strong>Average placement</strong>. Both stats
+   recompute with the Eras/title filter, so a CDL-only view uses only CDL major finishes. Average placement is calculated
+   from the same normalized event list shown on each player page: team finish per major entered, tied placement ranges
+   scored by midpoint, and the same Warzone/Mobile and non-major exclusions as the wins metric.`},
+  {date:'2026-07-04', tag:'New', title:'Player compare',
+   body:`A new <a href="compare.html?p=Shotzzy&p=HyDra">Compare</a> page puts two to four players side by side:
+   adjusted wins, championships, peak, title count, career span, events, average placement, and the season-by-season
+   wins per major entered that explain close debates like Shotzzy vs HyDra. It also suggests similar players to add
+   to the comparison, includes a Rows picker for optional stats like raw wins and Post-BO2 adjusted wins, and keeps the
+   selected players and rows in the URL so comparisons are shareable.`},
   {date:'2026-07-03', tag:'Fixed', title:'Similar players and Signatures use consistent career spans',
    body:`The <a href="player.html?p=Crimsix">Similar players</a> comparison now uses the same participation-based
    career span as the map and Signatures pages: first major entered through last major entered, not first win through

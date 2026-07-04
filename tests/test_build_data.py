@@ -164,6 +164,55 @@ def test_peak_and_longevity(data):
         assert pl["titles_all"] == len(pl["seasons"]), name
 
 
+def test_place_score_parses_ranges_and_open_ended_finishes():
+    # Average placement uses the official finish range's midpoint rather than the
+    # lower bound used for sorting on the wiki. Store it doubled so .5 stays exact.
+    assert build_data.place_x2({"Place": "1", "PlaceNumber": "1"}) == 2
+    assert build_data.place_x2({"Place": "5-6", "PlaceNumber": "5"}) == 11
+    assert build_data.place_x2({"Place": "9-12*", "PlaceNumber": "9"}) == 21
+    assert build_data.place_x2({"Place": ">12", "PlaceNumber": ""}) == 26
+
+
+def test_average_placement_uses_same_rows_as_player_page(data):
+    # `_participation` is what writes site/participation.json for the player page.
+    # The leaderboard/player aggregate must be derived from the same normalized rows.
+    for name, pl in data["players"].items():
+        part = data["_participation"][name]
+        assert pl["events_placed"] == len(part)
+        assert pl["place_x2_sum"] == sum(m["placeX2"] for m in part)
+        expected = build_data.avg_place_from_x2(pl["place_x2_sum"], pl["events_placed"])
+        assert pl["avg_place"] == expected
+
+        by_game = {}
+        for m in part:
+            g = by_game.setdefault(m["game"], {"events": 0, "sum": 0})
+            g["events"] += 1
+            g["sum"] += m["placeX2"]
+        assert {r["game"]: (r["events"], r["placeX2Sum"]) for r in pl["placements"]} == {
+            g: (v["events"], v["sum"]) for g, v in by_game.items()
+        }
+
+
+def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
+    import shutil
+    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json"):
+        shutil.copy(build_data._p(f), tmp_path / f)
+    rows = json.load(open(tmp_path / "player_participation.json"))
+    rows += [
+        {"Player": "Scump", "Event": "Synthetic Dup", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Team": "Bad", "Place": "13-16", "PlaceNumber": "13"},
+        {"Player": "Scump", "Event": "Synthetic Dup", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Team": "Good", "Place": "3-4", "PlaceNumber": "3"},
+    ]
+    json.dump(rows, open(tmp_path / "player_participation.json", "w"))
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    events_all, events, pwins, champs_rows, ppart = build_data.load_sources()
+    top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
+    _, part_rows = build_data.index_participation(ppart, top)
+    assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["place"] == "3-4"
+    assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["placeX2"] == 7
+
+
 def test_modern_warfare_structural_denominator(data):
     # MW 2019 ran a split Home Series format: 13 majors held, but each team played 9.
     # Shares must divide by 9, while the Seasons page still reports 13 held.

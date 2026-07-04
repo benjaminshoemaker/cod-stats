@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'raw', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
+const FULL_COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'raw', 'eventsPlaced', 'avgPlace', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
 
 test.describe('leaderboard', () => {
   test('loads every leaderboard player', async ({ page }) => {
@@ -17,6 +18,26 @@ test.describe('leaderboard', () => {
       els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
     );
     expect(fields).toEqual(COLUMN_ORDER);   // adjWeighted is hidden until the ring slider is engaged
+  });
+
+  test('placement columns are opt-in and shareable', async ({ page }) => {
+    await page.goto('/index.html');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeHidden();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeHidden();
+
+    await page.locator('#colmenu .colmenu-btn').click();
+    await page.locator('.colmenu-panel input[data-field="eventsPlaced"]').check();
+    await page.locator('.colmenu-panel input[data-field="avgPlace"]').check();
+    await expect(page).toHaveURL(/show=eventsPlaced%2CavgPlace|show=eventsPlaced,avgPlace/);
+    await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeVisible();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeVisible();
+
+    await page.goto('/index.html?show=eventsPlaced,avgPlace');
+    const fields = await page.$$eval(
+      '#table .tabulator-header .tabulator-col[tabulator-field]',
+      els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
+    );
+    expect(fields).toEqual(FULL_COLUMN_ORDER);
   });
 
   test('header is sticky to the window', async ({ page }) => {
@@ -54,6 +75,8 @@ test.describe('era filter', () => {
         if (a.rawRank !== lb.rawRank) out.push(`${lb.name} rawRank`);
         if (Math.abs(a.adjusted - lb.adjAll) > 0.011) out.push(`${lb.name} adjAll`);
         if (a.champs !== lb.champs) out.push(`${lb.name} champs`);
+        if (a.eventsPlaced !== lb.eventsPlaced) out.push(`${lb.name} eventsPlaced`);
+        if (Math.abs(a.avgPlace - lb.avgPlace) > 0.011) out.push(`${lb.name} avgPlace`);
         // pre-BO2-only players are (correctly) dropped from the post view; ranks of
         // survivors are unaffected since dropped players have share 0.
         if (p) {
@@ -98,6 +121,30 @@ test.describe('era filter', () => {
     // malformed / empty custom token must NOT silently select the first title — fall back to All
     await page.goto('/index.html?eras=t:');
     await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
+  });
+
+  test('placement columns recompute with era filters', async ({ page }) => {
+    await page.goto('/index.html');
+    const res = await page.evaluate(() => {
+      const D = (window as any).APP_DATA;
+      const cr = (window as any).computeRows as (s: Set<string>) => any[];
+      const all = new Set<string>(D.meta.seasonOrder);
+      const cdl = new Set<string>(D.meta.seasonOrder.slice(D.meta.seasonOrder.indexOf('Modern Warfare')));
+      const allPlayer = cr(all).find((r: any) => r.name === 'aBeZy');
+      const cdlPlayer = cr(cdl).find((r: any) => r.name === 'aBeZy');
+      return {
+        allEvents: allPlayer.eventsPlaced,
+        dataEvents: D.players.aBeZy.events_placed,
+        allAvg: allPlayer.avgPlace,
+        dataAvg: D.players.aBeZy.avg_place,
+        cdlEvents: cdlPlayer.eventsPlaced,
+        cdlAvg: cdlPlayer.avgPlace,
+      };
+    });
+    expect(res.allEvents).toBe(res.dataEvents);
+    expect(Math.abs(res.allAvg - res.dataAvg)).toBeLessThan(0.011);
+    expect(res.cdlEvents).toBeLessThan(res.allEvents);
+    expect(res.cdlAvg).not.toBe(res.allAvg);
   });
 });
 
@@ -221,9 +268,11 @@ test.describe('column selector', () => {
     await page.goto('/index.html?hide=champs,peak');
     await expect(page.locator('#table .tabulator-col[tabulator-field="champs"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="peak"]')).toBeHidden();
+    await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeHidden();
     await expect(page.locator('#table .tabulator-col[tabulator-field="adjusted"]')).toBeVisible();
     await page.locator('#colmenu .colmenu-btn').click();
     await expect(page.locator('.colmenu-panel input[data-field="champs"]')).not.toBeChecked();
+    await expect(page.locator('.colmenu-panel input[data-field="avgPlace"]')).not.toBeChecked();
     await expect(page.locator('.colmenu-panel input[data-field="adjusted"]')).toBeChecked();
   });
 
@@ -259,6 +308,24 @@ test.describe('desktop layout', () => {
     // fitData: the table is as wide as its columns, and fits within the container
     expect(inner).toBeLessThanOrEqual(holder + 2);
     expect(inner).toBeGreaterThan(holder * 0.6);
+  });
+
+  test('visible desktop header labels are not clipped', async ({ page }) => {
+    test.skip(test.info().project.name !== 'desktop', 'desktop only');
+    for (const path of ['/index.html', '/index.html?show=eventsPlaced,avgPlace']) {
+      await page.goto(path);
+      const clipped = await page.$$eval('#table .tabulator-col[tabulator-field]', els =>
+        els.filter(el => (el as HTMLElement).offsetParent !== null).map(el => {
+          const title = el.querySelector('.tabulator-col-title') as HTMLElement | null;
+          return {
+            field: el.getAttribute('tabulator-field'),
+            client: title?.clientWidth ?? 0,
+            scroll: title?.scrollWidth ?? 0,
+          };
+        }).filter(col => col.scroll > col.client + 1)
+      );
+      expect(clipped).toEqual([]);
+    }
   });
 });
 
@@ -354,12 +421,24 @@ test.describe('pages', () => {
     await page.goto('/player.html?p=Scump');
     await expect(page.locator('a[href="https://cod-esports.fandom.com/wiki/Scump"]')).toBeVisible();
     await expect(page.locator('#ml-title')).toHaveText(/Every major win \(28\)/);
+    await expect(page.locator('.stat').filter({ hasText: 'Average placement' })).toContainText(/\d+\.\d/);
     const winRows = await page.locator('#winlist tr').count();
     await page.click('#seg-all');
     await expect(page.locator('#ml-title')).toHaveText(/Every major entered \(\d+\)/);
     // participation.json is fetched on first toggle; wait for a losing placement to land
     await expect(page.locator('#winlist tr.faint').first()).toBeVisible();
     expect(await page.locator('#winlist tr').count()).toBeGreaterThan(winRows);
+    await expect(page.locator('#ml-note')).toContainText('same normalized list');
+    const consistent = await page.evaluate(async () => {
+      const D = (window as any).APP_DATA;
+      const p = D.players.Scump;
+      const all = await fetch('participation.json').then(r => r.json());
+      const rows = all.Scump;
+      const sum = rows.reduce((a: number, r: any) => a + r.placeX2, 0);
+      const avg = Math.floor((sum * 100 + rows.length) / (2 * rows.length)) / 100;
+      return rows.length === p.events_placed && sum === p.place_x2_sum && Math.abs(avg - p.avg_place) < 0.011;
+    });
+    expect(consistent).toBe(true);
   });
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
@@ -391,5 +470,86 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Changelog', exact: true })).toBeVisible();
     await expect(page.locator('.cl-entry').first()).toBeVisible();
     await expect(page.getByRole('heading', { name: /Modern Warfare 2019 scored by opportunity/ })).toBeVisible();
+  });
+});
+
+test.describe('compare page', () => {
+  test('URL players render dense comparison with participation denominators', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await expect(page.getByRole('heading', { name: 'Player Compare', exact: true })).toBeVisible();
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra']);
+    await expect(page.locator('.compare-card')).toHaveCount(0);
+    await expect(page.locator('.compare-summary tbody th')).toContainText([
+      'Adjusted wins',
+      'Champs',
+      'Peak',
+      'Eras',
+      'Career',
+      'Events',
+      'Average place',
+    ]);
+    await expect(page.locator('.compare-summary tbody th', { hasText: 'Raw wins' })).toHaveCount(0);
+    await expect(page.locator('.compare-summary tbody th', { hasText: 'Post-BO2 adjusted' })).toHaveCount(0);
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' })).not.toContainText(/▲|▼/);
+
+    const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
+    await expect(bo7).toContainText('in progress');
+    await expect(bo7).toContainText('1 / 4');
+    await expect(page.locator('#season-table tbody tr', { hasText: 'Black Ops 2' })).toHaveCount(0);
+  });
+
+  test('row picker changes summary rows and syncs the URL', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await page.locator('#rowmenu .colmenu-btn').click();
+    await page.locator('#rowmenu input[data-row="raw"]').check();
+    await expect(page).toHaveURL(/rows=/);
+    await expect(page.locator('.compare-summary tbody th')).toContainText([
+      'Adjusted wins',
+      'Raw wins',
+      'Champs',
+      'Peak',
+      'Eras',
+      'Career',
+      'Events',
+      'Average place',
+    ]);
+
+    const url = page.url();
+    await page.goto(url);
+    await expect(page.locator('.compare-summary tbody th', { hasText: 'Raw wins' })).toHaveCount(1);
+  });
+
+  test('picker adds a player and syncs the shareable URL', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await page.locator('#player-pick').fill('Simp');
+    await page.getByRole('button', { name: 'Add player' }).click();
+    await expect(page).toHaveURL(/p=Simp/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Simp']);
+  });
+
+  test('invalid picker input is announced without changing the comparison', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await page.locator('#player-pick').fill('NotAPlayer');
+    await page.getByRole('button', { name: 'Add player' }).click();
+    await expect(page.locator('#compare-status')).toHaveText('No player matched that name.');
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra']);
+  });
+
+  test('similar-player suggestions add players to the comparison', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await expect(page.locator('.suggestion-btn[data-add="Cellium"]')).toBeVisible();
+    await page.locator('.suggestion-btn[data-add="Cellium"]').click();
+    await expect(page).toHaveURL(/p=Cellium/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Cellium']);
+  });
+
+  test('season matrix remains horizontally scrollable on mobile', async ({ page }) => {
+    test.skip(test.info().project.name !== 'mobile', 'mobile only');
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra&p=Simp&p=aBeZy');
+    const { sw, cw } = await page.evaluate(() => {
+      const h = document.querySelector('.compare-table-wrap') as HTMLElement;
+      return { sw: h.scrollWidth, cw: h.clientWidth };
+    });
+    expect(sw).toBeGreaterThan(cw);
   });
 });

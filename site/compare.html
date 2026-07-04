@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player Compare · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Compare Call of Duty players side by side by era-adjusted wins, raw wins, championships, peak, longevity, and season-by-season shares.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Player Compare · CoD Era-Adjusted">
+<meta property="og:description" content="Side-by-side Call of Duty major-wins resumes with adjusted totals and season-by-season shares.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/compare.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/nav.js" as="script">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="assets/nav.js"></script>
+<main class="wrap wide compare-page" id="root" tabindex="-1">
+  <div class="compare-hero">
+    <div class="compare-title">
+      <p class="eyebrow">Resume matrix</p>
+      <h1>Player Compare</h1>
+      <p class="lede">Compare era-adjusted totals, titles, rings, and season shares without rebuilding the math by hand.</p>
+    </div>
+    <form class="compare-controls" id="compare-form">
+      <label for="player-pick">Add player</label>
+      <div class="compare-add-row">
+        <input id="player-pick" class="search" type="search" list="player-options" placeholder="Search player…" autocomplete="off">
+        <datalist id="player-options"></datalist>
+        <button type="submit" class="sharebtn" aria-label="Add player">Add</button>
+        <button type="button" class="clearfilters" id="reset-compare" hidden>Reset</button>
+      </div>
+      <p class="small muted" id="compare-status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <section class="compare-roster" aria-label="Selected players and suggestions">
+    <div>
+      <div class="section-label">Selected</div>
+      <div class="chips" id="selected-players" aria-label="Compared players"></div>
+    </div>
+    <div>
+      <div class="section-label">Similar suggestions</div>
+      <div class="compare-suggestions" id="similar-suggestions"></div>
+    </div>
+  </section>
+
+  <section class="compare-block" aria-labelledby="summary-title">
+    <div class="compare-section-head">
+      <div>
+        <p class="section-label">Career profile</p>
+        <h2 id="summary-title">Summary</h2>
+      </div>
+      <div class="compare-summary-tools">
+        <p class="small muted">Best value in each row is highlighted.</p>
+        <div class="colmenu rowmenu" id="rowmenu"></div>
+      </div>
+    </div>
+    <section id="summary"></section>
+  </section>
+
+  <section class="compare-block" aria-labelledby="season-title">
+    <div class="compare-section-head">
+      <div>
+        <p class="section-label">Entered events</p>
+        <h2 id="season-title">Season-by-season</h2>
+      </div>
+      <p class="small muted">Wins divided by majors entered in that title. Champs wins carry ◆.</p>
+    </div>
+    <div class="scroll-x compare-table-wrap">
+      <table class="data compare-table" id="season-table"></table>
+    </div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script src="similarity.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('compare.html');
+
+const root = document.getElementById('root');
+const form = document.getElementById('compare-form');
+const pick = document.getElementById('player-pick');
+const options = document.getElementById('player-options');
+const chips = document.getElementById('selected-players');
+const suggestions = document.getElementById('similar-suggestions');
+const statusEl = document.getElementById('compare-status');
+const summary = document.getElementById('summary');
+const seasonTable = document.getElementById('season-table');
+const resetBtn = document.getElementById('reset-compare');
+const rowMenu = document.getElementById('rowmenu');
+
+const NAMES = D.leaderboard.map(r => r.name);
+const NAME_KEY = Object.fromEntries(NAMES.map(n => [n.toLowerCase(), n]));
+const LB = Object.fromEntries(D.leaderboard.map(r => [r.name, r]));
+const GAMES = Object.fromEntries(D.games.map(g => [g.game, g]));
+const DEFAULT_PLAYERS = ['Shotzzy', 'HyDra'];
+const MAX_PLAYERS = 4;
+const DEFAULT_ROWS = ['adjusted', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
+const ROW_IDS = new Set(['adjusted', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']);
+let selected = readPlayers();
+let visibleRows = readRows();
+let PART = null;
+
+options.innerHTML = NAMES.map(n => `<option value="${esc(n)}"></option>`).join('');
+
+function readPlayers(){
+  const params = new URLSearchParams(location.search);
+  const raw = params.getAll('p').flatMap(v => v.split(',')).map(v => v.trim()).filter(Boolean);
+  const names = raw.map(v => NAME_KEY[v.toLowerCase()] || v).filter(n => D.players[n]);
+  const unique = [...new Set(names)].slice(0, MAX_PLAYERS);
+  return unique.length ? unique : DEFAULT_PLAYERS.slice();
+}
+
+function readRows(){
+  const params = new URLSearchParams(location.search);
+  const rows = (params.get('rows') || '').split(',').map(v => v.trim()).filter(v => ROW_IDS.has(v));
+  const unique = [...new Set(rows)];
+  return unique.length ? unique : DEFAULT_ROWS.slice();
+}
+
+function sameList(a, b){
+  return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+function syncURL(){
+  const p = new URLSearchParams();
+  selected.forEach(n => p.append('p', n));
+  if(!sameList(visibleRows, DEFAULT_ROWS)) p.set('rows', visibleRows.join(','));
+  const qs = p.toString();
+  history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  resetBtn.hidden = selected.length === DEFAULT_PLAYERS.length && selected.every((n, i) => n === DEFAULT_PLAYERS[i]);
+}
+
+function setStatus(msg, tone){
+  statusEl.textContent = msg || '';
+  statusEl.className = tone === 'error' ? 'small compare-error' : 'small muted';
+}
+
+function fmtNum(v, digits){
+  return Number.isFinite(v) ? v.toFixed(digits) : '0.0';
+}
+
+function pct(wins, majors){
+  return majors ? `${Math.round(wins / majors * 100)}%` : '0%';
+}
+
+function span(first, last){
+  return first && last ? (first === last ? String(first) : `${first}-${last}`) : '-';
+}
+
+function peakText(p){
+  const pk = p.peak_all;
+  if(!pk || !pk.majors) return '<span class="faint">-</span>';
+  return `<strong>${pct(pk.wins, pk.majors)}</strong><span class="small faint">${esc(pk.season)} · ${pk.wins}/${pk.majors}</span>`;
+}
+
+function champText(p){
+  if(!p.champs) return '<span class="faint">0</span><span class="small faint">none</span>';
+  return `<strong>${p.champs} ◆</strong><span class="small faint">${p.champ_events.map(e => esc(e.year)).join(' · ')}</span>`;
+}
+
+function metricRows(){
+  return [
+    {id:'adjusted', label:'Adjusted wins', value:n=>D.players[n].adj_all, html:n=>`<strong>${fmtNum(D.players[n].adj_all, 1)}</strong><span class="small faint">#${LB[n].adjRank}</span>`},
+    {id:'raw', label:'Raw wins', value:n=>D.players[n].raw, html:n=>`<strong>${D.players[n].raw}</strong><span class="small faint">wiki #${LB[n].rawRank}</span>`},
+    {id:'post', label:'Post-BO2 adjusted', value:n=>D.players[n].adj_post, html:n=>`<strong>${fmtNum(D.players[n].adj_post, 1)}</strong><span class="small faint">#${LB[n].postRank}</span>`},
+    {id:'champs', label:'Champs', value:n=>D.players[n].champs, html:n=>champText(D.players[n])},
+    {id:'peak', label:'Peak', value:n=>D.players[n].peak_all.majors ? D.players[n].peak_all.wins / D.players[n].peak_all.majors : 0, html:n=>peakText(D.players[n])},
+    {id:'eras', label:'Eras', value:n=>D.players[n].titles_all, html:n=>`<strong>${D.players[n].titles_all}</strong><span class="small faint">${D.players[n].span_all ? `${D.players[n].span_all}-yr win span` : '-'}</span>`},
+    {id:'career', label:'Career', value:n=>D.players[n].majors_played, html:n=>`<strong>${span(D.players[n].first_played, D.players[n].last_played)}</strong><span class="small faint">${D.players[n].majors_played} majors entered</span>`},
+    {id:'events', label:'Events', value:n=>D.players[n].events_placed, html:n=>`<strong>${D.players[n].events_placed}</strong><span class="small faint">counted finishes</span>`},
+    {id:'avgPlace', label:'Average place', better:'min', value:n=>D.players[n].avg_place == null ? Infinity : D.players[n].avg_place, html:n=>{
+      const v = D.players[n].avg_place;
+      return `<strong>${v == null ? '<span class="faint">-</span>' : v.toFixed(1)}</strong><span class="small faint">lower is better</span>`;
+    }},
+  ];
+}
+
+function bestFor(row, vals){
+  const nums = vals.filter(Number.isFinite);
+  if(!nums.length) return null;
+  return row.better === 'min' ? Math.min(...nums) : Math.max(...nums);
+}
+
+function mountRowMenu(){
+  if(!rowMenu) return;
+  const rows = metricRows();
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'colmenu-btn';
+  btn.setAttribute('aria-haspopup', 'true'); btn.setAttribute('aria-expanded', 'false');
+  btn.innerHTML = 'Rows <span aria-hidden="true">▾</span>';
+  const panel = document.createElement('div');
+  panel.className = 'colmenu-panel'; panel.hidden = true;
+  panel.innerHTML = rows.map(r =>
+    `<label class="colmenu-item"><input type="checkbox" data-row="${esc(r.id)}"${visibleRows.includes(r.id) ? ' checked' : ''}> ${esc(r.label)}</label>`
+  ).join('');
+  rowMenu.append(btn, panel);
+
+  const close = refocus => {
+    if(panel.hidden) return;
+    panel.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    if(refocus) btn.focus();
+  };
+  const open = () => {
+    panel.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+  };
+  btn.addEventListener('click', e => { e.stopPropagation(); panel.hidden ? open() : close(); });
+  panel.addEventListener('click', e => e.stopPropagation());
+  panel.addEventListener('change', e => {
+    if(!e.target.dataset.row) return;
+    visibleRows = rows.map(r => r.id).filter(id => panel.querySelector(`[data-row="${id}"]`).checked);
+    if(!visibleRows.length){
+      e.target.checked = true;
+      visibleRows = [e.target.dataset.row];
+    }
+    renderSummary();
+    syncURL();
+  });
+  document.addEventListener('click', () => close(false));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') close(true); });
+}
+
+function seasonFor(name, game){
+  return D.players[name].seasons.find(s => s.game === game) || null;
+}
+
+function entriesFor(name, game){
+  return PART && PART[name] ? PART[name].filter(r => r.game === game) : [];
+}
+
+function champEventFor(name, game){
+  const s = seasonFor(name, game);
+  if(!s) return null;
+  const won = new Set(s.events.map(e => e.event));
+  return (D.players[name].champ_events || []).find(e => won.has(e.event)) || null;
+}
+
+function seasonValue(name, game){
+  const s = seasonFor(name, game);
+  const entries = entriesFor(name, game);
+  const wins = s ? s.wins : 0;
+  const entered = entries.length || (PART ? 0 : (s ? s.majors : 0));
+  return { wins, entered, share: entered ? wins / entered : 0, champ: champEventFor(name, game), season: s };
+}
+
+function seasonCell(name, game, bestShare){
+  const v = seasonValue(name, game);
+  if(!v.entered) return `<span class="faint">-</span>`;
+  const events = v.season ? v.season.events.map(e => esc(e.event)).join(', ') : '';
+  const best = v.share > 0 && v.share === bestShare ? ' cell-best' : '';
+  const fill = Math.max(2, Math.round(v.share * 100));
+  return `<div class="compare-season-cell${best}">
+    <div class="season-top"><strong>${v.wins} / ${v.entered}</strong>${v.champ ? ' <span class="pill champ" title="Won Champs">◆</span>' : ''}</div>
+    <div class="season-meter" aria-hidden="true"><i style="width:${fill}%"></i></div>
+    <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of entered</span>
+    ${events ? `<span class="small faint event-list">${events}</span>` : ''}
+  </div>`;
+}
+
+function seasonTag(g){
+  const game = GAMES[g];
+  if(game.preBo2) return '<span class="pill warn small">pre-BO2</span>';
+  if(game.denom < game.majors) return `<span class="pill tag small">${game.denom} of ${game.majors} per team</span>`;
+  if(game.denom > game.majors) return `<span class="pill tag small">in progress · ${game.majors} of ${game.denom} played</span>`;
+  return '';
+}
+
+function renderChips(){
+  chips.innerHTML = selected.map(n => `<span class="chip compare-chip">
+    <a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a>
+    <button type="button" data-remove="${esc(n)}" aria-label="Remove ${esc(n)}">×</button>
+  </span>`).join('');
+}
+
+function renderSummary(){
+  const rows = metricRows().filter(m => visibleRows.includes(m.id)).map(m => {
+    const vals = selected.map(n => m.value(n));
+    const best = bestFor(m, vals);
+    const cells = selected.map((n, i) => `<td class="${best != null && vals[i] === best && best > 0 ? 'cell-best' : ''}">${m.html(n)}</td>`).join('');
+    return `<tr><th>${esc(m.label)}</th>${cells}</tr>`;
+  }).join('');
+  summary.innerHTML = `<div class="scroll-x compare-summary-wrap"><table class="data compare-summary" style="--players:${selected.length}">
+    <thead><tr><th>Metric</th>${selected.map(n => `<th><a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a></th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+function renderTable(){
+  const games = D.meta.seasonOrder.filter(g => selected.some(n => seasonValue(n, g).entered > 0 || seasonFor(n, g)));
+  const head = `<thead><tr><th>Season</th>${selected.map(n => `<th>${esc(n)}</th>`).join('')}</tr></thead>`;
+  const rows = games.map(g => {
+    const vals = selected.map(n => seasonValue(n, g));
+    const bestShare = Math.max(...vals.map(v => v.share));
+    const cells = selected.map(n => {
+      const v = seasonValue(n, g);
+      return `<td class="${v.entered ? '' : 'empty'}">${seasonCell(n, g, bestShare)}</td>`;
+    }).join('');
+    return `<tr>
+      <td>${gameLink(g)} ${seasonTag(g)}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+  seasonTable.style.setProperty('--players', selected.length);
+  seasonTable.innerHTML = `${head}<tbody>${rows || '<tr><td class="small faint">No participation data for this comparison.</td></tr>'}</tbody>`;
+}
+
+function renderSuggestions(){
+  const SIM = window.SIM;
+  if(!SIM || !SIM.players){ suggestions.innerHTML = ''; return; }
+  if(selected.length >= MAX_PLAYERS){
+    suggestions.innerHTML = `<p class="small faint">Remove a player to add suggestions.</p>`;
+    return;
+  }
+  suggestions.innerHTML = selected.map(base => {
+    const items = (SIM.players[base]?.solo || SIM.players[base]?.all || [])
+      .filter(x => !selected.includes(x.name))
+      .slice(0, 3);
+    if(!items.length) return '';
+    return `<div class="suggestion-group"><span>Similar to ${esc(base)}</span>
+      ${items.map(x => `<button type="button" class="suggestion-btn" data-add="${esc(x.name)}">${esc(x.name)} <span>${x.score}</span></button>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function render(){
+  if(selected.length < 2) selected = DEFAULT_PLAYERS.slice();
+  renderChips();
+  renderSuggestions();
+  renderSummary();
+  renderTable();
+  syncURL();
+}
+
+function addPlayer(raw){
+  const name = NAME_KEY[String(raw || '').trim().toLowerCase()];
+  if(!name){ setStatus('No player matched that name.', 'error'); return; }
+  if(selected.includes(name)){ setStatus(`${name} is already in the comparison.`); return; }
+  if(selected.length >= MAX_PLAYERS){ setStatus(`Compare up to ${MAX_PLAYERS} players at once.`, 'error'); return; }
+  selected.push(name);
+  pick.value = '';
+  setStatus('');
+  render();
+}
+
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  addPlayer(pick.value);
+});
+
+chips.addEventListener('click', e => {
+  const name = e.target.dataset && e.target.dataset.remove;
+  if(!name) return;
+  selected = selected.filter(n => n !== name);
+  if(selected.length < 2) setStatus('Comparison needs at least two players; restored the default pair.');
+  else setStatus('');
+  render();
+});
+
+suggestions.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('[data-add]');
+  const name = btn && btn.dataset.add;
+  if(!name) return;
+  addPlayer(name);
+});
+
+resetBtn.addEventListener('click', () => {
+  selected = DEFAULT_PLAYERS.slice();
+  pick.value = '';
+  setStatus('');
+  render();
+});
+
+render();
+mountRowMenu();
+fetch('participation.json').then(r => r.json()).then(all => { PART = all; render(); })
+  .catch(() => setStatus('Participation data failed to load; showing scoring denominators instead.', 'error'));
+mountFoot();
+</script>
+</body>
+</html>
