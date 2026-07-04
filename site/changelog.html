@@ -41,6 +41,11 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-04', tag:'Improved', title:'Clearer methodology and player-page adjusted-wins copy',
+   body:`The old weighting-only framing is now labeled as <strong>Methodology</strong> in the nav and introduces the full
+   page scope: adjusted wins, tournament/source rules, tracker differences, and optional ring weighting. Player pages now
+   group the season-share table and opportunity chart under a broader adjusted-wins explainer so the per-player math has
+   context before the details.`},
   {date:'2026-07-04', tag:'Fixed', title:'Expanded leaderboard columns fit on desktop',
    body:`The leaderboard now keeps the ring-weighted, Events placed, and Average placement columns visible on desktop
    without hiding right-side headers behind a bottom-only horizontal scroll. Header labels can wrap cleanly, and numeric
@@ -111,7 +116,7 @@ const ENTRIES = [
    for a custom set. The numbers fully <em>recompute</em> for the seasons you pick (adjusted wins, ranks, peak, longevity)
    rather than just hiding rows, so a CDL-era view is led by <strong>aBeZy and Simp</strong>, not the all-time win
    compilers. The old "Exclude pre-BO2" toggle is now simply the "Post-BO2" preset, and your selection is saved in the
-   URL so you can share an exact era view. <a href="methodology.html">How the weighting works →</a>`},
+   URL so you can share an exact era view. <a href="methodology.html#era-adjustment">How adjusted wins work →</a>`},
   {date:'2026-07-02', tag:'New', title:'Show or hide columns',
    body:`A <strong>Columns</strong> menu lets you hide any columns you don't need; the table resizes to fit what's left.
    Your choice is remembered and shareable via the URL.`},
@@ -132,7 +137,7 @@ const ENTRIES = [
    value would have silently shrunk as the year went on. Wins in an in-progress season now divide by the full schedule
    (1/7), matching the opportunity every team has. This moved the 2026 winners down: <strong>Drazah 13→16, HyDra 11→14,
    Dashy 18→21, Huke 20→22</strong>, with Shotzzy and Envoy each down one, and nudged everyone else's adjusted total up
-   slightly (the average majors/season the scale is built on rose to 8.61). <a href="methodology.html">How the weighting works →</a>`},
+   slightly (the average majors/season the scale is built on rose to 8.61). <a href="methodology.html#era-adjustment">How adjusted wins work →</a>`},
   {date:'2026-07-02', tag:'Methodology', title:'Ranks computed on exact values; ties share a rank',
    body:`Ranks were being computed on values rounded to two decimals, so players whose totals rounded together were
    ordered arbitrarily (at one point ranking Scrap below Rambo despite a higher exact share). Ranking now uses exact

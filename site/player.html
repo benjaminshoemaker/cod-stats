@@ -81,18 +81,23 @@ if(!p || !lb){
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
     ${p.note?`<div class="note" style="margin-top:var(--space-2);background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
 
-    <div class="grid cols-2">
-      <div>
-        <h2>How the weighting builds up</h2>
-        <p class="small muted">Each win is worth <span class="num">1 ÷ (majors that season)</span>. Sum those across seasons to get the season-share, then &times; the average majors/season for the adjusted total.</p>
-        <div id="buildup"></div>
+    <section class="adjusted-explainer">
+      <h2>How adjusted wins work for ${esc(p.name)}</h2>
+      <p class="lede">Adjusted wins measure how much of each season's available majors this player won. Each season gets
+      equal total weight, so a win in a smaller schedule counts more than a win in a packed season.</p>
+      <div class="grid cols-2">
+        <div>
+          <h3>Season-share buildup</h3>
+          <p class="small muted">Each win is worth <span class="num">1 ÷ (majors that season)</span>. Sum those across seasons to get the season-share, then &times; the average majors/season for the adjusted total.</p>
+          <div id="buildup"></div>
+        </div>
+        <div>
+          <h3>Wins vs. opportunity</h3>
+          <p class="small muted">Dark = wins. Faint = majors available that season. A short dark bar inside a long faint bar means lots of competition for few titles.</p>
+          <div id="chart"></div>
+        </div>
       </div>
-      <div>
-        <h2>Wins vs. opportunity</h2>
-        <p class="small muted">Dark = wins. Faint = majors available that season. A short dark bar inside a long faint bar means lots of competition for few titles (a diluted era).</p>
-        <div id="chart"></div>
-      </div>
-    </div>
+    </section>
 
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-top:1.6em">
       <h2 style="margin:0" id="ml-title">Every major win (${p.raw})</h2>

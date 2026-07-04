@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Season · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="A Call of Duty season's major tournaments, their winners, and how each win is weighted (1 ÷ majors that season).">
+<meta name="description" content="A Call of Duty season's major tournaments, their winners, and how each win contributes to adjusted wins.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
-<meta property="og:title" content="Season majors & weighting · CoD Era-Adjusted">
-<meta property="og:description" content="Every major in the season, its winner, and the per-win weight used in the era adjustment.">
+<meta property="og:title" content="Season majors & adjusted wins · CoD Era-Adjusted">
+<meta property="og:description" content="Every major in the season, its winner, and the per-win season share used in the era adjustment.">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -68,7 +68,7 @@ if(!g){
       <div class="stat"><div class="k">Win the whole season</div><div class="v sm">1.00</div><div class="small faint">all ${den} = one "season"</div></div>
     </div>
 
-    <div class="note">How the weighting works here: ${split
+    <div class="note">How adjusted wins work here: ${split
       ? `${g.majors} majors were held, but this season ran a split <strong>Home Series</strong> format, so every team played only
          <strong>${den}</strong> (8 Home Series + Champs). So a win is worth <span class="num">1/${den} = ${g.weight.toFixed(3)}</span>
          of a season, not 1/${g.majors}. To "max out" the season you'd need to win all ${den} you could enter.`

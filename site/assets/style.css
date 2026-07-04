@@ -99,6 +99,9 @@ p{margin:.6em 0}
 .stat .v.sm{font-size:var(--text-lg)}
 .stat.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
 .profile-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap}
+.adjusted-explainer{margin-top:var(--space-8)}
+.adjusted-explainer h2{margin-top:0}
+.adjusted-explainer h3{margin-top:var(--space-2)}
 
 /* generic table */
 table.data{border-collapse:collapse;width:100%;font-size:var(--text-base)}

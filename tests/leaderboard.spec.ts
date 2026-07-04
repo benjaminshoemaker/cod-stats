@@ -433,7 +433,8 @@ test.describe('pages', () => {
     await page.goto('/games.html');
     await expect(page.getByRole('heading', { name: /Seasons/ })).toBeVisible();
     await page.goto('/methodology.html');
-    await expect(page.getByRole('heading', { name: /Why weight/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
+    await expect(page.getByText('how adjusted wins convert raw major wins into season-share value')).toBeVisible();
   });
 
   test('peak-vs-longevity scatter renders dots', async ({ page }) => {
@@ -487,6 +488,8 @@ test.describe('pages', () => {
   test('player page links to the wiki and toggles wins vs every major entered', async ({ page }) => {
     await page.goto('/player.html?p=Scump');
     await expect(page.locator('a[href="https://cod-esports.fandom.com/wiki/Scump"]')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'How adjusted wins work for Scump' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Season-share buildup' })).toBeVisible();
     await expect(page.locator('#ml-title')).toHaveText(/Every major win \(28\)/);
     await expect(page.locator('.stat').filter({ hasText: 'Average placement' })).toContainText(/\d+\.\d/);
     await expect(page.locator('#team-summary')).toContainText('6 teams');
