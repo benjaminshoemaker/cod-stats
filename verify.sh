@@ -10,9 +10,9 @@ echo "==> committed site/data.js is up to date"
 # diff against HEAD (not the index) so a stale-but-staged data.js still fails
 git diff --quiet HEAD -- site/data.js || { echo "  site/data.js changed — commit the regenerated file"; exit 1; }
 
-echo "==> data-integrity tests"
+echo "==> pytest checks"
 PYTEST="python3 -m pytest"; [ -x .venv/bin/pytest ] && PYTEST=".venv/bin/pytest"
-$PYTEST tests/test_build_data.py -q
+$PYTEST tests/test_build_data.py tests/test_vercel_cache_headers.py -q
 
 echo "==> browser/layout tests"
 npx playwright test
