@@ -24,7 +24,7 @@
 <script src="assets/nav.js"></script>
 <main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=team-logos"></script>
 <script>
 mountNav('games.html');
 const root=document.getElementById('root');
@@ -39,7 +39,7 @@ if(!g){
   const evRows=g.events.map(e=>`<tr>
     <td class="faint num small">${esc(e.date||'')}</td>
     <td>${esc(e.event)}</td>
-    <td>${esc(e.winner||'–')}</td>
+    <td>${teamBadge(e.winnerTeam||e.winner)}</td>
     <td class="small muted">${esc(e.type||'')}${e.location?' · '+esc(e.location):''}</td>
     <td class="n faint">+${g.weight.toFixed(3)}</td>
   </tr>`).join('');

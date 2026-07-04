@@ -24,6 +24,7 @@ DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 #    major. It inflated the Black Ops 7 denominator to 7; BO7 has 6 real majors (4 CDL
 #    Majors + Champs + EWC). Flagged by u/BcDownes on r/CoDCompetitive, 2026-07.
 DROP_EVENTS = {'Call of Duty Challengers Finals 2026'}
+VALID_PRIMARY_ROLES = {'AR', 'Flex', 'SMG', 'Unknown'}
 
 # A player's share divides by what a team *could win* that season, which is not
 # always the number of majors played so far:
@@ -80,18 +81,19 @@ def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVEN
 def load_sources():
     """Load the four wiki source files, restricted to the console-major universe
     (DROP_GAMES / DROP_EVENTS out; wins on/before ASOF). Returns
-    (events_all, events, pwins, champs_rows, ppart) — events_all keeps
+    (events_all, events, pwins, champs_rows, ppart, tpart) — events_all keeps
     future-dated scheduled majors for in-progress denominators; ppart is
     filtered per-row later (it also needs the DNS/place rules)."""
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
     pwins  = json.load(open(_p('player_event_wins.json')))   # [{Player,Event,Game,Date}]
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
     ppart  = json.load(open(_p('player_participation.json')))  # [{Player,Event,Game,Date,Place,...}] ALL placements
+    tpart  = json.load(open(_p('team_participation.json')))    # [{Team,Event,Game,Place}] ALL team placements
 
     events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
     events = [e for e in events_all if _played(e.get('Date'))]
     pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
-    return events_all, events, pwins, champs_rows, ppart
+    return events_all, events, pwins, champs_rows, ppart, tpart
 
 
 def season_context(events, events_all):
@@ -174,7 +176,7 @@ def index_participation(ppart, top50_mkeys):
             raise RuntimeError(f"unparseable placement for {r['Player']} at {r['Event']}: {r.get('Place')!r}")
         row = {'event': r['Event'], 'game': r['Game'],
                'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip(),
-               'placeX2': px2}
+               'placeX2': px2, 'team': str(r.get('Team') or '').strip()}
         old = part_rows[k].get(r['Event'])
         if old is None or row['placeX2'] < old['placeX2']:
             part_rows[k][r['Event']] = row
@@ -227,6 +229,89 @@ def index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins):
     return champs_by
 
 
+def load_role_stints():
+    """Load curated primary-role stints.
+
+    Rows may be career-wide ({player, role}) or game-bounded with inclusive
+    start_game/end_game. The generated output expands these into active-season
+    rows, so future role switches can be added without changing the schema.
+    """
+    path = _p('player_roles.json')
+    if not os.path.exists(path):
+        return []
+    return json.load(open(path)).get('roles', [])
+
+
+def load_team_logos():
+    """Load cached Fandom team-logo URLs.
+
+    This stays separate from the main wiki source pull so a rate-limited logo
+    lookup never blocks the rankings build. Missing teams fall back to text.
+    """
+    path = _p('team_logos.json')
+    if not os.path.exists(path):
+        return {}
+    return json.load(open(path))
+
+
+def build_team_logos(participation, logos):
+    """Return only logo metadata used by the generated player pages."""
+    teams = {r.get('team') for rows in participation.values() for r in rows if r.get('team')}
+    return {t: logos[t] for t in sorted(teams) if t in logos and logos[t].get('src')}
+
+
+def _game_bound(stint, key, S, default_idx):
+    g = stint.get(key)
+    if not g:
+        return default_idx
+    if g not in S.order_idx:
+        raise RuntimeError(f"unknown role stint {key}: {g!r}")
+    return S.order_idx[g]
+
+
+def index_role_stints(stints, disp_by_mkey, S):
+    """Validate curated stints and index them by normalized player name."""
+    by_player = defaultdict(list)
+    for stint in stints:
+        player = stint.get('player')
+        role = stint.get('role')
+        mk = mkey(player or '')
+        if mk not in disp_by_mkey:
+            raise RuntimeError(f"unknown role player: {player!r}")
+        if role not in VALID_PRIMARY_ROLES - {'Unknown'}:
+            raise RuntimeError(f"invalid primary role for {player}: {role!r}")
+        start = _game_bound(stint, 'start_game', S, 0)
+        end = _game_bound(stint, 'end_game', S, len(S.order) - 1)
+        if start > end:
+            raise RuntimeError(f"role stint starts after it ends for {player}: {stint!r}")
+        by_player[mk].append({'role': role, 'start': start, 'end': end})
+
+    for mk, rows in by_player.items():
+        rows.sort(key=lambda r: (r['start'], r['end']))
+        prev = None
+        for row in rows:
+            if prev and row['start'] <= prev['end']:
+                raise RuntimeError(f"overlapping role stints for {disp_by_mkey[mk]}")
+            prev = row
+    return by_player
+
+
+def role_by_game(name, active_games, S, role_stints):
+    """Expand a player's role stints into one row per active game/season."""
+    rows = []
+    for g in sorted(set(active_games), key=lambda x: S.order_idx[x]):
+        gi = S.order_idx[g]
+        matches = [s for s in role_stints.get(mkey(name), []) if s['start'] <= gi <= s['end']]
+        role = matches[0]['role'] if matches else 'Unknown'
+        rows.append({'game': g, 'year': int(S.first_date[g][:4]), 'role': role})
+    return rows
+
+
+def primary_role(rows):
+    roles = {r['role'] for r in rows if r['role'] != 'Unknown'}
+    return roles.pop() if len(roles) == 1 else 'Unknown'
+
+
 # --------------------------------------------------------------------------- #
 # Per-player record
 # --------------------------------------------------------------------------- #
@@ -263,13 +348,28 @@ def placement_of(rows, S):
     return placements, events, px2_sum, avg
 
 
-def player_seasons(wins, S):
+def teams_of(rows):
+    teams = []
+    seen = set()
+    for r in rows:
+        team = r.get('team')
+        if team and team not in seen:
+            teams.append(team)
+            seen.add(team)
+    return teams
+
+
+def player_seasons(wins, S, part_by_event=None):
     """Group a player's (date-sorted) wins into per-season rows, chronological."""
+    part_by_event = part_by_event or {}
     by_season = defaultdict(lambda: {'count': 0, 'events': []})
     for w in wins:
         g = w['Game']
         by_season[g]['count'] += 1
-        by_season[g]['events'].append({'event': w['Event'], 'date': w.get('Date') or '', 'weight': round(1.0 / S.denom[g], 4)})
+        part = part_by_event.get(w['Event'], {})
+        by_season[g]['events'].append({'event': w['Event'], 'date': w.get('Date') or '',
+                                       'team': part.get('team', ''),
+                                       'weight': round(1.0 / S.denom[g], 4)})
     seasons = []
     for g in sorted(by_season, key=lambda x: S.order_idx[x]):
         c = by_season[g]['count']
@@ -285,7 +385,7 @@ def build_player(n, pub, S, idx):
     values)."""
     mk = mkey(n)
     wins = sorted(idx.player_wins.get(mk, []), key=lambda r: (r.get('Date') or ''))
-    seasons = player_seasons(wins, S)
+    seasons = player_seasons(wins, S, idx.part_rows.get(mk, {}))
     share_all  = sum((_sfrac(s) for s in seasons), Fraction(0))
     share_post = sum((_sfrac(s) for s in seasons if not s['pre_bo2']), Fraction(0))
 
@@ -326,7 +426,10 @@ def build_player(n, pub, S, idx):
            'career_span': career_span, 'majors_played': majors_played,
            'placements': placements, 'events_placed': events_placed,
            'place_x2_sum': place_x2_sum, 'avg_place': avg_place,
+           'teams': teams_of(all_majors),
            'note': PLAYER_NOTES.get(n)}
+    rec['role_by_game'] = role_by_game(n, [r['game'] for r in all_majors], S, idx.role_stints)
+    rec['primary_role'] = primary_role(rec['role_by_game'])
     return rec, all_majors, (share_all, share_post)
 
 
@@ -371,11 +474,23 @@ def build_leaderboard(players_out, exact_share):
             'firstPlayedDate': p['first_played_date'], 'lastPlayedDate': p['last_played_date'],
             'careerSpan': p['career_span'], 'majorsPlayed': p['majors_played'],
             'eventsPlaced': p['events_placed'], 'placeX2Sum': p['place_x2_sum'], 'avgPlace': p['avg_place'],
+            'primaryRole': p['primary_role'],
         })
     return leaderboard
 
 
-def build_games(events, pwins, S, top50_mkeys, disp_by_mkey):
+def index_event_winners(tpart):
+    winners = {}
+    for r in tpart:
+        if not _keep(r):
+            continue
+        if str(r.get('Place') or '').strip() == '1':
+            winners[r['Event']] = str(r.get('Team') or '').strip()
+    return winners
+
+
+def build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey):
+    event_winners = index_event_winners(tpart)
     games_out = []
     for g in S.order:
         evs = sorted([e for e in events if e['Game'] == g], key=lambda x: (x.get('Date') or ''))
@@ -386,6 +501,7 @@ def build_games(events, pwins, S, top50_mkeys, disp_by_mkey):
         games_out.append({'game': g, 'majors': S.held[g], 'denom': S.denom[g], 'weight': round(1.0 / S.denom[g], 4),
             'order': S.order_idx[g], 'preBo2': g in S.pre_bo2, 'firstDate': S.first_date[g],
             'events': [{'event': e['Event'], 'date': e.get('Date') or '', 'winner': e.get('Winner') or '',
+                        'winnerTeam': event_winners.get(e['Event'], e.get('Winner') or ''),
                         'type': e.get('EventType') or '', 'prize': e.get('Prizepool') or '', 'location': e.get('Location') or '',
                         'region': e.get('Region') or ''} for e in evs],
             'topPlayers': [{'name': p, 'wins': c} for p, c in wc.most_common(8)]})
@@ -405,7 +521,7 @@ def build_meta(S, events):
 def build():
     """Compute the full APP_DATA dict. Raises RuntimeError if any player's
     reconstructed wins do not equal their published wiki total."""
-    events_all, events, pwins, champs_rows, ppart = load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart = load_sources()
     S = season_context(events, events_all)
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
@@ -415,7 +531,8 @@ def build():
     idx = SimpleNamespace(
         part_dates=part_dates, part_rows=part_rows,
         player_wins=player_wins, wiki_name=wiki_name,
-        champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins))
+        champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins),
+        role_stints=index_role_stints(load_role_stints(), disp_by_mkey, S))
 
     players_out = {}   # keyed by display name (what player.html / leaderboard links use)
     participation = {} # name -> every major entered (won or not); emitted to a separate file
@@ -427,8 +544,10 @@ def build():
     return {'meta': build_meta(S, events),
             'leaderboard': build_leaderboard(players_out, exact_share),
             'players': players_out,
-            'games': build_games(events, pwins, S, top50_mkeys, disp_by_mkey),
-            'majors': dict(S.majors), '_participation': participation}
+            'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey),
+            'majors': dict(S.majors),
+            'teamLogos': build_team_logos(participation, load_team_logos()),
+            '_participation': participation}
 
 
 def write(data, path=None):

@@ -41,6 +41,15 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-04', tag:'Improved', title:'Compare tables are easier to scan',
+   body:`The player compare page now adds compact visual bars to each summary row and heatmap tinting to the
+   season-by-season matrix. The exact numbers still lead, but two-to-four-player comparisons now make leaders,
+   gaps, missing seasons, and Champs-winning seasons easier to read at a glance.`},
+  {date:'2026-07-04', tag:'Improved', title:'Player pages show event rosters',
+   body:`The player page's <strong>All entered</strong> view now lists the roster/team for each major finish.
+   When the CoD Esports Wiki has a standard team-logo file available, the row shows that logo beside the roster name;
+   otherwise it falls back to text so historical teams still stay readable. The same team labels now appear in the wins
+   view, profile header, compare season matrix, and season event winners.`},
   {date:'2026-07-04', tag:'New', title:'Average placement and events placed columns',
    body:`The leaderboard now includes <strong>Events placed</strong> and <strong>Average placement</strong>. Both stats
    recompute with the Eras/title filter, so a CDL-only view uses only CDL major finishes. Average placement is calculated
@@ -51,7 +60,8 @@ const ENTRIES = [
    adjusted wins, championships, peak, title count, career span, events, average placement, and the season-by-season
    wins per major entered that explain close debates like Shotzzy vs HyDra. It also suggests similar players to add
    to the comparison, includes a Rows picker for optional stats like raw wins and Post-BO2 adjusted wins, and keeps the
-   selected players and rows in the URL so comparisons are shareable.`},
+   selected players and rows in the URL so comparisons are shareable. The leaderboard now has a Compare mode for selecting
+   two to four players, and player/similar-player pages can seed a comparison directly.`},
   {date:'2026-07-03', tag:'Fixed', title:'Similar players and Signatures use consistent career spans',
    body:`The <a href="player.html?p=Crimsix">Similar players</a> comparison now uses the same participation-based
    career span as the map and Signatures pages: first major entered through last major entered, not first win through

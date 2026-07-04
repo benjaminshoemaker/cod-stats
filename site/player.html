@@ -25,7 +25,7 @@
 <main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="similarity.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=team-logos"></script>
 <script>
 mountNav('index.html');
 const name = qs('p');
@@ -41,12 +41,31 @@ if(!p || !lb){
   document.title = `${p.name} · CoD Era-Adjusted`;
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
   const avgPlace = p.avg_place == null ? '–' : p.avg_place.toFixed(1);
+  const compareHref = `compare.html?p=${encodeURIComponent(p.name)}`;
+  const teamLogo = team => {
+    const logo = D.teamLogos && D.teamLogos[team];
+    return logo && logo.src
+      ? `<img class="team-logo" src="${esc(logo.src)}" alt="" title="${esc(team)}" decoding="async" onerror="this.remove()">`
+      : `<span class="team-dot" title="${esc(team)}">${esc(team[0]||'?')}</span>`;
+  };
+  const teamSummary = teams => teams&&teams.length ? `
+    <div class="team-history" id="team-history">
+      <button class="team-summary" type="button" id="team-summary" aria-expanded="false" aria-controls="team-strip">
+        <span class="team-stack" aria-hidden="true">${teams.slice(0,4).map(teamLogo).join('')}</span>
+        <span>${teams.length} team${teams.length===1?'':'s'}</span>
+      </button>
+      <div class="team-strip" id="team-strip" hidden aria-label="${esc(p.name)} teams">${teams.map(t=>teamBadge(t)).join('')}</div>
+    </div>` : '';
 
   root.innerHTML = `
     <p class="crumb"><a href="index.html">← Leaderboard</a></p>
-    <h1>${esc(p.name)}</h1>
+    <div class="profile-head">
+      <h1>${esc(p.name)}</h1>
+      <a class="sharebtn" href="${compareHref}">Compare</a>
+    </div>
     <p class="small muted" style="margin:-.3rem 0 var(--space-3)">Source:
       <a href="https://cod-esports.fandom.com/wiki/${encodeURIComponent(p.wiki.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(p.name)} on the CoD Esports Wiki ↗</a></p>
+    ${teamSummary(p.teams)}
     <div class="stat-row">
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat"><div class="k">Events placed</div><div class="v">${p.events_placed}</div><div class="small faint">counted major finishes</div></div>
@@ -146,13 +165,13 @@ if(!p || !lb){
     const n = rows.length, sum = rows.reduce((a,m)=>a+(m.placeX2||0),0);
     return n ? (sum/2/n).toFixed(1) : '–';
   };
-
   function winsView(){
     return p.seasons.map(s=>{
       const evs = s.events.map(e=>`<tr>
           <td class="faint num small">${yr(e.date)}</td><td>${esc(e.event)}</td>
+          <td class="team-cell">${teamBadge(e.team)}</td>
           <td class="n faint">+${e.weight.toFixed(3)}</td></tr>`).join('');
-      return `<tr class="subhead"><td colspan="3">${esc(s.game)}: ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
+      return `<tr class="subhead"><td colspan="4">${esc(s.game)}: ${s.wins} win${s.wins>1?'s':''}, each worth 1/${s.majors} = ${(1/s.majors).toFixed(3)}</td></tr>${evs}`;
     }).join('');
   }
   function allView(){
@@ -164,8 +183,9 @@ if(!p || !lb){
       const won = rows.filter(m=>m.won).length;
       const body = rows.map(m=>`<tr${m.won?'':' class="faint"'}>
           <td class="num small">${yr(m.date)}</td><td>${esc(m.event)}</td>
+          <td class="team-cell">${teamBadge(m.team)}</td>
           <td class="n">${m.won?'<span class="pill champ">1st</span>':esc(placeLabel(m.place))}</td></tr>`).join('');
-      return `<tr class="subhead"><td colspan="3">${esc(g)}: won ${won} of ${rows.length} major${rows.length>1?'s':''} entered · avg place ${avgPlaceLabel(rows)}</td></tr>${body}`;
+      return `<tr class="subhead"><td colspan="4">${esc(g)}: won ${won} of ${rows.length} major${rows.length>1?'s':''} entered · avg place ${avgPlaceLabel(rows)}</td></tr>${body}`;
     }).join('');
   }
   function renderMajors(mode){
@@ -184,6 +204,15 @@ if(!p || !lb){
   }
 
   render();
+  const teamBtn = document.getElementById('team-summary');
+  if(teamBtn){
+    teamBtn.addEventListener('click', ()=>{
+      const strip = document.getElementById('team-strip');
+      const expanded = teamBtn.getAttribute('aria-expanded') === 'true';
+      teamBtn.setAttribute('aria-expanded', String(!expanded));
+      strip.hidden = expanded;
+    });
+  }
   document.getElementById('seg-wins').addEventListener('click', ()=>renderMajors('wins'));
   document.getElementById('seg-all').addEventListener('click', ()=>renderMajors('all'));
   mountSimilar(p.name);
@@ -293,6 +322,7 @@ function mountSimilar(name){
       <td class="sim-v vb">${B.debut??'–'}</td><td class="sim-tag"></td></tr>`;
     box.innerHTML = `
       <div class="sim-cmp-head">Comparing <span class="va">${esc(name)}</span> with <span class="vb">${esc(sel)}</span>
+        <a class="small" href="compare.html?p=${encodeURIComponent(name)}&p=${encodeURIComponent(sel)}">compare both →</a>
         <a class="small" href="player.html?p=${encodeURIComponent(sel)}">open profile →</a></div>
       <div style="overflow-x:auto"><table class="sim-table">
         <thead><tr><th class="l">Metric</th><th>${esc(name)}</th><th>${esc(sel)}</th><th>Match</th></tr></thead>

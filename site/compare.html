@@ -83,7 +83,7 @@
 
 <script src="data.js"></script>
 <script src="similarity.js"></script>
-<script src="assets/app.js"></script>
+<script src="assets/app.js?v=team-logos"></script>
 <script>
 mountNav('compare.html');
 
@@ -105,6 +105,7 @@ const LB = Object.fromEntries(D.leaderboard.map(r => [r.name, r]));
 const GAMES = Object.fromEntries(D.games.map(g => [g.game, g]));
 const DEFAULT_PLAYERS = ['Shotzzy', 'HyDra'];
 const MAX_PLAYERS = 4;
+const PLAYER_COLORS = ['#2563eb', '#059669', '#d97706', '#7c3aed'];
 const DEFAULT_ROWS = ['adjusted', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
 const ROW_IDS = new Set(['adjusted', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']);
 let selected = readPlayers();
@@ -192,6 +193,28 @@ function bestFor(row, vals){
   return row.better === 'min' ? Math.min(...nums) : Math.max(...nums);
 }
 
+function summaryBarScore(row, val, vals){
+  if(!Number.isFinite(val)) return 0;
+  const nums = vals.filter(Number.isFinite);
+  if(!nums.length) return 0;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  if(max === min) return val > 0 ? 100 : 0;
+  if(row.better === 'min') return Math.round(((max - val) / (max - min)) * 100);
+  return Math.round(((val - min) / (max - min)) * 100);
+}
+
+function summaryCell(row, name, val, vals, index, isBest){
+  const score = summaryBarScore(row, val, vals);
+  const color = PLAYER_COLORS[index % PLAYER_COLORS.length];
+  return `<td class="${isBest ? 'cell-best' : ''}" style="--cmp-color:${color};--summary-score:${score}%">
+    <div class="compare-summary-cell">
+      <div class="summary-main">${row.html(name)}</div>
+      <div class="summary-meter" aria-hidden="true"><i></i></div>
+    </div>
+  </td>`;
+}
+
 function mountRowMenu(){
   if(!rowMenu) return;
   const rows = metricRows();
@@ -240,6 +263,12 @@ function entriesFor(name, game){
   return PART && PART[name] ? PART[name].filter(r => r.game === game) : [];
 }
 
+function teamsFor(name, game){
+  const rows = entriesFor(name, game);
+  const teams = rows.map(r => r.team).filter(Boolean);
+  return [...new Set(teams)];
+}
+
 function champEventFor(name, game){
   const s = seasonFor(name, game);
   if(!s) return null;
@@ -255,16 +284,20 @@ function seasonValue(name, game){
   return { wins, entered, share: entered ? wins / entered : 0, champ: champEventFor(name, game), season: s };
 }
 
-function seasonCell(name, game, bestShare){
+function seasonCell(name, game, bestShare, index){
   const v = seasonValue(name, game);
   if(!v.entered) return `<span class="faint">-</span>`;
   const events = v.season ? v.season.events.map(e => esc(e.event)).join(', ') : '';
+  const teams = teamsFor(name, game);
   const best = v.share > 0 && v.share === bestShare ? ' cell-best' : '';
   const fill = Math.max(2, Math.round(v.share * 100));
-  return `<div class="compare-season-cell${best}">
+  const heat = Math.round(8 + v.share * 34);
+  const color = PLAYER_COLORS[index % PLAYER_COLORS.length];
+  return `<div class="compare-season-cell${best}" style="--cmp-color:${color};--heat:${heat}%;--season-score:${fill}%">
     <div class="season-top"><strong>${v.wins} / ${v.entered}</strong>${v.champ ? ' <span class="pill champ" title="Won Champs">◆</span>' : ''}</div>
-    <div class="season-meter" aria-hidden="true"><i style="width:${fill}%"></i></div>
+    <div class="season-meter" aria-hidden="true"><i></i></div>
     <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of entered</span>
+    ${teams.length ? `<span class="season-teams">${teams.map(t => teamBadge(t, 'compact')).join('')}</span>` : ''}
     ${events ? `<span class="small faint event-list">${events}</span>` : ''}
   </div>`;
 }
@@ -288,7 +321,7 @@ function renderSummary(){
   const rows = metricRows().filter(m => visibleRows.includes(m.id)).map(m => {
     const vals = selected.map(n => m.value(n));
     const best = bestFor(m, vals);
-    const cells = selected.map((n, i) => `<td class="${best != null && vals[i] === best && best > 0 ? 'cell-best' : ''}">${m.html(n)}</td>`).join('');
+    const cells = selected.map((n, i) => summaryCell(m, n, vals[i], vals, i, best != null && vals[i] === best && best > 0)).join('');
     return `<tr><th>${esc(m.label)}</th>${cells}</tr>`;
   }).join('');
   summary.innerHTML = `<div class="scroll-x compare-summary-wrap"><table class="data compare-summary" style="--players:${selected.length}">
@@ -303,9 +336,10 @@ function renderTable(){
   const rows = games.map(g => {
     const vals = selected.map(n => seasonValue(n, g));
     const bestShare = Math.max(...vals.map(v => v.share));
-    const cells = selected.map(n => {
+    const cells = selected.map((n, i) => {
       const v = seasonValue(n, g);
-      return `<td class="${v.entered ? '' : 'empty'}">${seasonCell(n, g, bestShare)}</td>`;
+      const color = PLAYER_COLORS[i % PLAYER_COLORS.length];
+      return `<td class="${v.entered ? 'season-heat' : 'empty'}" style="--cmp-color:${color};--heat:${Math.round(8 + v.share * 34)}%">${seasonCell(n, g, bestShare, i)}</td>`;
     }).join('');
     return `<tr>
       <td>${gameLink(g)} ${seasonTag(g)}</td>
@@ -335,7 +369,8 @@ function renderSuggestions(){
 }
 
 function render(){
-  if(selected.length < 2) selected = DEFAULT_PLAYERS.slice();
+  if(selected.length < 1) selected = DEFAULT_PLAYERS.slice();
+  if(selected.length === 1 && !statusEl.textContent) setStatus('Add another player to compare side by side.');
   renderChips();
   renderSuggestions();
   renderSummary();
@@ -363,7 +398,8 @@ chips.addEventListener('click', e => {
   const name = e.target.dataset && e.target.dataset.remove;
   if(!name) return;
   selected = selected.filter(n => n !== name);
-  if(selected.length < 2) setStatus('Comparison needs at least two players; restored the default pair.');
+  if(selected.length < 1) setStatus('Comparison needs at least one player; restored the default pair.');
+  else if(selected.length < 2) setStatus('Add another player to compare side by side.');
   else setStatus('');
   render();
 });

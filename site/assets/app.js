@@ -53,6 +53,14 @@ function deltaPill(d){
   if(d<0) return `<span class="pill down">▼ ${Math.abs(d)}</span>`;
   return `<span class="pill flat">–</span>`;
 }
+function teamBadge(team, cls=''){
+  if(!team) return '<span class="small faint">—</span>';
+  const logo = D.teamLogos && D.teamLogos[team];
+  const img = logo && logo.src
+    ? `<img class="team-logo" src="${esc(logo.src)}" alt="" title="${esc(team)}" decoding="async" onerror="this.remove()">`
+    : '';
+  return `<span class="team-badge${cls ? ' '+esc(cls) : ''}">${img}<span>${esc(team)}</span></span>`;
+}
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 

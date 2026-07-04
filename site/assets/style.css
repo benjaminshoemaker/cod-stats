@@ -98,6 +98,7 @@ p{margin:.6em 0}
 .stat .v{font-size:var(--text-2xl);font-weight:700;font-family:var(--mono);font-variant-numeric:tabular-nums;margin-top:var(--space-1)}
 .stat .v.sm{font-size:var(--text-lg)}
 .stat.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.profile-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap}
 
 /* generic table */
 table.data{border-collapse:collapse;width:100%;font-size:var(--text-base)}
@@ -107,6 +108,24 @@ table.data td.n,table.data th.n{text-align:right;font-family:var(--mono);font-va
 table.data tr:hover td{background:var(--accent-soft)}
 table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--muted);
   text-transform:uppercase;font-size:var(--text-xs);letter-spacing:.04em}
+.team-cell{min-width:150px}
+.team-badge{display:inline-flex;align-items:center;gap:var(--space-2);min-width:0}
+.team-logo{width:24px;height:24px;object-fit:contain;flex:0 0 auto}
+.team-badge.compact{font-size:var(--text-sm);max-width:100%}
+.team-badge.compact .team-logo{width:20px;height:20px}
+.team-history{margin:calc(-1 * var(--space-2)) 0 var(--space-3)}
+.team-summary{display:inline-flex;align-items:center;gap:var(--space-2);font:inherit;font-size:var(--text-sm);font-weight:600;
+  color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-2);
+  cursor:pointer;box-shadow:0 1px 2px rgba(15,23,42,.06)}
+.team-summary:hover{background:var(--panel)}
+.team-summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.team-stack{display:inline-flex;align-items:center;padding-left:2px}
+.team-stack .team-logo,.team-dot{width:18px;height:18px;border-radius:var(--radius-pill);border:1px solid #fff;background:var(--panel);
+  box-shadow:0 0 0 1px var(--line);object-fit:contain}
+.team-stack .team-logo:not(:first-child),.team-stack .team-dot:not(:first-child){margin-left:-6px}
+.team-dot{display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--muted)}
+.team-strip{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-2)}
+.team-strip .team-badge{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-2)}
 
 /* deltas */
 .delta{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
@@ -176,9 +195,17 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .clearfilters:hover{background:var(--panel-2);color:var(--ink);border-color:var(--line-2)}
 .sharebtn{font:inherit;font-size:var(--text-sm);font-weight:600;cursor:pointer;color:#fff;
   background:var(--accent);border:1px solid var(--accent);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3)}
+.sharebtn:disabled{opacity:.5;cursor:not-allowed;filter:none}
 .sharebtn:hover{filter:brightness(1.06)}
 .note{background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);
   font-size:var(--text-sm);color:var(--accent-ink)}
+.compare-tray{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;
+  border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--radius-md);padding:var(--space-3);margin:calc(-1 * var(--space-2)) 0 var(--space-3)}
+.compare-tray[hidden]{display:none}
+.compare-tray .chips{margin-top:var(--space-2)}
+.compare-tray-actions{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap}
+.compare-check{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:28px;cursor:pointer}
+.compare-check input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
 
 /* tabulator tuning (clean analytical) */
 /* reserve space while the table builds so the legend/footer below don't jump (CLS) */
@@ -194,7 +221,9 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .tabulator .tabulator-row{border-bottom:1px solid var(--line)}
 .tabulator .tabulator-row.tabulator-row-even{background:var(--panel)}
 .tabulator .tabulator-row:hover{background:var(--accent-soft)}
+.tabulator .tabulator-row.compare-selected-row{background:var(--accent-soft)}
 .tabulator .tabulator-cell{padding:var(--space-2) var(--space-3);border-right:none}
+.tabulator-row .tabulator-cell.compare-select-cell{padding-inline:var(--space-2)}
 .tabulator-row .tabulator-cell.tabnum{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .tabulator .tabulator-footer{background:#fff;border-top:1px solid var(--line)}
 
@@ -298,7 +327,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .rowmenu .colmenu-panel{right:0;left:auto}
 .compare-summary-wrap,.compare-table-wrap{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff}
 .compare-summary,.compare-table{margin:0}
-.compare-summary{min-width:calc(8rem + (var(--players,2) * 8.75rem))}
+.compare-summary{min-width:calc(8rem + (var(--players,2) * 9.4rem))}
 .compare-table{min-width:calc(8.5rem + (var(--players,2) * 10.25rem))}
 .compare-summary th,.compare-summary td,.compare-table th,.compare-table td{padding:var(--space-2) var(--space-3)}
 .compare-summary th:first-child,.compare-table th:first-child,.compare-table td:first-child{
@@ -306,23 +335,32 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .compare-summary thead th,.compare-table thead th{background:var(--cmp-band);position:sticky;top:0;z-index:3}
 .compare-summary thead th:first-child,.compare-table thead th:first-child{z-index:4;background:var(--cmp-band)}
 .compare-summary th:first-child{min-width:8rem}
-.compare-summary th:not(:first-child),.compare-summary td:not(:first-child){min-width:8.75rem}
+.compare-summary th:not(:first-child),.compare-summary td:not(:first-child){min-width:9.4rem}
 .compare-summary tbody th,.compare-table tbody td:first-child{font-weight:700;color:var(--muted)}
 .compare-summary td strong,.compare-summary td span{display:block;text-align:right}
 .compare-summary td strong{font-family:var(--mono);font-size:var(--text-lg);font-variant-numeric:tabular-nums;color:var(--ink)}
-.compare-summary td.cell-best,.compare-season-cell.cell-best{background:var(--accent-soft)}
+.compare-summary-cell{display:grid;gap:var(--space-1)}
+.summary-main{min-height:2.4rem}
+.summary-meter{height:6px;background:var(--panel-2);border-radius:var(--radius-pill);overflow:hidden}
+.summary-meter>i{display:block;width:var(--summary-score,0);height:100%;background:var(--cmp-color,var(--accent));border-radius:var(--radius-pill)}
+.compare-summary td.cell-best{background:var(--accent-soft)}
+.compare-season-cell.cell-best{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cmp-color,var(--accent)) 42%,var(--line))}
 .compare-table th:first-child,.compare-table td:first-child{min-width:8.5rem}
 .compare-table th:not(:first-child),.compare-table td:not(:first-child){min-width:10.25rem}
 .compare-table td{vertical-align:top}
 .compare-table td:not(:first-child):not(.n){font-variant-numeric:tabular-nums}
 .compare-table td.empty{background:var(--panel)}
+.compare-table td.season-heat{background:color-mix(in srgb,var(--cmp-color,var(--accent)) var(--heat,0),#fff)}
 .compare-season-cell{border-radius:var(--radius-sm);padding:var(--space-2);margin:calc(-1 * var(--space-2)) calc(-1 * var(--space-3))}
 .season-top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2)}
 .season-top strong{font-family:var(--mono);font-size:var(--text-md)}
 .season-meter{height:6px;background:var(--panel-2);border-radius:var(--radius-sm);overflow:hidden;margin:var(--space-1) 0}
-.season-meter>i{display:block;height:100%;background:var(--accent);border-radius:var(--radius-sm)}
+.season-meter>i{display:block;width:var(--season-score,0);height:100%;background:var(--cmp-color,var(--accent));border-radius:var(--radius-sm)}
 .compare-season-cell span{display:block;margin-top:2px}
 .compare-season-cell .pill{display:inline-block;margin-left:var(--space-1);vertical-align:1px}
+.season-teams{display:flex!important;gap:var(--space-1);flex-wrap:wrap;margin-top:var(--space-2)!important}
+.season-teams .team-badge{max-width:9.5rem;overflow:hidden}
+.season-teams .team-badge span{display:inline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0}
 .event-list{max-width:16rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:760px){
   .compare-page{padding-top:var(--space-4)}

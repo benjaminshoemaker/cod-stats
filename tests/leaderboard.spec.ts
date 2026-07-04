@@ -40,6 +40,18 @@ test.describe('leaderboard', () => {
     expect(fields).toEqual(FULL_COLUMN_ORDER);
   });
 
+  test('compare mode selects leaderboard players and opens compare page', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.getByRole('button', { name: 'Compare' }).click();
+    await expect(page.locator('#compare-tray')).toBeVisible();
+    await page.locator('input[data-compare-name="Shotzzy"]').check();
+    await page.locator('input[data-compare-name="HyDra"]').check();
+    await expect(page.locator('#compare-count')).toHaveText('2 selected');
+    await page.getByRole('button', { name: 'Compare selected' }).click();
+    await expect(page).toHaveURL(/compare\.html\?p=Shotzzy&p=HyDra/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra']);
+  });
+
   test('header is sticky to the window', async ({ page }) => {
     await page.goto('/index.html');
     const pos = await page.$eval('#table .tabulator-header', el => getComputedStyle(el).position);
@@ -422,12 +434,22 @@ test.describe('pages', () => {
     await expect(page.locator('a[href="https://cod-esports.fandom.com/wiki/Scump"]')).toBeVisible();
     await expect(page.locator('#ml-title')).toHaveText(/Every major win \(28\)/);
     await expect(page.locator('.stat').filter({ hasText: 'Average placement' })).toContainText(/\d+\.\d/);
+    await expect(page.locator('#team-summary')).toContainText('6 teams');
+    await expect(page.locator('#team-strip')).toBeHidden();
+    await expect(page.locator('#team-summary img.team-logo').first()).toHaveJSProperty('naturalWidth', 48);
+    await page.locator('#team-summary').click();
+    await expect(page.locator('#team-strip .team-badge').filter({ hasText: 'OpTic Texas' })).toBeVisible();
+    await expect(page.locator('#team-strip img.team-logo[title="OpTic Texas"]')).toHaveJSProperty('naturalWidth', 48);
+    await expect(page.locator('#winlist .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
+    await expect(page.locator('#winlist img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
     const winRows = await page.locator('#winlist tr').count();
     await page.click('#seg-all');
     await expect(page.locator('#ml-title')).toHaveText(/Every major entered \(\d+\)/);
     // participation.json is fetched on first toggle; wait for a losing placement to land
     await expect(page.locator('#winlist tr.faint').first()).toBeVisible();
     expect(await page.locator('#winlist tr').count()).toBeGreaterThan(winRows);
+    await expect(page.locator('#winlist .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
+    await expect(page.locator('#winlist img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
     await expect(page.locator('#ml-note')).toContainText('same normalized list');
     const consistent = await page.evaluate(async () => {
       const D = (window as any).APP_DATA;
@@ -436,9 +458,27 @@ test.describe('pages', () => {
       const rows = all.Scump;
       const sum = rows.reduce((a: number, r: any) => a + r.placeX2, 0);
       const avg = Math.floor((sum * 100 + rows.length) / (2 * rows.length)) / 100;
-      return rows.length === p.events_placed && sum === p.place_x2_sum && Math.abs(avg - p.avg_place) < 0.011;
+      return rows.length === p.events_placed && sum === p.place_x2_sum &&
+        rows.some((r: any) => r.team === 'OpTic Texas') &&
+        D.teamLogos['OpTic Texas']?.src?.startsWith('assets/team-logos/') &&
+        Math.abs(avg - p.avg_place) < 0.011;
     });
     expect(consistent).toBe(true);
+  });
+
+  test('player page can seed a comparison', async ({ page }) => {
+    await page.goto('/player.html?p=Scump');
+    await page.locator('#root').getByRole('link', { name: 'Compare' }).click();
+    await expect(page).toHaveURL(/compare\.html\?p=Scump/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Scump']);
+  });
+
+  test('similar player detail can compare both players', async ({ page }) => {
+    await page.goto('/player.html?p=Shotzzy');
+    await page.locator('.sim-row[data-comp="Cellium"]').click();
+    await page.getByRole('link', { name: 'compare both →' }).click();
+    await expect(page).toHaveURL(/compare\.html\?p=Shotzzy&p=Cellium/);
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'Cellium']);
   });
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
@@ -456,6 +496,8 @@ test.describe('pages', () => {
     await page.goto('/game.html?g=Black%20Ops%207');
     await expect(page.getByText(/in progress/).first()).toBeVisible();
     await expect(page.getByText('1 / 6')).toBeVisible(); // 6 scheduled majors (Challengers Finals dropped), not the 4 played
+    await expect(page.locator('table.data .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
+    await expect(page.locator('table.data img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
   });
 
   test('exact ties share a leaderboard rank (aBeZy & Simp both #3)', async ({ page }) => {
@@ -491,10 +533,22 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary tbody th', { hasText: 'Raw wins' })).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody th', { hasText: 'Post-BO2 adjusted' })).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' })).not.toContainText(/▲|▼/);
+    await expect(page.locator('.compare-summary .summary-meter')).toHaveCount(14);
+    const adjustedScores = await page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('td').evaluateAll(
+      els => els.map(el => getComputedStyle(el).getPropertyValue('--summary-score').trim()),
+    );
+    expect(adjustedScores).toEqual(['100%', '0%']);
 
     const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
     await expect(bo7).toContainText('in progress');
     await expect(bo7).toContainText('1 / 4');
+    await expect(bo7.locator('td.season-heat')).toHaveCount(2);
+    const bo7Heat = await bo7.locator('td.season-heat').first().evaluate(el => getComputedStyle(el).getPropertyValue('--heat').trim());
+    expect(bo7Heat).toMatch(/%$/);
+    await expect(bo7.locator('.season-teams .team-badge').filter({ hasText: 'OpTic Texas' })).toBeVisible();
+    await expect(bo7.locator('img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
+    const mw19 = page.locator('#season-table tbody tr', { hasText: 'Modern Warfare' });
+    await expect(mw19.locator('.season-teams .team-badge').filter({ hasText: 'Dallas Empire' })).toBeVisible();
     await expect(page.locator('#season-table tbody tr', { hasText: 'Black Ops 2' })).toHaveCount(0);
   });
 

@@ -43,8 +43,20 @@
         aria-label="Ring weight: a World Championship counts as this many regular majors">
       <span class="ringw-val" id="ringw-val">×1</span>
     </label>
+    <button type="button" class="clearfilters" id="compare-mode">Compare</button>
     <button type="button" class="sharebtn" id="sharebtn">Share ranking</button>
     <button type="button" class="clearfilters" id="clearfilters" hidden>Clear filters</button>
+  </div>
+  <div class="compare-tray" id="compare-tray" hidden>
+    <div>
+      <strong id="compare-count">0 selected</strong>
+      <span class="small muted" id="compare-help">Choose 2-4 players.</span>
+      <div class="chips" id="compare-selected" aria-label="Players selected for comparison"></div>
+    </div>
+    <div class="compare-tray-actions">
+      <button type="button" class="sharebtn" id="compare-go" disabled>Compare selected</button>
+      <button type="button" class="clearfilters" id="compare-clear">Clear</button>
+    </div>
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
@@ -104,6 +116,8 @@ const RING_MAX = 6;
 let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || 1)) || 1));
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
+let compareMode = false;
+let compareNames = new Set();
 
 // Column selector: these are toggleable; "Player" stays fixed as the row label.
 // Hidden columns are read from the URL (?hide=field,field) or saved prefs, default none.
@@ -133,12 +147,22 @@ const mq = window.matchMedia('(max-width: 760px)');
 const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
 const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
 const placeFmt  = c=>{const v=c.getValue(); return v==null?'<span class="faint">–</span>':v.toFixed(1);};
+const compareFmt = c => {
+  const name = c.getRow().getData().name;
+  const checked = compareNames.has(name);
+  const disabled = !checked && compareNames.size >= 4;
+  return `<label class="compare-check" title="Select ${esc(name)} for comparison">
+    <input type="checkbox" data-compare-name="${esc(name)}" aria-label="Compare ${esc(name)}"${checked?' checked':''}${disabled?' disabled':''}>
+  </label>`;
+};
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
 // Rebuilt in place when the viewport crosses the breakpoint, so crossing it keeps
 // scroll position and search text instead of reloading the page.
 const buildColumns = M => [
+    {title:"", field:"__compare", width:44, minWidth:44, hozAlign:"center", headerSort:false,
+      visible:compareMode, formatter:compareFmt, cssClass:"compare-select-cell"},
     {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
@@ -236,8 +260,10 @@ table.on("tableBuilt",()=>{
   if(startQ){ searchInput.value = startQ; table.setFilter("name","like",startQ); }
   // column show/hide menu (reflects the visibility already applied to `columns`)
   mountColumnMenu(table, COLS, syncURL);
+  syncCompareUI();
 });
 table.on("dataSorted",()=>{ syncURL(); markSort(); });
+table.on("dataFiltered",()=>syncCompareUI());
 
 // crossing the breakpoint swaps column definitions in place (widths + short labels),
 // carrying over the current visibility choices
@@ -247,6 +273,7 @@ mq.addEventListener('change', ()=>{
   cols.forEach(c=>{ if(hidden.has(c.field)) c.visible = false; });
   table.setColumns(cols);
   wireHeaderA11y(); markSort();
+  syncCompareUI();
 });
 
 searchInput.addEventListener("input",e=>{
@@ -344,6 +371,74 @@ ringRange.addEventListener('input', e=>{
 // "Clear filters" just clears the URL. Since the URL is the sole source of truth,
 // loading the bare path resets eras, columns, ring weight, search, and sort to defaults.
 document.getElementById('clearfilters').addEventListener('click', ()=>{ location.assign(location.pathname); });
+
+const compareModeBtn = document.getElementById('compare-mode');
+const compareTray = document.getElementById('compare-tray');
+const compareCount = document.getElementById('compare-count');
+const compareHelp = document.getElementById('compare-help');
+const compareSelected = document.getElementById('compare-selected');
+const compareGo = document.getElementById('compare-go');
+const compareClear = document.getElementById('compare-clear');
+
+function compareURL(names){
+  const p = new URLSearchParams();
+  names.forEach(n => p.append('p', n));
+  return `compare.html?${p.toString()}`;
+}
+
+function syncCompareUI(){
+  compareModeBtn.textContent = compareMode ? 'Cancel compare' : 'Compare';
+  compareModeBtn.setAttribute('aria-pressed', String(compareMode));
+  compareTray.hidden = !compareMode;
+  const names = Array.from(compareNames);
+  compareCount.textContent = `${names.length} selected`;
+  compareHelp.textContent = names.length < 2 ? 'Choose 2-4 players.' : names.length >= 4 ? 'Maximum 4 players selected.' : 'Ready to compare or add another.';
+  compareGo.disabled = names.length < 2;
+  compareSelected.innerHTML = names.map(n => `<span class="chip compare-chip">
+    <a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a>
+    <button type="button" data-remove-compare="${esc(n)}" aria-label="Remove ${esc(n)}">×</button>
+  </span>`).join('');
+  table.getRows().forEach(row => row.getElement().classList.toggle('compare-selected-row', compareNames.has(row.getData().name)));
+}
+
+function setCompareMode(on){
+  compareMode = on;
+  if(!compareMode) compareNames.clear();
+  const col = table.getColumn('__compare');
+  if(col) (compareMode ? col.show() : col.hide());
+  table.redraw(true);
+  syncCompareUI();
+}
+
+compareModeBtn.addEventListener('click', () => setCompareMode(!compareMode));
+compareClear.addEventListener('click', () => { compareNames.clear(); table.redraw(true); syncCompareUI(); });
+compareGo.addEventListener('click', () => {
+  const names = Array.from(compareNames);
+  if(names.length >= 2) location.assign(compareURL(names));
+});
+compareSelected.addEventListener('click', e => {
+  const name = e.target.dataset && e.target.dataset.removeCompare;
+  if(!name) return;
+  compareNames.delete(name);
+  table.redraw(true);
+  syncCompareUI();
+});
+document.getElementById('table').addEventListener('change', e => {
+  const name = e.target.dataset && e.target.dataset.compareName;
+  if(!name) return;
+  if(e.target.checked){
+    if(compareNames.size >= 4){
+      e.target.checked = false;
+      compareHelp.textContent = 'Compare up to 4 players at once.';
+      return;
+    }
+    compareNames.add(name);
+  }else{
+    compareNames.delete(name);
+  }
+  table.redraw(true);
+  syncCompareUI();
+});
 
 // "Share ranking" → copy a /r link that carries the current view's dynamic social card
 const shareBtn = document.getElementById('sharebtn');

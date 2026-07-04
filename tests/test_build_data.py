@@ -193,9 +193,135 @@ def test_average_placement_uses_same_rows_as_player_page(data):
         }
 
 
+def test_participation_rows_include_roster_team_and_cached_logo(data):
+    scump_rows = data["_participation"]["Scump"]
+    assert scump_rows[0]["team"] == "Quantic LeveraGe"
+    assert any(r["event"] == "Call of Duty League 2022 - Major 1"
+               and r["team"] == "OpTic Texas" for r in scump_rows)
+    assert data["players"]["Scump"]["teams"][:3] == [
+        "Quantic LeveraGe",
+        "apeX eSports NA",
+        "OpTic Gaming",
+    ]
+    assert data["players"]["Scump"]["teams"][-1] == "OpTic Texas"
+    assert any(e["event"] == "Call of Duty League 2022 - Major 1"
+               and e["team"] == "OpTic Texas"
+               for s in data["players"]["Scump"]["seasons"] for e in s["events"])
+
+    optic = data["teamLogos"]["OpTic Texas"]
+    assert optic["file"] == "File:OpTic Texaslogo std.png"
+    assert optic["remoteSrc"].startswith("https://static.wikia.nocookie.net/")
+    assert optic["src"].startswith("assets/team-logos/")
+
+
+def test_game_events_include_full_winner_team_for_logos(data):
+    bo7 = next(g for g in data["games"] if g["game"] == "Black Ops 7")
+    major4 = next(e for e in bo7["events"] if e["event"] == "Call of Duty League 2026 - Major 4")
+    assert major4["winner"] == "OTX"
+    assert major4["winnerTeam"] == "OpTic Texas"
+
+
+def test_curated_primary_roles_emit_by_active_game(data):
+    scump_roles = data["players"]["Scump"]["role_by_game"]
+    assert scump_roles
+    assert {r["role"] for r in scump_roles} == {"SMG"}
+    assert scump_roles[0] == {"game": "Black Ops", "year": 2011, "role": "SMG"}
+
+    formal_roles = data["players"]["FormaL"]["role_by_game"]
+    assert {r["role"] for r in formal_roles} == {"AR"}
+    assert formal_roles[0]["game"] == "Ghosts"
+
+    kenny_roles = data["players"]["Kenny"]["role_by_game"]
+    assert {r["role"] for r in kenny_roles} == {"Flex"}
+    assert [r["game"] for r in kenny_roles] == sorted(
+        {m["game"] for m in data["_participation"]["Kenny"]},
+        key=data["meta"]["seasonOrder"].index,
+    )
+
+
+def test_unlisted_primary_roles_default_to_unknown(data):
+    assert data["players"]["Crimsix"]["primary_role"] == "Unknown"
+    assert data["players"]["Bobby"]["primary_role"] == "Unknown"
+    assert {r["role"] for r in data["players"]["Bobby"]["role_by_game"]} == {"Unknown"}
+
+
+def test_role_stints_support_game_bounded_switches(monkeypatch):
+    roles = [
+        {"player": "Scump", "role": "SMG", "start_game": "Black Ops", "end_game": "Black Ops 4"},
+        {"player": "Scump", "role": "AR", "start_game": "Modern Warfare"},
+    ]
+    monkeypatch.setattr(build_data, "load_role_stints", lambda: roles)
+
+    events_all, events, *_ = build_data.load_sources()
+    S = build_data.season_context(events, events_all)
+    stints = build_data.index_role_stints(
+        build_data.load_role_stints(),
+        {build_data.mkey(n): n for n, _ in build_data.PUBLISHED},
+        S,
+    )
+
+    active = ["Black Ops", "Black Ops 4", "Modern Warfare", "Modern Warfare II"]
+    rows = build_data.role_by_game("Scump", active, S, stints)
+    assert [r["role"] for r in rows] == ["SMG", "SMG", "AR", "AR"]
+
+
+def test_role_stints_reject_overlapping_bounds(monkeypatch):
+    roles = [
+        {"player": "Scump", "role": "SMG", "start_game": "Black Ops 2", "end_game": "Black Ops 4"},
+        {"player": "Scump", "role": "AR", "start_game": "Ghosts"},
+    ]
+    monkeypatch.setattr(build_data, "load_role_stints", lambda: roles)
+
+    events_all, events, *_ = build_data.load_sources()
+    S = build_data.season_context(events, events_all)
+    with pytest.raises(RuntimeError, match="overlapping role stints"):
+        build_data.index_role_stints(
+            build_data.load_role_stints(),
+            {build_data.mkey(n): n for n, _ in build_data.PUBLISHED},
+            S,
+        )
+
+
+def test_curated_primary_roles_can_switch_across_real_careers(data):
+    crimsix = {r["game"]: r["role"] for r in data["players"]["Crimsix"]["role_by_game"]}
+    assert crimsix["Call of Duty 4"] == "AR"
+    assert crimsix["Black Ops 2"] == "SMG"
+    assert crimsix["Ghosts"] == "Flex"
+    assert crimsix["Infinite Warfare"] == "Flex"
+    assert crimsix["World War II"] == "AR"
+    assert crimsix["Vanguard"] == "AR"
+    assert data["players"]["Crimsix"]["primary_role"] == "Unknown"
+
+    attach = {r["game"]: r["role"] for r in data["players"]["Attach"]["role_by_game"]}
+    assert attach["Black Ops 2"] == "SMG"
+    assert attach["Vanguard"] == "SMG"
+    assert attach["Modern Warfare II"] == "AR"
+    assert data["players"]["Attach"]["primary_role"] == "Unknown"
+
+    joshh = {r["game"]: r["role"] for r in data["players"]["Joshh"]["role_by_game"]}
+    assert joshh["Modern Warfare 3"] == "SMG"
+    assert joshh["Ghosts"] == "SMG"
+    assert joshh["Advanced Warfare"] == "AR"
+    assert joshh["Black Ops 4"] == "AR"
+    assert data["players"]["Joshh"]["primary_role"] == "Unknown"
+
+
+def test_recent_curated_unknowns_now_have_roles(data):
+    expected = {
+        "MadCat": "AR",
+        "Censor": "SMG",
+        "Dedo": "AR",
+        "Frosty": "AR",
+        "Mack": "Flex",
+    }
+    for name, role in expected.items():
+        assert data["players"][name]["primary_role"] == role
+        assert {r["role"] for r in data["players"][name]["role_by_game"]} == {role}
+
+
 def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     import shutil
-    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json"):
+    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json", "team_participation.json"):
         shutil.copy(build_data._p(f), tmp_path / f)
     rows = json.load(open(tmp_path / "player_participation.json"))
     rows += [
@@ -206,7 +332,7 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
     monkeypatch.setattr(build_data, "HERE", str(tmp_path))
-    events_all, events, pwins, champs_rows, ppart = build_data.load_sources()
+    events_all, events, pwins, champs_rows, ppart, _ = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
     _, part_rows = build_data.index_participation(ppart, top)
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["place"] == "3-4"
@@ -293,7 +419,7 @@ def test_guard_raises_on_wrong_total(monkeypatch):
 def _build_with_champs(monkeypatch, tmp_path, mutate):
     """Copy the source JSON to a tmp dir, mutate the champs rows, and build from there."""
     import shutil
-    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json"):
+    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json", "team_participation.json"):
         shutil.copy(build_data._p(f), tmp_path / f)
     champs = json.load(open(tmp_path / "champs_wins.json"))
     mutate(champs["cargoquery"])
