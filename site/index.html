@@ -160,44 +160,45 @@ const compareFmt = c => {
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
 // Rebuilt in place when the viewport crosses the breakpoint, so crossing it keeps
 // scroll position and search text instead of reloading the page.
+const colSize = (M, mobileW, desktopW, grow=1) => M ? {width:mobileW, minWidth:mobileW} : {minWidth:desktopW, widthGrow:grow};
 const buildColumns = M => [
     {title:"", field:"__compare", width:44, minWidth:44, hozAlign:"center", headerSort:false,
       visible:compareMode, formatter:compareFmt, cssClass:"compare-select-cell"},
-    {title:M?"#":"Rank", field:"adjRank", width:M?50:88, minWidth:M?50:88, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"#":"Rank", field:"adjRank", ...colSize(M,50,84,.65), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
-      : {title:"Player", field:"name", width:168, minWidth:168, sorter:"string", formatter:playerFmt},
-    {title:M?"Adj":"Adjusted", field:"adjusted", width:M?76:128, minWidth:M?76:128, hozAlign:"right", headerHozAlign:"right",
+      : {title:"Player", field:"name", ...colSize(M,112,128,1.7), sorter:"string", formatter:playerFmt},
+    {title:M?"Adj":"Adjusted", field:"adjusted", ...colSize(M,76,112,1.15), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
-    {title:M?"+◆":"Adj +◆", field:"adjWeighted", width:M?80:124, minWidth:M?80:124, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"+◆":"Adj +◆", field:"adjWeighted", ...colSize(M,80,88,1), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", visible: ringN>1,
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
       headerTooltip:"Adjusted wins with the championship weighting applied (a ring counts as N majors)"},
-    {title:M?"Raw":"Raw wins", field:"raw", width:M?76:120, minWidth:M?76:120, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Raw":"Raw wins", field:"raw", ...colSize(M,76,80,.9), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
-    {title:M?"Events":"Events placed", field:"eventsPlaced", width:M?86:152, minWidth:M?86:152, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Events":"Events placed", field:"eventsPlaced", ...colSize(M,86,100,1.1), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Included majors where this player has a counted placement"},
-    {title:M?"Avg plc":"Average placement", field:"avgPlace", width:M?88:188, minWidth:M?88:188, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Avg plc":"Average placement", field:"avgPlace", ...colSize(M,88,122,1.25), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", formatter:placeFmt,
       headerTooltip:"Mean finish across included majors. Tied ranges use their midpoint."},
-    {title:M?"Wins Δ":"Wins Δ", field:"winsChange", width:M?92:112, minWidth:M?92:112, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Wins Δ":"Wins Δ", field:"winsChange", ...colSize(M,92,84,.9), hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Adjusted wins minus raw wins", formatter:c=>changePill(c.getValue(), true)},
-    {title:M?"Raw #":"Raw rank", field:"rawRank", width:M?84:120, minWidth:M?84:120, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Raw #":"Raw rank", field:"rawRank", ...colSize(M,84,84,.9), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Rank by raw wins"},
-    {title:M?"Rank Δ":"Rank Δ", field:"delta", width:M?92:112, minWidth:M?92:112, hozAlign:"right", headerHozAlign:"right",
+    {title:M?"Rank Δ":"Rank Δ", field:"delta", ...colSize(M,92,84,.9), hozAlign:"right", headerHozAlign:"right",
       sorter:"number", headerTooltip:"Movement vs raw rank", formatter:c=>changePill(c.getValue(), false)},
-    {title:"Peak", field:"peak", width:M?76:96, minWidth:M?76:96, hozAlign:"right", headerHozAlign:"right",
+    {title:"Peak", field:"peak", ...colSize(M,76,82,.75), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Most dominant season: % of that season's majors won",
       tooltip:(e,cell)=>{const i=cell.getRow().getData().peakInfo; return i&&i.season?`Best season: ${i.season} (${i.wins} of ${i.majors} majors)`:'';},
       formatter:c=>{const i=c.getRow().getData().peakInfo; return (i&&i.majors)?`${Math.round(i.wins/i.majors*100)}%`:'<span class="faint">–</span>';}},
-    {title:"Eras", field:"eras", width:M?76:96, minWidth:M?76:96, hozAlign:"right", headerHozAlign:"right",
+    {title:"Eras", field:"eras", ...colSize(M,76,82,.7), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Distinct CoD titles with a major win (longevity)",
       tooltip:(e,cell)=>{const d=cell.getRow().getData();
         return d.firstYear ? `won majors in ${d.eras} CoD titles · career ${d.firstYear}–${d.lastYear}` : 'no majors in the included seasons';}},
-    {title:"Champs", field:"champs", width:M?96:112, minWidth:M?96:112, hozAlign:"right", headerHozAlign:"right",
+    {title:"Champs", field:"champs", ...colSize(M,96,100,.8), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
 ];
@@ -207,7 +208,7 @@ columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
   data: cr(selected, ringN),
-  layout: "fitData",   // size to content so hiding columns narrows the table (vs. one column ballooning)
+  layout: "fitColumns",   // fill the desktop table while respecting compact min widths for expanded views
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
   columns,

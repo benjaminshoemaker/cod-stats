@@ -294,22 +294,25 @@ test.describe('column selector', () => {
     await expect(page.locator('.colmenu-panel input[data-field="name"]')).toHaveCount(0);
   });
 
-  test('hiding columns narrows the table (resizes, no ballooning column)', async ({ page }) => {
+  test('hiding columns keeps the filled table within its container', async ({ page }) => {
+    test.skip(test.info().project.name !== 'desktop', 'desktop only');
     await page.goto('/index.html');
-    const width = () => page.evaluate(() =>
-      (document.querySelector('#table .tabulator-table') as HTMLElement).offsetWidth);
-    const full = await width();
     await page.locator('#colmenu .colmenu-btn').click();
     for (const f of ['rawRank', 'delta', 'winsChange', 'peak', 'eras']) {
       await page.locator(`.colmenu-panel input[data-field="${f}"]`).uncheck();
     }
-    const reduced = await width();
-    expect(reduced).toBeLessThan(full);   // table shrinks to its remaining columns
+    const metrics = await page.evaluate(() => {
+      const table = document.querySelector('#table .tabulator-table') as HTMLElement;
+      const holder = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
+      return { tableWidth: table.offsetWidth, holderWidth: holder.clientWidth, scrollWidth: holder.scrollWidth };
+    });
+    expect(metrics.tableWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
+    expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
   });
 });
 
 test.describe('desktop layout', () => {
-  test('table sizes to content and never overflows the container', async ({ page }) => {
+  test('default desktop table fills its container without overflow', async ({ page }) => {
     test.skip(test.info().project.name !== 'desktop', 'desktop only');
     await page.goto('/index.html');
     const { inner, holder } = await page.evaluate(() => {
@@ -317,14 +320,13 @@ test.describe('desktop layout', () => {
       const h = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
       return { inner: t.offsetWidth, holder: h.clientWidth };
     });
-    // fitData: the table is as wide as its columns, and fits within the container
     expect(inner).toBeLessThanOrEqual(holder + 2);
-    expect(inner).toBeGreaterThan(holder * 0.6);
+    expect(inner).toBeGreaterThanOrEqual(holder - 2);
   });
 
   test('visible desktop header labels are not clipped', async ({ page }) => {
     test.skip(test.info().project.name !== 'desktop', 'desktop only');
-    for (const path of ['/index.html', '/index.html?show=eventsPlaced,avgPlace']) {
+    for (const path of ['/index.html', '/index.html?show=eventsPlaced,avgPlace', '/index.html?rings=3&show=eventsPlaced,avgPlace']) {
       await page.goto(path);
       const clipped = await page.$$eval('#table .tabulator-col[tabulator-field]', els =>
         els.filter(el => (el as HTMLElement).offsetParent !== null).map(el => {
@@ -338,6 +340,59 @@ test.describe('desktop layout', () => {
       );
       expect(clipped).toEqual([]);
     }
+  });
+
+  test('visible desktop sort arrows do not crowd header text', async ({ page }) => {
+    test.skip(test.info().project.name !== 'desktop', 'desktop only');
+    for (const path of ['/index.html', '/index.html?rings=3&show=eventsPlaced,avgPlace']) {
+      await page.goto(path);
+      const crowded = await page.$$eval('#table .tabulator-col[tabulator-field]', els =>
+        els.filter(el => (el as HTMLElement).offsetParent !== null).map(el => {
+          const title = el.querySelector('.tabulator-col-title') as HTMLElement | null;
+          const sorter = el.querySelector('.tabulator-col-sorter') as HTMLElement | null;
+          if (!title || !sorter || !title.textContent?.trim()) return null;
+          const range = document.createRange();
+          range.selectNodeContents(title);
+          const textRect = range.getBoundingClientRect();
+          const sorterRect = sorter.getBoundingClientRect();
+          return {
+            field: el.getAttribute('tabulator-field'),
+            gap: sorterRect.left - textRect.right,
+          };
+        }).filter((col): col is { field: string | null; gap: number } => !!col && col.gap < 4)
+      );
+      expect(crowded).toEqual([]);
+    }
+  });
+
+  test('expanded desktop table fits without bottom horizontal scroll', async ({ page }) => {
+    test.skip(test.info().project.name !== 'desktop', 'desktop only');
+    await page.goto('/index.html?rings=3&show=eventsPlaced,avgPlace');
+    const metrics = await page.evaluate(() => {
+      const holder = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
+      const table = document.querySelector('#table .tabulator-table') as HTMLElement;
+      const hRect = holder.getBoundingClientRect();
+      const offscreen = Array.from(document.querySelectorAll('#table .tabulator-col[tabulator-field]'))
+        .filter(el => (el as HTMLElement).offsetParent !== null)
+        .map(el => {
+          const rect = el.getBoundingClientRect();
+          return {
+            field: el.getAttribute('tabulator-field'),
+            left: rect.left,
+            right: rect.right,
+          };
+        })
+        .filter(col => col.left < hRect.left - 1 || col.right > hRect.right + 1);
+      return {
+        tableWidth: table.offsetWidth,
+        holderWidth: holder.clientWidth,
+        scrollWidth: holder.scrollWidth,
+        offscreen,
+      };
+    });
+    expect(metrics.tableWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
+    expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
+    expect(metrics.offscreen).toEqual([]);
   });
 });
 

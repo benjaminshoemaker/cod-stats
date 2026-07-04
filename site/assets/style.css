@@ -216,8 +216,10 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
   position:sticky;top:var(--navh,52px);z-index:11}
 .tabulator .tabulator-header .tabulator-col{background:#fff;border-right:none}
 .tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:var(--space-2) var(--space-3)}
-.tabulator .tabulator-header .tabulator-col-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.03em;color:var(--faint);
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.03em;color:var(--faint);
   white-space:normal;text-overflow:clip;overflow:visible}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable .tabulator-col-title{padding-right:26px}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-sorter{right:6px;width:12px;justify-content:center}
 .tabulator .tabulator-row{border-bottom:1px solid var(--line)}
 .tabulator .tabulator-row.tabulator-row-even{background:var(--panel)}
 .tabulator .tabulator-row:hover{background:var(--accent-soft)}
@@ -280,8 +282,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   font-size:var(--text-sm);max-width:260px;opacity:0;transition:opacity .1s}
 .charttip.on{opacity:1}
 .charttip.fixed{position:fixed;z-index:50}
-/* fitData sizes the board to its columns; center it so wide screens don't get a dead right gutter */
-@media(min-width:761px){#table .tabulator{width:max-content;max-width:100%;margin:0 auto}}
+@media(min-width:761px){#table .tabulator{width:100%;max-width:100%}}
 @media(max-width:760px){
   .scrollhint{display:block}
   /* tighter cells on phones so the compact columns fit their labels */
