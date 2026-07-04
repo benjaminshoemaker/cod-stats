@@ -102,7 +102,7 @@ const searchInput = document.getElementById("search");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','adjWeighted','peak','eras','raw','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs']);
+const VALID = new Set(['adjRank','name','adjusted','adjWeighted','primaryRole','peak','eras','raw','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs']);
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
@@ -125,6 +125,7 @@ const COLS = [
   {field:'adjRank',   label:'Rank'},
   {field:'adjusted',  label:'Adjusted'},
   {field:'raw',       label:'Raw wins'},
+  {field:'primaryRole',label:'Role'},
   {field:'eventsPlaced',label:'Events placed'},
   {field:'avgPlace',  label:'Average placement'},
   {field:'winsChange',label:'Wins Δ'},
@@ -135,7 +136,7 @@ const COLS = [
   {field:'champs',    label:'Champs'},
 ];
 const COL_FIELDS = new Set(COLS.map(c=>c.field));
-const DEFAULT_HIDE = new Set(['eventsPlaced','avgPlace']);
+const DEFAULT_HIDE = new Set(['primaryRole','eventsPlaced','avgPlace']);
 const startHide = new Set([
   ...Array.from(DEFAULT_HIDE).filter(f => !(params.get('show') || '').split(',').includes(f)),
   ...(params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)),
@@ -147,6 +148,7 @@ const mq = window.matchMedia('(max-width: 760px)');
 const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
 const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
 const placeFmt  = c=>{const v=c.getValue(); return v==null?'<span class="faint">–</span>':v.toFixed(1);};
+const roleFmt = c => rolePill(c.getValue());
 const compareFmt = c => {
   const name = c.getRow().getData().name;
   const checked = compareNames.has(name);
@@ -177,6 +179,8 @@ const buildColumns = M => [
       headerTooltip:"Adjusted wins with the championship weighting applied (a ring counts as N majors)"},
     {title:M?"Raw":"Raw wins", field:"raw", ...colSize(M,76,80,.9), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
+    {title:"Role", field:"primaryRole", ...colSize(M,78,78,.8), sorter:"string", formatter:roleFmt,
+      headerTooltip:"Curated primary role for the selected seasons"},
     {title:M?"Events":"Events placed", field:"eventsPlaced", ...colSize(M,86,100,1.1), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Included majors where this player has a counted placement"},
     {title:M?"Avg plc":"Average placement", field:"avgPlace", ...colSize(M,88,122,1.25), hozAlign:"right", headerHozAlign:"right",

@@ -40,7 +40,16 @@ def load_players(data_json=None):
     """Per-player resume records from site/data.json — the pure-JSON twin of
     data.js that build_data.write() emits for non-browser consumers."""
     data_json = data_json or os.path.join(ROOT, "site", "data.json")
-    return json.load(open(data_json))["leaderboard"]
+    data = json.load(open(data_json))
+    players = []
+    full = data.get("players", {})
+    for row in data["leaderboard"]:
+        p = dict(row)
+        detail = full.get(row["name"], {})
+        p["role_by_game"] = detail.get("role_by_game", [])
+        p["primaryRole"] = row.get("primaryRole") or detail.get("primary_role")
+        players.append(p)
+    return players
 
 
 def load_registry(path=None):
@@ -107,6 +116,8 @@ class FeatureSpace:
         self.names = [p["name"] for p in players]
         self.reg = registry
         self.cap = float(registry.get("cap", 4.0))
+        self.role_weight = float(registry.get("role_weight", 0.0))
+        self.role_maps = [self._role_map(p) for p in players]
 
         # flatten groups -> ordered feature list with per-feature weight
         self.feats, self.weights, self.logs, self.labels = [], [], [], []
@@ -122,6 +133,27 @@ class FeatureSpace:
         self.weights /= self.weights.sum()  # normalise to 1
 
         self._build()
+
+    @staticmethod
+    def _role_map(player):
+        return {r["game"]: r["role"] for r in player.get("role_by_game", [])
+                if r.get("role") and r.get("role") != "Unknown"}
+
+    @staticmethod
+    def _role_step(a, b):
+        if a == b:
+            return 0.0
+        if "Flex" in (a, b):
+            return 0.5
+        return 1.0
+
+    def role_distance(self, i, k):
+        """Pairwise role distance on overlapping known-role seasons only."""
+        ai, ak = self.role_maps[i], self.role_maps[k]
+        games = sorted(set(ai) & set(ak))
+        if not games:
+            return None
+        return sum(self._role_step(ai[g], ak[g]) for g in games) / len(games)
 
     def _build(self):
         n, m = len(self.players), len(self.feats)
@@ -158,7 +190,11 @@ class FeatureSpace:
         diff = np.abs(self.scaled[i, both] - self.scaled[k, both])
         d = np.minimum(diff / self.cap, 1.0)          # bounded per-feature
         w = self.weights[both]
-        return float((w * d).sum() / w.sum())         # weighted, renormalised
+        base = float((w * d).sum() / w.sum())         # weighted, renormalised
+        rd = self.role_distance(i, k)
+        if rd is None or self.role_weight <= 0:
+            return base
+        return (1 - self.role_weight) * base + self.role_weight * rd
 
     def distance_matrix(self):
         n = len(self.players)
@@ -176,11 +212,23 @@ class FeatureSpace:
         diff = np.abs(self.scaled[i, both] - self.scaled[k, both])
         d = np.minimum(diff / self.cap, 1.0)
         contrib = np.zeros_like(self.weights)
-        contrib[both] = self.weights[both] * d
+        feature_scale = 1 - self.role_weight if self.role_weight > 0 else 1.0
+        contrib[both] = self.weights[both] * d * feature_scale
+        rd = self.role_distance(i, k)
+        if rd is not None and self.role_weight > 0 and rd > 0:
+            role_label = "Primary role"
+            role_contrib = self.role_weight * rd
+        else:
+            role_label = None
+            role_contrib = 0.0
         tot = contrib.sum() or 1.0
         order = np.argsort(-contrib)
-        return [(self.labels[j], round(float(contrib[j] / tot), 3))
-                for j in order if both[j]]
+        out = [(self.labels[j], float(contrib[j])) for j in order if both[j]]
+        if role_label:
+            out.append((role_label, role_contrib))
+            tot += role_contrib
+            out.sort(key=lambda x: -x[1])
+        return [(label, round(float(val / tot), 3)) for label, val in out]
 
     # weighted Euclidean coords for Ward (Ward needs a Euclidean embedding)
     def ward_coords(self):
@@ -386,6 +434,7 @@ def emit_site(fs, D, C, players, k_solo=6):
     # teammateThr rides along so player.html's "teammate" pill uses the same
     # cutoff the solo lists were built with, instead of hardcoding its own
     payload = {"config": {"groups": SITE_GROUPS,
+                          "roleWeight": fs.role_weight,
                           "teammateThr": TEAMMATE_COWIN_THR},
                "players": players_out}
     path = os.path.join(ROOT, "site", "similarity.js")

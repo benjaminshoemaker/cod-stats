@@ -61,6 +61,48 @@ function teamBadge(team, cls=''){
     : '';
   return `<span class="team-badge${cls ? ' '+esc(cls) : ''}">${img}<span>${esc(team)}</span></span>`;
 }
+function roleRows(player, games){
+  const rows = (player && player.role_by_game) || [];
+  if(!games) return rows;
+  const wanted = new Set(games);
+  return rows.filter(r => wanted.has(r.game));
+}
+function roleSummary(player, games){
+  const roles = [...new Set(roleRows(player, games).map(r => r.role).filter(r => r && r !== 'Unknown'))];
+  if(roles.length === 0) return 'Unknown';
+  if(roles.length === 1) return roles[0];
+  return 'Mixed';
+}
+function roleForGame(player, game){
+  const row = ((player && player.role_by_game) || []).find(r => r.game === game);
+  return row ? row.role : 'Unknown';
+}
+function rolePill(role){
+  const r = role || 'Unknown';
+  return `<span class="pill role role-${esc(r.toLowerCase())}">${esc(r)}</span>`;
+}
+function roleDisputeUrl(player, game, currentRole){
+  const title = `[Role dispute] ${player} - ${game}`;
+  const body = [
+    `Player: ${player}`,
+    `Season: ${game}`,
+    `Current role: ${currentRole || 'Unknown'}`,
+    '',
+    'Proposed role: ',
+    'Evidence URL: ',
+    'Timestamp / notes: '
+  ].join('\n');
+  const p = new URLSearchParams({
+    template: 'role_dispute.yml',
+    title,
+    labels: 'role-data',
+    body
+  });
+  return `https://github.com/benjaminshoemaker/cod-stats/issues/new?${p.toString()}`;
+}
+function roleDisputeLink(player, game, currentRole){
+  return `<a class="role-dispute small" href="${roleDisputeUrl(player, game, currentRole)}" target="_blank" rel="noopener">Dispute</a>`;
+}
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 

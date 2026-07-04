@@ -8,6 +8,14 @@
 function gcd(a, b){ a = a < 0n ? -a : a; b = b < 0n ? -b : b; while(b){ const t = a % b; a = b; b = t; } return a; }
 function lcm(a, b){ return a / gcd(a, b) * b; }
 function avgPlaceFromX2(sum, events){ return events ? Math.floor((sum * 100 + events) / (2 * events)) / 100 : null; }
+function roleSummaryForGames(player, selected){
+  const roles = new Set(((player && player.role_by_game) || [])
+    .filter(r => selected.has(r.game) && r.role && r.role !== 'Unknown')
+    .map(r => r.role));
+  if(roles.size === 0) return 'Unknown';
+  if(roles.size === 1) return [...roles][0];
+  return 'Mixed';
+}
 
 // Era/title selection helpers derived from the dataset (title order, presets, slug
 // encoding for shareable custom sets). One place so UI and endpoint agree.
@@ -78,6 +86,7 @@ export function computeRows(D, selected, ringWeight){
       name, raw, _numer: numer,
       champs: (p.champ_events || []).filter(c => won.has(c.event)).length,
       adjusted,
+      primaryRole: roleSummaryForGames(p, selected),
       eventsPlaced,
       avgPlace: avgPlaceFromX2(placeX2Sum, eventsPlaced),
       peak: best.wins / best.majors,

@@ -2,6 +2,8 @@
   "_doc": "Feature registry for the player-similarity engine. Each feature belongs to a GROUP; the group's weight is split evenly among its features, so adding a correlated feature dilutes within its group instead of inflating that concept's total weight. To add a new data source: add a feature row here (name must match a key in the merged per-player record). 'log' applies log1p before robust-scaling (for skewed counts). 'cap' bounds each per-feature distance: differences beyond `cap` robust-IQRs count as maximally different (keeps the metric bounded so a new feature can never blow up the scale). Path/consistency features come from analysis/path_features.py (player_participation.json); they distinguish teammates by career PATH and placement depth, not just shared trophies.",
   "cap": 4.0,
   "_note_era": "EVERY scored feature must be era-independent: an era-adjusted value (adjAll, peakAll), a rate (win_conversion, finals/deep-run), a year count (careerSpan, tenure_years), or an era-neutral count (champs, titles, teams). Deliberately EXCLUDED as era-tainted: `raw` (early seasons had 17 majors vs 6-7 now, and it 0.90-duplicates adjAll), `attendances` (calendar density, not career), and majors-based tenure (replaced by tenure_years = careerSpan/distinct_teams). Debut year is shown only as non-scored context.",
+  "role_weight": 0.07,
+  "_note_role": "Primary role is scored as a separate low-weight pairwise component, not as a normal scalar feature: compare overlapping active seasons only, ignore Unknown seasons, AR/SMG distance = 1.0, AR/Flex and Flex/SMG distance = 0.5, same role = 0.",
   "groups": {
     "success": {
       "weight": 0.42,

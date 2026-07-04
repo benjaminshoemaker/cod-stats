@@ -1,0 +1,62 @@
+name: Dispute player role
+description: Challenge a curated AR/Flex/SMG role for a specific player season.
+title: "[Role dispute] Player - Season"
+labels: ["role-data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Role disputes are season-specific. Please include evidence such as a VOD with timestamp, screenshot, interview, or credible written source.
+  - type: input
+    id: player
+    attributes:
+      label: Player
+      placeholder: Scump
+    validations:
+      required: true
+  - type: input
+    id: season
+    attributes:
+      label: Season / game
+      placeholder: Black Ops 2
+    validations:
+      required: true
+  - type: dropdown
+    id: current_role
+    attributes:
+      label: Current listed role
+      options:
+        - AR
+        - Flex
+        - SMG
+        - Mixed
+        - Unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: proposed_role
+    attributes:
+      label: Proposed role
+      options:
+        - AR
+        - Flex
+        - SMG
+        - Unknown
+    validations:
+      required: true
+  - type: input
+    id: evidence_url
+    attributes:
+      label: Evidence URL
+      description: YouTube/VOD link with timestamp preferred.
+      placeholder: https://www.youtube.com/watch?v=...&t=123s
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Explanation
+      description: Briefly explain what the evidence shows.
+      placeholder: At 12:34, the POV/loadout shows...
+    validations:
+      required: true

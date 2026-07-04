@@ -140,6 +140,17 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .pill.tag{background:var(--accent-soft);color:var(--accent)}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.champ{background:var(--gold-soft);color:var(--gold-ink);border:1px solid var(--gold-line);font-variant-numeric:tabular-nums}
+.pill.role{border:1px solid var(--line);font-family:var(--mono);font-variant-numeric:tabular-nums;text-transform:uppercase;letter-spacing:.02em}
+.pill.role-ar{background:#eef7f2;color:#047857;border-color:#c8ead9}
+.pill.role-smg{background:#eef4ff;color:#1e40af;border-color:#cbdcff}
+.pill.role-flex{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.pill.role-mixed{background:#f5f3ff;color:#5b21b6;border-color:#ddd6fe}
+.pill.role-unknown{background:var(--panel-2);color:var(--muted)}
+.role-dispute{color:var(--muted);white-space:nowrap}
+.role-dispute:hover{color:var(--accent)}
+.role-table .pill.role{min-width:4.7em;text-align:center}
+.role-cell{display:inline-flex;align-items:center;gap:var(--space-2);flex-wrap:wrap}
+.season-role{display:flex!important;align-items:center;gap:var(--space-2);flex-wrap:wrap}
 
 /* bars */
 .bar-track{background:var(--panel-2);border-radius:var(--radius-sm);height:9px;overflow:hidden;min-width:60px}
@@ -343,6 +354,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .compare-summary tbody th,.compare-table tbody td:first-child{font-weight:700;color:var(--muted)}
 .compare-summary td strong,.compare-summary td span{display:block;text-align:right}
 .compare-summary td strong{font-family:var(--mono);font-size:var(--text-lg);font-variant-numeric:tabular-nums;color:var(--ink)}
+.compare-summary td .pill{display:inline-block;text-align:center}
 .compare-summary-cell{display:grid;gap:var(--space-1)}
 .summary-main{min-height:2.4rem}
 .summary-meter{height:6px;background:var(--panel-2);border-radius:var(--radius-pill);overflow:hidden}

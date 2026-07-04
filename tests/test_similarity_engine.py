@@ -38,3 +38,41 @@ def test_contributions_ignore_missing_features_instead_of_nan_poisoning():
 
     assert contrib == [("X", 1.0)]
     assert all(math.isfinite(v) for _, v in contrib)
+
+
+def test_role_distance_uses_overlapping_known_seasons_only():
+    players = [
+        {"name": "AR", "x": 1, "role_by_game": [
+            {"game": "Ghosts", "role": "AR"},
+            {"game": "Advanced Warfare", "role": "Unknown"},
+        ]},
+        {"name": "Flex", "x": 1, "role_by_game": [
+            {"game": "Ghosts", "role": "Flex"},
+            {"game": "Advanced Warfare", "role": "SMG"},
+        ]},
+        {"name": "SMG", "x": 1, "role_by_game": [
+            {"game": "Ghosts", "role": "SMG"},
+        ]},
+        {"name": "NoOverlap", "x": 1, "role_by_game": [
+            {"game": "Black Ops 6", "role": "SMG"},
+        ]},
+    ]
+    registry = {
+        "cap": 4.0,
+        "role_weight": 0.07,
+        "groups": {
+            "g": {
+                "weight": 1.0,
+                "features": {"x": {"label": "X"}},
+            }
+        },
+    }
+    fs = similarity.FeatureSpace(players, registry)
+
+    assert fs.role_distance(0, 0) == 0
+    assert fs.role_distance(0, 1) == 0.5
+    assert fs.role_distance(0, 2) == 1.0
+    assert fs.role_distance(0, 3) is None
+    assert fs.pair_distance(0, 1) == pytest.approx(0.035)
+    assert fs.pair_distance(0, 2) == pytest.approx(0.07)
+    assert fs.pair_distance(0, 3) == pytest.approx(0.0)

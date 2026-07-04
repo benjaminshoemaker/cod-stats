@@ -106,8 +106,8 @@ const GAMES = Object.fromEntries(D.games.map(g => [g.game, g]));
 const DEFAULT_PLAYERS = ['Shotzzy', 'HyDra'];
 const MAX_PLAYERS = 4;
 const PLAYER_COLORS = ['#2563eb', '#059669', '#d97706', '#7c3aed'];
-const DEFAULT_ROWS = ['adjusted', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
-const ROW_IDS = new Set(['adjusted', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']);
+const DEFAULT_ROWS = ['adjusted', 'role', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
+const ROW_IDS = new Set(['adjusted', 'role', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']);
 let selected = readPlayers();
 let visibleRows = readRows();
 let PART = null;
@@ -173,6 +173,10 @@ function champText(p){
 function metricRows(){
   return [
     {id:'adjusted', label:'Adjusted wins', value:n=>D.players[n].adj_all, html:n=>`<strong>${fmtNum(D.players[n].adj_all, 1)}</strong><span class="small faint">#${LB[n].adjRank}</span>`},
+    {id:'role', label:'Role', noBest:true, value:n=>null, html:n=>{
+      const role = roleSummary(D.players[n]);
+      return `${rolePill(role)}<span class="small faint">${role === 'Mixed' ? 'varies by season' : 'curated'}</span>`;
+    }},
     {id:'raw', label:'Raw wins', value:n=>D.players[n].raw, html:n=>`<strong>${D.players[n].raw}</strong><span class="small faint">wiki #${LB[n].rawRank}</span>`},
     {id:'post', label:'Post-BO2 adjusted', value:n=>D.players[n].adj_post, html:n=>`<strong>${fmtNum(D.players[n].adj_post, 1)}</strong><span class="small faint">#${LB[n].postRank}</span>`},
     {id:'champs', label:'Champs', value:n=>D.players[n].champs, html:n=>champText(D.players[n])},
@@ -188,6 +192,7 @@ function metricRows(){
 }
 
 function bestFor(row, vals){
+  if(row.noBest) return null;
   const nums = vals.filter(Number.isFinite);
   if(!nums.length) return null;
   return row.better === 'min' ? Math.min(...nums) : Math.max(...nums);
@@ -210,7 +215,7 @@ function summaryCell(row, name, val, vals, index, isBest){
   return `<td class="${isBest ? 'cell-best' : ''}" style="--cmp-color:${color};--summary-score:${score}%">
     <div class="compare-summary-cell">
       <div class="summary-main">${row.html(name)}</div>
-      <div class="summary-meter" aria-hidden="true"><i></i></div>
+      ${row.noBest ? '' : '<div class="summary-meter" aria-hidden="true"><i></i></div>'}
     </div>
   </td>`;
 }
@@ -289,6 +294,7 @@ function seasonCell(name, game, bestShare, index){
   if(!v.entered) return `<span class="faint">-</span>`;
   const events = v.season ? v.season.events.map(e => esc(e.event)).join(', ') : '';
   const teams = teamsFor(name, game);
+  const role = roleForGame(D.players[name], game);
   const best = v.share > 0 && v.share === bestShare ? ' cell-best' : '';
   const fill = Math.max(2, Math.round(v.share * 100));
   const heat = Math.round(8 + v.share * 34);
@@ -298,6 +304,7 @@ function seasonCell(name, game, bestShare, index){
     <div class="season-meter" aria-hidden="true"><i></i></div>
     <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of entered</span>
     ${teams.length ? `<span class="season-teams">${teams.map(t => teamBadge(t, 'compact')).join('')}</span>` : ''}
+    <span class="season-role">${rolePill(role)} ${roleDisputeLink(name, game, role)}</span>
     ${events ? `<span class="small faint event-list">${events}</span>` : ''}
   </div>`;
 }
