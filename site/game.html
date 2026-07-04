@@ -67,6 +67,10 @@ if(!g){
       <div class="stat"><div class="k">vs avg season</div><div class="v sm"><span class="delta flat">${ratio.toFixed(2)}×</span></div><div class="small faint">avg ${avg.toFixed(1)} majors</div></div>
       <div class="stat"><div class="k">Win the whole season</div><div class="v sm">1.00</div><div class="small faint">all ${den} = one "season"</div></div>
     </div>
+    ${pageToc([
+      ['events','Season events'],
+      ['players','Leaderboard players']
+    ])}
 
     <div class="note">How adjusted wins work here: ${split
       ? `${g.majors} majors were held, but this season ran a split <strong>Home Series</strong> format, so every team played only
@@ -81,25 +85,26 @@ if(!g){
     For comparison, a single win in a lean 6-major season is worth <strong>${(den/6).toFixed(2)}×</strong> a single win here.</div>
 
     <div class="grid cols-2" style="margin-top:var(--space-6)">
-      <div>
-        <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`}</h2>
+      <section id="events">
+        <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`} ${anchorLink('events','Season events')}</h2>
         <div class="scroll-x"><table class="data">
           <thead><tr><th>Date</th><th>Event</th><th>Winner</th><th>Type</th><th class="n">Weight</th></tr></thead>
           <tbody>${evRows}</tbody>
         </table></div>
-      </div>
-      <div>
-        <h2>Leaderboard players this season</h2>
+      </section>
+      <section id="players">
+        <h2>Leaderboard players this season ${anchorLink('players','Leaderboard players')}</h2>
         <p class="small muted">Their wins here, and the season-share each earned.</p>
         <div class="scroll-x"><table class="data">
           <thead><tr><th>Player</th><th class="n">Wins</th><th class="n">Share earned</th></tr></thead>
           <tbody>${players||'<tr><td colspan=3 class="muted">No leaderboard players won this season.</td></tr>'}</tbody>
         </table></div>
-      </div>
+      </section>
     </div>
   `;
 }
 mountFoot();
+scrollToHashTarget();
 </script>
 </body>
 </html>

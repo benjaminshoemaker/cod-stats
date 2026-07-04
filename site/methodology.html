@@ -105,10 +105,16 @@ root.innerHTML=`
   <p class="lede">This page explains the site's rules: how adjusted wins convert raw major wins into season-share value,
   which tournaments count, why totals can differ from other trackers, and where optional extras like ring weighting fit.
   The core adjustment is narrow: it corrects for how many majors were available in each season.</p>
-  <p class="jump small"><a href="#era-adjustment">Start with adjusted wins</a> ·
-  <a href="#tournaments">Jump to tournament/source rules and the Scump 28-vs-30 explainer</a></p>
+  ${pageToc([
+    ['era-adjustment','Adjusted wins'],
+    ['season-share','Season share'],
+    ['scoring-options','Scoring options'],
+    ['crimsix-simp','Crimsix vs. Simp'],
+    ['placement','Placement stats'],
+    ['tournaments','Tournament rules']
+  ])}
 
-  <h2 id="era-adjustment">1. Adjusted wins: why season size matters</h2>
+  <h2 id="era-adjustment">1. Adjusted wins: why season size matters ${anchorLink('era-adjustment','Adjusted wins')}</h2>
   <p>Every bar is one season. Early Call of Duty had a packed circuit: <strong>${bo2} majors in Black Ops 2</strong>,
   versus <strong>6–7</strong> in modern seasons. More events means more chances to win one.
   <span class="pill warn small">amber</span> = above the ${avg.toFixed(1)}-major average.</p>
@@ -117,7 +123,7 @@ root.innerHTML=`
   <p class="small muted">So a player active in 2013–2015 could rack up wins a modern player never had the chance at.
   Raw totals reward <em>showing up in a busy era</em> as much as dominance.</p>
 
-  <h2>2. The fix: make every season worth the same</h2>
+  <h2 id="season-share">2. The fix: make every season worth the same ${anchorLink('season-share','Season share')}</h2>
   <p>Treat each season as a single unit. A win is worth <span class="formula">1 ÷ (majors that season)</span>:
   your <strong>share</strong> of that season. Win 20% of a season's majors and you bank 0.20, whether that was 2-of-10 or
   3-of-15. One win is worth very different amounts depending on when it happened:</p>
@@ -130,7 +136,7 @@ root.innerHTML=`
       <p class="small">1 / ${small} = <strong>${(1/small).toFixed(3)}</strong> of a season, worth ${(bo2/small).toFixed(1)}× as much</p></div>
   </div>
 
-  <h2>3. Three ways you could score it</h2>
+  <h2 id="scoring-options">3. Three ways you could score it ${anchorLink('scoring-options','Scoring options')}</h2>
   <div class="grid cols-3" style="margin-top:var(--space-2)">
     <div class="opt"><h3>Option 1</h3><div class="pill flat small">status quo</div>
       <p class="small">Just count wins.</p><div class="formula">total wins</div>
@@ -154,7 +160,7 @@ root.innerHTML=`
     <em>opportunity-normalized</em> major wins, not a full "who was better" verdict.
   </div>
 
-  <h2>4. Head-to-head: Crimsix vs. Simp</h2>
+  <h2 id="crimsix-simp">4. Head-to-head: Crimsix vs. Simp ${anchorLink('crimsix-simp','Crimsix vs. Simp')}</h2>
   <p>A clear, high-profile example. <strong style="color:var(--accent)">Crimsix</strong> piled up ${C.raw} wins, mostly in the 16–17-major
   seasons; <strong style="color:var(--amber-ink)">Simp</strong> has ${S.raw}, almost all in lean 6–7-major seasons. Neither moves much in the
   rankings, but the gap between them shrinks a lot from raw to adjusted:</p>
@@ -184,7 +190,7 @@ root.innerHTML=`
   adjusted numbers and ranks recompute for just those seasons. Excluding the sparse 2010–2012 pre-BO2 seasons (as few as
   3 tracked majors) is the "Post-BO2" preset.</div>
 
-  <h2>5. Average placement and events placed</h2>
+  <h2 id="placement">5. Average placement and events placed ${anchorLink('placement','Placement stats')}</h2>
   <p><strong>Average placement</strong> is a consistency stat, not part of the era-adjusted wins formula. It answers:
   when this player entered a counted major, where did their team usually finish? <strong>Events placed</strong> is the
   denominator: the number of included majors with a counted finish for that player.</p>
@@ -198,7 +204,7 @@ root.innerHTML=`
   like adjusted wins, so a CDL-only view shows only CDL-era finishes.</p>
 
   <a id="data-source"></a>
-  <h2 id="tournaments">6. Which tournaments count, and who decides</h2>
+  <h2 id="tournaments">6. Which tournaments count, and who decides ${anchorLink('tournaments','Tournament rules')}</h2>
   <p class="lede" style="font-size:var(--text-md)"><strong>The short version: we don't decide.</strong> An event counts here if and only if
   the CoD Esports Wiki tags it <strong>Major</strong> or <strong>Premier</strong> tier and the player finished 1st. That's it. We mirror the
   wiki's <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">Major Wins list</a>, the community's
@@ -264,6 +270,7 @@ root.innerHTML=`
   </div>
 `;
 mountFoot();
+scrollToHashTarget();
 </script>
 </body>
 </html>

@@ -69,8 +69,8 @@ if(!p || !lb){
       <td class="n">${esc(h.year)}</td>
       <td><a href="${esc(h.sourceUrl)}" target="_blank" rel="noopener">${esc(h.source)} ↗</a></td>
     </tr>`).join('');
-  const honorsSection = `<section class="honors-block">
-      <h2>Honors</h2>
+  const honorsSection = `<section class="honors-block" id="honors">
+      <h2>Honors ${anchorLink('honors','Honors')}</h2>
       <p class="small muted">MVP, All-Star, All-Pro and Rookie/Player of the Year recognition from the CoD Esports Wiki awards table. This is profile context only, not part of the era-adjusted score. Early-era award coverage is incomplete and non-standardized, so a blank list means no row in the current source set, not necessarily zero career honors.</p>
       ${honors.length ? `<div class="scroll-x"><table class="data honors-table">
         <thead><tr><th>Award</th><th>Event or season</th><th class="n">Year</th><th>Source</th></tr></thead>
@@ -87,6 +87,13 @@ if(!p || !lb){
     <p class="small muted" style="margin:-.3rem 0 var(--space-3)">Source:
       <a href="https://cod-esports.fandom.com/wiki/${encodeURIComponent(p.wiki.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(p.name)} on the CoD Esports Wiki ↗</a></p>
     ${teamSummary(p.teams)}
+    ${pageToc([
+      ['adjusted-wins','Adjusted wins'],
+      ['major-wins','Major list'],
+      ['honors','Honors'],
+      ['roles','Roles'],
+      ['similar','Similar players']
+    ])}
     <div class="stat-row">
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat"><div class="k">Events placed</div><div class="v">${p.events_placed}</div><div class="small faint">counted major finishes</div></div>
@@ -102,8 +109,8 @@ if(!p || !lb){
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
     ${p.note?`<div class="note" style="margin-top:var(--space-2);background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
-    <section class="adjusted-explainer">
-      <h2>How adjusted wins work for ${esc(p.name)}</h2>
+    <section class="adjusted-explainer" id="adjusted-wins">
+      <h2>How adjusted wins work for ${esc(p.name)} ${anchorLink('adjusted-wins','Adjusted wins')}</h2>
       <p class="lede">Adjusted wins measure how much of each season's available majors this player won. Each season gets
       equal total weight, so a win in a smaller schedule counts more than a win in a packed season.</p>
       <div class="grid cols-2">
@@ -120,20 +127,22 @@ if(!p || !lb){
       </div>
     </section>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-top:1.6em">
-      <h2 style="margin:0" id="ml-title">Every major win (${p.raw})</h2>
-      <div class="seg" role="group" aria-label="Show wins only or every major entered">
-        <button id="seg-wins" aria-pressed="true">Wins (${p.raw})</button>
-        <button id="seg-all" aria-pressed="false">All entered (${lb.eventsPlaced})</button>
+    <section id="major-wins">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-top:1.6em">
+        <h2 style="margin:0" id="ml-title">Every major win (${p.raw}) ${anchorLink('major-wins','Major list')}</h2>
+        <div class="seg" role="group" aria-label="Show wins only or every major entered">
+          <button id="seg-wins" aria-pressed="true">Wins (${p.raw})</button>
+          <button id="seg-all" aria-pressed="false">All entered (${lb.eventsPlaced})</button>
+        </div>
       </div>
-    </div>
-    <div class="scroll-x"><table class="data"><tbody id="winlist"></tbody></table></div>
-    <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
+      <div class="scroll-x"><table class="data"><tbody id="winlist"></tbody></table></div>
+      <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
+    </section>
 
     ${honorsSection}
 
-    <section>
-      <h2>Primary role by season</h2>
+    <section id="roles">
+      <h2>Primary role by season ${anchorLink('roles','Roles')}</h2>
       <p class="small muted">Roles are curated as AR, Flex, or SMG. Unknown or disputed seasons can be challenged with evidence.</p>
       <div class="scroll-x"><table class="data role-table">
         <thead><tr><th>Season</th><th>Role</th><th class="n">Year</th></tr></thead>
@@ -232,7 +241,7 @@ if(!p || !lb){
         .then(all=>{ PART = all[p.name] || []; if(majorsMode==='all') renderMajors('all'); });
     }
     document.getElementById('winlist').innerHTML = mode==='all' ? allView() : winsView();
-    document.getElementById('ml-title').textContent = mode==='all' ? `Every major entered (${lb.eventsPlaced})` : `Every major win (${p.raw})`;
+    document.getElementById('ml-title').innerHTML = `${mode==='all' ? `Every major entered (${lb.eventsPlaced})` : `Every major win (${p.raw})`} ${anchorLink('major-wins','Major list')}`;
     document.getElementById('seg-wins').setAttribute('aria-pressed', String(mode!=='all'));
     document.getElementById('seg-all').setAttribute('aria-pressed', String(mode==='all'));
     document.getElementById('ml-note').textContent = mode==='all'
@@ -255,6 +264,7 @@ if(!p || !lb){
   mountSimilar(p.name);
 
   mountFoot();
+  scrollToHashTarget();
 }
 
 // ---- Similar players block (data: window.SIM) ----
@@ -276,7 +286,7 @@ function mountSimilar(name){
   let sel  = null;
 
   host.innerHTML = `
-    <h2>Similar players</h2>
+    <h2>Similar players ${anchorLink('similar','Similar players')}</h2>
     <p class="small muted">Closest résumés by <strong>achievement</strong> (success, peak, placement,
       longevity, and career path), all measured era-independently. When a player debuted is not scored, so comps can cross eras.</p>
     <details class="sim-method">

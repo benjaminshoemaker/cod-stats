@@ -54,6 +54,7 @@
     <a href="#pills">Pills &amp; deltas</a>
     <a href="#bars">Bars</a>
     <a href="#controls">Controls</a>
+    <a href="#anchors">Anchor nav</a>
     <a href="#misc">Notes &amp; legend</a>
   </nav>
 
@@ -215,6 +216,26 @@
       </div>
     </div>
     <p class="sg-code">.seg › button[aria-pressed] (segmented toggle, used in similar-players)</p>
+  </section>
+
+  <!-- ============ ANCHOR NAVIGATION ============ -->
+  <section class="sg-sec" id="anchors">
+    <h2>Anchor navigation</h2>
+    <p class="sg-note">Long reference/detail pages use a compact <span class="num">.page-toc</span>
+    after the intro, stable section IDs, and a small heading permalink. Targets rely on
+    <span class="num">scroll-margin-top</span> so the sticky header does not cover deep-linked sections.</p>
+    <div class="sg-render">
+      <nav class="page-toc" aria-label="On this page" style="margin-top:0">
+        <span class="page-toc-title">On this page</span>
+        <a href="#anchors">Anchor nav</a>
+        <a href="#controls">Controls</a>
+        <a href="#tables">Tables</a>
+      </nav>
+      <h3 id="anchor-example" style="margin-top:var(--space-4)">Shareable section
+        <a class="anchor-link" href="#anchor-example" aria-label="Link to shareable section">#</a></h3>
+      <p class="muted small">Heading IDs are stable, lowercase slugs chosen by hand, not generated from display text.</p>
+    </div>
+    <p class="sg-code">.page-toc[aria-label="On this page"] · .page-toc-title · .anchor-link · h2[id]/section[id]</p>
   </section>
 
   <!-- ============ MISC ============ -->

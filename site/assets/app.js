@@ -105,6 +105,23 @@ function roleDisputeLink(player, game, currentRole){
 }
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
+function anchorLink(id, label){
+  return `<a class="anchor-link" href="#${esc(id)}" aria-label="Link to ${esc(label)}">#</a>`;
+}
+function pageToc(items){
+  return `<nav class="page-toc" aria-label="On this page">
+    <span class="page-toc-title">On this page</span>
+    ${items.map(([href,label])=>`<a href="#${esc(href)}">${esc(label)}</a>`).join('')}
+  </nav>`;
+}
+function scrollToHashTarget(){
+  if(!location.hash) return;
+  let id = location.hash.slice(1);
+  try { id = decodeURIComponent(id); } catch(e) {}
+  const target = document.getElementById(id);
+  if(target) requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+}
+window.addEventListener('hashchange', scrollToHashTarget);
 
 /* Short season labels, shared by the chart pages (heatmap, trajectory) so a new
    title only needs adding once. Look up via D.meta.seasonOrder with a fallback

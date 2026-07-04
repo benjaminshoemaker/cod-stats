@@ -443,6 +443,40 @@ test.describe('pages', () => {
     await expect(page.getByText('how adjusted wins convert raw major wins into season-share value')).toBeVisible();
   });
 
+  test('reference pages expose stable section anchors and direct hash links', async ({ page }) => {
+    await page.goto('/methodology.html');
+    const methodToc = page.getByRole('navigation', { name: 'On this page' });
+    await expect(methodToc.getByRole('link', { name: 'Tournament rules' })).toHaveAttribute('href', '#tournaments');
+    await expect(page.locator('#tournaments .anchor-link')).toHaveAttribute('href', '#tournaments');
+
+    await page.goto('/methodology.html#tournaments');
+    await expect(page.locator('#tournaments')).toBeInViewport();
+
+    await page.goto('/player.html?p=Scump');
+    const playerToc = page.getByRole('navigation', { name: 'On this page' });
+    await expect(playerToc.getByRole('link', { name: 'Honors' })).toHaveAttribute('href', '#honors');
+    await expect(playerToc.getByRole('link', { name: 'Similar players' })).toHaveAttribute('href', '#similar');
+    await expect(page.locator('#honors .anchor-link')).toHaveAttribute('href', '#honors');
+
+    await page.goto('/player.html?p=Scump#honors');
+    await expect(page.locator('#honors')).toBeInViewport();
+
+    await page.goto('/game.html?g=Black%20Ops%207');
+    const gameToc = page.getByRole('navigation', { name: 'On this page' });
+    await expect(gameToc.getByRole('link', { name: 'Season events' })).toHaveAttribute('href', '#events');
+    await expect(gameToc.getByRole('link', { name: 'Leaderboard players' })).toHaveAttribute('href', '#players');
+
+    await page.goto('/game.html?g=Black%20Ops%207#players');
+    await expect(page.locator('#players')).toBeInViewport();
+    const targetIsNotCovered = await page.evaluate(() => {
+      const target = document.getElementById('players')!;
+      const head = document.querySelector('.site-head') as HTMLElement | null;
+      if(!head || getComputedStyle(head).position === 'static') return true;
+      return target.getBoundingClientRect().top >= head.getBoundingClientRect().bottom - 1;
+    });
+    expect(targetIsNotCovered).toBe(true);
+  });
+
   test('peak-vs-longevity scatter renders dots', async ({ page }) => {
     await page.goto('/scatter.html');
     await expect(page.getByRole('heading', { name: /Peak vs\.? Longevity/ })).toBeVisible();
@@ -510,9 +544,9 @@ test.describe('pages', () => {
     await expect(page.locator('#team-strip img.team-logo[title="OpTic Texas"]')).toHaveJSProperty('naturalWidth', 48);
     await expect(page.getByRole('heading', { name: 'Primary role by season' })).toBeVisible();
     const rolePosition = await page.evaluate(() => {
-      const major = document.querySelector('#ml-title')!;
-      const honors = Array.from(document.querySelectorAll('h2')).find(h => h.textContent === 'Honors')!;
-      const role = Array.from(document.querySelectorAll('h2')).find(h => h.textContent === 'Primary role by season')!;
+      const major = document.querySelector('#major-wins')!;
+      const honors = document.querySelector('#honors')!;
+      const role = document.querySelector('#roles')!;
       const similar = document.querySelector('#similar')!;
       return Boolean(major.compareDocumentPosition(honors) & Node.DOCUMENT_POSITION_FOLLOWING) &&
         Boolean(honors.compareDocumentPosition(role) & Node.DOCUMENT_POSITION_FOLLOWING) &&
