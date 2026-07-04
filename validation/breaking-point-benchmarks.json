@@ -1,0 +1,109 @@
+{
+  "benchmarks": [
+    {
+      "id": "bp-kenny-mwiii-2024-season-kd",
+      "status": "live",
+      "source": "Breaking Point",
+      "sourceUrl": "https://breakingpoint.gg/players/18/kenny",
+      "player": "Kenny",
+      "metric": "breaking_point_season_kd",
+      "asOf": "2026-06-29",
+      "localFilters": {
+        "games": ["Modern Warfare III"]
+      },
+      "externalFilters": {
+        "seasonId": 2024
+      },
+      "expected": {
+        "mapsDelta": 0,
+        "kdDelta": 0
+      },
+      "tolerance": 0.005,
+      "claim": "Our MWIII season K/D for Kenny should match Breaking Point's 2024 season player-page aggregate."
+    },
+    {
+      "id": "bp-simp-mwiii-2024-season-kd",
+      "status": "live",
+      "source": "Breaking Point",
+      "sourceUrl": "https://breakingpoint.gg/players/29/simp",
+      "player": "Simp",
+      "metric": "breaking_point_season_kd",
+      "asOf": "2026-06-29",
+      "localFilters": {
+        "games": ["Modern Warfare III"]
+      },
+      "externalFilters": {
+        "seasonId": 2024
+      },
+      "expected": {
+        "mapsDelta": 0,
+        "kdDelta": 0
+      },
+      "tolerance": 0.005,
+      "claim": "Our MWIII season K/D for Simp should match Breaking Point's 2024 season player-page aggregate."
+    },
+    {
+      "id": "bp-hydra-mwiii-2024-season-kd",
+      "status": "live",
+      "source": "Breaking Point",
+      "sourceUrl": "https://breakingpoint.gg/players/15/hydra",
+      "player": "HyDra",
+      "metric": "breaking_point_season_kd",
+      "asOf": "2026-06-29",
+      "localFilters": {
+        "games": ["Modern Warfare III"]
+      },
+      "externalFilters": {
+        "seasonId": 2024
+      },
+      "expected": {
+        "mapsDelta": 0,
+        "kdDelta": 0
+      },
+      "tolerance": 0.005,
+      "claim": "Our MWIII season K/D for HyDra should match Breaking Point's 2024 season player-page aggregate."
+    },
+    {
+      "id": "bp-shotzzy-mwiii-2024-season-kd",
+      "status": "live",
+      "source": "Breaking Point",
+      "sourceUrl": "https://breakingpoint.gg/players/27/shotzzy",
+      "player": "Shotzzy",
+      "metric": "breaking_point_season_kd",
+      "asOf": "2026-06-29",
+      "localFilters": {
+        "games": ["Modern Warfare III"]
+      },
+      "externalFilters": {
+        "seasonId": 2024
+      },
+      "expected": {
+        "mapsDelta": 0,
+        "kdDelta": 0
+      },
+      "tolerance": 0.005,
+      "claim": "Our MWIII season K/D for Shotzzy should match Breaking Point's 2024 season player-page aggregate."
+    },
+    {
+      "id": "bp-scrap-mwiii-2024-season-kd",
+      "status": "live",
+      "source": "Breaking Point",
+      "sourceUrl": "https://breakingpoint.gg/players/58/scrap",
+      "player": "Scrap",
+      "metric": "breaking_point_season_kd",
+      "asOf": "2026-06-29",
+      "localFilters": {
+        "games": ["Modern Warfare III"]
+      },
+      "externalFilters": {
+        "seasonId": 2024
+      },
+      "expected": {
+        "mapsDelta": 0,
+        "kdDelta": 0
+      },
+      "tolerance": 0.005,
+      "claim": "Our MWIII season K/D for Scrap should match Breaking Point's 2024 season player-page aggregate."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "benchmarks": [
+    {
+      "id": "brianstats1-hydra-major-wins-2025-05-26",
+      "status": "active",
+      "source": "BrianStats1",
+      "sourceUrl": "https://x.com/BrianStats1/status/1926792616219222293",
+      "sourceDate": "2025-05-26",
+      "asOf": "2025-05-26",
+      "player": "HyDra",
+      "metric": "raw_major_wins",
+      "expected": 7,
+      "claim": "HyDra wins his 7th major championship."
+    },
+    {
+      "id": "brianstats1-hydra-finals-record-2025-05-26",
+      "status": "active",
+      "source": "BrianStats1",
+      "sourceUrl": "https://x.com/BrianStats1/status/1926792616219222293",
+      "sourceDate": "2025-05-26",
+      "asOf": "2025-05-26",
+      "player": "HyDra",
+      "metric": "finals_record",
+      "expected": {
+        "wins": 7,
+        "losses": 4
+      },
+      "claim": "HyDra is 7-4 in finals matches."
+    },
+    {
+      "id": "formal-iw-champs-kd-2017",
+      "status": "active",
+      "source": "Community/reference stat",
+      "sourceDate": "2017-08-13",
+      "asOf": "2017-08-13",
+      "player": "FormaL",
+      "metric": "overall_kd",
+      "filters": {
+        "events": ["Call of Duty World League Championship 2017"]
+      },
+      "expected": {
+        "kd": 1.44
+      },
+      "tolerance": 0.005,
+      "claim": "FormaL had a 1.44 K/D at Infinite Warfare Champs."
+    }
+  ]
+}

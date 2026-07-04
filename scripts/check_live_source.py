@@ -16,13 +16,26 @@ Run manually:  python3 scripts/check_live_source.py
 import json, sys, os, time, urllib.parse, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from build_data import PUBLISHED, mkey
+from build_data import DROP_EVENTS, DROP_GAMES, PUBLISHED, mkey
 
 UA = "Mozilla/5.0 (compatible; cod-stats-source-check/1.0; +https://cod-stats-one.vercel.app)"
 API = "https://cod-esports.fandom.com/api.php"
 
 
 PAGE = 500
+
+
+def _quoted(values):
+    return ",".join('"' + str(v).replace('"', '\\"') + '"' for v in sorted(values))
+
+
+def source_exclusion_where():
+    clauses = []
+    if DROP_GAMES:
+        clauses.append(f"TO.Game NOT IN({_quoted(DROP_GAMES)})")
+    if DROP_EVENTS:
+        clauses.append(f"TO.Name NOT IN({_quoted(DROP_EVENTS)})")
+    return " AND ".join(clauses)
 
 def live_major_wins():
     """Live {mkey(player): (wins, display_name)} for every player with >=1 major win.
@@ -33,7 +46,8 @@ def live_major_wins():
         "tables": "Tournaments=TO,TournamentResults=TR,TournamentPlayers=TP,PlayerRedirects=PR,Players=PL",
         "fields": "PL.OverviewPage=Player,COUNT(*)=Wins",
         "where": 'PL.OverviewPage IS NOT NULL AND (TP.Role IS NULL OR TP.Role="Substitute") '
-                 'AND TO.Tier IN("Major","Premier") AND TR.Place_Number=1',
+                 'AND TO.Tier IN("Major","Premier") AND TR.Place_Number=1 AND '
+                 + source_exclusion_where(),
         "join_on": "TO.OverviewPage=TR.OverviewPage,TR.PageAndTeam=TP.PageAndTeam,"
                    "TP.Link=PR.AllName,PR.OverviewPage=PL.OverviewPage",
         "group_by": "PR.OverviewPage", "order_by": "Wins DESC",
