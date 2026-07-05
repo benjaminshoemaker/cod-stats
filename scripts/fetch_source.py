@@ -8,6 +8,7 @@ Regenerates (in the repo root):
   * team_participation.json— every team result row at those tournaments
   * player_accolades.json  — individual award/accolade rows from the wiki Awards table
   * player_stats.json      — slim map-level PlayerStats rows for the published leaderboard players
+  * player_stats_participants.json — slim map-level PlayerStats rows for all major participants
 
 This is the "fix drift" tool: when scripts/check_live_source.py (or the daily
 source-check workflow) reports a mismatch, run this, then:
@@ -30,6 +31,10 @@ Run:  python3 scripts/fetch_source.py [--published] [--awards] [--player-stats]
       python3 scripts/fetch_source.py --player-stats-one
       python3 scripts/fetch_source.py --player-stats-limit=N
       python3 scripts/fetch_source.py --player-stats-chunks=N
+      python3 scripts/fetch_source.py --player-stats-participants
+      python3 scripts/fetch_source.py --player-stats-participants-one
+      python3 scripts/fetch_source.py --player-stats-participants-limit=N
+      python3 scripts/fetch_source.py --player-stats-participants-refresh-events
 """
 import json, os, sys, time, urllib.parse, urllib.request
 
@@ -41,8 +46,8 @@ PAGE = 500          # cargo API row cap per request
 PAUSE = 5           # courtesy sleep between successful requests (seconds)
 PLAYER_STATS_BATCH = 10
 PLAYER_STATS_FIELDS = (
-    "Player", "PlayerName", "PlayerLink", "Event", "Game", "Mode", "Date",
-    "Team", "TeamVs", "Map", "SeriesId", "Kills", "Deaths",
+    "Player", "PlayerName", "PlayerLink", "Event", "EventId", "Game", "Mode", "Date",
+    "Team", "TeamVs", "Map", "SeriesId", "Win", "Kills", "Deaths",
 )
 
 MAJOR_WHERE = 'TO.Tier IN("Major","Premier")'
@@ -104,7 +109,7 @@ def save(name, obj):
 def fetch_major_events():
     rows = cargo_all({
         "tables": "Tournaments=TO,TournamentResults=TR",
-        "fields": ("TO.Name=Event,TO.Game=Game,TO.DateStart=Date,TR.Team=Winner,"
+        "fields": ("TO.Name=Event,TO.OverviewPage=EventId,TO.Game=Game,TO.DateStart=Date,TR.Team=Winner,"
                    "TO.EventType=EventType,TO.Prizepool=Prizepool,TO.Location=Location,TO.Region=Region"),
         "where": MAJOR_WHERE + " AND TR.Place_Number=1",
         "join_on": "TO.OverviewPage=TR.OverviewPage",
@@ -116,7 +121,7 @@ def fetch_major_events():
 def fetch_player_event_wins():
     rows = cargo_all({
         "tables": PLAYER_TABLES,
-        "fields": "PL.OverviewPage=Player,TO.Name=Event,TO.Game=Game,TO.DateStart=Date",
+        "fields": "PL.OverviewPage=Player,TO.Name=Event,TO.OverviewPage=EventId,TO.Game=Game,TO.DateStart=Date",
         "where": f"PL.OverviewPage IS NOT NULL AND {ROLE_WHERE} AND {MAJOR_WHERE} AND TR.Place_Number=1",
         "join_on": PLAYER_JOIN,
         "order_by": "TO.DateStart,TO.Name,PL.OverviewPage",
@@ -143,7 +148,7 @@ def fetch_player_participation():
     placement depth (finals reached), rather than only shared trophies."""
     rows = cargo_all({
         "tables": PLAYER_TABLES,
-        "fields": ("PL.OverviewPage=Player,TO.Name=Event,TO.Game=Game,"
+        "fields": ("PL.OverviewPage=Player,TO.Name=Event,TO.OverviewPage=EventId,TO.Game=Game,"
                    "TO.DateStart=Date,TR.Team=Team,TR.Place=Place,"
                    "TR.Place_Number=PlaceNumber"),
         "where": f"PL.OverviewPage IS NOT NULL AND {ROLE_WHERE} AND {MAJOR_WHERE}",
@@ -156,7 +161,7 @@ def fetch_player_participation():
 def fetch_team_participation():
     rows = cargo_all({
         "tables": "Tournaments=TO,TournamentResults=TR",
-        "fields": "TO.Game=Game,TO.Name=Event,TR.Team=Team,TR.Place=Place",
+        "fields": "TO.Game=Game,TO.Name=Event,TO.OverviewPage=EventId,TR.Team=Team,TR.Place=Place",
         "where": MAJOR_WHERE,
         "join_on": "TO.OverviewPage=TR.OverviewPage",
         "order_by": "TO.DateStart,TO.Name,TR.Team",
@@ -320,11 +325,11 @@ def fetch_player_stats(max_chunks=None):
 
     def params_for(players_for_game, game):
         return {
-        "tables": "PlayerStats=PS,PlayerRedirects=PR",
+        "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
         "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
-                   "PS.TournamentPage=Event,PS.GameTitle=Game,PS.Gamemode=Mode,"
+                   "TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
                    "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
-                   "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,"
+                   "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
                    "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
                    "PS.SDFirstDeath=SDFirstDeath,PS.SDPlants=SDPlants,PS.SDDefuses=SDDefuses,"
                    "PS.HPKills=HPKills,PS.HPDeaths=HPDeaths,PS.HPTime=HPTime,"
@@ -337,7 +342,7 @@ def fetch_player_stats(max_chunks=None):
         "where": (f"PR.OverviewPage IN({_quoted(players_for_game)}) AND PS.GameTitle IS NOT NULL "
                   f"AND PS.GameTitle={_quoted([game])} "
                   f"AND PS.Date <= \"{ASOF}\""),
-        "join_on": "PS.PlayerLink=PR.AllName",
+        "join_on": "PS.PlayerLink=PR.AllName,PS.TournamentPage=TO.OverviewPage",
         "order_by": "PS.Date,PS.TournamentPage,PR.OverviewPage,PS.Gamemode",
         }
 
@@ -369,6 +374,122 @@ def fetch_player_stats(max_chunks=None):
         print(f"checkpointed {len(rows)} rows for {len(done)}/{len(player_game_chunks)} chunks in player_stats.partial.json")
 
 
+def _participant_stat_events(refresh=False):
+    sys.path.insert(0, HERE)
+    from build_data import DROP_EVENTS, DROP_GAMES, _played
+
+    cache_path = os.path.join(HERE, "player_stats_participants.events.json")
+    if not refresh and os.path.exists(cache_path):
+        return _load_json(cache_path, [])
+
+    rows = flat(cargo_all({
+        "tables": "Tournaments=TO",
+        "fields": "TO.Name=Event,TO.OverviewPage=OverviewPage,TO.Game=Game,TO.DateStart=Date",
+        "where": MAJOR_WHERE,
+        "order_by": "TO.DateStart,TO.Name",
+    }))
+    out, seen = [], set()
+    for r in rows:
+        event, game, page = r.get("Event"), r.get("Game"), r.get("OverviewPage")
+        if not event or not game or not page:
+            continue
+        if game in DROP_GAMES or event in DROP_EVENTS:
+            continue
+        if not _played(r.get("Date")):
+            continue
+        key = (page, game)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({"event": event, "page": page, "game": game, "date": r.get("Date") or ""})
+    _write_json(cache_path, out)
+    return out
+
+
+def _completed_event_pages_from_rows(rows):
+    return {r.get("Event") for r in rows if r.get("Event")}
+
+
+def fetch_player_stats_participants(max_events=None, refresh_events=False):
+    """Fetch PlayerStats by major-event page for replacement/VOR baselines."""
+    sys.path.insert(0, HERE)
+    from build_data import ASOF
+
+    partial_path = os.path.join(HERE, "player_stats_participants.partial.json")
+    progress_path = os.path.join(HERE, "player_stats_participants.progress.json")
+    rows = _load_json(partial_path, [])
+    progress = _load_json(progress_path, {"schema": 1, "completed": [], "failed": {}})
+    done = set(progress.get("completed", [])) | _completed_event_pages_from_rows(rows)
+    failed = dict(progress.get("failed", {}))
+    events = _participant_stat_events(refresh=refresh_events)
+
+    def params_for(event):
+        return {
+        "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
+        "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
+                   "TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
+                   "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
+                   "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
+                   "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
+                   "PS.SDFirstDeath=SDFirstDeath,PS.SDPlants=SDPlants,PS.SDDefuses=SDDefuses,"
+                   "PS.HPKills=HPKills,PS.HPDeaths=HPDeaths,PS.HPTime=HPTime,"
+                   "PS.ConKills=ConKills,PS.ConDeaths=ConDeaths,PS.ConCaptures=ConCaptures,"
+                   "PS.OVRKills=OVRKills,PS.OVRDeaths=OVRDeaths,PS.OVRCaps=OVRCaps,"
+                   "PS.CTFKills=CTFKills,PS.CTFDeaths=CTFDeaths,PS.CTFCaptures=CTFCaptures,"
+                   "PS.UPKills=UPKills,PS.UPDeaths=UPDeaths,"
+                   "PS.BLIKills=BLIKills,PS.BLIDeaths=BLIDeaths,PS.BLICaps=BLICaps,"
+                   "PS.DomKills=DomKills,PS.DomDeaths=DomDeaths,PS.DomCaptures=DomCaptures"),
+        "where": (f"PS.TournamentPage={_quoted([event['page']])} "
+                  f"AND PS.GameTitle={_quoted([event['game']])} "
+                  f"AND PS.Date <= \"{ASOF}\""),
+        "join_on": "PS.PlayerLink=PR.AllName,PS.TournamentPage=TO.OverviewPage",
+        "order_by": "PS.Date,PS.TournamentPage,PR.OverviewPage,PS.Gamemode",
+        }
+
+    for i, event in enumerate(events, 1):
+        if event["page"] in done:
+            print(f"[{i}/{len(events)}] skipping {event['event']} (already in partial)")
+            continue
+        if max_events is not None and max_events <= 0:
+            break
+        print(f"[{i}/{len(events)}] fetching {event['event']} ({event['page']})")
+        try:
+            rows = _merge_stat_rows(rows, flat(cargo_all(params_for(event))))
+        except SystemExit as e:
+            prior = failed.get(event["page"], {})
+            failed[event["page"]] = {
+                "event": event["event"],
+                "game": event["game"],
+                "date": event["date"],
+                "attempts": int(prior.get("attempts", 0)) + 1,
+                "error": str(e),
+                "lastAttempt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            }
+            progress = {"schema": 1, "completed": sorted(done), "failed": failed}
+            _write_json(progress_path, progress)
+            print(f"  failed {event['event']}: {e}; checkpointed and continuing")
+            time.sleep(PAUSE * 2)
+            continue
+        done.add(event["page"])
+        failed.pop(event["page"], None)
+        _write_json(partial_path, rows)
+        progress = {"schema": 1, "completed": sorted(done), "failed": failed}
+        _write_json(progress_path, progress)
+        if max_events is not None:
+            max_events -= 1
+        time.sleep(PAUSE)
+
+    all_done = {e["page"] for e in events} <= done
+    if all_done:
+        save("player_stats_participants.json", slim_player_stat_rows(rows))
+        if os.path.exists(partial_path):
+            os.remove(partial_path)
+        if os.path.exists(progress_path):
+            os.remove(progress_path)
+    else:
+        print(f"checkpointed {len(rows)} rows for {len(done)}/{len(events)} events in player_stats_participants.partial.json")
+
+
 def print_published():
     """Print the live Major Wins list (everyone with >=2 wins, matching the
     PUBLISHED inclusion rule) as a paste-able literal for build_data.py."""
@@ -391,11 +512,22 @@ def main():
         return fetch_player_accolades()
     if "--player-stats-one" in sys.argv:
         return fetch_player_stats(max_chunks=1)
+    if "--player-stats-participants-one" in sys.argv:
+        return fetch_player_stats_participants(
+            max_events=1,
+            refresh_events="--player-stats-participants-refresh-events" in sys.argv)
     for arg in sys.argv:
+        if arg.startswith("--player-stats-participants-limit="):
+            return fetch_player_stats_participants(
+                max_events=int(arg.split("=", 1)[1]),
+                refresh_events="--player-stats-participants-refresh-events" in sys.argv)
         if arg.startswith("--player-stats-limit="):
             return fetch_player_stats(max_chunks=int(arg.split("=", 1)[1]))
         if arg.startswith("--player-stats-chunks="):
             return fetch_player_stats(max_chunks=int(arg.split("=", 1)[1]))
+    if "--player-stats-participants" in sys.argv:
+        return fetch_player_stats_participants(
+            refresh_events="--player-stats-participants-refresh-events" in sys.argv)
     if "--player-stats" in sys.argv:
         return fetch_player_stats()
     for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins,

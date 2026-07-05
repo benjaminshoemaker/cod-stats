@@ -225,14 +225,29 @@ def test_average_placement_uses_same_rows_as_player_page(data):
         assert pl["place_x2_sum"] == sum(m["placeX2"] for m in part)
         expected = build_data.avg_place_from_x2(pl["place_x2_sum"], pl["events_placed"])
         assert pl["avg_place"] == expected
+        wins = sum(1 for m in part if m["won"])
+        finals = sum(1 for m in part if m["placeNumber"] is not None and m["placeNumber"] <= 2)
+        deep_runs = sum(1 for m in part if m["placeNumber"] is not None and m["placeNumber"] <= 4)
+        assert pl["placement_wins"] == wins
+        assert pl["finals"] == finals
+        assert pl["deep_runs"] == deep_runs
+        assert pl["win_conversion"] == build_data.rate_from_counts(wins, len(part))
+        assert pl["finals_rate"] == build_data.rate_from_counts(finals, len(part))
+        assert pl["deep_run_rate"] == build_data.rate_from_counts(deep_runs, len(part))
 
         by_game = {}
         for m in part:
-            g = by_game.setdefault(m["game"], {"events": 0, "sum": 0})
+            g = by_game.setdefault(m["game"], {"events": 0, "sum": 0, "wins": 0, "finals": 0, "deepRuns": 0})
             g["events"] += 1
             g["sum"] += m["placeX2"]
-        assert {r["game"]: (r["events"], r["placeX2Sum"]) for r in pl["placements"]} == {
-            g: (v["events"], v["sum"]) for g, v in by_game.items()
+            if m["won"]:
+                g["wins"] += 1
+            if m["placeNumber"] is not None and m["placeNumber"] <= 2:
+                g["finals"] += 1
+            if m["placeNumber"] is not None and m["placeNumber"] <= 4:
+                g["deepRuns"] += 1
+        assert {r["game"]: (r["events"], r["placeX2Sum"], r["wins"], r["finals"], r["deepRuns"]) for r in pl["placements"]} == {
+            g: (v["events"], v["sum"], v["wins"], v["finals"], v["deepRuns"]) for g, v in by_game.items()
         }
 
 
@@ -275,11 +290,13 @@ def test_skill_stats_aggregate_kills_deaths_snd_and_respawn(monkeypatch, tmp_pat
     ):
         shutil.copy(build_data._p(f), tmp_path / f)
     rows = [
-        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+        {"Player": "Scump", "Event": "Synthetic Stats", "EventId": "Synthetic_Stats", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Search and Destroy", "Kills": "9", "Deaths": "6"},
-        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+        {"Player": "Scump", "Event": "Synthetic Stats", "EventId": "Synthetic_Stats", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "24", "Deaths": "20"},
-        {"Player": "Scump", "Event": "Synthetic Stats", "Game": "Black Ops 2",
+        {"Player": "Scump", "Event": "Synthetic Second", "EventId": "Synthetic_Second", "Game": "Black Ops 2",
+         "Date": "2013-01-02", "Mode": "Hardpoint", "Kills": "2", "Deaths": "1", "Team": "OpTic Gaming"},
+        {"Player": "Scump", "Event": "Synthetic Stats", "EventId": "Synthetic_Stats", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Capture the Flag", "Kills": "18", "Deaths": "17"},
         {"Player": "Scump", "Event": "Synthetic Future", "Game": "Black Ops 7",
          "Date": "2999-01-01", "Mode": "Hardpoint", "Kills": "99", "Deaths": "1"},
@@ -291,13 +308,29 @@ def test_skill_stats_aggregate_kills_deaths_snd_and_respawn(monkeypatch, tmp_pat
 
     built = build_data.build()
     stats = built["players"]["Scump"]["skillStats"]
-    assert stats["overall"] == {"kills": 51, "deaths": 43, "interactions": 94, "maps": 3, "kd": 1.186}
+    assert stats["overall"] == {"kills": 53, "deaths": 44, "interactions": 97, "maps": 4, "kd": 1.205}
     assert stats["splits"]["snd"] == {"kills": 9, "deaths": 6, "interactions": 15, "maps": 1, "kd": 1.5}
-    assert stats["splits"]["respawn"] == {"kills": 42, "deaths": 37, "interactions": 79, "maps": 2, "kd": 1.135}
-    assert stats["modes"]["Hardpoint"]["maps"] == 1
-    assert stats["coverage"]["events"] == 1
+    assert stats["splits"]["respawn"] == {"kills": 44, "deaths": 38, "interactions": 82, "maps": 3, "kd": 1.158}
+    assert stats["modes"]["Hardpoint"]["maps"] == 2
+    assert stats["coverage"]["events"] == 2
+    assert stats["coverage"]["maps"] == 4
     assert stats["coverage"]["firstDate"] == "2013-01-01"
-    assert stats["coverage"]["lastDate"] == "2013-01-01"
+    assert stats["coverage"]["lastDate"] == "2013-01-02"
+    assert stats["byGame"] == [{
+        "game": "Black Ops 2",
+        "firstDate": "2013-01-01",
+        "lastDate": "2013-01-02",
+        "events": 2,
+        "overall": {"kills": 53, "deaths": 44, "interactions": 97, "maps": 4, "kd": 1.205},
+        "splits": {
+            "snd": {"kills": 9, "deaths": 6, "interactions": 15, "maps": 1, "kd": 1.5},
+            "respawn": {"kills": 44, "deaths": 38, "interactions": 82, "maps": 3, "kd": 1.158},
+        },
+    }]
+    assert [e["event"] for e in stats["byEvent"]] == ["Synthetic Stats", "Synthetic Second"]
+    assert [e["eventId"] for e in stats["byEvent"]] == ["Synthetic_Stats", "Synthetic_Second"]
+    assert stats["byEvent"][0]["overall"] == {"kills": 51, "deaths": 43, "interactions": 94, "maps": 3, "kd": 1.186}
+    assert stats["byEvent"][1]["teams"] == ["OpTic Gaming"]
     assert built["players"]["Crimsix"]["skillStats"] is None
 
 
@@ -308,7 +341,7 @@ def test_player_stats_source_is_slimmed_to_reproducible_kill_death_rows():
         {"Player": "Scump", "PlayerName": "Scump", "PlayerLink": "Scump",
          "Event": "Synthetic Stats", "Game": "Black Ops 2", "Mode": "Hardpoint",
          "Date": "2013-01-01", "Team": "OpTic Gaming", "TeamVs": "coL",
-         "Map": "Raid", "SeriesId": "abc", "Kills": "24", "Deaths": "20",
+         "Map": "Raid", "SeriesId": "abc", "Win": "1", "Kills": "24", "Deaths": "20",
          "HPTime": "120", "SDFirstKill": "0"},
         {"Player": "Mak", "Event": "Synthetic Blank", "Game": "Black Ops",
          "Date": "2011-01-01", "Mode": "", "Kills": "", "Deaths": ""},
@@ -328,9 +361,48 @@ def test_player_stats_source_is_slimmed_to_reproducible_kill_death_rows():
         "TeamVs": "coL",
         "Map": "Raid",
         "SeriesId": "abc",
+        "Win": "1",
         "Kills": 24,
         "Deaths": 20,
     }]
+
+
+def test_event_registry_adds_canonical_ids_to_participation_and_skill_rows(data):
+    simp_part = data["_participation"]["Simp"]
+    assert any(r["event"] == "CWL London 2019"
+               and r["eventId"] == "CWL/2019 Season/London"
+               for r in simp_part)
+
+    simp_stats = data["players"]["Simp"]["skillStats"]["byEvent"]
+    london = next(r for r in simp_stats if r["eventId"] == "CWL/2019 Season/London")
+    assert london["event"] == "CWL London 2019"
+
+
+def test_skill_stats_emit_map_win_summaries_when_source_has_results(monkeypatch, tmp_path):
+    import shutil
+    for f in (
+        "major_events.json",
+        "player_event_wins.json",
+        "champs_wins.json",
+        "player_participation.json",
+        "team_participation.json",
+    ):
+        shutil.copy(build_data._p(f), tmp_path / f)
+    rows = [
+        {"Player": "Scump", "Event": "Synthetic Results", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Search and Destroy", "Kills": "9", "Deaths": "6", "Win": "1"},
+        {"Player": "Scump", "Event": "Synthetic Results", "Game": "Black Ops 2",
+         "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "24", "Deaths": "20", "Win": "0"},
+    ]
+    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+
+    stats = build_data.build()["players"]["Scump"]["skillStats"]
+    assert stats["overall"]["mapWins"] == 1
+    assert stats["overall"]["mapLosses"] == 1
+    assert stats["overall"]["mapWinRate"] == 0.5
+    assert stats["splits"]["snd"]["mapWinRate"] == 1
+    assert stats["splits"]["respawn"]["mapWinRate"] == 0
 
 
 def test_curated_primary_roles_emit_by_active_game(data):
@@ -447,9 +519,10 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
     monkeypatch.setattr(build_data, "HERE", str(tmp_path))
-    events_all, events, pwins, champs_rows, ppart, *_ = build_data.load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
-    _, part_rows = build_data.index_participation(ppart, top)
+    registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
+    _, part_rows = build_data.index_participation(ppart, top, registry)
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["place"] == "3-4"
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["placeX2"] == 7
 

@@ -31,6 +31,7 @@ ROOT = os.path.dirname(HERE)
 # Co-win Jaccard above this = "basically teammates" — used everywhere a comp list
 # skips teammates (here, cluster_map.py, and mirrored in site/player.html's `mate`).
 TEAMMATE_COWIN_THR = 0.15
+MIN_SKILL_MAPS = 25
 
 
 # --------------------------------------------------------------------------- #
@@ -48,6 +49,18 @@ def load_players(data_json=None):
         detail = full.get(row["name"], {})
         p["role_by_game"] = detail.get("role_by_game", [])
         p["primaryRole"] = row.get("primaryRole") or detail.get("primary_role")
+        stats = detail.get("skillStats") or {}
+        overall = stats.get("overall") or {}
+        splits = stats.get("splits") or {}
+        for key, bucket in (
+            ("skill_kd", overall),
+            ("skill_respawn_kd", splits.get("respawn") or {}),
+            ("skill_snd_kd", splits.get("snd") or {}),
+        ):
+            if bucket.get("maps", 0) >= MIN_SKILL_MAPS and bucket.get("kd") is not None:
+                p[key] = bucket["kd"]
+        if overall.get("maps", 0) >= MIN_SKILL_MAPS and overall.get("interactions") is not None:
+            p["skill_interactions_per_map"] = overall["interactions"] / overall["maps"]
         players.append(p)
     return players
 
@@ -359,6 +372,10 @@ SITE_GROUPS = [
     ("Peak", [("peakAll", "Peak season", "dec1")]),
     ("Placement", [("finals_rate", "Finals rate", "pct"),
                    ("deep_run_rate", "Deep-run rate", "pct")]),
+    ("Skill", [("skill_kd", "On-record K/D", "dec3"),
+               ("skill_respawn_kd", "Respawn K/D", "dec3"),
+               ("skill_snd_kd", "S&D K/D", "dec3"),
+               ("skill_interactions_per_map", "Interactions/map", "dec1")]),
     ("Longevity", [("titlesAll", "Distinct titles", "int"),
                    ("careerSpan", "Career span", "int")]),
     ("Path", [("distinct_teams", "Teams played for", "int"),
@@ -421,7 +438,8 @@ def emit_site(fs, D, C, players, k_solo=6):
         metrics = {}
         for j, f in enumerate(fs.feats):
             v = raw[i, j]; p = pct[i, j]
-            metrics[f] = {"v": None if np.isnan(v) else round(float(v), 2),
+            places = 3 if f.startswith("skill_") else 2
+            metrics[f] = {"v": None if np.isnan(v) else round(float(v), places),
                           "p": None if np.isnan(p) else round(float(p))}
         players_out[name] = {
             # participation-based debut (first major ENTERED), matching the map

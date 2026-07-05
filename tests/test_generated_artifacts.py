@@ -134,9 +134,14 @@ def test_similarity_covers_every_leaderboard_player(sim, lb):
     assert set(sim["players"]) == set(lb)
 
 
-def test_similarity_stats_match_leaderboard(sim, lb):
+def test_similarity_stats_match_leaderboard(sim, lb, dataset):
     # The player-page comparison table displays these; each must equal the
     # canonical dataset. debut is the participation-based first major entered.
+    groups = dict(sim["config"]["groups"])
+    assert "Skill" in groups
+    assert [r[0] for r in groups["Skill"]] == [
+        "skill_kd", "skill_respawn_kd", "skill_snd_kd", "skill_interactions_per_map"
+    ]
     for name, p in sim["players"].items():
         r = lb[name]
         assert p["debut"] == r["firstPlayed"], (
@@ -148,3 +153,23 @@ def test_similarity_stats_match_leaderboard(sim, lb):
                           ("careerSpan", r["careerSpan"])):
             got = m[key]["v"]
             assert got == pytest.approx(want), f"{name}.{key}: {got} != {want}"
+        stats = dataset["players"][name].get("skillStats") or {}
+        for key, bucket in (
+            ("skill_kd", stats.get("overall") or {}),
+            ("skill_respawn_kd", (stats.get("splits") or {}).get("respawn") or {}),
+            ("skill_snd_kd", (stats.get("splits") or {}).get("snd") or {}),
+        ):
+            got = m[key]["v"]
+            if bucket.get("maps", 0) >= 25 and bucket.get("kd") is not None:
+                assert got == pytest.approx(bucket["kd"]), f"{name}.{key}: {got} != {bucket['kd']}"
+            else:
+                assert got is None, f"{name}.{key}: low-sample stat should be masked"
+        overall = stats.get("overall") or {}
+        got = m["skill_interactions_per_map"]["v"]
+        if overall.get("maps", 0) >= 25 and overall.get("interactions") is not None:
+            want = round(overall["interactions"] / overall["maps"], 3)
+            assert got == pytest.approx(want), (
+                f"{name}.skill_interactions_per_map: {got} != {want}"
+            )
+        else:
+            assert got is None, f"{name}.skill_interactions_per_map: low-sample stat should be masked"

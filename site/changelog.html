@@ -41,6 +41,24 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-04', tag:'Improved', title:'Similar players now include skill-rate shape',
+   body:`Similar players and the similarity map now include on-record <strong>K/D</strong>, <strong>Respawn K/D</strong>,
+   <strong>S&amp;D K/D</strong>, and <strong>interactions per map</strong> as a labeled Skill component. Sparse stat
+   splits are ignored rather than treated as zero, and raw kills/deaths/interactions/maps remain sample context
+   instead of score inputs.`},
+  {date:'2026-07-04', tag:'Improved', title:'Cleaner player stats coverage',
+   body:`Player profiles now keep the event/map source-coverage count in the compact pill and remove duplicate
+   Events, Maps, Overall, and Interactions cards from the Stats on record section. Season drilldowns start closed,
+   show only the selected split in each summary, and keep the full mode breakdown inside the opened detail.`},
+  {date:'2026-07-04', tag:'Improved', title:'Conversion and deep-run context',
+   body:`Player profiles and the compare page now show <strong>Win conversion</strong>, <strong>Finals rate</strong>,
+   and <strong>Deep-run rate</strong> from the normalized major-entry list. Win conversion is also available as an
+   optional leaderboard column and recomputes with the Eras/title filter. These are context stats only; they do not
+   change the era-adjusted rankings.`},
+  {date:'2026-07-04', tag:'Improved', title:'Compare includes formal honors',
+   body:`The player compare summary now includes an <strong>Honors</strong> row, showing each player's count of sourced
+   formal award rows with a compact breakdown of award types. Like the player-page Honors section, this is profile
+   context only and does not change era-adjusted rankings.`},
   {date:'2026-07-04', tag:'Improved', title:'Section links for methodology, player, and season pages',
    body:`Long reference pages now include compact <strong>On this page</strong> links and stable section anchors, so
    methodology explanations, player-page sections like Honors and Similar players, and season event/player lists can be

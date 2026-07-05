@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player Stats UI Mockups</title>
+<style>
+:root{
+  --bg:#f7f8fb;--panel:#fff;--panel2:#f1f4f8;--ink:#111827;--muted:#5b6472;--faint:#7d8794;
+  --line:#d8dee8;--line2:#b9c3d0;--accent:#2563eb;--accent2:#0f766e;--warn:#b45309;
+  --good:#0f766e;--bad:#b91c1c;--soft:#e8f0ff;--radius:8px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+main{max-width:1160px;margin:0 auto;padding:var(--s6) var(--s4) 56px}
+h1{font-size:32px;line-height:1.1;margin:0 0 var(--s2)}
+h2{font-size:20px;margin:var(--s6) 0 var(--s2)}
+h3{font-size:16px;margin:0}
+p{margin:var(--s2) 0}.lede{max-width:72ch;color:var(--muted);font-size:17px}
+.small{font-size:13px}.muted{color:var(--muted)}.faint{color:var(--faint)}.num{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.section-note{border-left:3px solid var(--line2);padding:var(--s2) var(--s3);color:var(--muted);background:#fff;margin:var(--s4) 0}
+.profile-head{display:flex;align-items:end;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s4)}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:var(--s3)}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:8px 12px;font-weight:700;color:var(--ink);text-decoration:none}
+.stat-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3);margin:var(--s4) 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s3) var(--s4);min-height:90px}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);font-weight:700}
+.stat .v{font-size:28px;font-weight:800;margin-top:var(--s1);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.stat .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.stat.primary{border-color:#9db7f7;background:linear-gradient(180deg,#fff,#f8fbff)}
+.pill{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 7px;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.pill.blue{border-color:#bfd0ff;color:#1d4ed8;background:#eef4ff}.pill.green{border-color:#b7e4d8;color:#047857;background:#edfdf7}.pill.warn{border-color:#fed7aa;color:#9a3412;background:#fff7ed}
+.mock{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s5);margin:var(--s4) 0 var(--s6);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.mock-title{display:flex;justify-content:space-between;align-items:start;gap:var(--s3);margin-bottom:var(--s4)}
+.toolbar{display:flex;gap:var(--s2);flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:7px;overflow:hidden;background:#fff}
+.seg button{border:0;border-right:1px solid var(--line2);padding:7px 10px;background:#fff;font-weight:700;color:var(--muted)}
+.seg button:last-child{border-right:0}.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.grid2{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:var(--s4);align-items:start}
+.split-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3);margin:var(--s3) 0}
+.split-card{border:1px solid var(--line);border-radius:7px;padding:var(--s3);background:#fff}
+.split-card strong{display:block;font-size:22px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.meter{height:7px;background:var(--panel2);border-radius:999px;overflow:hidden;margin-top:var(--s2)}
+.meter i{display:block;height:100%;width:var(--w);background:var(--accent);border-radius:999px}.meter i.green{background:var(--accent2)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:800;background:#fafbfc}
+td.n,th.n{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+tbody tr:hover td{background:#f8fbff}
+.row-head td{background:var(--panel2);font-weight:800;color:var(--muted)}
+.delta-pos{color:var(--good);font-weight:800}.delta-neg{color:var(--bad);font-weight:800}
+.n.warn{color:var(--warn);font-weight:800}
+.season-grid{display:grid;grid-template-columns:1fr;gap:var(--s3)}
+.season-card{border:1px solid var(--line);border-radius:var(--radius);background:#fff;overflow:hidden}
+.season-card header{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,auto);gap:var(--s3);align-items:center;padding:var(--s3) var(--s4);background:#fbfcfe;border-bottom:1px solid var(--line)}
+.season-card .body{padding:0}
+.season-name{font-weight:900}.range{font-size:12px;color:var(--muted)}
+.event-name{font-weight:700}.event-sub{font-size:12px;color:var(--faint)}
+.heat{--a:0;background:color-mix(in srgb,var(--accent) var(--a),#fff)}
+.callout{display:grid;grid-template-columns:auto 1fr;gap:var(--s3);background:#fbfcfe;border:1px solid var(--line);border-radius:var(--radius);padding:var(--s3);margin-top:var(--s4)}
+.callout b{font-size:20px}
+.wire{border:1px dashed var(--line2);border-radius:var(--radius);padding:var(--s4);background:#fff}
+.layout-list{display:grid;gap:var(--s3)}
+.layout-line{display:grid;grid-template-columns:170px 1fr;gap:var(--s3)}
+.layout-line .label{font-weight:800;color:var(--muted)}
+@media(max-width:860px){
+  main{padding:var(--s4) var(--s3) 40px}.stat-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2{grid-template-columns:1fr}.split-cards{grid-template-columns:1fr}.mock{padding:var(--s4)}
+  .season-card header{grid-template-columns:1fr 1fr 1fr}.season-card header .season-name{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .stat-row{grid-template-columns:1fr}.profile-head,.mock-title{display:block}
+  table{min-width:720px}.scroll{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb">Design artifact / not wired into production</p>
+  <div class="profile-head">
+    <div>
+      <h1>Player stats mockups</h1>
+      <p class="lede">A proposed player-page treatment for objective skill stats: career summary, season breakdown, and tournament breakdown. Values shown are real Scump aggregates from the current slim PlayerStats source.</p>
+    </div>
+    <a class="btn" href="../../site/player.html?p=Scump">Current player page</a>
+  </div>
+
+  <div class="section-note">
+    Recommendation: yes, we should support both season and tournament stats. The generated player payload should add `skillStats.byGame[]` and `skillStats.byEvent[]`, while keeping the top-level career aggregate for quick scanning.
+  </div>
+
+  <h2>Mockup 1: Career "Stats on record" section</h2>
+  <div class="mock">
+    <div class="mock-title">
+      <div>
+        <h3>Stats on record</h3>
+        <p class="small muted">CoD Esports Wiki PlayerStats. Coverage: Dec 30, 2012 - Jan 15, 2023. 102 events, 11 seasons, 1,998 maps.</p>
+      </div>
+      <div class="toolbar">
+        <span class="pill blue">On record</span>
+        <span class="pill">Source linked</span>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat primary"><div class="k">K/D</div><div class="v">1.100</div><div class="sub">38,877 K / 35,342 D</div></div>
+      <div class="stat"><div class="k">Kills</div><div class="v">38,877</div><div class="sub">on recorded maps</div></div>
+      <div class="stat"><div class="k">Deaths</div><div class="v">35,342</div><div class="sub">on recorded maps</div></div>
+      <div class="stat"><div class="k">Interactions</div><div class="v">74,219</div><div class="sub">kills + deaths</div></div>
+      <div class="stat"><div class="k">Maps</div><div class="v">1,998</div><div class="sub">scored map rows</div></div>
+      <div class="stat"><div class="k">Events with stats</div><div class="v">102</div><div class="sub">across 11 seasons</div></div>
+    </div>
+
+    <div class="split-cards">
+      <div class="split-card">
+        <span class="small faint">Overall</span>
+        <strong>1.100</strong>
+        <span class="small muted">38,877 / 35,342, +3,535</span>
+        <div class="meter"><i style="--w:92%"></i></div>
+      </div>
+      <div class="split-card">
+        <span class="small faint">Respawn</span>
+        <strong>1.101</strong>
+        <span class="small muted">34,519 / 31,360, +3,159</span>
+        <div class="meter"><i class="green" style="--w:92%"></i></div>
+      </div>
+      <div class="split-card">
+        <span class="small faint">S&D</span>
+        <strong>1.094</strong>
+        <span class="small muted">4,358 / 3,982, +376</span>
+        <div class="meter"><i style="--w:91%"></i></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <b class="num">On record</b>
+      <p class="small muted">Use explicit coverage copy. Missing rows mean no usable numeric PlayerStats rows in the current source, not a true zero. Keep this caveat near the section intro or methodology link, not as a player-specific metric.</p>
+    </div>
+  </div>
+
+  <h2>Mockup 2: Season table on the player page</h2>
+  <div class="mock">
+    <div class="mock-title">
+      <div>
+        <h3>Stats by season</h3>
+        <p class="small muted">Default sort should be chronological. Let users sort by K/D, interactions, maps, kills, or deaths. Keep role nearby because role context matters.</p>
+      </div>
+      <div class="seg" role="group" aria-label="Mode split">
+        <button aria-pressed="true">Overall</button>
+        <button aria-pressed="false">Respawn</button>
+        <button aria-pressed="false">S&D</button>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Season</th><th>Coverage</th><th class="n">Maps</th><th class="n">Kills</th><th class="n">Deaths</th><th class="n">Interactions</th><th class="n">K/D</th><th>Split shape</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Black Ops 2</strong><div class="small faint">SMG</div></td><td>Dec 2012 - Oct 2013</td><td class="n">81</td><td class="n">1,838</td><td class="n">1,640</td><td class="n">3,478</td><td class="n">1.121</td><td><span class="pill">Resp 1.101</span> <span class="pill">S&D 1.329</span></td></tr>
+          <tr><td><strong>Ghosts</strong><div class="small faint">SMG</div></td><td>Nov 2013 - Oct 2014</td><td class="n">153</td><td class="n">3,081</td><td class="n">2,643</td><td class="n">5,724</td><td class="n">1.166</td><td><span class="pill">Resp 1.185</span> <span class="pill">S&D 1.019</span></td></tr>
+          <tr class="heat" style="--a:8%"><td><strong>Advanced Warfare</strong><div class="small faint">SMG</div></td><td>Nov 2014 - Sep 2015</td><td class="n">197</td><td class="n">4,745</td><td class="n">3,952</td><td class="n">8,697</td><td class="n"><strong>1.201</strong></td><td><span class="pill">Resp 1.200</span> <span class="pill">S&D 1.210</span></td></tr>
+          <tr><td><strong>Black Ops 3</strong><div class="small faint">SMG</div></td><td>Nov 2015 - Sep 2016</td><td class="n">290</td><td class="n">5,682</td><td class="n">4,751</td><td class="n">10,433</td><td class="n">1.196</td><td><span class="pill">Resp 1.210</span> <span class="pill">S&D 1.095</span></td></tr>
+          <tr><td><strong>World War II</strong><div class="small faint">SMG</div></td><td>Dec 2017 - Aug 2018</td><td class="n">230</td><td class="n">4,462</td><td class="n">4,310</td><td class="n">8,772</td><td class="n">1.035</td><td><span class="pill">Resp 1.041</span> <span class="pill warn">S&D 0.989</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>Mockup 3: Tournament stats inside a selected season</h2>
+  <div class="mock">
+    <div class="mock-title">
+      <div>
+        <h3>Advanced Warfare tournament stats</h3>
+        <p class="small muted">This should be the drilldown from a season row. Tournament rows are grouped by event name within a season; split-date stat rows roll up into one event with a date range.</p>
+      </div>
+      <div class="toolbar">
+        <span class="pill green">Season K/D 1.201</span>
+        <span class="pill">197 maps</span>
+      </div>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Tournament</th><th>Date</th><th class="n">Maps</th><th class="n">K/D</th><th class="n">Respawn</th><th class="n">S&D</th><th class="n">Interactions</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="event-name">MLG Columbus Open 2014</span><div class="event-sub">OpTic Gaming</div></td><td>Nov 28-30</td><td class="n">34</td><td class="n">1.135</td><td class="n">1.116</td><td class="n">1.296</td><td class="n">1,454</td></tr>
+          <tr class="heat" style="--a:9%"><td><span class="event-name">MLG S1 Playoffs 2015</span><div class="event-sub">OpTic Gaming</div></td><td>Feb 20-22</td><td class="n">15</td><td class="n"><strong>1.289</strong></td><td class="n">1.329</td><td class="n warn">0.969</td><td class="n">657</td></tr>
+          <tr class="heat" style="--a:10%"><td><span class="event-name">CoD Champs 2015 NA Regional</span><div class="event-sub">OpTic Gaming</div></td><td>Mar 6-8</td><td class="n">19</td><td class="n"><strong>1.306</strong></td><td class="n">1.277</td><td class="n">1.645</td><td class="n">904</td></tr>
+          <tr><td><span class="event-name">Call of Duty Championship 2015</span><div class="event-sub">OpTic Gaming</div></td><td>Mar 28-29</td><td class="n">19</td><td class="n">1.262</td><td class="n">1.269</td><td class="n">1.200</td><td class="n">830</td></tr>
+          <tr><td><span class="event-name">UMG Dallas 2015</span><div class="event-sub">OpTic Gaming</div></td><td>Jul 12</td><td class="n"><span class="pill warn">7</span></td><td class="n">1.063</td><td class="n">1.097</td><td class="n warn">0.733</td><td class="n">328</td></tr>
+          <tr><td><span class="event-name">MLG S3 Playoffs 2015</span><div class="event-sub">OpTic Gaming</div></td><td>Sep 18-20</td><td class="n">28</td><td class="n">1.164</td><td class="n">1.177</td><td class="n">1.068</td><td class="n">1,268</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>Mockup 4: Combined expandable layout</h2>
+  <div class="mock">
+    <div class="mock-title">
+      <div>
+        <h3>Recommended final placement</h3>
+        <p class="small muted">Put this after Honors and before the existing resume buildup. It keeps skill data visible without taking over the player page.</p>
+      </div>
+    </div>
+    <div class="season-grid">
+      <article class="season-card">
+        <header>
+          <div><div class="season-name">Advanced Warfare</div><div class="range">197 maps, 11 tournaments</div></div>
+          <div class="n"><span class="small faint">K/D</span><br><strong>1.201</strong></div>
+          <div class="n"><span class="small faint">Resp</span><br><strong>1.200</strong></div>
+          <div class="n"><span class="small faint">S&D</span><br><strong>1.210</strong></div>
+          <div class="n">8,697 int.</div>
+        </header>
+        <div class="body scroll">
+          <table>
+            <tbody>
+              <tr><td>MLG Columbus Open 2014</td><td class="n">34 maps</td><td class="n">1.135 K/D</td><td class="n">1,454 int.</td></tr>
+              <tr><td>MLG S1 Playoffs 2015</td><td class="n">15 maps</td><td class="n">1.289 K/D</td><td class="n">657 int.</td></tr>
+              <tr><td>CoD Champs 2015 NA Regional</td><td class="n">19 maps</td><td class="n">1.306 K/D</td><td class="n">904 int.</td></tr>
+              <tr><td>Call of Duty Championship 2015</td><td class="n">19 maps</td><td class="n">1.262 K/D</td><td class="n">830 int.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div class="layout-list" style="margin-top:var(--s5)">
+      <div class="layout-line"><div class="label">Default state</div><div>Career tiles plus collapsed season rows. This keeps player pages scan-friendly.</div></div>
+      <div class="layout-line"><div class="label">Click season</div><div>Expand tournament rows for that season, grouped by event name with date range.</div></div>
+      <div class="layout-line"><div class="label">Mode toggle</div><div>Overall / Respawn / S&D changes the numeric columns but keeps maps visible as the sample-size warning.</div></div>
+      <div class="layout-line"><div class="label">Missing data</div><div>Show a quiet empty state: "No usable PlayerStats rows in the current source set." Never render zeros.</div></div>
+    </div>
+  </div>
+
+  <h2>Mockup 5: Matching optional leaderboard columns and compare rows</h2>
+  <div class="mock">
+    <div class="mock-title">
+      <div>
+        <h3>Same metrics everywhere</h3>
+        <p class="small muted">The player page, leaderboard column menu, and compare row picker should expose the same stats vocabulary. Defaults stay resume-first; skill stats are opt-in.</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <h3>Leaderboard optional columns</h3>
+        <div class="section-note small">Add these to the existing Columns menu, hidden by default except maybe K/D after we see the density.</div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Column</th><th>Meaning</th><th class="n">Example</th></tr></thead>
+            <tbody>
+              <tr><td>K/D</td><td>career on-record kills divided by deaths</td><td class="n">1.100</td></tr>
+              <tr><td>Kills</td><td>recorded kills</td><td class="n">38,877</td></tr>
+              <tr><td>Deaths</td><td>recorded deaths</td><td class="n">35,342</td></tr>
+              <tr><td>Interactions</td><td>kills + deaths</td><td class="n">74,219</td></tr>
+              <tr><td>Maps</td><td>scored map rows</td><td class="n">1,998</td></tr>
+              <tr><td>Events w/ stats</td><td>tournaments represented in PlayerStats</td><td class="n">102</td></tr>
+              <tr><td>Respawn K/D</td><td>all non-S&D modes</td><td class="n">1.101</td></tr>
+              <tr><td>S&D K/D</td><td>Search and Destroy only</td><td class="n">1.094</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <h3>Compare optional rows</h3>
+        <div class="section-note small">Add these to the compare page Rows picker. Rows should show sample size beside rate stats so a 1.30 K/D on 20 maps does not look equivalent to 1.10 on 2,000 maps.</div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Metric</th><th class="n">Scump</th><th class="n">Simp</th><th>Display note</th></tr></thead>
+            <tbody>
+              <tr><td>K/D</td><td class="n">1.100</td><td class="n">1.096</td><td><span class="pill">show maps</span></td></tr>
+              <tr><td>Interactions</td><td class="n">74,219</td><td class="n">57,648</td><td><span class="pill">volume</span></td></tr>
+              <tr><td>Kills</td><td class="n">38,877</td><td class="n">30,150</td><td><span class="pill">volume</span></td></tr>
+              <tr><td>Deaths</td><td class="n">35,342</td><td class="n">27,498</td><td><span class="pill">volume</span></td></tr>
+              <tr><td>Maps</td><td class="n">1,998</td><td class="n">1,612</td><td><span class="pill">sample</span></td></tr>
+              <tr><td>Respawn K/D</td><td class="n">1.101</td><td class="n">1.103</td><td><span class="pill green">split</span></td></tr>
+              <tr><td>S&D K/D</td><td class="n">1.094</td><td class="n">1.074</td><td><span class="pill blue">split</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

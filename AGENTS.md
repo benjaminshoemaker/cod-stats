@@ -51,6 +51,14 @@ npx playwright test              # browser/layout tests (desktop + mobile)
 - **Verify objective claims yourself** (run the tests / load the page) before asking the user to verify.
 - Fetching wiki data: WebFetch is blocked; use `curl` with a browser User-Agent, expect rate limiting,
   and read wikitext via `api.php?action=query` (the `?action=raw` route is Cloudflare-challenged).
+- CoD Esports Wiki edits: prefer fixing upstream tournament metadata rather than editing generated
+  portal/list pages. Use the in-app browser with a signed-in, email-confirmed Fandom account. Source
+  editor pages use CodeMirror: the visible editor is `.cm-content[contenteditable="true"]`; the
+  `#wpTextbox1` textarea may be hidden/stale until preview/submit. Edit the visible CodeMirror line,
+  click **Show changes**, verify the diff, then submit. New-account edits may be queued as
+  `[pending review]`; confirm via page history. Example: `Portal:Tournaments/Majors` is driven by
+  `{{TournamentPortalMajor|Game}}` + Cargo `Tier`, so Challengers Finals belongs on the event page
+  as `|tier=Minor`, not as a portal-only removal.
 
 ## Deploy
 

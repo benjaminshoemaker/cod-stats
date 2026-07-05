@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Table UX Contract - Before / After</title>
+<style>
+:root{
+  --bg:#fff; --panel:#fafafa; --panel-2:#f3f4f6;
+  --ink:#16181d; --muted:#5b616e; --faint:#6b7280;
+  --line:#e5e7eb; --line-2:#d1d5db;
+  --accent:#2563eb; --accent-soft:#eff4ff; --accent-line:#dbe5ff;
+  --pos-soft:#e7f6f0; --pos-ink:#047857;
+  --warn-soft:#fdf3e3; --warn-ink:#92400e;
+  --radius-sm:6px; --radius-md:8px; --radius-lg:10px; --radius-pill:999px;
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+main{max-width:1180px;margin:0 auto;padding:var(--space-8) var(--space-5) var(--space-10)}
+h1{font-size:2rem;line-height:1.1;margin:0 0 var(--space-2);letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:0}
+h3{font-size:1rem;margin:0}
+p{margin:.55rem 0}
+.lede{max-width:78ch;color:var(--muted);font-size:1rem}
+.small{font-size:.84rem}.tiny{font-size:.72rem}.muted{color:var(--muted)}.faint{color:var(--faint)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.top{display:flex;justify-content:space-between;gap:var(--space-5);align-items:flex-start;margin-bottom:var(--space-6)}
+.note{max-width:360px;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--radius-md);padding:var(--space-3);color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:var(--space-1);border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-2);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted)}
+.pill.good{background:var(--pos-soft);color:var(--pos-ink);border-color:#bfe6d6}
+.pill.warn{background:var(--warn-soft);color:var(--warn-ink);border-color:#f3d9ad}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-4);margin-top:var(--space-5)}
+.mock{border:1px solid var(--line);border-radius:var(--radius-lg);background:#fff;overflow:hidden}
+.mock.before{background:linear-gradient(180deg,#fff,#fffafa)}
+.mock.after{background:linear-gradient(180deg,#fff,#f8fbff)}
+.mock-head{display:flex;justify-content:space-between;gap:var(--space-3);align-items:flex-start;padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--line);background:var(--panel)}
+.mock.before .mock-head{background:#fff7f7}
+.mock.after .mock-head{background:#f7fbff}
+.mock-body{padding:var(--space-5)}
+.section{border-top:1px solid var(--line);padding-top:var(--space-6);margin-top:var(--space-8)}
+.controls{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;margin-bottom:var(--space-3)}
+.btn{min-height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:var(--radius-md);background:#fff;color:var(--ink);font:inherit;font-size:.9rem;font-weight:700;padding:var(--space-2) var(--space-3)}
+.btn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{min-height:36px;border:1px solid var(--line-2);border-radius:var(--radius-md);font:inherit;padding:var(--space-2) var(--space-3);min-width:190px}
+.hint{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-2) var(--space-3);font-size:.82rem;color:var(--muted);border:1px solid var(--line);border-radius:var(--radius-md);background:var(--panel);margin-bottom:var(--space-2)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-md);background:#fff}
+.scroll:focus{outline:2px solid var(--accent);outline-offset:2px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:.9rem}
+caption{text-align:left;color:var(--muted);font-size:.84rem;margin:0 0 var(--space-2);padding:0 var(--space-1)}
+th,td{padding:var(--space-2) var(--space-3);border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;white-space:nowrap}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);background:#fbfbfc}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+tbody tr:hover td,tbody tr:hover th{background:var(--accent-soft)}
+.wide table{min-width:760px}
+.sticky th:first-child,.sticky td:first-child,.sticky tbody th:first-child{
+  position:sticky;left:0;background:#fff;box-shadow:1px 0 0 var(--line);z-index:1
+}
+.sticky thead th:first-child{z-index:2;background:#fbfbfc}
+.best{background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.best-tag{display:inline-flex;align-items:center;border:1px solid var(--accent-line);border-radius:var(--radius-pill);background:#fff;color:var(--accent);font-size:.66rem;font-weight:800;padding:0 var(--space-1);margin-left:var(--space-1)}
+.delta-up{color:var(--pos-ink);font-weight:800}
+.issue-list,.decision-list{display:grid;gap:var(--space-2);margin-top:var(--space-4)}
+.issue,.decision{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2);align-items:start;border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);background:#fff}
+.issue b,.decision b{font-family:var(--mono);font-size:.78rem}
+.mobile-frame{max-width:390px;margin:0 auto;border:1px solid var(--line-2);border-radius:22px;background:#fff;padding:var(--space-3);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+.mobile-frame .mock-body{padding:0}
+.mobile-frame .hint{font-size:.78rem}
+.mobile-frame table{font-size:.84rem}
+.mobile-frame .btn,.mobile-frame .search{min-height:44px}
+.caption-row{display:flex;justify-content:space-between;gap:var(--space-3);align-items:center;margin-bottom:var(--space-2)}
+@media(max-width:900px){
+  main{padding:var(--space-5) var(--space-3)}
+  .top{display:block}.note{max-width:none;margin-top:var(--space-3)}
+  .pair{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  h1{font-size:1.55rem}
+  .mock-head{display:block;padding:var(--space-4)}
+  .mock-body{padding:var(--space-4)}
+  .btn{min-height:44px}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <p class="small faint">Focused mockup / table pattern only</p>
+      <h1>Shared Table UX Contract</h1>
+      <p class="lede">This mockup narrows the universal table proposal to what would actually change: context, horizontal-scroll affordance, sticky row identity, and accessibility semantics. It intentionally keeps the visual style close to the current site.</p>
+      <div class="controls" style="margin-top:var(--space-3)">
+        <span class="pill good">Current visual language</span>
+        <span class="pill">No production code</span>
+        <span class="pill warn">Review before implementation</span>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Decision to make</strong>
+      <p class="small">Do we want this table shell as the default for wide tables, or only for comparison/ranking tables where row identity matters while scrolling?</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>Desktop Before / After</h2>
+    <p class="muted">The after version does not add decoration. It adds a table contract around the existing table.</p>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-head">
+          <div>
+            <h3>Before: table-only surface</h3>
+            <p class="small muted">Looks fine, but context and behavior live outside the component.</p>
+          </div>
+          <span class="pill warn">Current pattern</span>
+        </div>
+        <div class="mock-body">
+          <div class="controls">
+            <input class="search" value="" placeholder="Search player...">
+            <button class="btn">Columns</button>
+            <button class="btn">Eras: All</button>
+          </div>
+          <div class="scroll wide">
+            <table>
+              <thead>
+                <tr><th>Player</th><th class="n">Adj</th><th class="n">Raw</th><th class="n">Peak</th><th class="n">Champs</th><th class="n">Avg place</th><th>Role</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Crimsix</td><td class="n">42.7</td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td class="n">5.1</td><td>Flex</td></tr>
+                <tr><td>Scump</td><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td class="n">5.4</td><td>SMG</td></tr>
+                <tr><td>Simp</td><td class="n">31.8</td><td class="n">22</td><td class="n">71%</td><td class="n">2</td><td class="n">4.0</td><td>SMG</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="issue-list">
+            <div class="issue"><b>1</b><span class="small muted">No caption or local table description.</span></div>
+            <div class="issue"><b>2</b><span class="small muted">Horizontal scroll loses row identity once the player column moves offscreen.</span></div>
+            <div class="issue"><b>3</b><span class="small muted">Overflow container is not explicitly focusable/labeled for keyboard users.</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="mock after">
+        <div class="mock-head">
+          <div>
+            <h3>After: table shell + sticky identity</h3>
+            <p class="small muted">Same data density, clearer behavior.</p>
+          </div>
+          <span class="pill good">Proposed contract</span>
+        </div>
+        <div class="mock-body">
+          <div class="controls">
+            <input class="search" value="" placeholder="Search player...">
+            <button class="btn">Columns: Core</button>
+            <button class="btn">Eras: All</button>
+            <button class="btn primary">Share view</button>
+          </div>
+          <div class="caption-row">
+            <div>
+              <strong>Leaderboard rows</strong>
+              <p class="small muted" style="margin:0">Sorted by adjusted wins. Player names stay visible while horizontal metrics scroll.</p>
+            </div>
+            <span class="pill">7 visible columns</span>
+          </div>
+          <div class="hint">
+            <span>Scroll sideways for placement, role, and optional skill columns.</span>
+            <span class="num">Player locked</span>
+          </div>
+          <div class="scroll wide sticky" tabindex="0" role="region" aria-label="Leaderboard table with locked player column">
+            <table>
+              <caption>Era-adjusted leaderboard with raw wins, peak share, championships, placement, and role.</caption>
+              <thead>
+                <tr><th scope="col">Player</th><th scope="col" class="n">Adj</th><th scope="col" class="n">Raw</th><th scope="col" class="n">Peak</th><th scope="col" class="n">Champs</th><th scope="col" class="n">Avg place</th><th scope="col">Role</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Crimsix</th><td class="n best">42.7 <span class="best-tag">Best</span></td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td class="n">5.1</td><td>Flex</td></tr>
+                <tr><th scope="row">Scump</th><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td class="n">5.4</td><td>SMG</td></tr>
+                <tr><th scope="row">Simp</th><td class="n">31.8</td><td class="n">22</td><td class="n best">71% <span class="best-tag">Best</span></td><td class="n">2</td><td class="n">4.0</td><td>SMG</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="decision-list">
+            <div class="decision"><b>Keep</b><span class="small muted">Same table density, same restrained borders, same mono numeric columns.</span></div>
+            <div class="decision"><b>Add</b><span class="small muted">Caption/region label, sticky row header, explicit scroll hint, non-color-only best markers.</span></div>
+            <div class="decision"><b>Test</b><span class="small muted">At mobile widths, no page overflow; scroll region is reachable; first column remains visible.</span></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Mobile Before / After</h2>
+    <p class="muted">This is the part that matters most. The after version does not try to turn every table into cards; it makes horizontal scroll more understandable and keeps the row label visible.</p>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-head">
+          <div>
+            <h3>Before: scroll is possible but quiet</h3>
+            <p class="small muted">A user can scroll, but the table gives little local guidance.</p>
+          </div>
+        </div>
+        <div class="mock-body">
+          <div class="mobile-frame">
+            <div class="controls">
+              <input class="search" placeholder="Search player...">
+              <button class="btn">Columns</button>
+            </div>
+            <div class="scroll wide">
+              <table>
+                <thead><tr><th>Player</th><th class="n">Adj</th><th class="n">Raw</th><th class="n">Peak</th><th class="n">Champs</th><th class="n">Avg place</th><th>Role</th></tr></thead>
+                <tbody>
+                  <tr><td>Crimsix</td><td class="n">42.7</td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td class="n">5.1</td><td>Flex</td></tr>
+                  <tr><td>Scump</td><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td class="n">5.4</td><td>SMG</td></tr>
+                  <tr><td>Simp</td><td class="n">31.8</td><td class="n">22</td><td class="n">71%</td><td class="n">2</td><td class="n">4.0</td><td>SMG</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="small muted">After panning right, the player name can disappear.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="mock after">
+        <div class="mock-head">
+          <div>
+            <h3>After: table remains a table</h3>
+            <p class="small muted">Just enough mobile affordance to avoid orientation loss.</p>
+          </div>
+        </div>
+        <div class="mock-body">
+          <div class="mobile-frame">
+            <div class="controls">
+              <input class="search" placeholder="Search player...">
+              <button class="btn">Columns: Core</button>
+            </div>
+            <div class="hint">
+              <span>Swipe metrics</span>
+              <span class="num">Name locked</span>
+            </div>
+            <div class="scroll wide sticky" tabindex="0" role="region" aria-label="Mobile leaderboard table, swipe for more columns">
+              <table>
+                <caption>Swipe horizontally for more metrics. Player names remain visible.</caption>
+                <thead><tr><th scope="col">Player</th><th scope="col" class="n">Adj</th><th scope="col" class="n">Raw</th><th scope="col" class="n">Peak</th><th scope="col" class="n">Champs</th><th scope="col" class="n">Avg place</th><th scope="col">Role</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Crimsix</th><td class="n best">42.7</td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td class="n">5.1</td><td>Flex</td></tr>
+                  <tr><th scope="row">Scump</th><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td class="n">5.4</td><td>SMG</td></tr>
+                  <tr><th scope="row">Simp</th><td class="n">31.8</td><td class="n">22</td><td class="n best">71%</td><td class="n">2</td><td class="n">4.0</td><td>SMG</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="small muted">This is the default for ranking/comparison tables. Small simple tables may not need the sticky column.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What this would mean in production</h2>
+    <div class="decision-list">
+      <div class="decision"><b>Shared CSS</b><span>Introduce a table shell class: caption area, scroll hint, focusable overflow wrapper, optional sticky first column.</span></div>
+      <div class="decision"><b>Markup</b><span>Use captions/labels and `scope` for plain tables; add equivalent ARIA/keyboard checks for Tabulator where semantic table markup is not available.</span></div>
+      <div class="decision"><b>Scope</b><span>Apply sticky first column only where horizontal scroll would hide row identity: leaderboard, compare, heatmap table, and wide player/game tables.</span></div>
+      <div class="decision"><b>Tests</b><span>Add Playwright checks for no body overflow, focusable scroll region, scroll hint visibility, and sticky first column on mobile.</span></div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

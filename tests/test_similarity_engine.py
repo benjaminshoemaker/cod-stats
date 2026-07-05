@@ -1,4 +1,5 @@
 import math
+import json
 
 import numpy as np
 import pytest
@@ -12,6 +13,51 @@ def test_shared_percentiles_give_ties_the_same_rank():
     assert pct[0] == pct[1]
     assert pct[0] == pytest.approx(16.6666666667)
     assert pct[-1] == 100
+
+
+def test_load_players_flattens_skill_rates_and_masks_low_samples(tmp_path):
+    data = {
+        "leaderboard": [
+            {"name": "Enough", "primaryRole": "SMG"},
+            {"name": "Sparse", "primaryRole": "AR"},
+        ],
+        "players": {
+            "Enough": {
+                "role_by_game": [],
+                "skillStats": {
+                    "overall": {"kd": 1.123, "interactions": 3550, "maps": 100},
+                    "splits": {
+                        "respawn": {"kd": 1.234, "maps": 40},
+                        "snd": {"kd": 0.987, "maps": 25},
+                    },
+                },
+            },
+            "Sparse": {
+                "role_by_game": [],
+                "skillStats": {
+                    "overall": {"kd": 1.8, "interactions": 960, "maps": 24},
+                    "splits": {
+                        "respawn": {"kd": 1.7, "maps": 12},
+                        "snd": {"kd": 1.9, "maps": 4},
+                    },
+                },
+            },
+        },
+    }
+    path = tmp_path / "data.json"
+    path.write_text(json.dumps(data))
+
+    players = similarity.load_players(str(path))
+
+    enough = players[0]
+    assert enough["skill_kd"] == 1.123
+    assert enough["skill_respawn_kd"] == 1.234
+    assert enough["skill_snd_kd"] == 0.987
+    assert enough["skill_interactions_per_map"] == 35.5
+    assert "skill_kd" not in players[1]
+    assert "skill_respawn_kd" not in players[1]
+    assert "skill_snd_kd" not in players[1]
+    assert "skill_interactions_per_map" not in players[1]
 
 
 def test_contributions_ignore_missing_features_instead_of_nan_poisoning():

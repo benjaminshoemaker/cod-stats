@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Black Ops 2 Title Debate Matrix</title>
+<style>
+:root{
+  --bg:#f6f7fb;--panel:#fff;--panel2:#eef2f7;--ink:#111827;--muted:#596273;--faint:#7d8794;
+  --line:#d9e0ea;--line2:#b7c2d1;--accent:#2563eb;--green:#0f766e;--amber:#b45309;--red:#b91c1c;
+  --blueSoft:#eaf1ff;--greenSoft:#e9f8f3;--amberSoft:#fff6e8;--redSoft:#fff0f0;--purpleSoft:#f3edff;
+  --radius:8px;--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+main{max-width:1260px;margin:0 auto;padding:var(--s6) var(--s4) var(--s7)}
+h1{font-size:34px;line-height:1.08;margin:0 0 var(--s2);letter-spacing:0}
+h2{font-size:20px;margin:var(--s7) 0 var(--s3);letter-spacing:0}
+h3{font-size:16px;margin:0 0 var(--s2);letter-spacing:0}
+p{margin:var(--s2) 0}
+a{color:var(--accent)}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:var(--s3)}
+.lede{max-width:78ch;color:var(--muted);font-size:17px}
+.small{font-size:13px}.muted{color:var(--muted)}.faint{color:var(--faint)}
+.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s5)}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:8px 12px;font-weight:700;color:var(--ink);text-decoration:none;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 7px;font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap}
+.pill.blue{border-color:#bfd0ff;color:#1d4ed8;background:var(--blueSoft)}
+.pill.green{border-color:#b7e4d8;color:#047857;background:var(--greenSoft)}
+.pill.warn{border-color:#fed7aa;color:#9a3412;background:var(--amberSoft)}
+.pill.bad{border-color:#fecaca;color:#991b1b;background:var(--redSoft)}
+.pill.purple{border-color:#d8c6ff;color:#6d28d9;background:var(--purpleSoft)}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3);margin:var(--s5) 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4);min-height:104px}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);font-weight:800}
+.stat .v{font-size:30px;font-weight:900;margin-top:var(--s1)}
+.stat .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.stat.primary{border-color:#a7bef8;background:linear-gradient(180deg,#fff,#f8fbff)}
+.callout{border-left:3px solid var(--line2);background:#fff;padding:var(--s3) var(--s4);color:var(--muted);margin:var(--s5) 0}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
+.case-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4);min-height:190px}
+.case-card.best{border-color:#9db7f7;background:linear-gradient(180deg,#fff,#f8fbff)}
+.case-top{display:flex;align-items:start;justify-content:space-between;gap:var(--s3);margin-bottom:var(--s3)}
+.case-name{font-size:22px;font-weight:900}
+.case-meta{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s2)}
+.case-line{display:grid;grid-template-columns:1fr auto;gap:var(--s3);font-size:13px;border-top:1px solid var(--line);padding-top:var(--s2);margin-top:var(--s2)}
+.lane-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s3);margin-top:var(--s4)}
+.lane{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4)}
+.lane h3{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
+.ranklist{display:grid;gap:var(--s2);margin-top:var(--s3)}
+.rankrow{display:grid;grid-template-columns:2rem 1fr auto;gap:var(--s2);align-items:center;font-size:13px}
+.rankrow .r{font-weight:900;color:var(--faint)}
+.rankrow .name{font-weight:800}
+.rankrow .val{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--muted)}
+.bar{height:7px;background:var(--panel2);border-radius:999px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:999px;width:var(--w)}
+.bar.green i{background:var(--green)}.bar.amber i{background:var(--amber)}.bar.purple i{background:#7c3aed}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--s4);align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s5);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:900;background:#fafbfc}
+td.n,th.n{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+tbody tr:hover td{background:#f8fbff}
+.scroll{overflow-x:auto}.scroll table{min-width:1120px}
+.event-list{display:grid;gap:var(--s2)}
+.event{display:grid;grid-template-columns:6.5rem 1fr auto;gap:var(--s3);align-items:center;padding:var(--s2) 0;border-bottom:1px solid var(--line)}
+.event:last-child{border-bottom:0}
+.event .date{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--faint);font-size:12px}
+.event .winner{font-weight:800}
+.note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
+.empty{background:var(--panel2);border:1px dashed var(--line2);border-radius:var(--radius);padding:var(--s4);color:var(--muted);min-height:132px}
+@media(max-width:1100px){.lane-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:980px){
+  .summary,.cards,.note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  main{padding:var(--s5) var(--s3) var(--s7)}
+  .topbar{display:block}h1{font-size:29px}
+  .summary,.cards,.lane-grid,.note-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb">Design artifact / not wired into production</p>
+  <div class="topbar">
+    <div>
+      <h1>Black Ops 2 Title Debate Matrix</h1>
+      <p class="lede">A title-level evidence mockup using real repo data: major wins, placements, PlayerStats aggregates, formal Event MVP rows, the BO2 community-consensus note, and the current VOR pilot output.</p>
+    </div>
+    <a class="btn" href="../../site/game.html?g=Black%20Ops%202">Current season page</a>
+  </div>
+
+  <section class="summary" id="summary"></section>
+
+  <div class="callout">
+    <strong>Why BO2 is a good test case.</strong> Resume says the compLexity trio led the trophy count, community consensus narrowly puts Karma ahead of Crimsix, and the skill/VOR lane surfaces Scump as the biggest statistical outlier despite a lighter winning resume.
+  </div>
+
+  <section class="cards" id="cards" aria-label="Leading Black Ops 2 cases"></section>
+
+  <section class="lane-grid" id="lanes" aria-label="Evidence lanes"></section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2 style="margin-top:0">Full Candidate Matrix</h2>
+      <p class="small muted">Players are included if they have a win, counted placement, PlayerStats row, formal honor, consensus score, or VOR score in Black Ops 2.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Role</th>
+              <th class="n">Wins</th>
+              <th class="n">Share</th>
+              <th class="n">Entered</th>
+              <th class="n">Avg place</th>
+              <th class="n">K/D</th>
+              <th class="n">Maps</th>
+              <th class="n">Kills VOR</th>
+              <th class="n">Consensus</th>
+              <th>Formal honors</th>
+              <th>Source lanes</th>
+            </tr>
+          </thead>
+          <tbody id="matrix"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0">Major Timeline</h2>
+      <p class="small muted">The BO2 denominator is 17 counted majors. Each title win is worth <span class="num">1/17</span> of the season.</p>
+      <div class="event-list" id="events"></div>
+    </div>
+  </section>
+
+  <h2>Design Notes</h2>
+  <section class="note-grid">
+    <div class="empty">
+      <h3>Keep lanes separate</h3>
+      <p class="small">The page should not average consensus, K/D, MVPs, and wins into one magic score. The value is seeing where each lens disagrees.</p>
+    </div>
+    <div class="empty">
+      <h3>Show sample size</h3>
+      <p class="small">Skill rows expose maps and events. A high K/D on 15 maps should not read like the same evidence as 80 maps.</p>
+    </div>
+    <div class="empty">
+      <h3>Treat awards as sparse</h3>
+      <p class="small">Only Karma and Crimsix have formal BO2 Event MVP rows in the current source set. Everyone else is "not found here," not zero.</p>
+    </div>
+  </section>
+</main>
+
+<script src="../../site/data.js"></script>
+<script>
+const GAME = 'Black Ops 2';
+const D = window.APP_DATA;
+
+const CONSENSUS = {
+  Karma:{rank:1,score:5.267,note:'highest aggregate community score'},
+  Crimsix:{rank:2,score:5.101,note:'very close to Karma'},
+  Clayster:{rank:3,score:3.608,note:'clear third'},
+  ACHES:{rank:4,score:2.915,note:'close with Parasite'},
+  Parasite:{rank:5,score:2.844,note:'close with ACHES'},
+  MiRx:{rank:6,score:1.180,note:'back-half top-10 support'},
+  TeeP:{rank:7,score:1.048,note:'next-tier support'},
+  Scump:{rank:8,score:0.957,note:'clear top-10 but divisive'},
+  KiLLa:{rank:9,score:0.682,note:'back-end top-10'},
+  JKap:{rank:10,score:0.481,note:'narrowly ahead of ProoFy'},
+  ProoFy:{rank:11,score:0.394,note:'honorable mention range'}
+};
+
+const VOR = {
+  Scump:{kills:385.7,interactions:611.6,maps:80,kd:1.121,kpm:22.50,ipm:42.56},
+  Crimsix:{kills:289.4,interactions:305.6,maps:79,kd:1.224,kpm:21.34,ipm:38.78},
+  ACHES:{kills:283.4,interactions:429.6,maps:79,kd:1.114,kpm:21.27,ipm:40.35},
+  Parasite:{kills:175.9,interactions:175.9,maps:59,kd:1.199,kpm:20.66,ipm:37.90},
+  Karma:{kills:155.9,interactions:null,maps:65,kd:1.235,kpm:20.08,ipm:36.34},
+  Jurd:{kills:142.8,interactions:null,maps:40,kd:1.243,kpm:21.25,ipm:38.35},
+  JKap:{kills:97.2,interactions:null,maps:41,kd:1.204,kpm:20.05,ipm:36.71},
+  MiRx:{kills:93.0,interactions:295.4,maps:53,kd:0.923,kpm:19.43,ipm:40.49},
+  Nadeshot:{kills:92.7,interactions:253.6,maps:80,kd:0.979,kpm:18.84,ipm:38.09},
+  Theory:{kills:87.5,interactions:null,maps:39,kd:1.102,kpm:19.92,ipm:38.00},
+  KiLLa:{kills:null,interactions:226.4,maps:65,kd:0.902,kpm:18.22,ipm:38.40},
+  John:{kills:null,interactions:170.0,maps:24,kd:0.927,kpm:20.21,ipm:42.00},
+  BigTymeR:{kills:null,interactions:156.6,maps:80,kd:0.977,kpm:18.23,ipm:36.88},
+  NAMELESS:{kills:null,interactions:142.6,maps:31,kd:0.982,kpm:19.58,ipm:39.52}
+};
+
+const FEATURED = ['Karma','Crimsix','Scump','ACHES','Clayster','Parasite'];
+
+const fmt = n => Number.isFinite(n) ? n.toLocaleString() : '-';
+const pct = v => v == null || !Number.isFinite(v) ? '-' : `${Math.round(v * 100)}%`;
+const dec = (v, d=3) => v == null || !Number.isFinite(v) ? '-' : v.toFixed(d);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function roleFor(player, game){
+  const row = ((player && player.role_by_game) || []).find(r => r.game === game);
+  return row ? row.role : 'Unknown';
+}
+
+function rolePill(role){
+  const tone = role === 'Unknown' ? 'warn' : 'blue';
+  return `<span class="pill ${tone}">${esc(role || 'Unknown')}</span>`;
+}
+
+function lanePills(row){
+  return [
+    row.wins ? '<span class="pill green">Resume</span>' : '',
+    row.place ? '<span class="pill blue">Placement</span>' : '',
+    row.stats ? '<span class="pill green">Stats</span>' : '',
+    row.vor ? '<span class="pill purple">VOR</span>' : '',
+    row.consensus ? '<span class="pill purple">Consensus</span>' : '',
+    row.honors.length ? '<span class="pill green">Honor</span>' : '',
+  ].filter(Boolean).join(' ');
+}
+
+function buildRows(){
+  const game = D.games.find(g => g.game === GAME);
+  const names = new Set(Object.keys(D.players));
+  Object.keys(CONSENSUS).forEach(n => names.add(n));
+  Object.keys(VOR).forEach(n => names.add(n));
+  const rows = [];
+  for(const name of names){
+    const player = D.players[name];
+    if(!player) continue;
+    const season = (player.seasons || []).find(s => s.game === GAME);
+    const place = (player.placements || []).find(p => p.game === GAME);
+    const stats = ((player.skillStats || {}).byGame || []).find(s => s.game === GAME);
+    const honors = (player.honors || []).filter(h => h.game === GAME);
+    const consensus = CONSENSUS[name] || null;
+    const vor = VOR[name] || null;
+    if(!season && !place && !stats && !honors.length && !consensus && !vor) continue;
+    const wins = season ? season.wins : 0;
+    rows.push({
+      name, player, season, place, stats, honors, consensus, vor,
+      wins,
+      share: wins / game.denom,
+      role: roleFor(player, GAME),
+      entered: place ? place.events : 0,
+      avgPlace: place ? place.avgPlace : null,
+      winRate: place && place.events ? place.wins / place.events : null,
+      finalsRate: place && place.events ? place.finals / place.events : null,
+      top4Rate: place && place.events ? place.deepRuns / place.events : null,
+      kd: stats ? stats.overall.kd : (vor ? vor.kd : null),
+      maps: stats ? stats.overall.maps : (vor ? vor.maps : null),
+    });
+  }
+  rows.sort((a,b) =>
+    b.wins - a.wins ||
+    (b.share - a.share) ||
+    ((a.consensus?.rank ?? 999) - (b.consensus?.rank ?? 999)) ||
+    ((a.avgPlace ?? 999) - (b.avgPlace ?? 999)) ||
+    a.name.localeCompare(b.name)
+  );
+  return {game, rows};
+}
+
+function renderSummary(game, rows){
+  const statsRows = rows.filter(r => r.stats);
+  const honorRows = rows.filter(r => r.honors.length);
+  const consensusRows = rows.filter(r => r.consensus);
+  const vorRows = rows.filter(r => r.vor);
+  document.getElementById('summary').innerHTML = `
+    <div class="stat primary"><div class="k">Consensus leader</div><div class="v">Karma</div><div class="sub">5.267 weighted score, Crimsix at 5.101</div></div>
+    <div class="stat"><div class="k">Resume leaders</div><div class="v">7</div><div class="sub">ACHES, TeeP, Crimsix wins out of ${game.denom}</div></div>
+    <div class="stat"><div class="k">Skill outlier</div><div class="v">Scump</div><div class="sub">+385.7 kills VOR, +611.6 interactions VOR</div></div>
+    <div class="stat"><div class="k">Coverage</div><div class="v">${statsRows.length}/${honorRows.length}</div><div class="sub">PlayerStats rows / formal honors; ${consensusRows.length} consensus, ${vorRows.length} VOR</div></div>
+  `;
+}
+
+function renderCards(rows){
+  const byName = Object.fromEntries(rows.map(r => [r.name, r]));
+  document.getElementById('cards').innerHTML = FEATURED.map((name, i) => {
+    const r = byName[name];
+    const c = r.consensus;
+    const v = r.vor;
+    return `<article class="case-card ${i === 0 ? 'best' : ''}">
+      <div class="case-top">
+        <div>
+          <div class="case-name">${esc(r.name)}</div>
+          <div class="case-meta">${rolePill(r.role)} ${c ? `<span class="pill purple">Consensus #${c.rank}</span>` : ''} ${r.honors.length ? '<span class="pill green">Event MVP</span>' : ''}</div>
+        </div>
+        <span class="pill blue">${r.wins} W</span>
+      </div>
+      <div class="case-line"><span>Resume</span><strong class="num">${r.wins}/${GAME_DENOM} wins · ${dec(r.share)}</strong></div>
+      <div class="case-line"><span>Placement</span><strong class="num">${dec(r.avgPlace, 2)} avg · ${pct(r.top4Rate)} top 4</strong></div>
+      <div class="case-line"><span>Skill</span><strong class="num">${dec(r.kd, 3)} K/D · ${fmt(r.maps)} maps</strong></div>
+      <div class="case-line"><span>VOR / consensus</span><strong class="num">${v && v.kills != null ? '+' + dec(v.kills, 1) : '-'} · ${c ? dec(c.score, 3) : '-'}</strong></div>
+    </article>`;
+  }).join('');
+}
+
+function rankList(rows, getValue, format, opts={}){
+  const filtered = rows.filter(r => getValue(r) != null && Number.isFinite(getValue(r)));
+  filtered.sort((a,b) => opts.lowBetter ? getValue(a) - getValue(b) : getValue(b) - getValue(a));
+  const top = filtered.slice(0, opts.limit || 5);
+  const max = Math.max(...top.map(r => Math.abs(getValue(r))) || [1]);
+  return `<div class="ranklist">${top.map((r, i) => `
+    <div>
+      <div class="rankrow"><span class="r">${i + 1}</span><span class="name">${esc(r.name)}</span><span class="val">${format(getValue(r), r)}</span></div>
+      <div class="bar ${opts.tone || ''}"><i style="--w:${opts.lowBetter ? Math.max(8, 100 - (getValue(r) / max * 76)) : Math.max(8, getValue(r) / max * 100)}%"></i></div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderLanes(rows){
+  document.getElementById('lanes').innerHTML = `
+    <section class="lane">
+      <h3>Resume <span class="pill green">wins</span></h3>
+      <p class="small muted">Major wins and title share.</p>
+      ${rankList(rows, r => r.wins || null, v => String(v), {tone:'green'})}
+    </section>
+    <section class="lane">
+      <h3>Placement <span class="pill blue">finish</span></h3>
+      <p class="small muted">Average place among players with 8+ entered majors.</p>
+      ${rankList(rows.filter(r => r.entered >= 8), r => r.avgPlace, v => dec(v, 2), {lowBetter:true,tone:'green'})}
+    </section>
+    <section class="lane">
+      <h3>Skill <span class="pill purple">VOR</span></h3>
+      <p class="small muted">Kills above replacement from the participant VOR pilot.</p>
+      ${rankList(rows, r => r.vor?.kills, v => '+' + dec(v, 1), {tone:'purple'})}
+    </section>
+    <section class="lane">
+      <h3>Honors <span class="pill green">formal</span></h3>
+      <p class="small muted">Only official/formal award rows in current source.</p>
+      ${rankList(rows, r => r.honors.length || null, (v, r) => `${v} MVP`, {tone:'green'})}
+    </section>
+    <section class="lane">
+      <h3>Consensus <span class="pill purple">fan lists</span></h3>
+      <p class="small muted">Weighted community ballot score from the BO2 note.</p>
+      ${rankList(rows, r => r.consensus?.score, v => dec(v, 3), {tone:'purple'})}
+    </section>
+  `;
+}
+
+function honorText(row){
+  if(!row.honors.length) return '<span class="faint">-</span>';
+  return row.honors.map(h => `<span class="pill green">${esc(h.label)} · ${esc(h.event)}</span>`).join(' ');
+}
+
+function renderMatrix(rows){
+  document.getElementById('matrix').innerHTML = rows.map(r => `
+    <tr>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${rolePill(r.role)}</td>
+      <td class="n">${r.wins || '-'}</td>
+      <td class="n">${r.wins ? dec(r.share) : '-'}</td>
+      <td class="n">${r.entered || '-'}</td>
+      <td class="n">${dec(r.avgPlace, 2)}</td>
+      <td class="n">${dec(r.kd, 3)}</td>
+      <td class="n">${fmt(r.maps)}</td>
+      <td class="n">${r.vor && r.vor.kills != null ? '+' + dec(r.vor.kills, 1) : '-'}</td>
+      <td class="n">${r.consensus ? '#' + r.consensus.rank + ' / ' + dec(r.consensus.score, 3) : '-'}</td>
+      <td>${honorText(r)}</td>
+      <td>${lanePills(r)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderEvents(game){
+  document.getElementById('events').innerHTML = game.events.map(e => `
+    <div class="event">
+      <div class="date">${esc(e.date)}</div>
+      <div>
+        <div class="winner">${esc(e.event)}</div>
+        <div class="small faint">${esc(e.type || 'Event')} · ${esc(e.location || '')}</div>
+      </div>
+      <span class="pill blue">${esc(e.winnerTeam || e.winner)}</span>
+    </div>
+  `).join('');
+}
+
+const {game, rows} = buildRows();
+const GAME_DENOM = game.denom;
+renderSummary(game, rows);
+renderCards(rows);
+renderLanes(rows);
+renderMatrix(rows);
+renderEvents(game);
+</script>
+</body>
+</html>

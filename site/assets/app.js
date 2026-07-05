@@ -105,6 +105,16 @@ function roleDisputeLink(player, game, currentRole){
 }
 function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
+function fmtInt(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toLocaleString();}
+function fmtKd(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toFixed(3);}
+function skillBucket(stats, split='overall'){
+  if(!stats) return null;
+  return split === 'overall' ? stats.overall : (stats.splits && stats.splits[split]) || null;
+}
+function skillValue(player, field, split='overall'){
+  const b = skillBucket(player && player.skillStats, split);
+  return b && b[field] != null ? b[field] : null;
+}
 function anchorLink(id, label){
   return `<a class="anchor-link" href="#${esc(id)}" aria-label="Link to ${esc(label)}">#</a>`;
 }

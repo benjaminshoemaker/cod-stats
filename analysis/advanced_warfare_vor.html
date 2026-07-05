@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced Warfare title-wide rate VOR pilot</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:#f7f8fb;color:#111827}
+main{max-width:1120px;margin:0 auto;padding:28px 18px 56px}
+h1{font-size:32px;margin:0 0 8px} h2{font-size:22px;margin:36px 0 10px} h3{font-size:16px;margin:22px 0 8px} p{color:#4b5563;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:18px 0}
+.card{background:white;border:1px solid #d8dee8;border-radius:8px;padding:12px} .k{font-size:12px;color:#6b7280;font-weight:700;text-transform:uppercase} .v{font-size:24px;font-weight:800;margin-top:4px} .sub{font-size:12px;color:#6b7280}
+.twocol{display:grid;grid-template-columns:1fr;gap:14px}
+.chart{background:white;border:1px solid #d8dee8;border-radius:8px;padding:10px;box-sizing:border-box}
+.label{font-size:13px;fill:#111827;font-weight:700} .value,.axis{font-size:12px;fill:#4b5563} .point-label{font-size:11px;fill:#111827;font-weight:700} .grid{stroke:#cfd6e3;stroke-width:1} .zero{stroke:#111827;stroke-width:1;opacity:.32;stroke-dasharray:4 4}
+table{width:100%;border-collapse:collapse;background:white;border:1px solid #d8dee8;border-radius:8px;overflow:hidden;margin:10px 0 14px} th,td{padding:8px 9px;border-bottom:1px solid #e5eaf2;text-align:left;font-size:13px} th{background:#eef2f7;color:#4b5563;text-transform:uppercase;font-size:11px}
+section{border-top:1px solid #d8dee8;margin-top:32px;padding-top:4px}
+@media(max-width:860px){.cards{grid-template-columns:1fr 1fr} table{display:block;overflow-x:auto}}
+</style>
+</head>
+<body><main>
+<h1>Advanced Warfare title-wide rate VOR pilot</h1>
+<p>This version focuses on rate above replacement, not total volume. K/map over replacement is shown for Overall, Respawn, and S&D. Interactions/map over replacement is shown only for Respawn, where engagement volume is a pressure/pace signal. Baselines are title-wide because the replacement pool does not have complete role coverage; known roles from <code>player_roles.json</code> are shown only as visual context.</p>
+<div class="cards">
+  <div class="card"><div class="k">AW stat players</div><div class="v">172</div></div>
+  <div class="card"><div class="k">Known-role players</div><div class="v">41</div></div>
+  <div class="card"><div class="k">Unknown-role players</div><div class="v">131</div></div>
+  <div class="card"><div class="k">Overall scored</div><div class="v">80</div><div class="sub">min 20 maps</div></div><div class="card"><div class="k">Respawn scored</div><div class="v">81</div><div class="sub">min 14 maps</div></div><div class="card"><div class="k">S&amp;D scored</div><div class="v">91</div><div class="sub">min 5 maps</div></div>
+</div>
+<p>Role counts: {'AR': 16, 'SMG': 21, 'Unknown': 131, 'Flex': 4}</p>
+
+<section>
+<h2>Overall kills</h2>
+<p>Ranked by K/map above a title-wide replacement baseline. Overall interactions are not emphasized because their meaning is mixed across respawn and S&D. Minimum maps for this split: 20.</p>
+<table><tr><th>Baseline</th><th>Qualified players</th><th>Replacement K/map</th><th>Replacement Int/map</th></tr><tr><td>All</td><td>80</td><td>19.55</td><td>40.51</td></tr></table>
+<h3>Overall K/map over replacement distribution</h3><svg viewBox="0 0 920 230" class="chart" role="img">
+<line x1="52" y1="184" x2="886" y2="184" class="grid"></line>
+<rect x="52.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="63.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="75.2" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="86.8" y="115.4" width="9.6" height="68.6" fill="#6b7280" opacity="0.78"></rect>
+<rect x="98.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="109.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="121.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="133.1" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="144.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="156.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="167.8" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="179.4" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="191.0" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="202.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="214.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="225.8" y="46.9" width="9.6" height="137.1" fill="#6b7280" opacity="0.78"></rect>
+<rect x="237.3" y="138.3" width="9.6" height="45.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="248.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="260.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="272.1" y="115.4" width="9.6" height="68.6" fill="#6b7280" opacity="0.78"></rect>
+<rect x="283.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="295.2" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="306.8" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="318.4" y="69.7" width="9.6" height="114.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="330.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="341.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="353.2" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="364.8" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="376.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="387.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="399.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="411.1" y="92.6" width="9.6" height="91.4" fill="#6b7280" opacity="0.78"></rect>
+<rect x="422.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="434.2" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="445.8" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="457.4" y="138.3" width="9.6" height="45.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="469.0" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="480.6" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="492.2" y="92.6" width="9.6" height="91.4" fill="#dc2626" opacity="0.78"></rect>
+<rect x="503.8" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="515.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="526.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="538.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="550.1" y="92.6" width="9.6" height="91.4" fill="#6b7280" opacity="0.78"></rect>
+<rect x="561.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="573.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="584.8" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="596.4" y="138.3" width="9.6" height="45.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="608.0" y="138.3" width="9.6" height="45.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="619.6" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="631.2" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="642.8" y="138.3" width="9.6" height="45.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="654.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="665.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="677.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="689.1" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="700.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="712.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="723.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="735.4" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="747.0" y="138.3" width="9.6" height="45.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="758.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="770.2" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="781.8" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="793.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="804.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="816.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="828.1" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="839.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="851.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="862.8" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="874.4" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<line x1="294.4" y1="24" x2="294.4" y2="184" class="zero"></line>
+<text x="52" y="210" class="axis">-1.95/map</text>
+<text x="816" y="210" class="axis">+4.75/map</text>
+<g transform="translate(690 8)"><rect x="0" y="0" width="12" height="12" fill="#2563eb" rx="2"></rect><text x="18" y="10" class="axis">AR</text><rect x="0" y="20" width="12" height="12" fill="#7c3aed" rx="2"></rect><text x="18" y="30" class="axis">Flex</text><rect x="0" y="40" width="12" height="12" fill="#dc2626" rx="2"></rect><text x="18" y="50" class="axis">SMG</text><rect x="0" y="60" width="12" height="12" fill="#6b7280" rx="2"></rect><text x="18" y="70" class="axis">Unknown</text></g>
+</svg>
+<h3>Top Overall K/map over replacement</h3><svg viewBox="0 0 920 380" class="chart" role="img">
+<line x1="150.0" y1="34" x2="150.0" y2="372" class="zero"></line>
+<text x="0" y="54" class="label">Huke</text>
+<rect x="150.0" y="38" width="620.0" height="18" fill="#dc2626" rx="3"></rect>
+<text x="778.0" y="52" class="value">+4.75/map · SMG · 65 maps</text>
+<text x="0" y="82" class="label">Scump</text>
+<rect x="150.0" y="66" width="591.1" height="18" fill="#dc2626" rx="3"></rect>
+<text x="749.1" y="80" class="value">+4.53/map · SMG · 197 maps</text>
+<text x="0" y="110" class="label">Clayster</text>
+<rect x="150.0" y="94" width="574.5" height="18" fill="#2563eb" rx="3"></rect>
+<text x="732.5" y="108" class="value">+4.40/map · AR · 194 maps</text>
+<text x="0" y="138" class="label">ZooMaa</text>
+<rect x="150.0" y="122" width="541.3" height="18" fill="#dc2626" rx="3"></rect>
+<text x="699.3" y="136" class="value">+4.15/map · SMG · 132 maps</text>
+<text x="0" y="166" class="label">MadCat</text>
+<rect x="150.0" y="150" width="541.1" height="18" fill="#2563eb" rx="3"></rect>
+<text x="699.1" y="164" class="value">+4.15/map · AR · 37 maps</text>
+<text x="0" y="194" class="label">Saints</text>
+<rect x="150.0" y="178" width="486.9" height="18" fill="#dc2626" rx="3"></rect>
+<text x="644.9" y="192" class="value">+3.73/map · SMG · 87 maps</text>
+<text x="0" y="222" class="label">Temp</text>
+<rect x="150.0" y="206" width="484.7" height="18" fill="#6b7280" rx="3"></rect>
+<text x="642.7" y="220" class="value">+3.72/map · Unknown · 48 maps</text>
+<text x="0" y="250" class="label">FormaL</text>
+<rect x="150.0" y="234" width="480.5" height="18" fill="#2563eb" rx="3"></rect>
+<text x="638.5" y="248" class="value">+3.68/map · AR · 197 maps</text>
+<text x="0" y="278" class="label">SlasheR</text>
+<rect x="150.0" y="262" width="477.5" height="18" fill="#2563eb" rx="3"></rect>
+<text x="635.5" y="276" class="value">+3.66/map · AR · 144 maps</text>
+<text x="0" y="306" class="label">Mochila</text>
+<rect x="150.0" y="290" width="447.6" height="18" fill="#6b7280" rx="3"></rect>
+<text x="605.6" y="304" class="value">+3.43/map · Unknown · 71 maps</text>
+<text x="0" y="334" class="label">Loony</text>
+<rect x="150.0" y="318" width="391.1" height="18" fill="#dc2626" rx="3"></rect>
+<text x="549.1" y="332" class="value">+3.00/map · SMG · 114 maps</text>
+<text x="0" y="362" class="label">Watson</text>
+<rect x="150.0" y="346" width="381.1" height="18" fill="#6b7280" rx="3"></rect>
+<text x="539.1" y="360" class="value">+2.92/map · Unknown · 42 maps</text>
+</svg>
+<h3>Top overall K/map table</h3>
+<table><tr><th>Player</th><th>Role</th><th>Maps</th><th>K/D</th><th>K/map +/-</th><th>Total K +/-</th></tr><tr><td>Huke</td><td>SMG</td><td>65</td><td>1.084</td><td>+4.75</td><td>+308.9</td></tr><tr><td>Scump</td><td>SMG</td><td>197</td><td>1.201</td><td>+4.53</td><td>+892.7</td></tr><tr><td>Clayster</td><td>AR</td><td>194</td><td>1.184</td><td>+4.40</td><td>+854.4</td></tr><tr><td>ZooMaa</td><td>SMG</td><td>132</td><td>1.055</td><td>+4.15</td><td>+547.8</td></tr><tr><td>MadCat</td><td>AR</td><td>37</td><td>1.159</td><td>+4.15</td><td>+153.5</td></tr><tr><td>Saints</td><td>SMG</td><td>87</td><td>1.122</td><td>+3.73</td><td>+324.7</td></tr><tr><td>Temp</td><td>Unknown</td><td>48</td><td>1.116</td><td>+3.72</td><td>+178.4</td></tr><tr><td>FormaL</td><td>AR</td><td>197</td><td>1.144</td><td>+3.68</td><td>+725.7</td></tr><tr><td>SlasheR</td><td>AR</td><td>144</td><td>1.101</td><td>+3.66</td><td>+527.1</td></tr><tr><td>Mochila</td><td>Unknown</td><td>71</td><td>1.069</td><td>+3.43</td><td>+243.6</td></tr><tr><td>Loony</td><td>SMG</td><td>114</td><td>1.085</td><td>+3.00</td><td>+341.8</td></tr><tr><td>Watson</td><td>Unknown</td><td>42</td><td>1.125</td><td>+2.92</td><td>+122.7</td></tr><tr><td>Crimsix</td><td>Flex</td><td>197</td><td>1.068</td><td>+2.88</td><td>+566.7</td></tr><tr><td>Neslo</td><td>Unknown</td><td>58</td><td>0.999</td><td>+2.84</td><td>+164.8</td></tr><tr><td>Octane</td><td>AR</td><td>34</td><td>1.182</td><td>+2.77</td><td>+94.1</td></tr><tr><td>Jurd</td><td>SMG</td><td>45</td><td>1.008</td><td>+2.69</td><td>+121.0</td></tr><tr><td>ProoFy</td><td>AR</td><td>39</td><td>1.103</td><td>+2.62</td><td>+102.4</td></tr><tr><td>Burns</td><td>Unknown</td><td>48</td><td>1.010</td><td>+2.59</td><td>+124.4</td></tr><tr><td>Tommey</td><td>SMG</td><td>28</td><td>1.050</td><td>+2.37</td><td>+66.5</td></tr><tr><td>Whea7s</td><td>Unknown</td><td>66</td><td>0.971</td><td>+2.34</td><td>+154.4</td></tr><tr><td>NAMELESS</td><td>AR</td><td>104</td><td>1.020</td><td>+2.30</td><td>+239.3</td></tr><tr><td>Goonjar</td><td>Unknown</td><td>91</td><td>1.002</td><td>+2.21</td><td>+201.5</td></tr><tr><td>Apathy</td><td>SMG</td><td>86</td><td>1.061</td><td>+2.17</td><td>+186.3</td></tr><tr><td>Urban</td><td>Unknown</td><td>31</td><td>0.932</td><td>+2.12</td><td>+65.8</td></tr></table>
+</section>
+
+
+<section>
+<h2>Respawn kills and pressure</h2>
+<p>Respawn uses both K/map over replacement and interactions/map over replacement. Interactions are treated as a pressure/pace signal here because respawn modes reward sustained engagements, trades, breaks, and map pressure. Minimum maps for this split: 14.</p>
+<table><tr><th>Baseline</th><th>Qualified players</th><th>Replacement K/map</th><th>Replacement Int/map</th></tr><tr><td>All</td><td>81</td><td>26.40</td><td>54.52</td></tr></table>
+<h3>Respawn K/map over replacement distribution</h3><svg viewBox="0 0 920 230" class="chart" role="img">
+<line x1="52" y1="184" x2="886" y2="184" class="grid"></line>
+<rect x="52.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="63.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="75.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="86.8" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="98.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="109.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="121.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="133.1" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="144.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="156.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="167.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="179.4" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="191.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="202.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="214.2" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="225.8" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="237.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="248.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="260.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="272.1" y="138.3" width="9.6" height="45.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="283.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="295.2" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="306.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="318.4" y="69.7" width="9.6" height="114.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="330.0" y="115.4" width="9.6" height="68.6" fill="#2563eb" opacity="0.78"></rect>
+<rect x="341.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="353.2" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="364.8" y="92.6" width="9.6" height="91.4" fill="#6b7280" opacity="0.78"></rect>
+<rect x="376.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="387.9" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="399.5" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="411.1" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="422.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="434.2" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="445.8" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="457.4" y="92.6" width="9.6" height="91.4" fill="#6b7280" opacity="0.78"></rect>
+<rect x="469.0" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="480.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="492.2" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="503.8" y="69.7" width="9.6" height="114.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="515.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="526.9" y="138.3" width="9.6" height="45.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="538.5" y="115.4" width="9.6" height="68.6" fill="#dc2626" opacity="0.78"></rect>
+<rect x="550.1" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="561.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="573.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="584.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="596.4" y="92.6" width="9.6" height="91.4" fill="#6b7280" opacity="0.78"></rect>
+<rect x="608.0" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="619.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="631.2" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="642.8" y="69.7" width="9.6" height="114.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="654.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="665.9" y="161.1" width="9.6" height="22.9" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="677.5" y="138.3" width="9.6" height="45.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="689.1" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="700.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="712.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="723.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="735.4" y="138.3" width="9.6" height="45.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="747.0" y="138.3" width="9.6" height="45.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="758.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="770.2" y="69.7" width="9.6" height="114.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="781.8" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="793.3" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="804.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="816.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="828.1" y="161.1" width="9.6" height="22.9" fill="#6b7280" opacity="0.78"></rect>
+<rect x="839.7" y="161.1" width="9.6" height="22.9" fill="#2563eb" opacity="0.78"></rect>
+<rect x="851.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="862.8" y="161.1" width="9.6" height="22.9" fill="#dc2626" opacity="0.78"></rect>
+<rect x="874.4" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<line x1="409.6" y1="24" x2="409.6" y2="184" class="zero"></line>
+<text x="52" y="210" class="axis">-4.60/map</text>
+<text x="816" y="210" class="axis">+6.13/map</text>
+<g transform="translate(690 8)"><rect x="0" y="0" width="12" height="12" fill="#2563eb" rx="2"></rect><text x="18" y="10" class="axis">AR</text><rect x="0" y="20" width="12" height="12" fill="#7c3aed" rx="2"></rect><text x="18" y="30" class="axis">Flex</text><rect x="0" y="40" width="12" height="12" fill="#dc2626" rx="2"></rect><text x="18" y="50" class="axis">SMG</text><rect x="0" y="60" width="12" height="12" fill="#6b7280" rx="2"></rect><text x="18" y="70" class="axis">Unknown</text></g>
+</svg>
+<h3>Respawn interactions/map over replacement distribution</h3><svg viewBox="0 0 920 230" class="chart" role="img">
+<line x1="52" y1="184" x2="886" y2="184" class="grid"></line>
+<rect x="52.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="63.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="75.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="86.8" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="98.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="109.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="121.5" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="133.1" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="144.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="156.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="167.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="179.4" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="191.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="202.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="214.2" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="225.8" y="157.3" width="9.6" height="26.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="237.3" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="248.9" y="157.3" width="9.6" height="26.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="260.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="272.1" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="283.7" y="130.7" width="9.6" height="53.3" fill="#2563eb" opacity="0.78"></rect>
+<rect x="295.2" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="306.8" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="318.4" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="330.0" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="341.6" y="157.3" width="9.6" height="26.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="353.2" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="364.8" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="376.3" y="104.0" width="9.6" height="80.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="387.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="399.5" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="411.1" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="422.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="434.2" y="157.3" width="9.6" height="26.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="445.8" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="457.4" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="469.0" y="104.0" width="9.6" height="80.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="480.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="492.2" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="503.8" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="515.3" y="104.0" width="9.6" height="80.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="526.9" y="157.3" width="9.6" height="26.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="538.5" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="550.1" y="77.3" width="9.6" height="106.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="561.7" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="573.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="584.8" y="77.3" width="9.6" height="106.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="596.4" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="608.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="619.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="631.2" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="642.8" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="654.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="665.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="677.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="689.1" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="700.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="712.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="723.8" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="735.4" y="157.3" width="9.6" height="26.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="747.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="758.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="770.2" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="781.8" y="157.3" width="9.6" height="26.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="793.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="804.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="816.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="828.1" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="839.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="851.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="862.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="874.4" y="157.3" width="9.6" height="26.7" fill="#6b7280" opacity="0.78"></rect>
+<line x1="320.0" y1="24" x2="320.0" y2="184" class="zero"></line>
+<text x="52" y="210" class="axis">-4.74/map</text>
+<text x="816" y="210" class="axis">+10.01/map</text>
+<g transform="translate(690 8)"><rect x="0" y="0" width="12" height="12" fill="#2563eb" rx="2"></rect><text x="18" y="10" class="axis">AR</text><rect x="0" y="20" width="12" height="12" fill="#7c3aed" rx="2"></rect><text x="18" y="30" class="axis">Flex</text><rect x="0" y="40" width="12" height="12" fill="#dc2626" rx="2"></rect><text x="18" y="50" class="axis">SMG</text><rect x="0" y="60" width="12" height="12" fill="#6b7280" rx="2"></rect><text x="18" y="70" class="axis">Unknown</text></g>
+</svg>
+<h3>Respawn K/map vs interactions/map over replacement</h3><svg viewBox="0 0 920 470" class="chart" role="img">
+<line x1="70" y1="285.7" x2="876" y2="285.7" class="zero"></line>
+<line x1="417.7" y1="30" x2="417.7" y2="412" class="zero"></line>
+<text x="370" y="454" class="axis">Kills over replacement per map</text>
+<text x="12" y="26" class="axis">Interactions over replacement per map</text>
+<circle cx="181.8" cy="402.2" r="3.0" fill="#6b7280" opacity="0.72"><title>JTee · Unknown · K/map over repl -3.26 · Int/map over repl -4.74</title></circle>
+<circle cx="417.7" cy="283.9" r="3.0" fill="#6b7280" opacity="0.72"><title>Lawless · Unknown · K/map over repl +0.00 · Int/map over repl +0.08</title></circle>
+<circle cx="552.9" cy="162.6" r="3.0" fill="#dc2626" opacity="0.72"><title>Havok · SMG · K/map over repl +1.87 · Int/map over repl +5.01</title></circle>
+<circle cx="654.3" cy="85.6" r="3.0" fill="#6b7280" opacity="0.72"><title>LlamaGod · Unknown · K/map over repl +3.27 · Int/map over repl +8.14</title></circle>
+<text x="661.3" y="80.6" class="point-label">LlamaGod</text>
+<circle cx="497.4" cy="251.0" r="3.0" fill="#6b7280" opacity="0.72"><title>StuDyy · Unknown · K/map over repl +1.10 · Int/map over repl +1.41</title></circle>
+<circle cx="456.6" cy="269.4" r="3.0" fill="#6b7280" opacity="0.72"><title>TwiZz · Unknown · K/map over repl +0.54 · Int/map over repl +0.66</title></circle>
+<circle cx="738.1" cy="90.4" r="3.0" fill="#dc2626" opacity="0.72"><title>SiLLY · SMG · K/map over repl +4.42 · Int/map over repl +7.95</title></circle>
+<text x="745.1" y="85.4" class="point-label">SiLLY</text>
+<circle cx="780.7" cy="39.8" r="3.0" fill="#6b7280" opacity="0.72"><title>Royalty · Unknown · K/map over repl +5.01 · Int/map over repl +10.01</title></circle>
+<text x="787.7" y="34.8" class="point-label">Royalty</text>
+<circle cx="501.4" cy="335.5" r="3.0" fill="#6b7280" opacity="0.72"><title>Anticity · Unknown · K/map over repl +1.16 · Int/map over repl -2.02</title></circle>
+<circle cx="328.4" cy="305.4" r="3.0" fill="#6b7280" opacity="0.72"><title>Blfire · Unknown · K/map over repl -1.23 · Int/map over repl -0.80</title></circle>
+<circle cx="328.4" cy="263.1" r="3.0" fill="#6b7280" opacity="0.72"><title>Reedy · Unknown · K/map over repl -1.23 · Int/map over repl +0.92</title></circle>
+<circle cx="489.3" cy="192.1" r="3.0" fill="#6b7280" opacity="0.72"><title>Rated · Unknown · K/map over repl +0.99 · Int/map over repl +3.81</title></circle>
+<circle cx="346.8" cy="352.9" r="3.0" fill="#6b7280" opacity="0.72"><title>Happy · Unknown · K/map over repl -0.98 · Int/map over repl -2.73</title></circle>
+<circle cx="522.2" cy="290.8" r="3.0" fill="#6b7280" opacity="0.72"><title>SinfuL · Unknown · K/map over repl +1.44 · Int/map over repl -0.21</title></circle>
+<circle cx="377.3" cy="248.2" r="3.0" fill="#2563eb" opacity="0.72"><title>Joshh · AR · K/map over repl -0.56 · Int/map over repl +1.53</title></circle>
+<circle cx="545.0" cy="237.8" r="3.0" fill="#dc2626" opacity="0.72"><title>Tommey · SMG · K/map over repl +1.76 · Int/map over repl +1.95</title></circle>
+<circle cx="472.6" cy="200.3" r="3.0" fill="#6b7280" opacity="0.72"><title>QwiKeR · Unknown · K/map over repl +0.76 · Int/map over repl +3.48</title></circle>
+<circle cx="363.4" cy="309.7" r="3.0" fill="#6b7280" opacity="0.72"><title>Legal · Unknown · K/map over repl -0.75 · Int/map over repl -0.97</title></circle>
+<circle cx="638.6" cy="129.0" r="3.0" fill="#6b7280" opacity="0.72"><title>LXT · Unknown · K/map over repl +3.05 · Int/map over repl +6.38</title></circle>
+<text x="645.6" y="124.0" class="point-label">LXT</text>
+<circle cx="638.6" cy="115.5" r="3.0" fill="#6b7280" opacity="0.72"><title>Urban · Unknown · K/map over repl +3.05 · Int/map over repl +6.93</title></circle>
+<text x="645.6" y="110.5" class="point-label">Urban</text>
+<circle cx="84.5" cy="394.4" r="3.0" fill="#6b7280" opacity="0.72"><title>ShAnE · Unknown · K/map over repl -4.60 · Int/map over repl -4.42</title></circle>
+<circle cx="526.7" cy="256.5" r="3.0" fill="#6b7280" opacity="0.72"><title>PHiZZURP · Unknown · K/map over repl +1.50 · Int/map over repl +1.19</title></circle>
+<circle cx="278.3" cy="373.5" r="3.0" fill="#6b7280" opacity="0.72"><title>BuZZO · Unknown · K/map over repl -1.92 · Int/map over repl -3.57</title></circle>
+<circle cx="564.6" cy="229.6" r="3.0" fill="#6b7280" opacity="0.72"><title>Denz · Unknown · K/map over repl +2.03 · Int/map over repl +2.29</title></circle>
+<circle cx="516.4" cy="182.7" r="3.0" fill="#6b7280" opacity="0.72"><title>Fighta · Unknown · K/map over repl +1.36 · Int/map over repl +4.19</title></circle>
+<circle cx="433.6" cy="285.7" r="3.0" fill="#6b7280" opacity="0.72"><title>Shockz · Unknown · K/map over repl +0.22 · Int/map over repl +0.00</title></circle>
+<circle cx="782.0" cy="187.4" r="3.0" fill="#2563eb" opacity="0.72"><title>Octane · AR · K/map over repl +5.03 · Int/map over repl +4.00</title></circle>
+<circle cx="476.3" cy="249.4" r="3.0" fill="#dc2626" opacity="0.72"><title>John · SMG · K/map over repl +0.81 · Int/map over repl +1.48</title></circle>
+<circle cx="376.7" cy="266.9" r="3.0" fill="#6b7280" opacity="0.72"><title>MarkyB · Unknown · K/map over repl -0.57 · Int/map over repl +0.77</title></circle>
+<circle cx="325.3" cy="365.2" r="3.0" fill="#6b7280" opacity="0.72"><title>Moose · Unknown · K/map over repl -1.27 · Int/map over repl -3.23</title></circle>
+<circle cx="734.2" cy="215.4" r="3.0" fill="#2563eb" opacity="0.72"><title>MadCat · AR · K/map over repl +4.37 · Int/map over repl +2.86</title></circle>
+<circle cx="329.7" cy="353.2" r="3.0" fill="#6b7280" opacity="0.72"><title>FEARS · Unknown · K/map over repl -1.21 · Int/map over repl -2.75</title></circle>
+<circle cx="662.4" cy="253.1" r="3.0" fill="#2563eb" opacity="0.72"><title>ProoFy · AR · K/map over repl +3.38 · Int/map over repl +1.33</title></circle>
+<circle cx="386.0" cy="224.0" r="3.0" fill="#6b7280" opacity="0.72"><title>Joee · Unknown · K/map over repl -0.44 · Int/map over repl +2.51</title></circle>
+<circle cx="356.3" cy="329.1" r="3.0" fill="#dc2626" opacity="0.72"><title>Censor · SMG · K/map over repl -0.85 · Int/map over repl -1.77</title></circle>
+<circle cx="593.6" cy="197.8" r="3.0" fill="#2563eb" opacity="0.72"><title>Dedo · AR · K/map over repl +2.43 · Int/map over repl +3.58</title></circle>
+<circle cx="536.1" cy="140.1" r="3.0" fill="#6b7280" opacity="0.72"><title>Peatie · Unknown · K/map over repl +1.63 · Int/map over repl +5.92</title></circle>
+<circle cx="606.0" cy="266.4" r="3.0" fill="#6b7280" opacity="0.72"><title>Watson · Unknown · K/map over repl +2.60 · Int/map over repl +0.79</title></circle>
+<circle cx="372.4" cy="292.3" r="3.0" fill="#2563eb" opacity="0.72"><title>Accuracy · AR · K/map over repl -0.63 · Int/map over repl -0.27</title></circle>
+<circle cx="645.8" cy="173.3" r="3.0" fill="#dc2626" opacity="0.72"><title>Jurd · SMG · K/map over repl +3.15 · Int/map over repl +4.57</title></circle>
+<circle cx="630.2" cy="198.1" r="3.0" fill="#6b7280" opacity="0.72"><title>Burns · Unknown · K/map over repl +2.93 · Int/map over repl +3.57</title></circle>
+<circle cx="531.5" cy="164.2" r="3.0" fill="#6b7280" opacity="0.72"><title>Cheen · Unknown · K/map over repl +1.57 · Int/map over repl +4.95</title></circle>
+<circle cx="695.5" cy="225.6" r="3.0" fill="#6b7280" opacity="0.72"><title>Temp · Unknown · K/map over repl +3.84 · Int/map over repl +2.45</title></circle>
+<circle cx="293.5" cy="335.8" r="3.0" fill="#dc2626" opacity="0.72"><title>KiLLa · SMG · K/map over repl -1.71 · Int/map over repl -2.04</title></circle>
+<circle cx="350.7" cy="301.7" r="3.0" fill="#2563eb" opacity="0.72"><title>MerK · AR · K/map over repl -0.92 · Int/map over repl -0.65</title></circle>
+<circle cx="615.1" cy="178.2" r="3.0" fill="#6b7280" opacity="0.72"><title>Neslo · Unknown · K/map over repl +2.73 · Int/map over repl +4.38</title></circle>
+<circle cx="507.1" cy="192.5" r="3.0" fill="#dc2626" opacity="0.72"><title>TJHaLy · SMG · K/map over repl +1.23 · Int/map over repl +3.79</title></circle>
+<circle cx="424.1" cy="254.0" r="3.0" fill="#dc2626" opacity="0.72"><title>TeeP · SMG · K/map over repl +0.09 · Int/map over repl +1.29</title></circle>
+<circle cx="546.8" cy="264.5" r="3.0" fill="#dc2626" opacity="0.72"><title>Slacked · SMG · K/map over repl +1.78 · Int/map over repl +0.86</title></circle>
+<circle cx="321.2" cy="318.1" r="3.0" fill="#6b7280" opacity="0.72"><title>Faccento · Unknown · K/map over repl -1.33 · Int/map over repl -1.32</title></circle>
+<circle cx="507.4" cy="237.4" r="3.0" fill="#6b7280" opacity="0.72"><title>Whea7s · Unknown · K/map over repl +1.24 · Int/map over repl +1.97</title></circle>
+<circle cx="738.6" cy="167.9" r="3.0" fill="#dc2626" opacity="0.72"><title>Huke · SMG · K/map over repl +4.43 · Int/map over repl +4.80</title></circle>
+<text x="745.6" y="162.9" class="point-label">Huke</text>
+<circle cx="726.8" cy="165.0" r="3.0" fill="#6b7280" opacity="0.72"><title>Mochila · Unknown · K/map over repl +4.27 · Int/map over repl +4.91</title></circle>
+<text x="733.8" y="160.0" class="point-label">Mochila</text>
+<circle cx="430.3" cy="235.3" r="3.4" fill="#6b7280" opacity="0.72"><title>Remy · Unknown · K/map over repl +0.17 · Int/map over repl +2.05</title></circle>
+<circle cx="604.7" cy="201.2" r="3.4" fill="#dc2626" opacity="0.72"><title>MiRx · SMG · K/map over repl +2.58 · Int/map over repl +3.44</title></circle>
+<circle cx="655.6" cy="215.4" r="3.6" fill="#dc2626" opacity="0.72"><title>Apathy · SMG · K/map over repl +3.28 · Int/map over repl +2.86</title></circle>
+<circle cx="252.6" cy="364.7" r="3.6" fill="#dc2626" opacity="0.72"><title>Nadeshot · SMG · K/map over repl -2.28 · Int/map over repl -3.21</title></circle>
+<circle cx="772.2" cy="171.1" r="3.6" fill="#dc2626" opacity="0.72"><title>Saints · SMG · K/map over repl +4.89 · Int/map over repl +4.67</title></circle>
+<text x="779.2" y="166.1" class="point-label">Saints</text>
+<circle cx="480.5" cy="265.8" r="3.8" fill="#6b7280" opacity="0.72"><title>Nagafen · Unknown · K/map over repl +0.87 · Int/map over repl +0.81</title></circle>
+<circle cx="588.2" cy="206.3" r="3.8" fill="#6b7280" opacity="0.72"><title>Goonjar · Unknown · K/map over repl +2.35 · Int/map over repl +3.23</title></circle>
+<circle cx="533.6" cy="201.9" r="3.8" fill="#6b7280" opacity="0.72"><title>MBoZe · Unknown · K/map over repl +1.60 · Int/map over repl +3.41</title></circle>
+<circle cx="535.9" cy="206.5" r="3.9" fill="#6b7280" opacity="0.72"><title>Theory · Unknown · K/map over repl +1.63 · Int/map over repl +3.22</title></circle>
+<circle cx="577.7" cy="280.2" r="4.0" fill="#6b7280" opacity="0.72"><title>AquA · Unknown · K/map over repl +2.21 · Int/map over repl +0.23</title></circle>
+<circle cx="518.0" cy="232.1" r="4.1" fill="#7c3aed" opacity="0.72"><title>Classic · Flex · K/map over repl +1.38 · Int/map over repl +2.18</title></circle>
+<circle cx="421.8" cy="264.2" r="4.4" fill="#7c3aed" opacity="0.72"><title>Karma · Flex · K/map over repl +0.06 · Int/map over repl +0.88</title></circle>
+<circle cx="388.7" cy="257.5" r="4.4" fill="#2563eb" opacity="0.72"><title>Ricky · AR · K/map over repl -0.40 · Int/map over repl +1.15</title></circle>
+<circle cx="632.6" cy="211.4" r="4.4" fill="#2563eb" opacity="0.72"><title>NAMELESS · AR · K/map over repl +2.97 · Int/map over repl +3.03</title></circle>
+<circle cx="755.8" cy="160.4" r="4.6" fill="#dc2626" opacity="0.72"><title>Loony · SMG · K/map over repl +4.67 · Int/map over repl +5.10</title></circle>
+<text x="762.8" y="155.4" class="point-label">Loony</text>
+<circle cx="578.4" cy="224.5" r="4.8" fill="#6b7280" opacity="0.72"><title>Sharp · Unknown · K/map over repl +2.22 · Int/map over repl +2.49</title></circle>
+<circle cx="440.0" cy="290.2" r="5.1" fill="#dc2626" opacity="0.72"><title>ACHES · SMG · K/map over repl +0.31 · Int/map over repl -0.18</title></circle>
+<circle cx="762.3" cy="119.1" r="5.6" fill="#dc2626" opacity="0.72"><title>ZooMaa · SMG · K/map over repl +4.76 · Int/map over repl +6.78</title></circle>
+<text x="769.3" y="114.1" class="point-label">ZooMaa</text>
+<circle cx="535.2" cy="268.0" r="5.6" fill="#2563eb" opacity="0.72"><title>Parasite · AR · K/map over repl +1.62 · Int/map over repl +0.72</title></circle>
+<circle cx="689.2" cy="211.2" r="6.3" fill="#2563eb" opacity="0.72"><title>SlasheR · AR · K/map over repl +3.75 · Int/map over repl +3.03</title></circle>
+<circle cx="487.9" cy="287.3" r="6.9" fill="#2563eb" opacity="0.72"><title>JKap · AR · K/map over repl +0.97 · Int/map over repl -0.06</title></circle>
+<circle cx="281.4" cy="351.3" r="7.0" fill="#6b7280" opacity="0.72"><title>Crowder · Unknown · K/map over repl -1.88 · Int/map over repl -2.67</title></circle>
+<circle cx="537.7" cy="308.0" r="7.8" fill="#7c3aed" opacity="0.72"><title>Enable · Flex · K/map over repl +1.66 · Int/map over repl -0.91</title></circle>
+<circle cx="606.0" cy="197.0" r="7.9" fill="#dc2626" opacity="0.72"><title>Attach · SMG · K/map over repl +2.60 · Int/map over repl +3.61</title></circle>
+<circle cx="846.2" cy="166.1" r="8.1" fill="#2563eb" opacity="0.72"><title>Clayster · AR · K/map over repl +5.92 · Int/map over repl +4.87</title></circle>
+<text x="853.2" y="161.1" class="point-label">Clayster</text>
+<circle cx="683.5" cy="192.0" r="8.2" fill="#7c3aed" opacity="0.72"><title>Crimsix · Flex · K/map over repl +3.67 · Int/map over repl +3.81</title></circle>
+<circle cx="771.4" cy="186.6" r="8.2" fill="#2563eb" opacity="0.72"><title>FormaL · AR · K/map over repl +4.88 · Int/map over repl +4.03</title></circle>
+<circle cx="861.5" cy="160.0" r="8.2" fill="#dc2626" opacity="0.72"><title>Scump · SMG · K/map over repl +6.13 · Int/map over repl +5.12</title></circle>
+<text x="868.5" y="155.0" class="point-label">Scump</text>
+<g transform="translate(690 12)"><rect x="0" y="0" width="12" height="12" fill="#2563eb" rx="2"></rect><text x="18" y="10" class="axis">AR</text><rect x="0" y="20" width="12" height="12" fill="#7c3aed" rx="2"></rect><text x="18" y="30" class="axis">Flex</text><rect x="0" y="40" width="12" height="12" fill="#dc2626" rx="2"></rect><text x="18" y="50" class="axis">SMG</text><rect x="0" y="60" width="12" height="12" fill="#6b7280" rx="2"></rect><text x="18" y="70" class="axis">Unknown</text></g>
+</svg>
+<div class="twocol">
+  <div><h3>Top Respawn K/map over replacement</h3><svg viewBox="0 0 920 380" class="chart" role="img">
+<line x1="150.0" y1="34" x2="150.0" y2="372" class="zero"></line>
+<text x="0" y="54" class="label">Scump</text>
+<rect x="150.0" y="38" width="620.0" height="18" fill="#dc2626" rx="3"></rect>
+<text x="778.0" y="52" class="value">+6.13/map · SMG · 131 maps</text>
+<text x="0" y="82" class="label">Clayster</text>
+<rect x="150.0" y="66" width="598.6" height="18" fill="#2563eb" rx="3"></rect>
+<text x="756.6" y="80" class="value">+5.92/map · AR · 130 maps</text>
+<text x="0" y="110" class="label">Octane</text>
+<rect x="150.0" y="94" width="508.9" height="18" fill="#2563eb" rx="3"></rect>
+<text x="666.9" y="108" class="value">+5.03/map · AR · 21 maps</text>
+<text x="0" y="138" class="label">Royalty</text>
+<rect x="150.0" y="122" width="507.2" height="18" fill="#6b7280" rx="3"></rect>
+<text x="665.2" y="136" class="value">+5.01/map · Unknown · 17 maps</text>
+<text x="0" y="166" class="label">Saints</text>
+<rect x="150.0" y="150" width="495.2" height="18" fill="#dc2626" rx="3"></rect>
+<text x="653.2" y="164" class="value">+4.89/map · SMG · 58 maps</text>
+<text x="0" y="194" class="label">FormaL</text>
+<rect x="150.0" y="178" width="494.1" height="18" fill="#2563eb" rx="3"></rect>
+<text x="652.1" y="192" class="value">+4.88/map · AR · 131 maps</text>
+<text x="0" y="222" class="label">ZooMaa</text>
+<rect x="150.0" y="206" width="481.4" height="18" fill="#dc2626" rx="3"></rect>
+<text x="639.4" y="220" class="value">+4.76/map · SMG · 89 maps</text>
+<text x="0" y="250" class="label">Loony</text>
+<rect x="150.0" y="234" width="472.3" height="18" fill="#dc2626" rx="3"></rect>
+<text x="630.3" y="248" class="value">+4.67/map · SMG · 74 maps</text>
+<text x="0" y="278" class="label">Huke</text>
+<rect x="150.0" y="262" width="448.3" height="18" fill="#dc2626" rx="3"></rect>
+<text x="606.3" y="276" class="value">+4.43/map · SMG · 47 maps</text>
+<text x="0" y="306" class="label">SiLLY</text>
+<rect x="150.0" y="290" width="447.6" height="18" fill="#dc2626" rx="3"></rect>
+<text x="605.6" y="304" class="value">+4.42/map · SMG · 17 maps</text>
+<text x="0" y="334" class="label">MadCat</text>
+<rect x="150.0" y="318" width="442.1" height="18" fill="#2563eb" rx="3"></rect>
+<text x="600.1" y="332" class="value">+4.37/map · AR · 26 maps</text>
+<text x="0" y="362" class="label">Mochila</text>
+<rect x="150.0" y="346" width="431.8" height="18" fill="#6b7280" rx="3"></rect>
+<text x="589.8" y="360" class="value">+4.27/map · Unknown · 48 maps</text>
+</svg></div>
+  <div><h3>Top Respawn interactions/map over replacement</h3><svg viewBox="0 0 920 380" class="chart" role="img">
+<line x1="150.0" y1="34" x2="150.0" y2="372" class="zero"></line>
+<text x="0" y="54" class="label">Royalty</text>
+<rect x="150.0" y="38" width="620.0" height="18" fill="#6b7280" rx="3"></rect>
+<text x="778.0" y="52" class="value">+10.01/map · Unknown · 17 maps</text>
+<text x="0" y="82" class="label">LlamaGod</text>
+<rect x="150.0" y="66" width="504.6" height="18" fill="#6b7280" rx="3"></rect>
+<text x="662.6" y="80" class="value">+8.14/map · Unknown · 15 maps</text>
+<text x="0" y="110" class="label">SiLLY</text>
+<rect x="150.0" y="94" width="492.4" height="18" fill="#dc2626" rx="3"></rect>
+<text x="650.4" y="108" class="value">+7.95/map · SMG · 17 maps</text>
+<text x="0" y="138" class="label">Urban</text>
+<rect x="150.0" y="122" width="429.2" height="18" fill="#6b7280" rx="3"></rect>
+<text x="587.2" y="136" class="value">+6.93/map · Unknown · 20 maps</text>
+<text x="0" y="166" class="label">ZooMaa</text>
+<rect x="150.0" y="150" width="420.1" height="18" fill="#dc2626" rx="3"></rect>
+<text x="578.1" y="164" class="value">+6.78/map · SMG · 89 maps</text>
+<text x="0" y="194" class="label">LXT</text>
+<rect x="150.0" y="178" width="395.1" height="18" fill="#6b7280" rx="3"></rect>
+<text x="553.1" y="192" class="value">+6.38/map · Unknown · 20 maps</text>
+<text x="0" y="222" class="label">Peatie</text>
+<rect x="150.0" y="206" width="367.1" height="18" fill="#6b7280" rx="3"></rect>
+<text x="525.1" y="220" class="value">+5.92/map · Unknown · 29 maps</text>
+<text x="0" y="250" class="label">Scump</text>
+<rect x="150.0" y="234" width="317.1" height="18" fill="#dc2626" rx="3"></rect>
+<text x="475.1" y="248" class="value">+5.12/map · SMG · 131 maps</text>
+<text x="0" y="278" class="label">Loony</text>
+<rect x="150.0" y="262" width="315.9" height="18" fill="#dc2626" rx="3"></rect>
+<text x="473.9" y="276" class="value">+5.10/map · SMG · 74 maps</text>
+<text x="0" y="306" class="label">Havok</text>
+<rect x="150.0" y="290" width="310.4" height="18" fill="#dc2626" rx="3"></rect>
+<text x="468.4" y="304" class="value">+5.01/map · SMG · 15 maps</text>
+<text x="0" y="334" class="label">Cheen</text>
+<rect x="150.0" y="318" width="306.5" height="18" fill="#6b7280" rx="3"></rect>
+<text x="464.5" y="332" class="value">+4.95/map · Unknown · 34 maps</text>
+<text x="0" y="362" class="label">Mochila</text>
+<rect x="150.0" y="346" width="304.5" height="18" fill="#6b7280" rx="3"></rect>
+<text x="462.5" y="360" class="value">+4.91/map · Unknown · 48 maps</text>
+</svg></div>
+</div>
+<h3>Top respawn combined rate table</h3>
+<table><tr><th>Player</th><th>Role</th><th>Maps</th><th>K/D</th><th>K/map +/-</th><th>Int/map +/-</th><th>Total K +/-</th><th>Total Int +/-</th></tr><tr><td>Royalty</td><td>Unknown</td><td>17</td><td>0.948</td><td>+5.01</td><td>+10.01</td><td>+85.2</td><td>+170.1</td></tr><tr><td>SiLLY</td><td>SMG</td><td>17</td><td>0.974</td><td>+4.42</td><td>+7.95</td><td>+75.2</td><td>+135.1</td></tr><tr><td>ZooMaa</td><td>SMG</td><td>89</td><td>1.034</td><td>+4.76</td><td>+6.78</td><td>+423.4</td><td>+603.4</td></tr><tr><td>LlamaGod</td><td>Unknown</td><td>15</td><td>0.899</td><td>+3.27</td><td>+8.14</td><td>+49.0</td><td>+122.1</td></tr><tr><td>Scump</td><td>SMG</td><td>131</td><td>1.200</td><td>+6.13</td><td>+5.12</td><td>+802.6</td><td>+670.4</td></tr><tr><td>Clayster</td><td>AR</td><td>130</td><td>1.193</td><td>+5.92</td><td>+4.87</td><td>+769.0</td><td>+632.9</td></tr><tr><td>Urban</td><td>Unknown</td><td>20</td><td>0.920</td><td>+3.05</td><td>+6.93</td><td>+61.0</td><td>+138.5</td></tr><tr><td>Loony</td><td>SMG</td><td>74</td><td>1.088</td><td>+4.67</td><td>+5.10</td><td>+345.4</td><td>+377.2</td></tr><tr><td>Saints</td><td>SMG</td><td>58</td><td>1.122</td><td>+4.89</td><td>+4.67</td><td>+283.8</td><td>+270.6</td></tr><tr><td>LXT</td><td>Unknown</td><td>20</td><td>0.936</td><td>+3.05</td><td>+6.38</td><td>+61.0</td><td>+127.5</td></tr><tr><td>Huke</td><td>SMG</td><td>47</td><td>1.082</td><td>+4.43</td><td>+4.80</td><td>+208.2</td><td>+225.4</td></tr><tr><td>Mochila</td><td>Unknown</td><td>48</td><td>1.066</td><td>+4.27</td><td>+4.91</td><td>+204.8</td><td>+235.9</td></tr><tr><td>Octane</td><td>AR</td><td>21</td><td>1.160</td><td>+5.03</td><td>+4.00</td><td>+105.6</td><td>+84.0</td></tr><tr><td>FormaL</td><td>AR</td><td>131</td><td>1.147</td><td>+4.88</td><td>+4.03</td><td>+639.6</td><td>+528.4</td></tr><tr><td>Jurd</td><td>SMG</td><td>31</td><td>1.000</td><td>+3.15</td><td>+4.57</td><td>+97.6</td><td>+141.8</td></tr><tr><td>Peatie</td><td>Unknown</td><td>29</td><td>0.865</td><td>+1.63</td><td>+5.92</td><td>+47.4</td><td>+171.8</td></tr><tr><td>Crimsix</td><td>Flex</td><td>131</td><td>1.064</td><td>+3.67</td><td>+3.81</td><td>+480.6</td><td>+499.4</td></tr><tr><td>MadCat</td><td>AR</td><td>26</td><td>1.156</td><td>+4.37</td><td>+2.86</td><td>+113.6</td><td>+74.4</td></tr><tr><td>Neslo</td><td>Unknown</td><td>40</td><td>0.978</td><td>+2.73</td><td>+4.38</td><td>+109.0</td><td>+175.0</td></tr><tr><td>Havok</td><td>SMG</td><td>15</td><td>0.904</td><td>+1.87</td><td>+5.01</td><td>+28.0</td><td>+75.1</td></tr><tr><td>SlasheR</td><td>AR</td><td>101</td><td>1.100</td><td>+3.75</td><td>+3.03</td><td>+378.6</td><td>+306.1</td></tr><tr><td>Cheen</td><td>Unknown</td><td>34</td><td>0.888</td><td>+1.57</td><td>+4.95</td><td>+53.4</td><td>+168.2</td></tr><tr><td>Burns</td><td>Unknown</td><td>33</td><td>1.020</td><td>+2.93</td><td>+3.57</td><td>+96.8</td><td>+117.7</td></tr><tr><td>Temp</td><td>Unknown</td><td>34</td><td>1.131</td><td>+3.84</td><td>+2.45</td><td>+130.4</td><td>+83.2</td></tr></table>
+</section>
+
+
+<section>
+<h2>S&amp;D kills</h2>
+<p>Ranked by K/map above a title-wide replacement baseline. Interactions are intentionally omitted here because S&D interaction volume is not treated as a value metric in this prototype. Minimum maps for this split: 5.</p>
+<table><tr><th>Baseline</th><th>Qualified players</th><th>Replacement K/map</th><th>Replacement Int/map</th></tr><tr><td>All</td><td>91</td><td>5.75</td><td>12.07</td></tr></table>
+<h3>S&amp;D K/map over replacement distribution</h3><svg viewBox="0 0 920 230" class="chart" role="img">
+<line x1="52" y1="184" x2="886" y2="184" class="grid"></line>
+<rect x="52.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="63.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="75.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="86.8" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="98.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="109.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="121.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="133.1" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="144.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="156.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="167.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="179.4" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="191.0" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="202.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="214.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="225.8" y="157.3" width="9.6" height="26.7" fill="#6b7280" opacity="0.78"></rect>
+<rect x="237.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="248.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="260.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="272.1" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="283.7" y="130.7" width="9.6" height="53.3" fill="#2563eb" opacity="0.78"></rect>
+<rect x="295.2" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="306.8" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="318.4" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="330.0" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="341.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="353.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="364.8" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="376.3" y="130.7" width="9.6" height="53.3" fill="#2563eb" opacity="0.78"></rect>
+<rect x="387.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="399.5" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="411.1" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="422.7" y="130.7" width="9.6" height="53.3" fill="#2563eb" opacity="0.78"></rect>
+<rect x="434.2" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="445.8" y="77.3" width="9.6" height="106.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="457.4" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="469.0" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="480.6" y="104.0" width="9.6" height="80.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="492.2" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="503.8" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="515.3" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="526.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="538.5" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="550.1" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="561.7" y="104.0" width="9.6" height="80.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="573.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="584.8" y="104.0" width="9.6" height="80.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="596.4" y="130.7" width="9.6" height="53.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="608.0" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="619.6" y="157.3" width="9.6" height="26.7" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="631.2" y="77.3" width="9.6" height="106.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="642.8" y="50.7" width="9.6" height="133.3" fill="#6b7280" opacity="0.78"></rect>
+<rect x="654.3" y="157.3" width="9.6" height="26.7" fill="#2563eb" opacity="0.78"></rect>
+<rect x="665.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="677.5" y="130.7" width="9.6" height="53.3" fill="#dc2626" opacity="0.78"></rect>
+<rect x="689.1" y="24.0" width="9.6" height="160.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="700.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="712.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="723.8" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="735.4" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="747.0" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="758.6" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="770.2" y="184.0" width="9.6" height="0.0" fill="#dc2626" opacity="0.78"></rect>
+<rect x="781.8" y="104.0" width="9.6" height="80.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="793.3" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="804.9" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="816.5" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="828.1" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<rect x="839.7" y="184.0" width="9.6" height="0.0" fill="#2563eb" opacity="0.78"></rect>
+<rect x="851.3" y="184.0" width="9.6" height="0.0" fill="#7c3aed" opacity="0.78"></rect>
+<rect x="862.8" y="157.3" width="9.6" height="26.7" fill="#dc2626" opacity="0.78"></rect>
+<rect x="874.4" y="184.0" width="9.6" height="0.0" fill="#6b7280" opacity="0.78"></rect>
+<line x1="398.0" y1="24" x2="398.0" y2="184" class="zero"></line>
+<text x="52" y="210" class="axis">-2.15/map</text>
+<text x="816" y="210" class="axis">+3.03/map</text>
+<g transform="translate(690 8)"><rect x="0" y="0" width="12" height="12" fill="#2563eb" rx="2"></rect><text x="18" y="10" class="axis">AR</text><rect x="0" y="20" width="12" height="12" fill="#7c3aed" rx="2"></rect><text x="18" y="30" class="axis">Flex</text><rect x="0" y="40" width="12" height="12" fill="#dc2626" rx="2"></rect><text x="18" y="50" class="axis">SMG</text><rect x="0" y="60" width="12" height="12" fill="#6b7280" rx="2"></rect><text x="18" y="70" class="axis">Unknown</text></g>
+</svg>
+<h3>Top S&amp;D K/map over replacement</h3><svg viewBox="0 0 920 380" class="chart" role="img">
+<line x1="150.0" y1="34" x2="150.0" y2="372" class="zero"></line>
+<text x="0" y="54" class="label">Tommey</text>
+<rect x="150.0" y="38" width="620.0" height="18" fill="#dc2626" rx="3"></rect>
+<text x="778.0" y="52" class="value">+3.03/map · SMG · 9 maps</text>
+<text x="0" y="82" class="label">ZooMaa</text>
+<rect x="150.0" y="66" width="517.9" height="18" fill="#dc2626" rx="3"></rect>
+<text x="675.9" y="80" class="value">+2.53/map · SMG · 43 maps</text>
+<text x="0" y="110" class="label">SinfuL</text>
+<rect x="150.0" y="94" width="481.3" height="18" fill="#6b7280" rx="3"></rect>
+<text x="639.3" y="108" class="value">+2.35/map · Unknown · 10 maps</text>
+<text x="0" y="138" class="label">PHiZZURP</text>
+<rect x="150.0" y="122" width="479.4" height="18" fill="#6b7280" rx="3"></rect>
+<text x="637.4" y="136" class="value">+2.34/map · Unknown · 11 maps</text>
+<text x="0" y="166" class="label">Watson</text>
+<rect x="150.0" y="150" width="445.1" height="18" fill="#6b7280" rx="3"></rect>
+<text x="603.1" y="164" class="value">+2.17/map · Unknown · 13 maps</text>
+<text x="0" y="194" class="label">LlamaGod</text>
+<rect x="150.0" y="178" width="440.4" height="18" fill="#6b7280" rx="3"></rect>
+<text x="598.4" y="192" class="value">+2.15/map · Unknown · 10 maps</text>
+<text x="0" y="222" class="label">RusH (Kelvin Bosman)</text>
+<rect x="150.0" y="206" width="426.7" height="18" fill="#6b7280" rx="3"></rect>
+<text x="584.7" y="220" class="value">+2.09/map · Unknown · 6 maps</text>
+<text x="0" y="250" class="label">Whea7s</text>
+<rect x="150.0" y="234" width="396.2" height="18" fill="#6b7280" rx="3"></rect>
+<text x="554.2" y="248" class="value">+1.94/map · Unknown · 19 maps</text>
+<text x="0" y="278" class="label">Octane</text>
+<rect x="150.0" y="262" width="382.1" height="18" fill="#2563eb" rx="3"></rect>
+<text x="540.1" y="276" class="value">+1.87/map · AR · 13 maps</text>
+<text x="0" y="306" class="label">John</text>
+<rect x="150.0" y="290" width="375.6" height="18" fill="#dc2626" rx="3"></rect>
+<text x="533.6" y="304" class="value">+1.84/map · SMG · 12 maps</text>
+<text x="0" y="334" class="label">Goonjar</text>
+<rect x="150.0" y="318" width="372.1" height="18" fill="#6b7280" rx="3"></rect>
+<text x="530.1" y="332" class="value">+1.82/map · Unknown · 30 maps</text>
+<text x="0" y="362" class="label">Urban</text>
+<rect x="150.0" y="346" width="367.8" height="18" fill="#6b7280" rx="3"></rect>
+<text x="525.8" y="360" class="value">+1.80/map · Unknown · 11 maps</text>
+</svg>
+<h3>Top S&D K/map table</h3>
+<table><tr><th>Player</th><th>Role</th><th>Maps</th><th>K/D</th><th>K/map +/-</th><th>Total K +/-</th></tr><tr><td>Tommey</td><td>SMG</td><td>9</td><td>1.681</td><td>+3.03</td><td>+27.3</td></tr><tr><td>ZooMaa</td><td>SMG</td><td>43</td><td>1.254</td><td>+2.53</td><td>+108.8</td></tr><tr><td>SinfuL</td><td>Unknown</td><td>10</td><td>1.350</td><td>+2.35</td><td>+23.5</td></tr><tr><td>PHiZZURP</td><td>Unknown</td><td>11</td><td>1.219</td><td>+2.34</td><td>+25.8</td></tr><tr><td>Watson</td><td>Unknown</td><td>13</td><td>1.355</td><td>+2.17</td><td>+28.3</td></tr><tr><td>LlamaGod</td><td>Unknown</td><td>10</td><td>1.362</td><td>+2.15</td><td>+21.5</td></tr><tr><td>RusH (Kelvin Bosman)</td><td>Unknown</td><td>6</td><td>1.175</td><td>+2.09</td><td>+12.5</td></tr><tr><td>Whea7s</td><td>Unknown</td><td>19</td><td>1.106</td><td>+1.94</td><td>+36.8</td></tr><tr><td>Octane</td><td>AR</td><td>13</td><td>1.356</td><td>+1.87</td><td>+24.3</td></tr><tr><td>John</td><td>SMG</td><td>12</td><td>1.058</td><td>+1.84</td><td>+22.0</td></tr><tr><td>Goonjar</td><td>Unknown</td><td>30</td><td>1.091</td><td>+1.82</td><td>+54.6</td></tr><tr><td>Urban</td><td>Unknown</td><td>11</td><td>1.025</td><td>+1.80</td><td>+19.8</td></tr><tr><td>Remy</td><td>Unknown</td><td>30</td><td>1.119</td><td>+1.79</td><td>+53.6</td></tr><tr><td>Neslo</td><td>Unknown</td><td>18</td><td>1.229</td><td>+1.70</td><td>+30.5</td></tr><tr><td>Lawless</td><td>Unknown</td><td>8</td><td>1.157</td><td>+1.63</td><td>+13.0</td></tr><tr><td>Anticity</td><td>Unknown</td><td>8</td><td>1.054</td><td>+1.63</td><td>+13.0</td></tr><tr><td>Slacked</td><td>SMG</td><td>22</td><td>1.200</td><td>+1.62</td><td>+35.5</td></tr><tr><td>Scump</td><td>SMG</td><td>66</td><td>1.210</td><td>+1.59</td><td>+104.6</td></tr><tr><td>StuDyy</td><td>Unknown</td><td>9</td><td>1.119</td><td>+1.59</td><td>+14.3</td></tr><tr><td>TJHaLy</td><td>SMG</td><td>20</td><td>1.035</td><td>+1.55</td><td>+31.0</td></tr><tr><td>Joee</td><td>Unknown</td><td>14</td><td>1.186</td><td>+1.54</td><td>+21.5</td></tr><tr><td>Huke</td><td>SMG</td><td>18</td><td>1.101</td><td>+1.53</td><td>+27.5</td></tr><tr><td>Saints</td><td>SMG</td><td>29</td><td>1.122</td><td>+1.53</td><td>+44.3</td></tr><tr><td>Crimsix</td><td>Flex</td><td>66</td><td>1.103</td><td>+1.52</td><td>+100.6</td></tr></table>
+</section>
+
+</main></body></html>

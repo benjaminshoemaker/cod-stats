@@ -58,12 +58,13 @@ After that, every push to `main` auto-deploys to production, and pull requests g
 
 Raw pulls from the wiki Cargo API are cached as JSON in the repo root. To regenerate `site/data.js`:
 ```bash
-python3 build_data.py          # reads major_events.json + player_event_wins.json + champs_wins.json
+python3 build_data.py          # reads the root JSON snapshots and writes site/data.js
 ```
 To refresh the cached JSON from the live wiki (e.g. after a drift alert):
 ```bash
 python3 scripts/fetch_source.py               # re-pulls all four source JSON files
 python3 scripts/fetch_source.py --published   # prints the live list (2+ wins) as a PUBLISHED literal
+python3 scripts/fetch_source.py --player-stats # resumable PlayerStats pull for objective skill stats
 ```
 Then update `PUBLISHED`/`ASOF` in `build_data.py` if the wiki list moved, re-run the build, and commit.
 
@@ -97,5 +98,6 @@ with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" ab
 - `major_events.json` — every major event (name, game, date, winner, type, prize, location), including future-scheduled ones (used for in-progress season denominators; date-filtered for everything else)
 - `champs_wins.json` — Call of Duty World Championship wins per player (2013+)
 - `team_participation.json` — every team result row at majors (validates the MW 2019 structural denominator in tests)
+- `player_stats.json` — slim CoD Esports Wiki `PlayerStats` rows with map-level kills/deaths for objective skill stats; see [`docs/player-stats.md`](docs/player-stats.md)
 
-All four are refreshed by `scripts/fetch_source.py`.
+These are refreshed by `scripts/fetch_source.py`.

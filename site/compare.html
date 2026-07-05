@@ -106,8 +106,8 @@ const GAMES = Object.fromEntries(D.games.map(g => [g.game, g]));
 const DEFAULT_PLAYERS = ['Shotzzy', 'HyDra'];
 const MAX_PLAYERS = 4;
 const PLAYER_COLORS = ['#2563eb', '#059669', '#d97706', '#7c3aed'];
-const DEFAULT_ROWS = ['adjusted', 'role', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
-const ROW_IDS = new Set(['adjusted', 'role', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']);
+const DEFAULT_ROWS = ['adjusted', 'role', 'honors', 'winConversion', 'finalsRate', 'deepRunRate', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
+const ROW_IDS = new Set(['adjusted', 'role', 'honors', 'winConversion', 'finalsRate', 'deepRunRate', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace', 'skillKd', 'skillKills', 'skillDeaths', 'skillInteractions', 'skillMaps', 'skillEvents', 'skillRespawnKd', 'skillSndKd']);
 let selected = readPlayers();
 let visibleRows = readRows();
 let PART = null;
@@ -155,6 +155,10 @@ function pct(wins, majors){
   return majors ? `${Math.round(wins / majors * 100)}%` : '0%';
 }
 
+function fmtPct(v){
+  return v == null ? '<span class="faint">-</span>' : `${Math.round(v * 100)}%`;
+}
+
 function span(first, last){
   return first && last ? (first === last ? String(first) : `${first}-${last}`) : '-';
 }
@@ -170,12 +174,49 @@ function champText(p){
   return `<strong>${p.champs} ◆</strong><span class="small faint">${p.champ_events.map(e => esc(e.year)).join(' · ')}</span>`;
 }
 
+function honorsText(p){
+  const honors = p.honors || [];
+  if(!honors.length) return '<span class="faint">0</span><span class="small faint">no source rows</span>';
+  const counts = new Map();
+  honors.forEach(h => counts.set(h.label, (counts.get(h.label) || 0) + 1));
+  const labels = [...counts.entries()].map(([label, count]) => count > 1 ? `${label} x${count}` : label);
+  return `<strong>${honors.length}</strong><span class="small faint">${labels.map(esc).join(' · ')}</span>`;
+}
+
+function skillStatText(p, field, split='overall', kind='int'){
+  const b = skillBucket(p.skillStats, split);
+  if(!b || b[field] == null) return '<span class="faint">-</span><span class="small faint">no stat rows</span>';
+  const value = kind === 'kd' ? fmtKd(b[field]) : fmtInt(b[field]);
+  const maps = b.maps ? `${fmtInt(b.maps)} maps` : 'no maps';
+  return `<strong>${value}</strong><span class="small faint">${maps}</span>`;
+}
+
+function skillEventText(p){
+  const cov = p.skillStats && p.skillStats.coverage;
+  if(!cov) return '<span class="faint">-</span><span class="small faint">no stat rows</span>';
+  const games = cov.games ? cov.games.length : 0;
+  return `<strong>${fmtInt(cov.events)}</strong><span class="small faint">${games} seasons</span>`;
+}
+
 function metricRows(){
   return [
     {id:'adjusted', label:'Adjusted wins', value:n=>D.players[n].adj_all, html:n=>`<strong>${fmtNum(D.players[n].adj_all, 1)}</strong><span class="small faint">#${LB[n].adjRank}</span>`},
     {id:'role', label:'Role', noBest:true, value:n=>null, html:n=>{
       const role = roleSummary(D.players[n]);
       return `${rolePill(role)}<span class="small faint">${role === 'Mixed' ? 'varies by season' : 'curated'}</span>`;
+    }},
+    {id:'honors', label:'Honors', value:n=>(D.players[n].honors || []).length, html:n=>honorsText(D.players[n])},
+    {id:'winConversion', label:'Win conversion', value:n=>D.players[n].win_conversion ?? 0, html:n=>{
+      const p = D.players[n];
+      return `<strong>${fmtPct(p.win_conversion)}</strong><span class="small faint">${p.placement_wins || 0}/${p.events_placed} majors entered</span>`;
+    }},
+    {id:'finalsRate', label:'Finals rate', value:n=>D.players[n].finals_rate ?? 0, html:n=>{
+      const p = D.players[n];
+      return `<strong>${fmtPct(p.finals_rate)}</strong><span class="small faint">${p.finals || 0}/${p.events_placed} top-2 finishes</span>`;
+    }},
+    {id:'deepRunRate', label:'Deep-run rate', value:n=>D.players[n].deep_run_rate ?? 0, html:n=>{
+      const p = D.players[n];
+      return `<strong>${fmtPct(p.deep_run_rate)}</strong><span class="small faint">${p.deep_runs || 0}/${p.events_placed} top-4 finishes</span>`;
     }},
     {id:'raw', label:'Raw wins', value:n=>D.players[n].raw, html:n=>`<strong>${D.players[n].raw}</strong><span class="small faint">wiki #${LB[n].rawRank}</span>`},
     {id:'post', label:'Post-BO2 adjusted', value:n=>D.players[n].adj_post, html:n=>`<strong>${fmtNum(D.players[n].adj_post, 1)}</strong><span class="small faint">#${LB[n].postRank}</span>`},
@@ -188,6 +229,14 @@ function metricRows(){
       const v = D.players[n].avg_place;
       return `<strong>${v == null ? '<span class="faint">-</span>' : v.toFixed(1)}</strong><span class="small faint">lower is better</span>`;
     }},
+    {id:'skillKd', label:'K/D', value:n=>skillValue(D.players[n], 'kd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'overall', 'kd')},
+    {id:'skillKills', label:'Kills', noBest:true, value:n=>skillValue(D.players[n], 'kills') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kills')},
+    {id:'skillDeaths', label:'Deaths', noBest:true, value:n=>skillValue(D.players[n], 'deaths') ?? -Infinity, html:n=>skillStatText(D.players[n], 'deaths')},
+    {id:'skillInteractions', label:'Interactions', noBest:true, value:n=>skillValue(D.players[n], 'interactions') ?? -Infinity, html:n=>skillStatText(D.players[n], 'interactions')},
+    {id:'skillMaps', label:'Maps', noBest:true, value:n=>skillValue(D.players[n], 'maps') ?? -Infinity, html:n=>skillStatText(D.players[n], 'maps')},
+    {id:'skillEvents', label:'Events w/ stats', noBest:true, value:n=>D.players[n].skillStats?.coverage?.events ?? -Infinity, html:n=>skillEventText(D.players[n])},
+    {id:'skillRespawnKd', label:'Respawn K/D', value:n=>skillValue(D.players[n], 'kd', 'respawn') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'respawn', 'kd')},
+    {id:'skillSndKd', label:'S&D K/D', value:n=>skillValue(D.players[n], 'kd', 'snd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'snd', 'kd')},
   ];
 }
 

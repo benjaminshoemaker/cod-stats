@@ -8,6 +8,7 @@
 function gcd(a, b){ a = a < 0n ? -a : a; b = b < 0n ? -b : b; while(b){ const t = a % b; a = b; b = t; } return a; }
 function lcm(a, b){ return a / gcd(a, b) * b; }
 function avgPlaceFromX2(sum, events){ return events ? Math.floor((sum * 100 + events) / (2 * events)) / 100 : null; }
+function rate(numer, denom){ return denom ? Math.round(numer / denom * 1000) / 1000 : null; }
 function roleSummaryForGames(player, selected){
   const roles = new Set(((player && player.role_by_game) || [])
     .filter(r => selected.has(r.game) && r.role && r.role !== 'Unknown')
@@ -82,6 +83,7 @@ export function computeRows(D, selected, ringWeight){
     const places = (p.placements || []).filter(pl => selected.has(pl.game));
     const eventsPlaced = places.reduce((a, pl) => a + pl.events, 0);
     const placeX2Sum = places.reduce((a, pl) => a + pl.placeX2Sum, 0);
+    const placementWins = places.reduce((a, pl) => a + (pl.wins || 0), 0);
     rows.push({
       name, raw, _numer: numer,
       champs: (p.champ_events || []).filter(c => won.has(c.event)).length,
@@ -89,6 +91,7 @@ export function computeRows(D, selected, ringWeight){
       primaryRole: roleSummaryForGames(p, selected),
       eventsPlaced,
       avgPlace: avgPlaceFromX2(placeX2Sum, eventsPlaced),
+      winConversion: rate(placementWins, eventsPlaced),
       peak: best.wins / best.majors,
       peakInfo: { adj: Math.round(best.wins / best.majors * MBAR * 100) / 100, season: best.game, wins: best.wins, majors: best.majors },
       eras: sel.length,

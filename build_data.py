@@ -113,11 +113,51 @@ def load_sources():
     accolades = json.load(open(apath)) if os.path.exists(apath) else []
     spath = _p('player_stats.json')
     player_stats = json.load(open(spath)) if os.path.exists(spath) else []
+    epath = _p('player_stats_participants.events.json')
+    event_pages = json.load(open(epath)) if os.path.exists(epath) else []
 
     events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
     events = [e for e in events_all if _played(e.get('Date'))]
     pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
-    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats
+    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages
+
+
+def build_event_registry(events_all, event_pages, *row_groups):
+    """Map tournament display names and page IDs to one canonical event ID.
+
+    New source pulls store Tournaments.OverviewPage as EventId. Existing local
+    snapshots can still be bridged through player_stats_participants.events.json,
+    which stores {event: display name, page: OverviewPage}.
+    """
+    by_name, name_by_id = {}, {}
+
+    def add(game, event, event_id):
+        game, event, event_id = str(game or ''), str(event or ''), str(event_id or '')
+        if not game or not event or not event_id:
+            return
+        by_name[(game, event)] = event_id
+        by_name[(game, event_id)] = event_id
+        name_by_id[(game, event_id)] = event
+
+    for r in event_pages:
+        add(r.get('game') or r.get('Game'), r.get('event') or r.get('Event'), r.get('page') or r.get('EventId'))
+    for rows in (events_all, *row_groups):
+        for r in rows:
+            add(r.get('Game'), r.get('Event'), r.get('EventId') or r.get('OverviewPage') or r.get('Page'))
+    return {'byName': by_name, 'nameById': name_by_id}
+
+
+def event_id_for(row, registry):
+    event = row.get('Event') or ''
+    game = row.get('Game') or ''
+    return (row.get('EventId') or row.get('OverviewPage') or row.get('Page') or
+            registry['byName'].get((game, event)) or event)
+
+
+def event_name_for(row, registry):
+    event_id = event_id_for(row, registry)
+    game = row.get('Game') or ''
+    return registry['nameById'].get((game, event_id)) or row.get('Event') or event_id
 
 
 def season_context(events, events_all):
@@ -176,13 +216,37 @@ def place_x2(r):
     return None
 
 
+def place_number(r):
+    """Return the wiki placement number used for top-2/top-4 rate buckets."""
+    pn = str(r.get('PlaceNumber') or '').strip()
+    if re.fullmatch(r'\d+', pn):
+        return int(pn)
+    place = str(r.get('Place') or '').strip().replace('*', '')
+    m = re.fullmatch(r'(\d+)\s*-\s*\d+', place)
+    if m:
+        return int(m.group(1))
+    m = re.fullmatch(r'>(\d+)', place)
+    if m:
+        return int(m.group(1)) + 1
+    if re.fullmatch(r'\d+', place):
+        return int(place)
+    return None
+
+
 def avg_place_from_x2(place_x2_sum, events):
     if not events:
         return None
     return ((place_x2_sum * 100 + events) // (2 * events)) / 100
 
 
-def index_participation(ppart, top50_mkeys):
+def rate_from_counts(numer, denom):
+    """Round a positive rate to 3 decimals using the site's JS-compatible rule."""
+    if not denom:
+        return None
+    return ((numer * 1000 * 2 + denom) // (2 * denom)) / 1000
+
+
+def index_participation(ppart, top50_mkeys, event_registry):
     """Career span from PARTICIPATION (every major entered, won or not), not just
     wins: first-win-to-last-win understates how long a player actually competed.
     Uses the same console-major universe (drop Warzone/Mobile & dropped events,
@@ -198,12 +262,14 @@ def index_participation(ppart, top50_mkeys):
         px2 = place_x2(r)
         if px2 is None:
             raise RuntimeError(f"unparseable placement for {r['Player']} at {r['Event']}: {r.get('Place')!r}")
-        row = {'event': r['Event'], 'game': r['Game'],
+        eid = event_id_for(r, event_registry)
+        row = {'event': event_name_for(r, event_registry), 'eventId': eid, 'game': r['Game'],
                'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip(),
-               'placeX2': px2, 'team': str(r.get('Team') or '').strip()}
-        old = part_rows[k].get(r['Event'])
+               'placeX2': px2, 'placeNumber': place_number(r),
+               'team': str(r.get('Team') or '').strip()}
+        old = part_rows[k].get(eid)
         if old is None or row['placeX2'] < old['placeX2']:
-            part_rows[k][r['Event']] = row
+            part_rows[k][eid] = row
     part_dates = defaultdict(list)
     for k, rows in part_rows.items():
         part_dates[k] = [r['date'] for r in rows.values() if r.get('date')]
@@ -355,21 +421,59 @@ def _stat_int(value):
     return int(text)
 
 
+def _stat_bool(value):
+    if isinstance(value, bool):
+        return value
+    text = str(value if value is not None else '').strip().lower()
+    if text in {'1', 'true', 't', 'yes', 'y', 'win', 'won'}:
+        return True
+    if text in {'0', 'false', 'f', 'no', 'n', 'loss', 'lost'}:
+        return False
+    return None
+
+
 def _empty_stat_bucket():
-    return {'kills': 0, 'deaths': 0, 'maps': 0}
+    return {'kills': 0, 'deaths': 0, 'maps': 0, 'mapWins': 0, 'mapsWithResult': 0}
 
 
-def _add_stat(bucket, kills, deaths):
+def _add_stat(bucket, kills, deaths, win=None):
     bucket['kills'] += kills
     bucket['deaths'] += deaths
     bucket['maps'] += 1
+    if win is not None:
+        bucket['mapsWithResult'] += 1
+        if win:
+            bucket['mapWins'] += 1
 
 
 def _finish_stat_bucket(bucket):
     kills, deaths = bucket['kills'], bucket['deaths']
     out = {'kills': kills, 'deaths': deaths, 'interactions': kills + deaths, 'maps': bucket['maps']}
     out['kd'] = round(kills / deaths, 3) if deaths else None
+    if bucket.get('mapsWithResult'):
+        out['mapWins'] = bucket['mapWins']
+        out['mapLosses'] = bucket['mapsWithResult'] - bucket['mapWins']
+        out['mapWinRate'] = rate_from_counts(bucket['mapWins'], bucket['mapsWithResult'])
     return out
+
+
+def _empty_stat_split():
+    return {
+        'overall': _empty_stat_bucket(),
+        'splits': {'snd': _empty_stat_bucket(), 'respawn': _empty_stat_bucket()},
+    }
+
+
+def _add_stat_split(group, split, kills, deaths, win=None):
+    _add_stat(group['overall'], kills, deaths, win)
+    _add_stat(group['splits'][split], kills, deaths, win)
+
+
+def _finish_stat_split(group):
+    return {
+        'overall': _finish_stat_bucket(group['overall']),
+        'splits': {k: _finish_stat_bucket(v) for k, v in group['splits'].items()},
+    }
 
 
 def _is_snd_mode(mode):
@@ -377,7 +481,7 @@ def _is_snd_mode(mode):
     return 'search' in text and 'destroy' in text
 
 
-def index_skill_stats(rows, top50_mkeys, S):
+def index_skill_stats(rows, top50_mkeys, S, event_registry):
     """Aggregate objective PlayerStats rows into simple, source-backed splits.
 
     The stable cross-era denominator is map rows with kills/deaths. S&D gets its
@@ -395,41 +499,91 @@ def index_skill_stats(rows, top50_mkeys, S):
         kills, deaths = _stat_int(r.get('Kills')), _stat_int(r.get('Deaths'))
         if kills is None or deaths is None:
             continue
+        win = _stat_bool(r.get('Win'))
         mode = str(r.get('Mode') or r.get('Gamemode') or 'Unknown').strip() or 'Unknown'
         split = 'snd' if _is_snd_mode(mode) else 'respawn'
         row = work.setdefault(mk, {
-            'overall': _empty_stat_bucket(),
-            'splits': {'snd': _empty_stat_bucket(), 'respawn': _empty_stat_bucket()},
+            **_empty_stat_split(),
             'modes': defaultdict(_empty_stat_bucket),
             'events': set(),
             'games': set(),
             'dates': [],
+            'by_game': {},
+            'by_event': {},
         })
-        _add_stat(row['overall'], kills, deaths)
-        _add_stat(row['splits'][split], kills, deaths)
-        _add_stat(row['modes'][mode], kills, deaths)
-        if r.get('Event'):
-            row['events'].add(r['Event'])
-        if r.get('Game'):
-            row['games'].add(r['Game'])
-        if r.get('Date'):
-            row['dates'].append(r['Date'])
+        _add_stat_split(row, split, kills, deaths, win)
+        _add_stat(row['modes'][mode], kills, deaths, win)
+        game = r.get('Game') or ''
+        event_id = event_id_for(r, event_registry)
+        event = event_name_for(r, event_registry)
+        date = r.get('Date') or ''
+        team = r.get('Team') or ''
+        if event_id:
+            row['events'].add(event_id)
+        if game:
+            row['games'].add(game)
+            game_group = row['by_game'].setdefault(game, {
+                **_empty_stat_split(), 'dates': [], 'events': set(),
+            })
+            _add_stat_split(game_group, split, kills, deaths, win)
+            if date:
+                game_group['dates'].append(date)
+            if event_id:
+                game_group['events'].add(event_id)
+        if game and event_id:
+            event_group = row['by_event'].setdefault((game, event_id), {
+                **_empty_stat_split(), 'event': event, 'dates': [], 'teams': set(),
+            })
+            _add_stat_split(event_group, split, kills, deaths, win)
+            if date:
+                event_group['dates'].append(date)
+            if team:
+                event_group['teams'].add(team)
+        if date:
+            row['dates'].append(date)
 
     out = {}
     for mk, row in work.items():
         dates = sorted(row['dates'])
         games = sorted(row['games'], key=lambda g: S.order_idx.get(g, 999))
+        by_game = []
+        for game in games:
+            group = row['by_game'][game]
+            group_dates = sorted(group['dates'])
+            by_game.append({
+                'game': game,
+                'firstDate': group_dates[0] if group_dates else None,
+                'lastDate': group_dates[-1] if group_dates else None,
+                'events': len(group['events']),
+                **_finish_stat_split(group),
+            })
+        by_event = []
+        for (game, event_id), group in row['by_event'].items():
+            group_dates = sorted(group['dates'])
+            by_event.append({
+                'game': game,
+                'event': group.get('event') or event_id,
+                'eventId': event_id,
+                'firstDate': group_dates[0] if group_dates else None,
+                'lastDate': group_dates[-1] if group_dates else None,
+                'teams': sorted(group['teams']),
+                **_finish_stat_split(group),
+            })
+        by_event.sort(key=lambda r: (S.order_idx.get(r['game'], 999), r['firstDate'] or '', r['event']))
         out[mk] = {
             'source': 'CoD Esports Wiki PlayerStats',
             'coverage': {
                 'firstDate': dates[0] if dates else None,
                 'lastDate': dates[-1] if dates else None,
                 'events': len(row['events']),
+                'maps': row['overall']['maps'],
                 'games': games,
             },
             'overall': _finish_stat_bucket(row['overall']),
             'splits': {k: _finish_stat_bucket(v) for k, v in row['splits'].items()},
             'modes': {k: _finish_stat_bucket(v) for k, v in sorted(row['modes'].items())},
+            'byGame': by_game,
+            'byEvent': by_event,
         }
     return out
 
@@ -537,20 +691,31 @@ def span_of(slist):
 
 
 def placement_of(rows, S):
-    by_game = defaultdict(lambda: {'events': 0, 'placeX2Sum': 0})
+    by_game = defaultdict(lambda: {'events': 0, 'placeX2Sum': 0, 'wins': 0, 'finals': 0, 'deepRuns': 0})
     for r in rows:
         g = by_game[r['game']]
         g['events'] += 1
         g['placeX2Sum'] += r['placeX2']
+        if r.get('won'):
+            g['wins'] += 1
+        pn = r.get('placeNumber')
+        if pn is not None and pn <= 2:
+            g['finals'] += 1
+        if pn is not None and pn <= 4:
+            g['deepRuns'] += 1
     placements = []
     for g in sorted(by_game, key=lambda x: S.order_idx[x]):
         v = by_game[g]
         placements.append({'game': g, 'events': v['events'], 'placeX2Sum': v['placeX2Sum'],
-                           'avgPlace': avg_place_from_x2(v['placeX2Sum'], v['events'])})
+                           'avgPlace': avg_place_from_x2(v['placeX2Sum'], v['events']),
+                           'wins': v['wins'], 'finals': v['finals'], 'deepRuns': v['deepRuns']})
     events = sum(r['events'] for r in placements)
     px2_sum = sum(r['placeX2Sum'] for r in placements)
+    wins = sum(r['wins'] for r in placements)
+    finals = sum(r['finals'] for r in placements)
+    deep_runs = sum(r['deepRuns'] for r in placements)
     avg = avg_place_from_x2(px2_sum, events)
-    return placements, events, px2_sum, avg
+    return placements, events, px2_sum, avg, wins, finals, deep_runs
 
 
 def teams_of(rows):
@@ -564,15 +729,17 @@ def teams_of(rows):
     return teams
 
 
-def player_seasons(wins, S, part_by_event=None):
+def player_seasons(wins, S, event_registry, part_by_event=None):
     """Group a player's (date-sorted) wins into per-season rows, chronological."""
     part_by_event = part_by_event or {}
     by_season = defaultdict(lambda: {'count': 0, 'events': []})
     for w in wins:
         g = w['Game']
+        eid = event_id_for(w, event_registry)
         by_season[g]['count'] += 1
-        part = part_by_event.get(w['Event'], {})
-        by_season[g]['events'].append({'event': w['Event'], 'date': w.get('Date') or '',
+        part = part_by_event.get(eid, {})
+        by_season[g]['events'].append({'event': event_name_for(w, event_registry), 'eventId': eid,
+                                       'date': w.get('Date') or '',
                                        'team': part.get('team', ''),
                                        'weight': round(1.0 / S.denom[g], 4)})
     seasons = []
@@ -590,7 +757,7 @@ def build_player(n, pub, S, idx):
     values)."""
     mk = mkey(n)
     wins = sorted(idx.player_wins.get(mk, []), key=lambda r: (r.get('Date') or ''))
-    seasons = player_seasons(wins, S, idx.part_rows.get(mk, {}))
+    seasons = player_seasons(wins, S, idx.event_registry, idx.part_rows.get(mk, {}))
     share_all  = sum((_sfrac(s) for s in seasons), Fraction(0))
     share_post = sum((_sfrac(s) for s in seasons if not s['pre_bo2']), Fraction(0))
 
@@ -606,15 +773,20 @@ def build_player(n, pub, S, idx):
     # Every major ENTERED (won or not), for the auditable "all majors" toggle on the
     # player page. Built from participation placements; wins are flagged. Any won
     # event missing a participation row is added so all_majors always covers the wins.
-    won_events = {w['Event'] for w in wins}
-    all_majors = [dict(r, won=(r['event'] in won_events)) for r in idx.part_rows.get(mk, {}).values()]
-    seen_ev = {r['event'] for r in all_majors}
+    won_event_ids = {event_id_for(w, idx.event_registry) for w in wins}
+    all_majors = [dict(r, won=(r['eventId'] in won_event_ids)) for r in idx.part_rows.get(mk, {}).values()]
+    seen_ev = {r['eventId'] for r in all_majors}
     for w in wins:
-        if w['Event'] not in seen_ev:
-            all_majors.append({'event': w['Event'], 'game': w['Game'], 'date': w.get('Date') or '',
-                               'place': '1', 'placeX2': 2, 'won': True})
+        eid = event_id_for(w, idx.event_registry)
+        if eid not in seen_ev:
+            all_majors.append({'event': event_name_for(w, idx.event_registry), 'eventId': eid,
+                               'game': w['Game'], 'date': w.get('Date') or '',
+                               'place': '1', 'placeX2': 2, 'placeNumber': 1, 'won': True})
     all_majors.sort(key=lambda r: r['date'])
-    placements, events_placed, place_x2_sum, avg_place = placement_of(all_majors, S)
+    placements, events_placed, place_x2_sum, avg_place, placement_wins, finals, deep_runs = placement_of(all_majors, S)
+    win_conversion = rate_from_counts(placement_wins, events_placed)
+    finals_rate = rate_from_counts(finals, events_placed)
+    deep_run_rate = rate_from_counts(deep_runs, events_placed)
 
     rec = {'name': n, 'raw': pub, 'seasons': seasons,
            'wiki': idx.wiki_name.get(mk, n),
@@ -631,6 +803,8 @@ def build_player(n, pub, S, idx):
            'career_span': career_span, 'majors_played': majors_played,
            'placements': placements, 'events_placed': events_placed,
            'place_x2_sum': place_x2_sum, 'avg_place': avg_place,
+           'placement_wins': placement_wins, 'finals': finals, 'deep_runs': deep_runs,
+           'win_conversion': win_conversion, 'finals_rate': finals_rate, 'deep_run_rate': deep_run_rate,
            'teams': teams_of(all_majors),
            'honors': idx.accolades_by.get(mk, []),
            'skillStats': idx.skill_stats_by.get(mk),
@@ -681,23 +855,24 @@ def build_leaderboard(players_out, exact_share):
             'firstPlayedDate': p['first_played_date'], 'lastPlayedDate': p['last_played_date'],
             'careerSpan': p['career_span'], 'majorsPlayed': p['majors_played'],
             'eventsPlaced': p['events_placed'], 'placeX2Sum': p['place_x2_sum'], 'avgPlace': p['avg_place'],
+            'winConversion': p['win_conversion'],
             'primaryRole': p['primary_role'],
         })
     return leaderboard
 
 
-def index_event_winners(tpart):
+def index_event_winners(tpart, event_registry):
     winners = {}
     for r in tpart:
         if not _keep(r):
             continue
         if str(r.get('Place') or '').strip() == '1':
-            winners[r['Event']] = str(r.get('Team') or '').strip()
+            winners[event_id_for(r, event_registry)] = str(r.get('Team') or '').strip()
     return winners
 
 
-def build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey):
-    event_winners = index_event_winners(tpart)
+def build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry):
+    event_winners = index_event_winners(tpart, event_registry)
     games_out = []
     for g in S.order:
         evs = sorted([e for e in events if e['Game'] == g], key=lambda x: (x.get('Date') or ''))
@@ -707,8 +882,9 @@ def build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey):
                 wc[disp_by_mkey[mkey(r['Player'])]] += 1
         games_out.append({'game': g, 'majors': S.held[g], 'denom': S.denom[g], 'weight': round(1.0 / S.denom[g], 4),
             'order': S.order_idx[g], 'preBo2': g in S.pre_bo2, 'firstDate': S.first_date[g],
-            'events': [{'event': e['Event'], 'date': e.get('Date') or '', 'winner': e.get('Winner') or '',
-                        'winnerTeam': event_winners.get(e['Event'], e.get('Winner') or ''),
+            'events': [{'event': event_name_for(e, event_registry), 'eventId': event_id_for(e, event_registry),
+                        'date': e.get('Date') or '', 'winner': e.get('Winner') or '',
+                        'winnerTeam': event_winners.get(event_id_for(e, event_registry), e.get('Winner') or ''),
                         'type': e.get('EventType') or '', 'prize': e.get('Prizepool') or '', 'location': e.get('Location') or '',
                         'region': e.get('Region') or ''} for e in evs],
             'topPlayers': [{'name': p, 'wins': c} for p, c in wc.most_common(8)]})
@@ -728,19 +904,21 @@ def build_meta(S, events):
 def build():
     """Compute the full APP_DATA dict. Raises RuntimeError if any player's
     reconstructed wins do not equal their published wiki total."""
-    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats = load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages = load_sources()
     S = season_context(events, events_all)
+    event_registry = build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
     disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
-    part_dates, part_rows = index_participation(ppart, top50_mkeys)
+    part_dates, part_rows = index_participation(ppart, top50_mkeys, event_registry)
     player_wins, wiki_name = index_wins(pwins, top50_mkeys)
     idx = SimpleNamespace(
         part_dates=part_dates, part_rows=part_rows,
         player_wins=player_wins, wiki_name=wiki_name,
         champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins),
         accolades_by=index_accolades(accolades, top50_mkeys),
-        skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S),
+        skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S, event_registry),
+        event_registry=event_registry,
         role_stints=index_role_stints(load_role_stints(), disp_by_mkey, S))
 
     players_out = {}   # keyed by display name (what player.html / leaderboard links use)
@@ -753,7 +931,7 @@ def build():
     return {'meta': build_meta(S, events),
             'leaderboard': build_leaderboard(players_out, exact_share),
             'players': players_out,
-            'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey),
+            'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry),
             'majors': dict(S.majors),
             'teamLogos': build_team_logos(participation, load_team_logos()),
             '_participation': participation}
@@ -767,6 +945,18 @@ def write(data, path=None):
     participation = data.pop('_participation', {})
     with open(_p('site', 'participation.json'), 'w') as f:
         json.dump(participation, f)
+    # Tournament-level stat rows are useful only on player profiles. Keep the
+    # leaderboard payload focused on career and season aggregates, then lazy-load
+    # the event drilldown from player.html.
+    skill_events = {}
+    for name, player in data.get('players', {}).items():
+        stats = player.get('skillStats')
+        if stats and 'byEvent' in stats:
+            events = stats.pop('byEvent')
+            if events:
+                skill_events[name] = events
+    with open(_p('site', 'skill-events.json'), 'w') as f:
+        json.dump(skill_events, f)
     with open(path, 'w') as f:
         f.write('window.APP_DATA='); json.dump(data, f); f.write(';')
     # also emit pure JSON so the /api/og edge function (and any module) can import it

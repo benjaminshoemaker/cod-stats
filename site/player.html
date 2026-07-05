@@ -15,7 +15,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=skill-stats">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
@@ -41,6 +41,7 @@ if(!p || !lb){
   document.title = `${p.name} · CoD Era-Adjusted`;
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
   const avgPlace = p.avg_place == null ? '–' : p.avg_place.toFixed(1);
+  const ratePct = v => v == null ? '–' : `${Math.round(v * 100)}%`;
   const compareHref = `compare.html?p=${encodeURIComponent(p.name)}`;
   const profileRole = roleSummary(p);
   const roleTable = (p.role_by_game || []).map(r => `<tr>
@@ -77,6 +78,64 @@ if(!p || !lb){
         <tbody>${honorsRows}</tbody>
       </table></div>` : '<p class="small faint">No honors found in the current source set.</p>'}
     </section>`;
+  const skillStats = p.skillStats;
+  const skillDateRange = stats => {
+    if(!stats || (!stats.firstDate && !stats.lastDate)) return '';
+    if(stats.firstDate === stats.lastDate) return stats.firstDate || '';
+    return `${stats.firstDate || '?'} – ${stats.lastDate || '?'}`;
+  };
+  const modeLabel = mode => mode === 'snd' ? 'S&D' : (mode === 'respawn' ? 'Respawn' : 'Overall');
+  const splitBucket = (row, mode) => mode === 'overall' ? row.overall : ((row.splits && row.splits[mode]) || null);
+  const splitTone = b => !b || b.maps < 10 || b.kd == null ? 'muted' : (b.kd < 1 ? 'warn' : 'flat');
+  const statStrong = (b, field, kind='int') => b && b[field] != null
+    ? (kind === 'kd' ? fmtKd(b[field]) : fmtInt(b[field]))
+    : '<span class="faint">–</span>';
+  const splitSummary = (row, mode) => {
+    const b = splitBucket(row, mode);
+    const tone = splitTone(b);
+    const sample = b && b.maps ? `${fmtInt(b.maps)} map${b.maps === 1 ? '' : 's'}` : 'no maps';
+    return `<span class="skill-split-pill ${tone}"><strong>${modeLabel(mode)}</strong> ${statStrong(b, 'kd', 'kd')} <span>${sample}</span></span>`;
+  };
+  const coverageMaps = skillStats?.coverage?.maps ?? skillStats?.overall?.maps;
+  const skillStatsSection = skillStats ? `<section id="stats-on-record" class="skill-stats-block">
+      <div class="section-head">
+        <div>
+          <h2>Stats on record ${anchorLink('stats-on-record','Stats on record')}</h2>
+          <p class="small muted">Kills/deaths from CoD Esports Wiki PlayerStats rows where map-level stats are available. Respawn includes every mode except S&D. These rows are source coverage, not a full-career guarantee.</p>
+        </div>
+        <span class="pill flat">${fmtInt(skillStats.coverage?.events)} event${skillStats.coverage?.events === 1 ? '' : 's'} · ${fmtInt(coverageMaps)} map${coverageMaps === 1 ? '' : 's'}</span>
+      </div>
+      <div class="stat-row skill-record-row">
+        <div class="stat"><div class="k">K/D</div><div class="v">${fmtKd(skillStats.overall?.kd)}</div><div class="small faint">${skillDateRange(skillStats.coverage)}</div></div>
+        <div class="stat"><div class="k">Kills</div><div class="v">${fmtInt(skillStats.overall?.kills)}</div><div class="small faint">from stat rows</div></div>
+        <div class="stat"><div class="k">Deaths</div><div class="v">${fmtInt(skillStats.overall?.deaths)}</div><div class="small faint">from stat rows</div></div>
+      </div>
+      <div class="skill-split-grid" aria-label="K/D by mode split">
+        ${['respawn','snd'].map(mode=>{
+          const b = skillBucket(skillStats, mode);
+          return `<div class="skill-split-card ${splitTone(b)}">
+            <div class="skill-split-top"><span>${modeLabel(mode)}</span><strong>${statStrong(b, 'kd', 'kd')}</strong></div>
+            <div class="small faint">${fmtInt(b?.kills)} K · ${fmtInt(b?.deaths)} D · ${fmtInt(b?.interactions)} kills + deaths</div>
+            <div class="small faint">${fmtInt(b?.maps)} map${b?.maps === 1 ? '' : 's'}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="skill-table-head">
+        <div>
+          <h3>By season and tournament</h3>
+          <p class="small muted">Change the split, then open a season to inspect tournament rows.</p>
+        </div>
+        <div class="seg" id="skill-mode" role="group" aria-label="Stats split">
+          <button type="button" data-mode="overall" aria-pressed="true">Overall</button>
+          <button type="button" data-mode="respawn" aria-pressed="false">Respawn</button>
+          <button type="button" data-mode="snd" aria-pressed="false">S&D</button>
+        </div>
+      </div>
+      <div id="skill-season-table"></div>
+    </section>` : `<section id="stats-on-record" class="skill-stats-block">
+      <h2>Stats on record ${anchorLink('stats-on-record','Stats on record')}</h2>
+      <p class="small faint">No usable PlayerStats kills/deaths rows found for this player in the current source set.</p>
+    </section>`;
 
   root.innerHTML = `
     <p class="crumb"><a href="index.html">← Leaderboard</a></p>
@@ -88,6 +147,7 @@ if(!p || !lb){
       <a href="https://cod-esports.fandom.com/wiki/${encodeURIComponent(p.wiki.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(p.name)} on the CoD Esports Wiki ↗</a></p>
     ${teamSummary(p.teams)}
     ${pageToc([
+      ['stats-on-record','Stats'],
       ['adjusted-wins','Adjusted wins'],
       ['major-wins','Major list'],
       ['honors','Honors'],
@@ -98,6 +158,9 @@ if(!p || !lb){
       <div class="stat"><div class="k">Raw major wins</div><div class="v">${p.raw}</div><div class="small faint">wiki rank #${lb.rawRank}</div></div>
       <div class="stat"><div class="k">Events placed</div><div class="v">${p.events_placed}</div><div class="small faint">counted major finishes</div></div>
       <div class="stat"><div class="k">Average placement</div><div class="v">${avgPlace}</div><div class="small faint">lower is better</div></div>
+      <div class="stat"><div class="k">Win conversion</div><div class="v">${ratePct(p.win_conversion)}</div><div class="small faint">${p.placement_wins || 0} of ${p.events_placed} majors entered</div></div>
+      <div class="stat"><div class="k">Finals rate</div><div class="v">${ratePct(p.finals_rate)}</div><div class="small faint">${p.finals || 0} top-2 finishes</div></div>
+      <div class="stat"><div class="k">Deep-run rate</div><div class="v">${ratePct(p.deep_run_rate)}</div><div class="small faint">${p.deep_runs || 0} top-4 finishes</div></div>
       <div class="stat"><div class="k">Primary role</div><div class="v sm">${rolePill(profileRole)}</div><div class="small faint">${profileRole==='Mixed'?'varies by season':'curated'}</div></div>
       <div class="stat" id="tile-all"><div class="k">Adjusted wins</div><div class="v">${p.adj_all.toFixed(1)}</div><div class="small faint">rank #${lb.adjRank} ${lb.delta?deltaPill(lb.delta):''}</div></div>
       <div class="stat"><div class="k">Peak season</div><div class="v" id="tile-peak">${Math.round(p.peak_all.wins/p.peak_all.majors*100)}%</div>
@@ -109,6 +172,7 @@ if(!p || !lb){
     </div>
     ${p.champs?`<p class="small muted" style="margin-top:-.4rem"><span class="pill champ">◆</span> ${esc(p.name)} is a <strong>${p.champs}×</strong> Call of Duty World Champion: ${p.champ_events.map(e=>esc(e.event)).join(', ')}. (Championships are one per year, shown unweighted.)</p>`:''}
     ${p.note?`<div class="note" style="margin-top:var(--space-2);background:var(--panel);border-color:var(--line);color:var(--muted)"><strong>On this total.</strong> ${esc(p.note)} <a href="methodology.html#tournaments">See methodology →</a></div>`:''}
+    ${skillStatsSection}
     <section class="adjusted-explainer" id="adjusted-wins">
       <h2>How adjusted wins work for ${esc(p.name)} ${anchorLink('adjusted-wins','Adjusted wins')}</h2>
       <p class="lede">Adjusted wins measure how much of each season's available majors this player won. Each season gets
@@ -203,6 +267,8 @@ if(!p || !lb){
   // participation.json is ~0.5 MB across all players, so it's fetched only when
   // the "All entered" view is first opened, never on page load
   let PART = null, partReq = null;
+  let SKILL_EVENTS = skillStats && skillStats.byEvent ? skillStats.byEvent : null;
+  let skillEventReq = null;
   const orderIdx = Object.fromEntries(D.meta.seasonOrder.map((g,i)=>[g,i]));
   let majorsMode = 'wins';
   const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n + (s[(v-20)%10] || s[v] || s[0]); };
@@ -248,8 +314,80 @@ if(!p || !lb){
       ? 'Average placement and events placed are calculated from this same normalized list. Tied ranges use their midpoint; Warzone/Mobile excluded, same as the wins.'
       : '';
   }
+  function renderSkillStats(mode='overall'){
+    if(!skillStats) return;
+    const host = document.getElementById('skill-season-table');
+    if(!host) return;
+    if(!SKILL_EVENTS){
+      host.innerHTML = '<p class="small faint">Loading tournament stat rows...</p>';
+      skillEventReq = skillEventReq || fetch('skill-events.json')
+        .then(r=>r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+        .catch(()=>null)
+        .then(all=>{
+          SKILL_EVENTS = all && all[p.name] ? all[p.name] : [];
+          renderSkillStats(mode);
+        });
+      document.querySelectorAll('#skill-mode button').forEach(btn=>{
+        btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
+      });
+      return;
+    }
+    const eventsByGame = {};
+    SKILL_EVENTS.forEach(ev => {
+      (eventsByGame[ev.game] = eventsByGame[ev.game] || []).push(ev);
+    });
+    const seasons = (skillStats.byGame || []).filter(season => {
+      const b = splitBucket(season, mode);
+      return b && b.maps;
+    });
+    if(!seasons.length){
+      host.innerHTML = `<p class="small faint">No ${modeLabel(mode)} season-level stats available in the current source set.</p>`;
+    }else{
+      host.innerHTML = seasons.map((season, index)=>{
+      const b = splitBucket(season, mode);
+      const events = (eventsByGame[season.game] || []).filter(ev => {
+        const eb = splitBucket(ev, mode);
+        return eb && eb.maps;
+      });
+      const body = events.map(ev=>{
+        const eb = splitBucket(ev, mode);
+        return `<tr>
+          <td class="num small">${yr(ev.firstDate)}</td>
+          <td>${esc(ev.event)}</td>
+          <td>${(ev.teams || []).map(t=>teamBadge(t, 'compact')).join(' ') || '<span class="faint">–</span>'}</td>
+          <td class="n">${fmtInt(eb?.maps)}</td>
+          <td class="n ${eb && eb.kd < 1 ? 'stat-warn' : ''}"><strong>${fmtKd(eb?.kd)}</strong></td>
+          <td class="n">${fmtInt(eb?.kills)}</td>
+          <td class="n">${fmtInt(eb?.deaths)}</td>
+          <td class="n">${fmtInt(eb?.interactions)}</td>
+        </tr>`;
+      }).join('');
+      return `<details class="skill-season">
+        <summary>
+          <span class="skill-season-title">${gameLink(season.game)}</span>
+          <span class="skill-season-meta">${statStrong(b, 'kd', 'kd')} K/D · ${fmtInt(b?.maps)} maps · ${events.length} event${events.length === 1 ? '' : 's'}</span>
+        </summary>
+        <div class="skill-season-detail">
+          <div class="skill-summary-pills" aria-label="${esc(season.game)} mode split summary">${['overall','respawn','snd'].map(m=>splitSummary(season, m)).join('')}</div>
+          <p class="small faint skill-scroll-hint">Scroll horizontally for all tournament columns.</p>
+        <div class="scroll-x"><table class="data skill-event-table">
+          <thead><tr><th class="n">Year</th><th>Tournament</th><th>Team</th><th class="n">Maps</th><th class="n">K/D</th><th class="n">Kills</th><th class="n">Deaths</th><th class="n">Kills + deaths</th></tr></thead>
+          <tbody>${body || `<tr><td colspan="8" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`}</tbody>
+        </table></div></div>
+      </details>`;
+      }).join('');
+    }
+
+    document.querySelectorAll('#skill-mode button').forEach(btn=>{
+      btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
+    });
+  }
 
   render();
+  renderSkillStats();
+  document.querySelectorAll('#skill-mode button').forEach(btn=>{
+    btn.addEventListener('click', ()=>renderSkillStats(btn.dataset.mode));
+  });
   const teamBtn = document.getElementById('team-summary');
   if(teamBtn){
     teamBtn.addEventListener('click', ()=>{
@@ -277,6 +415,7 @@ function mountSimilar(name){
   const fmt = (code,v)=>{
     if(v==null) return '–';
     if(code==='pct') return Math.round(v*100)+'%';
+    if(code==='dec3') return Number(v).toFixed(3);
     if(code==='dec1') return (Math.round(v*10)/10).toFixed(1);
     return String(Math.round(v));
   };
@@ -287,8 +426,8 @@ function mountSimilar(name){
 
   host.innerHTML = `
     <h2>Similar players ${anchorLink('similar','Similar players')}</h2>
-    <p class="small muted">Closest résumés by <strong>achievement</strong> (success, peak, placement,
-      longevity, and career path), all measured era-independently. When a player debuted is not scored, so comps can cross eras.</p>
+    <p class="small muted">Closest profiles by <strong>achievement and skill-rate shape</strong> (success, peak, placement,
+      on-record K/D splits, longevity, career path, and role), all measured era-independently where possible. When a player debuted is not scored, so comps can cross eras.</p>
     <details class="sim-method">
       <summary>How these are computed</summary>
       <div class="sim-method-body">
@@ -298,6 +437,7 @@ function mountSimilar(name){
           <li><strong>Success</strong> — era-adjusted wins, World Championships, and win conversion (share of majors entered that were won).</li>
           <li><strong>Peak</strong> — best single season, era-adjusted.</li>
           <li><strong>Placement</strong> — how often they reached a final (top&#8209;2) or a top&#8209;4. Held at low weight, since bracket sizes differ by era.</li>
+          <li><strong>Skill</strong> — on-record K/D, respawn K/D, S&D K/D, and interactions per map from PlayerStats rows; sparse or missing stat splits are ignored rather than scored as zero.</li>
           <li><strong>Longevity</strong> — distinct titles won and career span in years.</li>
           <li><strong>Career path</strong> — teams played for and average years per team.</li>
           <li><strong>Role</strong> — a small season-overlap adjustment for AR/Flex/SMG similarity; unknown seasons are ignored.</li>
@@ -306,7 +446,8 @@ function mountSimilar(name){
         a rate, or a count of years, so a 2013 career and a 2023 career meet on equal footing.
         <strong>Raw win totals and majors-attended are deliberately excluded</strong> — early seasons
         held ~17 majors a year versus 6–7 today, so those numbers mostly measure the era's calendar,
-        not the player. Debut year is shown only as context and never scored.</p>
+        not the player. Kills, deaths, total interactions, and maps are also excluded from the score because
+        they are source-volume context; interactions per map is included as a rate. Debut year is shown only as context and never scored.</p>
         <p><strong>“Didn't win together”</strong> hides players who shared most of their titles with
         this one — a dynasty teammate is an obvious match, not an insight. <strong>“Everyone”</strong>
         brings them back, tagged with their share of shared wins.</p>

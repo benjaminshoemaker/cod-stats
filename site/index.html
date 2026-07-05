@@ -60,7 +60,7 @@
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
-  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Avg place = mean finish across included majors · Raw # = rank by raw wins</p>
+  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Win % = wins divided by majors entered · Avg place = mean finish across included majors · Raw # = rank by raw wins</p>
   <div id="table"></div>
 
   <div class="legend">
@@ -102,7 +102,7 @@ const searchInput = document.getElementById("search");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','adjWeighted','primaryRole','peak','eras','raw','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs']);
+const VALID = new Set(['adjRank','name','adjusted','adjWeighted','primaryRole','peak','eras','raw','winConversion','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs','skillKd','skillKills','skillDeaths','skillInteractions','skillMaps','skillEvents','skillRespawnKd','skillSndKd']);
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
@@ -126,6 +126,7 @@ const COLS = [
   {field:'adjusted',  label:'Adjusted'},
   {field:'raw',       label:'Raw wins'},
   {field:'primaryRole',label:'Role'},
+  {field:'winConversion',label:'Win conversion'},
   {field:'eventsPlaced',label:'Events placed'},
   {field:'avgPlace',  label:'Average placement'},
   {field:'winsChange',label:'Wins Δ'},
@@ -134,9 +135,17 @@ const COLS = [
   {field:'peak',      label:'Peak'},
   {field:'eras',      label:'Eras'},
   {field:'champs',    label:'Champs'},
+  {field:'skillKd',   label:'K/D'},
+  {field:'skillKills',label:'Kills'},
+  {field:'skillDeaths',label:'Deaths'},
+  {field:'skillInteractions',label:'Interactions'},
+  {field:'skillMaps', label:'Maps'},
+  {field:'skillEvents',label:'Events w/ stats'},
+  {field:'skillRespawnKd',label:'Respawn K/D'},
+  {field:'skillSndKd',label:'S&D K/D'},
 ];
 const COL_FIELDS = new Set(COLS.map(c=>c.field));
-const DEFAULT_HIDE = new Set(['primaryRole','eventsPlaced','avgPlace']);
+const DEFAULT_HIDE = new Set(['primaryRole','winConversion','eventsPlaced','avgPlace','skillKd','skillKills','skillDeaths','skillInteractions','skillMaps','skillEvents','skillRespawnKd','skillSndKd']);
 const startHide = new Set([
   ...Array.from(DEFAULT_HIDE).filter(f => !(params.get('show') || '').split(',').includes(f)),
   ...(params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)),
@@ -148,7 +157,10 @@ const mq = window.matchMedia('(max-width: 760px)');
 const playerFmt = c=>`<a href="player.html?p=${encodeURIComponent(c.getValue())}">${c.getValue()}</a>`;
 const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">${v} ◆</span>`:`<span class="faint">0</span>`;};
 const placeFmt  = c=>{const v=c.getValue(); return v==null?'<span class="faint">–</span>':v.toFixed(1);};
+const pctFmt = c => { const v = c.getValue(); return v == null ? '<span class="faint">–</span>' : `${Math.round(v * 100)}%`; };
 const roleFmt = c => rolePill(c.getValue());
+const statNumFmt = c => fmtInt(c.getValue());
+const statKdFmt = c => fmtKd(c.getValue());
 const compareFmt = c => {
   const name = c.getRow().getData().name;
   const checked = compareNames.has(name);
@@ -157,6 +169,27 @@ const compareFmt = c => {
     <input type="checkbox" data-compare-name="${esc(name)}" aria-label="Compare ${esc(name)}"${checked?' checked':''}${disabled?' disabled':''}>
   </label>`;
 };
+
+function addSkillFields(rows){
+  return rows.map(row=>{
+    const p = D.players[row.name] || {};
+    const stats = p.skillStats;
+    const overall = skillBucket(stats, 'overall') || {};
+    const respawn = skillBucket(stats, 'respawn') || {};
+    const snd = skillBucket(stats, 'snd') || {};
+    return {
+      ...row,
+      skillKd: overall.kd ?? null,
+      skillKills: overall.kills ?? null,
+      skillDeaths: overall.deaths ?? null,
+      skillInteractions: overall.interactions ?? null,
+      skillMaps: overall.maps ?? null,
+      skillEvents: stats && stats.coverage ? stats.coverage.events : null,
+      skillRespawnKd: respawn.kd ?? null,
+      skillSndKd: snd.kd ?? null,
+    };
+  });
+}
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
@@ -181,6 +214,9 @@ const buildColumns = M => [
       cssClass:"tabnum", sorter:"number", headerTooltip:"Major wins as listed on the wiki"},
     {title:"Role", field:"primaryRole", ...colSize(M,78,78,.8), sorter:"string", formatter:roleFmt,
       headerTooltip:"Curated primary role for the selected seasons"},
+    {title:M?"Win %":"Win conversion", field:"winConversion", ...colSize(M,78,104,1.05), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:pctFmt,
+      headerTooltip:"Counted major wins divided by counted majors entered"},
     {title:M?"Events":"Events placed", field:"eventsPlaced", ...colSize(M,86,100,1.1), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", headerTooltip:"Included majors where this player has a counted placement"},
     {title:M?"Avg plc":"Average placement", field:"avgPlace", ...colSize(M,88,122,1.25), hozAlign:"right", headerHozAlign:"right",
@@ -205,13 +241,37 @@ const buildColumns = M => [
     {title:"Champs", field:"champs", ...colSize(M,96,100,.8), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
+    {title:"K/D", field:"skillKd", ...colSize(M,78,82,.8), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
+      headerTooltip:"On-record PlayerStats kills divided by deaths"},
+    {title:"Kills", field:"skillKills", ...colSize(M,92,96,.9), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
+      headerTooltip:"On-record PlayerStats kills"},
+    {title:"Deaths", field:"skillDeaths", ...colSize(M,94,96,.9), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
+      headerTooltip:"On-record PlayerStats deaths"},
+    {title:M?"Int.":"Interactions", field:"skillInteractions", ...colSize(M,104,118,1.05), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
+      headerTooltip:"On-record kills + deaths"},
+    {title:"Maps", field:"skillMaps", ...colSize(M,84,84,.8), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
+      headerTooltip:"Scored map rows in PlayerStats"},
+    {title:M?"Stat ev.":"Events w/ stats", field:"skillEvents", ...colSize(M,92,112,1), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
+      headerTooltip:"Tournaments represented in PlayerStats"},
+    {title:M?"Resp K/D":"Respawn K/D", field:"skillRespawnKd", ...colSize(M,96,108,1), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
+      headerTooltip:"On-record K/D for every non-S&D mode"},
+    {title:"S&D K/D", field:"skillSndKd", ...colSize(M,92,96,.9), hozAlign:"right", headerHozAlign:"right",
+      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
+      headerTooltip:"On-record Search and Destroy K/D"},
 ];
 // apply saved/URL column visibility before first render (no flicker)
 const columns = buildColumns(mq.matches);
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
-  data: cr(selected, ringN),
+  data: addSkillFields(cr(selected, ringN)),
   layout: "fitColumns",   // fill the desktop table while respecting compact min widths for expanded views
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
@@ -352,7 +412,7 @@ function mountEraMenu(initial, onChange){
 setNote(selected);
 mountEraMenu(selected, sel=>{
   selected = sel;
-  table.replaceData(cr(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
+  table.replaceData(addSkillFields(cr(selected, ringN))).catch(()=>{});   // .catch: see COD-STATS-4/5
   setNote(selected);
   syncURL();
 });
@@ -367,7 +427,7 @@ ringRange.addEventListener('input', e=>{
   ringVal.textContent = '×'+ringN;
   const col = table.getColumn('adjWeighted');
   if(col) (ringN>1 ? col.show() : col.hide());
-  table.replaceData(cr(selected, ringN)).catch(()=>{});
+  table.replaceData(addSkillFields(cr(selected, ringN))).catch(()=>{});
   table.redraw(true);        // refit columns after showing/hiding the weighted column
   setNote(selected);
   syncURL();

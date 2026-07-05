@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Universal UX Patterns - Before / After</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#fafafa; --panel-2:#f3f4f6;
+  --ink:#16181d; --muted:#5b616e; --faint:#6b7280;
+  --line:#e5e7eb; --line-2:#d1d5db;
+  --accent:#2563eb; --accent-soft:#eff4ff; --accent-line:#dbe5ff; --accent-ink:#1e40af;
+  --pos:#059669; --pos-soft:#e7f6f0; --pos-ink:#047857;
+  --neg:#dc2626; --neg-soft:#fdecec; --neg-ink:#b91c1c;
+  --warn:#b45309; --warn-soft:#fdf3e3; --warn-ink:#92400e;
+  --gold:#b8860b; --gold-soft:#fbf2d9; --gold-ink:#7a5f13; --gold-line:#efe0ad;
+  --radius-sm:6px; --radius-md:8px; --radius-lg:10px; --radius-pill:999px;
+  --shadow:0 8px 24px rgba(15,23,42,.12);
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+main{max-width:1280px;margin:0 auto;padding:var(--space-8) var(--space-5) var(--space-10)}
+h1{font-size:2rem;line-height:1.1;margin:0 0 var(--space-2);letter-spacing:-.02em}
+h2{font-size:1.25rem;margin:0}
+h3{font-size:1rem;margin:0}
+p{margin:.55rem 0}
+a{color:var(--accent);text-decoration:none}
+.lede{max-width:78ch;color:var(--muted);font-size:1rem}
+.small{font-size:.84rem}.tiny{font-size:.72rem}.muted{color:var(--muted)}.faint{color:var(--faint)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-6)}
+.meta{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;margin-top:var(--space-3)}
+.pill{display:inline-flex;align-items:center;gap:var(--space-1);border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-2);background:#fff;font-size:.76rem;font-weight:700;color:var(--muted)}
+.pill.good{background:var(--pos-soft);color:var(--pos-ink);border-color:#bfe6d6}
+.pill.warn{background:var(--warn-soft);color:var(--warn-ink);border-color:#f3d9ad}
+.pill.bad{background:var(--neg-soft);color:var(--neg-ink);border-color:#f5c7c7}
+.toc{display:flex;flex-wrap:wrap;gap:var(--space-2);padding:var(--space-3) 0;margin-bottom:var(--space-8);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.toc a{min-height:36px;display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:var(--radius-pill);padding:var(--space-1) var(--space-3);font-weight:700;color:var(--muted);font-size:.84rem}
+.pattern{margin:0 0 var(--space-10)}
+.pattern-head{display:flex;justify-content:space-between;gap:var(--space-5);align-items:flex-end;margin-bottom:var(--space-4)}
+.pattern-head p{max-width:74ch;margin:var(--space-1) 0 0}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-4)}
+.mock{border:1px solid var(--line);border-radius:var(--radius-lg);background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.mock.before{background:linear-gradient(180deg,#fff,#fffafa)}
+.mock.after{background:linear-gradient(180deg,#fff,#f8fbff)}
+.mock-title{display:flex;justify-content:space-between;gap:var(--space-3);align-items:flex-start;padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--line);background:var(--panel)}
+.mock.before .mock-title{background:#fff7f7}
+.mock.after .mock-title{background:#f7fbff}
+.mock-body{padding:var(--space-5)}
+.note{border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--radius-md);padding:var(--space-3);color:var(--muted)}
+.warning{border-color:#f2c2c2;background:#fff7f7}
+.ok{border-color:#c7e6d9;background:#f7fffb}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:.9rem}
+caption{text-align:left;color:var(--muted);font-size:.84rem;margin-bottom:var(--space-2)}
+th,td{padding:var(--space-2) var(--space-3);border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);background:#fbfbfc}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.scroll-demo{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-md);background:#fff}
+.scroll-demo table{min-width:620px}
+.sticky-col th:first-child,.sticky-col td:first-child{position:sticky;left:0;background:#fff;box-shadow:1px 0 0 var(--line);z-index:1}
+.swipe-hint{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-2) var(--space-3);font-size:.82rem;color:var(--muted);border:1px solid var(--line);border-radius:var(--radius-md);background:var(--panel);margin-bottom:var(--space-2)}
+.control-row{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;margin:0 0 var(--space-3)}
+.btn{min-height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:var(--radius-md);background:#fff;color:var(--ink);font:inherit;font-weight:700;padding:var(--space-2) var(--space-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.chart-card{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;padding:var(--space-3)}
+.chart-grid{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:var(--space-3);align-items:start}
+svg{max-width:100%;height:auto;display:block}
+.axis{stroke:var(--line-2);stroke-width:1}
+.gridline{stroke:var(--line);stroke-width:1}
+.dot{fill:var(--accent);stroke:#fff;stroke-width:1}
+.dot.gold{fill:var(--gold)}
+.dot.after-gold{fill:var(--gold-soft);stroke:var(--gold-ink);stroke-width:3}
+.dot-hit{fill:rgba(37,99,235,.08);stroke:var(--accent);stroke-dasharray:3 2}
+.line{fill:none;stroke:var(--accent);stroke-width:2}
+.line.alt{stroke:var(--gold-ink);stroke-width:2.5;stroke-dasharray:5 3}
+.line.faint{stroke:#cbd5e1;stroke-width:1}
+.legend{display:grid;gap:var(--space-2)}
+.legend-row{display:flex;align-items:center;gap:var(--space-2);font-size:.84rem;color:var(--muted)}
+.sw{width:18px;height:10px;border-radius:var(--radius-sm);display:inline-block;background:var(--accent)}
+.sw.pattern{background:repeating-linear-gradient(45deg,var(--gold-soft),var(--gold-soft) 3px,var(--gold-line) 3px,var(--gold-line) 6px);border:1px solid var(--gold-ink)}
+.detail-panel{border:1px solid var(--line);border-radius:var(--radius-md);background:var(--panel);padding:var(--space-3)}
+.detail-panel h4{margin:0 0 var(--space-2);font-size:.9rem}
+.heat-grid{display:grid;grid-template-columns:90px repeat(4,1fr);border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;background:#fff}
+.heat-grid span{min-height:34px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:.78rem}
+.heat-grid span:nth-child(5n){border-right:0}
+.heat-head{background:var(--panel);font-weight:800;color:var(--muted)}
+.heat-row{justify-content:flex-start!important;padding-left:var(--space-2);font-weight:800;background:#fff}
+.heat-a{background:#edf4ff}.heat-b{background:#b7d0ff}.heat-c{background:#6fa0f8;color:#fff}
+.heat-best{position:relative;box-shadow:inset 0 0 0 2px var(--ink);font-weight:800}
+.heat-best::after{content:"Best";position:absolute;right:3px;bottom:2px;font-size:.58rem;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:0 4px}
+.touch-stack{display:grid;gap:var(--space-2);max-width:360px}
+.tiny-link-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:3px 0;font-size:.84rem}
+.touch-row{min-height:44px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);background:#fff}
+.icon-btn{width:44px;height:44px;border:1px solid var(--line-2);border-radius:var(--radius-md);background:#fff;font-weight:900;font-size:1.1rem}
+.token-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+.token-card{border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-3);background:#fff}
+.token-card strong{display:block;margin-bottom:var(--space-1)}
+.contrast{display:grid;grid-template-columns:1fr auto;gap:var(--space-2);align-items:center;font-family:var(--mono);font-size:.82rem}
+.checklist{display:grid;gap:var(--space-2)}
+.check{display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-2);align-items:center;border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);background:#fff}
+.status{font-size:.72rem;border-radius:999px;padding:2px 7px;font-weight:800}
+.status.fail{background:var(--neg-soft);color:var(--neg-ink)}
+.status.pass{background:var(--pos-soft);color:var(--pos-ink)}
+.status.todo{background:var(--warn-soft);color:var(--warn-ink)}
+.file-link{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+@media(max-width:920px){
+  main{padding:var(--space-5) var(--space-3)}
+  .topbar,.pattern-head{display:block}
+  .pair{grid-template-columns:1fr}
+  .chart-grid{grid-template-columns:1fr}
+  .token-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  h1{font-size:1.6rem}
+  .mock-title{display:block}
+  .mock-body{padding:var(--space-4)}
+  .toc a,.btn{min-height:44px}
+  .heat-grid{grid-template-columns:80px repeat(4,76px);overflow:auto}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="topbar">
+    <div>
+      <p class="small faint">Design artifact / not production code</p>
+      <h1>Universal UX Patterns - Before / After</h1>
+      <p class="lede">Mockups for the site-wide patterns that came out of the page audits. These are deliberately restrained and token-like so they can be judged as system changes before implementation.</p>
+      <div class="meta">
+        <span class="pill good">Data-dense dashboard</span>
+        <span class="pill">Static HTML/CSS/JS</span>
+        <span class="pill warn">Before implementation</span>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Review target:</strong>
+      <p class="small">Decide whether each "After" pattern should become a shared component/contract, then implement in the real pages incrementally.</p>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="Mockup sections">
+    <a href="#table-contract">Table Contract</a>
+    <a href="#chart-contract">Chart Accessibility</a>
+    <a href="#non-color">Non-Color Signals</a>
+    <a href="#touch">Touch Targets</a>
+    <a href="#governance">Design Governance</a>
+    <a href="#tests">UX Test Contracts</a>
+  </nav>
+
+  <section class="pattern" id="table-contract">
+    <div class="pattern-head">
+      <div>
+        <h2>1. Shared Table Contract</h2>
+        <p class="muted">For leaderboard, compare, games, game, player detail, and any future generated data table.</p>
+      </div>
+      <span class="pill good">System change</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">Readable visually, but the table region has weak context.</p></div>
+          <span class="pill bad">Risk</span>
+        </div>
+        <div class="mock-body">
+          <div class="scroll-demo">
+            <table>
+              <thead><tr><th>Player</th><th class="n">Adj</th><th class="n">Raw</th><th class="n">Peak</th><th class="n">Champs</th><th>Role</th></tr></thead>
+              <tbody>
+                <tr><td>Crimsix</td><td class="n">42.7</td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td>Flex</td></tr>
+                <tr><td>Scump</td><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td>SMG</td></tr>
+                <tr><td>Simp</td><td class="n">31.8</td><td class="n">22</td><td class="n">71%</td><td class="n">2</td><td>SMG</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">Missing: caption, row-header context after horizontal scroll, scroll hint, focusable region, and standard sticky offset.</p>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">A repeatable shell for every wide data table.</p></div>
+          <span class="pill good">Pattern</span>
+        </div>
+        <div class="mock-body">
+          <div class="swipe-hint">
+            <span><strong>Leaderboard rows.</strong> Scroll sideways for hidden metrics.</span>
+            <span class="num">Player column locked</span>
+          </div>
+          <div class="scroll-demo sticky-col" tabindex="0" role="region" aria-label="Leaderboard rows with locked player column">
+            <table>
+              <caption>Leaderboard metrics. Player names stay visible while horizontal columns scroll.</caption>
+              <thead><tr><th scope="col">Player</th><th scope="col" class="n">Adj</th><th scope="col" class="n">Raw</th><th scope="col" class="n">Peak</th><th scope="col" class="n">Champs</th><th scope="col">Role</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Crimsix</th><td class="n">42.7</td><td class="n">38</td><td class="n">50%</td><td class="n">3</td><td>Flex</td></tr>
+                <tr><th scope="row">Scump</th><td class="n">36.1</td><td class="n">31</td><td class="n">44%</td><td class="n">1</td><td>SMG</td></tr>
+                <tr><th scope="row">Simp</th><td class="n">31.8</td><td class="n">22</td><td class="n">71%</td><td class="n">2</td><td>SMG</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">System contract: caption or label, focusable overflow, scoped headers, optional sticky first column, and `top:var(--navh)` for sticky headers.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pattern" id="chart-contract">
+    <div class="pattern-head">
+      <div>
+        <h2>2. Shared Chart Accessibility Contract</h2>
+        <p class="muted">For scatter, heatmap, trajectory, similarity map, and methodology timeline.</p>
+      </div>
+      <span class="pill good">System change</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">Chart carries most meaning; details are hover-first.</p></div>
+          <span class="pill bad">Hover-only</span>
+        </div>
+        <div class="mock-body">
+          <div class="chart-card">
+            <svg viewBox="0 0 420 240" role="img" aria-label="Peak vs longevity scatter">
+              <line class="axis" x1="48" y1="198" x2="386" y2="198"></line>
+              <line class="axis" x1="48" y1="30" x2="48" y2="198"></line>
+              <line class="gridline" x1="48" y1="120" x2="386" y2="120"></line>
+              <circle class="dot" cx="116" cy="146" r="6"></circle>
+              <circle class="dot gold" cx="214" cy="88" r="7"></circle>
+              <circle class="dot" cx="278" cy="126" r="4"></circle>
+              <circle class="dot gold" cx="340" cy="70" r="8"></circle>
+              <text x="50" y="224" class="tiny" fill="#6b7280">Titles won</text>
+              <text x="10" y="36" class="tiny" fill="#6b7280">Peak</text>
+            </svg>
+          </div>
+          <p class="small muted">Missing: keyboard/touch equivalent for hover, data table, long description, and detail panel.</p>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">Chart, controls, detail panel, and table alternative work together.</p></div>
+          <span class="pill good">Accessible</span>
+        </div>
+        <div class="mock-body">
+          <div class="control-row">
+            <button class="btn active">Top 16</button>
+            <button class="btn">Champs only</button>
+            <button class="btn">Show table</button>
+          </div>
+          <div class="chart-grid">
+            <div class="chart-card">
+              <svg viewBox="0 0 420 240" role="img" aria-labelledby="chart-title chart-desc">
+                <title id="chart-title">Peak versus longevity scatter</title>
+                <desc id="chart-desc">Each point can be selected. The table below lists the same values.</desc>
+                <line class="axis" x1="48" y1="198" x2="386" y2="198"></line>
+                <line class="axis" x1="48" y1="30" x2="48" y2="198"></line>
+                <line class="gridline" x1="48" y1="120" x2="386" y2="120"></line>
+                <circle class="dot-hit" cx="116" cy="146" r="16"></circle>
+                <circle class="dot" cx="116" cy="146" r="6"></circle>
+                <circle class="dot after-gold" cx="214" cy="88" r="8"></circle>
+                <circle class="dot" cx="278" cy="126" r="4"></circle>
+                <circle class="dot after-gold" cx="340" cy="70" r="9"></circle>
+                <text x="50" y="224" class="tiny" fill="#6b7280">Titles won</text>
+                <text x="10" y="36" class="tiny" fill="#6b7280">Peak</text>
+              </svg>
+            </div>
+            <aside class="detail-panel">
+              <h4>Selected point</h4>
+              <p><strong>Simp</strong><br><span class="num">Peak 71% · 4 titles · 2 Champs</span></p>
+              <p class="small muted">Keyboard focus, tap, and hover all update this same panel.</p>
+            </aside>
+          </div>
+          <div class="scroll-demo" style="margin-top:var(--space-3)">
+            <table>
+              <caption>Chart data alternative for the selected view.</caption>
+              <thead><tr><th scope="col">Player</th><th scope="col" class="n">Peak</th><th scope="col" class="n">Titles</th><th scope="col">Champ marker</th></tr></thead>
+              <tbody><tr><th scope="row">Simp</th><td class="n">71%</td><td class="n">4</td><td>Gold ring marker</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pattern" id="non-color">
+    <div class="pattern-head">
+      <div>
+        <h2>3. Non-Color-Only Signals</h2>
+        <p class="muted">Use text, icons, stroke, labels, or patterns wherever color currently carries meaning alone.</p>
+      </div>
+      <span class="pill good">System rule</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">Meaning depends on tint strength and hue.</p></div>
+          <span class="pill bad">Color-only</span>
+        </div>
+        <div class="mock-body">
+          <div class="heat-grid" aria-hidden="true">
+            <span class="heat-head">Player</span><span class="heat-head">BO2</span><span class="heat-head">AW</span><span class="heat-head">BO3</span><span class="heat-head">MW</span>
+            <span class="heat-row">Scump</span><span class="heat-a"></span><span class="heat-c"></span><span class="heat-b"></span><span></span>
+            <span class="heat-row">Simp</span><span></span><span></span><span class="heat-a"></span><span class="heat-c"></span>
+          </div>
+          <p class="small muted">A user must infer best values, champ seasons, and scale from color alone or by hovering.</p>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">Color remains useful, but never the only cue.</p></div>
+          <span class="pill good">Redundant cues</span>
+        </div>
+        <div class="mock-body">
+          <div class="legend" style="margin-bottom:var(--space-3)">
+            <div class="legend-row"><span class="sw"></span> Share of title majors won</div>
+            <div class="legend-row"><span class="sw pattern"></span> Championship season marker</div>
+            <div class="legend-row"><span class="pill">Best</span> Best value in row or comparison set</div>
+          </div>
+          <div class="heat-grid">
+            <span class="heat-head">Player</span><span class="heat-head">BO2</span><span class="heat-head">AW</span><span class="heat-head">BO3</span><span class="heat-head">MW</span>
+            <span class="heat-row">Scump</span><span class="heat-a">20%</span><span class="heat-c heat-best">60%</span><span class="heat-b">40%</span><span>0</span>
+            <span class="heat-row">Simp</span><span>0</span><span>0</span><span class="heat-a">20%</span><span class="heat-c heat-best">67%</span>
+          </div>
+          <p class="small muted">The same rule applies to compare best cells, champ dots, trajectory lines, map categories, and signature bars.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pattern" id="touch">
+    <div class="pattern-head">
+      <div>
+        <h2>4. Touch Target Baseline</h2>
+        <p class="muted">Important standalone actions should generally hit 44px; dense inline text can remain smaller if there is an alternate path.</p>
+      </div>
+      <span class="pill good">System rule</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">Dense rows and small utility controls are visually compact but hard to tap.</p></div>
+          <span class="pill bad">Small targets</span>
+        </div>
+        <div class="mock-body">
+          <div class="touch-stack">
+            <div class="tiny-link-row"><a href="#">Scump</a><span class="num">1.201</span></div>
+            <div class="tiny-link-row"><a href="#">Shotzzy</a><span class="num">1.087</span></div>
+            <div class="tiny-link-row"><a href="#">Simp</a><span class="num">1.143</span></div>
+            <div class="control-row" style="margin-top:var(--space-3)">
+              <button class="btn" style="min-height:28px;padding:3px 8px">x</button>
+              <button class="btn" style="min-height:28px;padding:3px 8px">#</button>
+              <button class="btn" style="min-height:28px;padding:3px 8px">Best</button>
+            </div>
+          </div>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">Rows and controls have predictable tap areas without losing density.</p></div>
+          <span class="pill good">44px actions</span>
+        </div>
+        <div class="mock-body">
+          <div class="touch-stack">
+            <a class="touch-row" href="#"><strong>Scump</strong><span class="num">1.201</span></a>
+            <a class="touch-row" href="#"><strong>Shotzzy</strong><span class="num">1.087</span></a>
+            <a class="touch-row" href="#"><strong>Simp</strong><span class="num">1.143</span></a>
+            <div class="control-row" style="margin-top:var(--space-3)">
+              <button class="icon-btn" aria-label="Remove player">x</button>
+              <button class="icon-btn" aria-label="Copy section link">#</button>
+              <button class="btn primary">Compare selected</button>
+            </div>
+          </div>
+          <p class="small muted">Exceptions: inline prose links and dense chart marks are allowed if there is a table/list or selected-detail alternative.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pattern" id="governance">
+    <div class="pattern-head">
+      <div>
+        <h2>5. Design-System Governance</h2>
+        <p class="muted">Make the style guide answer: token or local? claimed contrast or measured contrast? component or one-off?</p>
+      </div>
+      <span class="pill good">System change</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">The style guide shows tokens, but not enough decision rules.</p></div>
+          <span class="pill warn">Implicit</span>
+        </div>
+        <div class="mock-body">
+          <div class="token-grid">
+            <div class="token-card"><strong>--accent</strong><span class="num">#2563eb</span><p class="small muted">Used for links, bars, selected states.</p></div>
+            <div class="token-card"><strong>Chart palettes</strong><span class="num">local</span><p class="small muted">Allowed on map and trajectory, but promotion rules are unclear.</p></div>
+            <div class="token-card"><strong>Contrast</strong><span class="num">AA-safe</span><p class="small muted">Claim exists, ratios are not visible.</p></div>
+            <div class="token-card"><strong>Components</strong><span class="num">examples</span><p class="small muted">Default states shown; hover/focus/disabled less explicit.</p></div>
+          </div>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">A governance block makes future UI changes consistent.</p></div>
+          <span class="pill good">Explicit</span>
+        </div>
+        <div class="mock-body">
+          <div class="token-grid">
+            <div class="token-card">
+              <strong>Promotion rule</strong>
+              <p class="small muted">If a style appears on 2+ pages or affects accessibility, promote to shared token/component.</p>
+            </div>
+            <div class="token-card">
+              <strong>Local exception rule</strong>
+              <p class="small muted">Chart palettes may stay local if they are CVD-checked and documented beside the chart.</p>
+            </div>
+            <div class="token-card">
+              <strong>Contrast evidence</strong>
+              <div class="contrast"><span>--pos-ink / --pos-soft</span><span class="pill good">4.92</span></div>
+              <div class="contrast"><span>--amber / white</span><span class="pill bad">3.19 fill only</span></div>
+            </div>
+            <div class="token-card">
+              <strong>Component states</strong>
+              <p class="small muted">Default, hover, focus, active, disabled, mobile, reduced-motion.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="pattern" id="tests">
+    <div class="pattern-head">
+      <div>
+        <h2>6. Playwright UX Contracts</h2>
+        <p class="muted">Turn the design decisions into regression checks so future page work does not re-break them.</p>
+      </div>
+      <span class="pill good">System test pattern</span>
+    </div>
+    <div class="pair">
+      <article class="mock before">
+        <div class="mock-title">
+          <div><h3>Before</h3><p class="small muted">Page smoke tests catch rendering, not the system behaviors.</p></div>
+          <span class="pill warn">Partial</span>
+        </div>
+        <div class="mock-body">
+          <div class="checklist">
+            <div class="check"><span class="status pass">PASS</span><span>Page renders heading</span><span class="file-link">existing</span></div>
+            <div class="check"><span class="status pass">PASS</span><span>SVG has expected dots</span><span class="file-link">existing</span></div>
+            <div class="check"><span class="status fail">MISS</span><span>Keyboard can inspect chart details</span><span class="file-link">not covered</span></div>
+            <div class="check"><span class="status fail">MISS</span><span>Overflow tables expose scroll hint</span><span class="file-link">not covered</span></div>
+          </div>
+        </div>
+      </article>
+      <article class="mock after">
+        <div class="mock-title">
+          <div><h3>After</h3><p class="small muted">Shared assertions cover universal UX contracts.</p></div>
+          <span class="pill good">Guarded</span>
+        </div>
+        <div class="mock-body">
+          <div class="checklist">
+            <div class="check"><span class="status todo">TEST</span><span>No body overflow at 375px and 320px</span><span class="file-link">all pages</span></div>
+            <div class="check"><span class="status todo">TEST</span><span>Wide tables have labeled focusable scroll regions</span><span class="file-link">tables</span></div>
+            <div class="check"><span class="status todo">TEST</span><span>Interactive charts have table or detail alternative</span><span class="file-link">charts</span></div>
+            <div class="check"><span class="status todo">TEST</span><span>Color-coded states include text, icon, or stroke cue</span><span class="file-link">visuals</span></div>
+            <div class="check"><span class="status todo">TEST</span><span>Standalone touch actions are at least 44px</span><span class="file-link">mobile</span></div>
+            <div class="check"><span class="status todo">TEST</span><span>Focus visible on menus, charts, rows, and chips</span><span class="file-link">keyboard</span></div>
+          </div>
+          <p class="small muted">These are not visual redesign tests; they guard the system behavior behind the mockups.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+</body>
+</html>

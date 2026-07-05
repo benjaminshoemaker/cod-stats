@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Black Ops Title Debate Matrix</title>
+<style>
+:root{
+  --bg:#f6f7fb;--panel:#fff;--panel2:#eef2f7;--ink:#111827;--muted:#596273;--faint:#7d8794;
+  --line:#d9e0ea;--line2:#b7c2d1;--accent:#2563eb;--green:#0f766e;--amber:#b45309;--red:#b91c1c;
+  --blueSoft:#eaf1ff;--greenSoft:#e9f8f3;--amberSoft:#fff6e8;--redSoft:#fff0f0;--radius:8px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+main{max-width:1220px;margin:0 auto;padding:var(--s6) var(--s4) var(--s7)}
+h1{font-size:34px;line-height:1.08;margin:0 0 var(--s2);letter-spacing:0}
+h2{font-size:20px;margin:var(--s7) 0 var(--s3);letter-spacing:0}
+h3{font-size:16px;margin:0 0 var(--s2);letter-spacing:0}
+p{margin:var(--s2) 0}
+a{color:var(--accent)}
+.crumb{font-size:13px;color:var(--muted);margin-bottom:var(--s3)}
+.lede{max-width:76ch;color:var(--muted);font-size:17px}
+.small{font-size:13px}.muted{color:var(--muted)}.faint{color:var(--faint)}
+.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s4);margin-bottom:var(--s5)}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:8px 12px;font-weight:700;color:var(--ink);text-decoration:none;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 7px;font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap}
+.pill.blue{border-color:#bfd0ff;color:#1d4ed8;background:var(--blueSoft)}
+.pill.green{border-color:#b7e4d8;color:#047857;background:var(--greenSoft)}
+.pill.warn{border-color:#fed7aa;color:#9a3412;background:var(--amberSoft)}
+.pill.bad{border-color:#fecaca;color:#991b1b;background:var(--redSoft)}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3);margin:var(--s5) 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4);min-height:104px}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--faint);font-weight:800}
+.stat .v{font-size:30px;font-weight:900;margin-top:var(--s1)}
+.stat .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.stat.primary{border-color:#a7bef8;background:linear-gradient(180deg,#fff,#f8fbff)}
+.callout{border-left:3px solid var(--line2);background:#fff;padding:var(--s3) var(--s4);color:var(--muted);margin:var(--s5) 0}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--s4);align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:var(--s5);box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
+.case-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4);min-height:164px}
+.case-card.best{border-color:#9db7f7;background:linear-gradient(180deg,#fff,#f8fbff)}
+.case-top{display:flex;align-items:start;justify-content:space-between;gap:var(--s3);margin-bottom:var(--s3)}
+.case-name{font-size:22px;font-weight:900}
+.case-meta{display:flex;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s2)}
+.case-line{display:grid;grid-template-columns:1fr auto;gap:var(--s3);font-size:13px;border-top:1px solid var(--line);padding-top:var(--s2);margin-top:var(--s2)}
+.lane-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3);margin-top:var(--s4)}
+.lane{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:var(--s4)}
+.lane h3{display:flex;align-items:center;justify-content:space-between;gap:var(--s2)}
+.ranklist{display:grid;gap:var(--s2);margin-top:var(--s3)}
+.rankrow{display:grid;grid-template-columns:2rem 1fr auto;gap:var(--s2);align-items:center;font-size:13px}
+.rankrow .r{font-weight:900;color:var(--faint)}
+.rankrow .name{font-weight:800}
+.rankrow .val{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--muted)}
+.bar{height:7px;background:var(--panel2);border-radius:999px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:999px;width:var(--w)}
+.bar.green i{background:var(--green)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:900;background:#fafbfc}
+td.n,th.n{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+tbody tr:hover td{background:#f8fbff}
+.scroll{overflow-x:auto}
+.scroll table{min-width:860px}
+.event-list{display:grid;gap:var(--s2)}
+.event{display:grid;grid-template-columns:6.5rem 1fr auto;gap:var(--s3);align-items:center;padding:var(--s2) 0;border-bottom:1px solid var(--line)}
+.event:last-child{border-bottom:0}
+.event .date{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--faint);font-size:12px}
+.event .winner{font-weight:800}
+.note-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3)}
+.empty{background:var(--panel2);border:1px dashed var(--line2);border-radius:var(--radius);padding:var(--s4);color:var(--muted);min-height:132px}
+@media(max-width:980px){
+  .summary,.cards,.lane-grid,.note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  main{padding:var(--s5) var(--s3) var(--s7)}
+  .topbar{display:block}
+  h1{font-size:29px}
+  .summary,.cards,.lane-grid,.note-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="crumb">Design artifact / not wired into production</p>
+  <div class="topbar">
+    <div>
+      <h1>Black Ops Title Debate Matrix</h1>
+      <p class="lede">A mockup of a title-level evidence page using live data from <span class="num">site/data.js</span>. It keeps resume, placement, recorded skill, and formal honors in separate lanes so early-era source gaps stay visible.</p>
+    </div>
+    <a class="btn" href="../../site/game.html?g=Black%20Ops">Current season page</a>
+  </div>
+
+  <section class="summary" id="summary"></section>
+
+  <div class="callout">
+    <strong>Important early-era caveat.</strong> The original Black Ops season has rich major/result data in this repo, but the current source set has no usable PlayerStats or formal honors rows for this title. The mockup renders those lanes as unavailable, not zero.
+  </div>
+
+  <section class="cards" id="cards" aria-label="Leading Black Ops cases"></section>
+
+  <section class="lane-grid" id="lanes" aria-label="Evidence lanes"></section>
+
+  <section class="grid">
+    <div class="panel">
+      <h2 style="margin-top:0">Full Candidate Matrix</h2>
+      <p class="small muted">Players are included if they have a win or a counted placement in Black Ops. Default sort is resume-first, then placement efficiency.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Role</th>
+              <th class="n">Wins</th>
+              <th class="n">Season share</th>
+              <th class="n">Entered</th>
+              <th class="n">Avg place</th>
+              <th class="n">Win %</th>
+              <th class="n">Finals</th>
+              <th class="n">Top 4</th>
+              <th>Source lanes</th>
+            </tr>
+          </thead>
+          <tbody id="matrix"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0">Major Timeline</h2>
+      <p class="small muted">The season denominator is the 12 counted Black Ops majors, so each win is worth <span class="num">1/12</span> of the title.</p>
+      <div class="event-list" id="events"></div>
+    </div>
+  </section>
+
+  <h2>What This Mockup Proves</h2>
+  <section class="note-grid">
+    <div class="empty">
+      <h3>It works even when lanes are sparse</h3>
+      <p class="small">Black Ops is a hard case because stats and honors are unavailable. The page still says something real: TeeP leads the resume lane, while MerK and BigTymeR look strongest by average placement among the main winners.</p>
+    </div>
+    <div class="empty">
+      <h3>It prevents fake certainty</h3>
+      <p class="small">The page can say “resume says X, placement says Y, skill/honors are unavailable” instead of pretending missing early-era evidence is proof against a player.</p>
+    </div>
+  </section>
+</main>
+
+<script src="../../site/data.js"></script>
+<script>
+const GAME = 'Black Ops';
+const D = window.APP_DATA;
+const fmt = n => Number.isFinite(n) ? n.toLocaleString() : '-';
+const pct = v => v == null || !Number.isFinite(v) ? '-' : `${Math.round(v * 100)}%`;
+const dec = (v, d=3) => v == null || !Number.isFinite(v) ? '-' : v.toFixed(d);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function roleFor(player, game){
+  const row = ((player && player.role_by_game) || []).find(r => r.game === game);
+  return row ? row.role : 'Unknown';
+}
+
+function rolePill(role){
+  const tone = role === 'Unknown' ? 'warn' : 'blue';
+  return `<span class="pill ${tone}">${esc(role || 'Unknown')}</span>`;
+}
+
+function lanePills(row){
+  return [
+    row.wins ? '<span class="pill green">Resume</span>' : '',
+    row.place ? '<span class="pill blue">Placement</span>' : '',
+    row.stats ? '<span class="pill green">Stats</span>' : '<span class="pill warn">No stats rows</span>',
+    row.honors.length ? '<span class="pill green">Honors</span>' : '<span class="pill warn">No honors rows</span>',
+  ].filter(Boolean).join(' ');
+}
+
+function buildRows(){
+  const game = D.games.find(g => g.game === GAME);
+  const rows = [];
+  for(const [name, player] of Object.entries(D.players)){
+    const season = (player.seasons || []).find(s => s.game === GAME);
+    const place = (player.placements || []).find(p => p.game === GAME);
+    const stats = ((player.skillStats || {}).byGame || []).find(s => s.game === GAME);
+    const honors = (player.honors || []).filter(h => h.game === GAME);
+    if(!season && !place && !stats && !honors.length) continue;
+    const wins = season ? season.wins : 0;
+    const entered = place ? place.events : 0;
+    rows.push({
+      name, player, season, place, stats, honors,
+      wins,
+      share: wins / game.denom,
+      role: roleFor(player, GAME),
+      entered,
+      avgPlace: place ? place.avgPlace : null,
+      finalsRate: place && place.events ? place.finals / place.events : null,
+      top4Rate: place && place.events ? place.deepRuns / place.events : null,
+      winRate: place && place.events ? place.wins / place.events : null,
+    });
+  }
+  rows.sort((a,b) =>
+    b.wins - a.wins ||
+    (b.share - a.share) ||
+    ((a.avgPlace ?? 999) - (b.avgPlace ?? 999)) ||
+    b.entered - a.entered ||
+    a.name.localeCompare(b.name)
+  );
+  return {game, rows};
+}
+
+function renderSummary(game, rows){
+  const winners = rows.filter(r => r.wins > 0);
+  const statsRows = rows.filter(r => r.stats);
+  const honorRows = rows.filter(r => r.honors.length);
+  const best = rows[0];
+  document.getElementById('summary').innerHTML = `
+    <div class="stat primary"><div class="k">Leading resume case</div><div class="v">${esc(best.name)}</div><div class="sub">${best.wins} wins · ${dec(best.share)} season share</div></div>
+    <div class="stat"><div class="k">Counted majors</div><div class="v">${game.denom}</div><div class="sub">${game.events[0].date.slice(0,4)} · ${game.events.length} events in data</div></div>
+    <div class="stat"><div class="k">Winning players shown</div><div class="v">${winners.length}</div><div class="sub">${rows.length} players have Black Ops placements or wins</div></div>
+    <div class="stat"><div class="k">Stats / honors coverage</div><div class="v">${statsRows.length}/${honorRows.length}</div><div class="sub">PlayerStats rows / formal honors rows for this title</div></div>
+  `;
+}
+
+function renderCards(rows){
+  const top = rows.slice(0, 6);
+  document.getElementById('cards').innerHTML = top.map((r, i) => `
+    <article class="case-card ${i === 0 ? 'best' : ''}">
+      <div class="case-top">
+        <div>
+          <div class="case-name">${esc(r.name)}</div>
+          <div class="case-meta">${rolePill(r.role)} ${i === 0 ? '<span class="pill green">Resume leader</span>' : ''}</div>
+        </div>
+        <span class="pill blue">#${i + 1}</span>
+      </div>
+      <div class="case-line"><span>Wins</span><strong class="num">${r.wins}</strong></div>
+      <div class="case-line"><span>Season share</span><strong class="num">${dec(r.share)}</strong></div>
+      <div class="case-line"><span>Avg placement</span><strong class="num">${dec(r.avgPlace, 2)}</strong></div>
+      <div class="case-line"><span>Finals / Top 4</span><strong class="num">${pct(r.finalsRate)} / ${pct(r.top4Rate)}</strong></div>
+    </article>
+  `).join('');
+}
+
+function rankList(rows, getValue, format, opts={}){
+  const filtered = rows.filter(r => getValue(r) != null && Number.isFinite(getValue(r)));
+  filtered.sort((a,b) => opts.lowBetter ? getValue(a) - getValue(b) : getValue(b) - getValue(a));
+  const top = filtered.slice(0, 5);
+  const max = Math.max(...top.map(r => Math.abs(getValue(r))) || [1]);
+  return `<div class="ranklist">${top.map((r, i) => `
+    <div>
+      <div class="rankrow"><span class="r">${i + 1}</span><span class="name">${esc(r.name)}</span><span class="val">${format(getValue(r), r)}</span></div>
+      <div class="bar ${opts.lowBetter ? 'green' : ''}"><i style="--w:${opts.lowBetter ? Math.max(8, 100 - (getValue(r) / max * 76)) : Math.max(8, getValue(r) / max * 100)}%"></i></div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function renderLanes(rows){
+  const statsCount = rows.filter(r => r.stats).length;
+  const honorsCount = rows.filter(r => r.honors.length).length;
+  document.getElementById('lanes').innerHTML = `
+    <section class="lane">
+      <h3>Resume <span class="pill green">available</span></h3>
+      <p class="small muted">Major wins and season share.</p>
+      ${rankList(rows, r => r.wins || null, v => String(v))}
+    </section>
+    <section class="lane">
+      <h3>Placement <span class="pill green">available</span></h3>
+      <p class="small muted">Average finish among players with 5+ entered events.</p>
+      ${rankList(rows.filter(r => r.entered >= 5), r => r.avgPlace, v => dec(v, 2), {lowBetter:true})}
+    </section>
+    <section class="lane">
+      <h3>Skill on record <span class="pill warn">${statsCount ? 'partial' : 'unavailable'}</span></h3>
+      <p class="small muted">No usable PlayerStats rows for original Black Ops in the current generated player payload.</p>
+      <div class="empty small">Render this as source coverage missing, not a poor skill score. Later, this lane can populate from a title VOR artifact if participant-level stat rows become reliable.</div>
+    </section>
+    <section class="lane">
+      <h3>Formal honors <span class="pill warn">${honorsCount ? 'partial' : 'unavailable'}</span></h3>
+      <p class="small muted">No normalized MVP / All-Star / All-Pro rows for this title in the current honors source.</p>
+      <div class="empty small">This lane should stay blank until organizer/wiki-backed award rows exist. It should not pull Reddit or eye-test material.</div>
+    </section>
+  `;
+}
+
+function renderMatrix(rows){
+  document.getElementById('matrix').innerHTML = rows.map(r => `
+    <tr>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${rolePill(r.role)}</td>
+      <td class="n">${r.wins}</td>
+      <td class="n">${dec(r.share)}</td>
+      <td class="n">${r.entered || '-'}</td>
+      <td class="n">${dec(r.avgPlace, 2)}</td>
+      <td class="n">${pct(r.winRate)}</td>
+      <td class="n">${pct(r.finalsRate)}</td>
+      <td class="n">${pct(r.top4Rate)}</td>
+      <td>${lanePills(r)}</td>
+    </tr>
+  `).join('');
+}
+
+function renderEvents(game){
+  document.getElementById('events').innerHTML = game.events.map(e => `
+    <div class="event">
+      <div class="date">${esc(e.date)}</div>
+      <div>
+        <div class="winner">${esc(e.event)}</div>
+        <div class="small faint">${esc(e.type || 'Event')} · ${esc(e.location || '')}</div>
+      </div>
+      <span class="pill blue">${esc(e.winnerTeam || e.winner)}</span>
+    </div>
+  `).join('');
+}
+
+const {game, rows} = buildRows();
+renderSummary(game, rows);
+renderCards(rows);
+renderLanes(rows);
+renderMatrix(rows);
+renderEvents(game);
+</script>
+</body>
+</html>

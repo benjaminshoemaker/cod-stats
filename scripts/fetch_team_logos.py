@@ -20,9 +20,10 @@ LOGO_DIR = os.path.join(HERE, "site", "assets", "team-logos")
 
 
 def relevant_teams():
-    _, _, _, _, ppart, *_ = build_data.load_sources()
+    events_all, _, pwins, _, ppart, tpart, accolades, player_stats, event_pages = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
-    _, part_rows = build_data.index_participation(ppart, top)
+    registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
+    _, part_rows = build_data.index_participation(ppart, top, registry)
     teams = {r.get("team") for rows in part_rows.values() for r in rows.values() if r.get("team")}
     return sorted(teams)
 
