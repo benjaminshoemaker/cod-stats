@@ -49,6 +49,13 @@ npx playwright test              # browser/layout tests (desktop + mobile)
   pages, columns, copy. Internal work — error handling, monitoring, build tooling, test or
   reliability hardening — stays out; it belongs in commit messages.
 - **Verify objective claims yourself** (run the tests / load the page) before asking the user to verify.
+- **Use the shared table surface for data tables.** Native HTML tables should be rendered with
+  `TableSurface.dataTable({label, caption, head, rows, ...})`; interactive grids should be mounted
+  with `TableSurface.mountTabulator(selector, options)`. The shared handler owns focusable horizontal
+  scroll regions, screen-reader captions, scroll-edge affordances, keyboard/shift-wheel horizontal
+  scrolling, mobile scroll hints, and Tabulator header sort accessibility. Page code owns the domain
+  rows, allowed columns, formatters, and local callbacks. Prefer the helper even for static article
+  tables; use raw markup only for non-table chart scrollers or cases the helper cannot express.
 - Fetching wiki data: WebFetch is blocked; use `curl` with a browser User-Agent, expect rate limiting,
   and read wikitext via `api.php?action=query` (the `?action=raw` route is Cloudflare-challenged).
 - CoD Esports Wiki edits: prefer fixing upstream tournament metadata rather than editing generated

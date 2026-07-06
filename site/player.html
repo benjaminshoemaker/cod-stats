@@ -74,11 +74,13 @@ if(!p || !lb){
   const honorsSection = `<section class="honors-block" id="honors">
       <h2>Honors ${anchorLink('honors','Honors')}</h2>
       <p class="small muted">MVP, All-Star, All-Pro and Rookie/Player of the Year recognition from the CoD Esports Wiki awards table. This is profile context only, not part of the era-adjusted score. Early-era award coverage is incomplete and non-standardized, so a blank list means no row in the current source set, not necessarily zero career honors.</p>
-      ${honors.length ? `<div ${scrollRegionAttrs(`${p.name} honors table`)}><table class="data honors-table">
-        ${tableCaption(`${p.name} formal honors`)}
-        <thead><tr><th scope="col">Award</th><th scope="col">Event or season</th><th scope="col" class="n">Year</th><th scope="col">Source</th></tr></thead>
-        <tbody>${honorsRows}</tbody>
-      </table></div>` : '<p class="small faint">No honors found in the current source set.</p>'}
+      ${honors.length ? TableSurface.dataTable({
+        label: `${p.name} honors table`,
+        caption: `${p.name} formal honors`,
+        tableClass: 'data honors-table',
+        head: '<thead><tr><th scope="col">Award</th><th scope="col">Event or season</th><th scope="col" class="n">Year</th><th scope="col">Source</th></tr></thead>',
+        rows: honorsRows
+      }) : '<p class="small faint">No honors found in the current source set.</p>'}
     </section>`;
   const skillStats = p.skillStats;
   const skillDateRange = stats => {
@@ -201,7 +203,11 @@ if(!p || !lb){
           <button id="seg-all" aria-pressed="false">All entered (${lb.eventsPlaced})</button>
         </div>
       </div>
-      <div ${scrollRegionAttrs(`${p.name} major list table`)}><table class="data">${tableCaption(`${p.name} major wins and entries`)}<tbody id="winlist"></tbody></table></div>
+      ${TableSurface.dataTable({
+        label: `${p.name} major list table`,
+        caption: `${p.name} major wins and entries`,
+        html: '<tbody id="winlist"></tbody>'
+      })}
       <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
     </section>
 
@@ -210,11 +216,13 @@ if(!p || !lb){
     <section id="roles">
       <h2>Primary role by season ${anchorLink('roles','Roles')}</h2>
       <p class="small muted">Roles are curated as AR, Flex, or SMG. Unknown or disputed seasons can be challenged with evidence.</p>
-      <div ${scrollRegionAttrs(`${p.name} role-by-season table`)}><table class="data role-table">
-        ${tableCaption(`${p.name} primary role by season`)}
-        <thead><tr><th scope="col">Season</th><th scope="col">Role</th><th scope="col" class="n">Year</th></tr></thead>
-        <tbody>${roleTable || '<tr><td colspan="3" class="small faint">No role rows available.</td></tr>'}</tbody>
-      </table></div>
+      ${TableSurface.dataTable({
+        label: `${p.name} role-by-season table`,
+        caption: `${p.name} primary role by season`,
+        tableClass: 'data role-table',
+        head: '<thead><tr><th scope="col">Season</th><th scope="col">Role</th><th scope="col" class="n">Year</th></tr></thead>',
+        rows: roleTable || '<tr><td colspan="3" class="small faint">No role rows available.</td></tr>'
+      })}
     </section>
 
     <section id="similar"></section>
@@ -235,17 +243,17 @@ if(!p || !lb){
         <td><div class="bar-track bar-share"><div class="bar-fill" style="width:${(s.share*100).toFixed(1)}%"></div></div></td>
       </tr>`).join('');
     const winsShown = shown.reduce((a,s)=>a+s.wins,0);
-    document.getElementById('buildup').innerHTML = `
-      <div ${scrollRegionAttrs(`${p.name} season-share buildup table`)}><table class="data">
-        ${tableCaption(`${p.name} adjusted-wins season-share buildup`)}
-        <thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Majors</th><th scope="col" class="n">Per win</th><th scope="col" class="n">Share</th><th scope="col">&nbsp;</th></tr></thead>
-        <tbody>${rows}
+    document.getElementById('buildup').innerHTML = TableSurface.dataTable({
+      label: `${p.name} season-share buildup table`,
+      caption: `${p.name} adjusted-wins season-share buildup`,
+      head: '<thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Majors</th><th scope="col" class="n">Per win</th><th scope="col" class="n">Share</th><th scope="col">&nbsp;</th></tr></thead>',
+      rows: `${rows}
           <tr style="border-top:2px solid var(--line-2)"><td><strong>Total</strong></td>
             <td class="n"><strong>${winsShown}</strong></td><td class="n faint">–</td><td class="n faint">–</td>
             <td class="n"><strong>${share.toFixed(3)}</strong></td>
             <td class="small muted">× ${mbar.toFixed(2)} = <strong>${adj.toFixed(1)}</strong></td></tr>
-        </tbody>
-      </table></div>`;
+        `
+    });
 
     // chart
     document.getElementById('chart').innerHTML = shown.map(s=>`<div style="margin:var(--space-1) 0">
@@ -274,7 +282,7 @@ if(!p || !lb){
   let SKILL_EVENTS = skillStats && skillStats.byEvent ? skillStats.byEvent : null;
   let skillEventReq = null;
   const orderIdx = Object.fromEntries(D.meta.seasonOrder.map((g,i)=>[g,i]));
-  let majorsMode = 'wins';
+  let majorsMode = qs('majors') === 'all' ? 'all' : 'wins';
   const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n + (s[(v-20)%10] || s[v] || s[0]); };
   const placeLabel = pl => /^\d+$/.test(pl) ? ord(+pl) : (pl || '—');
   const avgPlaceLabel = rows => {
@@ -373,12 +381,14 @@ if(!p || !lb){
         </summary>
         <div class="skill-season-detail">
           <div class="skill-summary-pills" aria-label="${esc(season.game)} mode split summary">${['overall','respawn','snd'].map(m=>splitSummary(season, m)).join('')}</div>
-          <p class="small faint skill-scroll-hint">Scroll horizontally for all tournament columns.</p>
-        <div ${scrollRegionAttrs(`${p.name} ${season.game} tournament stats table`)}><table class="data skill-event-table">
-          ${tableCaption(`${p.name} ${season.game} tournament stats by selected mode`)}
-          <thead><tr><th scope="col" class="n">Year</th><th scope="col">Tournament</th><th scope="col">Team</th><th scope="col" class="n">Maps</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Kills</th><th scope="col" class="n">Deaths</th><th scope="col" class="n">Kills + deaths</th></tr></thead>
-          <tbody>${body || `<tr><td colspan="8" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`}</tbody>
-        </table></div></div>
+          ${TableSurface.dataTable({
+            label: `${p.name} ${season.game} tournament stats table`,
+            caption: `${p.name} ${season.game} tournament stats by selected mode`,
+            tableClass: 'data skill-event-table',
+            hint: 'Scroll horizontally for all tournament columns.',
+            head: '<thead><tr><th scope="col" class="n">Year</th><th scope="col">Tournament</th><th scope="col">Team</th><th scope="col" class="n">Maps</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Kills</th><th scope="col" class="n">Deaths</th><th scope="col" class="n">Kills + deaths</th></tr></thead>',
+            rows: body || `<tr><td colspan="8" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`
+          })}</div>
       </details>`;
       }).join('');
     }
@@ -518,9 +528,13 @@ function mountSimilar(name){
       <div class="sim-cmp-head">Comparing <span class="va">${esc(name)}</span> with <span class="vb">${esc(sel)}</span>
         <a class="small" href="compare.html?p=${encodeURIComponent(name)}&p=${encodeURIComponent(sel)}">compare both →</a>
         <a class="small" href="player.html?p=${encodeURIComponent(sel)}">open profile →</a></div>
-      <div style="overflow-x:auto"><table class="sim-table">
-        <thead><tr><th class="l">Metric</th><th>${esc(name)}</th><th>${esc(sel)}</th><th>Match</th></tr></thead>
-        <tbody>${body}</tbody></table></div>`;
+      ${TableSurface.dataTable({
+        label: `${name} and ${sel} similarity comparison table`,
+        caption: `${name} and ${sel} similarity comparison`,
+        tableClass: 'sim-table',
+        head: `<thead><tr><th scope="col" class="l">Metric</th><th scope="col">${esc(name)}</th><th scope="col">${esc(sel)}</th><th scope="col">Match</th></tr></thead>`,
+        rows: body
+      })}`;
   }
 
   document.querySelectorAll('#sim-seg button').forEach(b=>b.onclick=()=>{

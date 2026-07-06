@@ -507,6 +507,12 @@ test.describe('pages', () => {
     await expect(page.getByText('The site has several distinct evidence lanes')).toBeVisible();
     await expect(page.locator('.method-hub .method-card', { hasText: 'Era-adjusted wins' })).toHaveAttribute('href', '#era-adjustment');
     await expect(page.locator('.method-hub .method-card', { hasText: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
+    await expect(page.getByText('rank 30 rounds to 0.000')).toBeVisible();
+    await expect(page.getByText('rank 31')).toBeVisible();
+    await expect(page.getByText('2.5, is an intentional top-heavy curve')).toBeVisible();
+    await expect(page.locator('#community-rank-points .anchor-link')).toHaveAttribute('href', '#community-rank-points');
+    await expect(page.getByText('rank 24 is')).toBeVisible();
+    await expect(page.getByText('about 0.026 points')).toBeVisible();
     await page.goto('/community.html');
     await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
   });
@@ -516,8 +522,10 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Design System' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Data surfaces' })).toHaveAttribute('href', '#data-surfaces');
     await expect(page.getByRole('link', { name: 'KOR widget' })).toHaveAttribute('href', '#kor-widget');
-    await expect(page.locator('#data-surfaces .scroll-x[role="region"][tabindex="0"]')).toHaveAttribute('aria-label', 'Example analytical table');
-    await expect(page.locator('#data-surfaces table.data caption')).toContainText('Example analytical table with sample context');
+    await expect(page.getByRole('region', { name: 'Example analytical table' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Overflowing table-surface example' })).toBeVisible();
+    await expect(page.locator('#data-surfaces table.data caption').first()).toContainText('Example analytical table with sample context');
+    await expect(page.locator('#table-overflow-example .scrollhint')).toContainText('Scroll sideways');
     await expect(page.locator('#pills .pill.role-smg')).toHaveText('SMG');
     await expect(page.locator('#kor-widget .kor-bar-row')).toHaveCount(2);
   });
@@ -602,6 +610,10 @@ test.describe('pages', () => {
     await expect(page.getByText('Swipe the table sideways to see role, sample, and opponent context')).toBeAttached();
     await expect(page.locator('.kor-table tbody tr').first()).toContainText('HyDra');
     await expect(page.locator('.kor-table tbody tr').first()).toContainText('Modern Warfare III');
+    await expect(page.locator('.kor-table tbody tr')).toHaveCount(100);
+    await expect(page.locator('.kor-row-limit')).toContainText(/Showing top 100 of \d+/);
+    await page.getByRole('button', { name: 'Show all rows' }).click();
+    expect(await page.locator('.kor-table tbody tr').count()).toBeGreaterThan(100);
     const splitMinHeight = await page.locator('#kor-split button').first().evaluate(el => Number.parseFloat(getComputedStyle(el).minHeight));
     expect(splitMinHeight).toBeGreaterThanOrEqual(44);
 
@@ -636,8 +648,9 @@ test.describe('pages', () => {
     await expect(page.locator('#cc-era-field')).toBeVisible();
     await expect(page.locator('#cc-eramenu .colmenu-btn')).toContainText('Eras: All');
     await expect(page.getByRole('heading', { name: 'Career Total Ranking' })).toBeVisible();
+    await expect(page.locator('.community-stats .stat')).toHaveCount(0);
     const overallHeaders = await page.locator('#cc-overall-table .tabulator-col-title').allTextContents();
-    expect(overallHeaders.at(-1)).toBe('Trace');
+    expect(overallHeaders).toEqual(['Rank', 'Player', 'Active score', 'Average rank', 'Event wins', 'Top 1', 'Top 3', 'Top 5', 'Top 10']);
     const firstOverallRow = page.locator('#cc-overall-table .tabulator-row').first();
     await expect(firstOverallRow).toContainText('Scump');
     await expect(firstOverallRow.locator('.context-band')).toContainText('28');
@@ -647,27 +660,46 @@ test.describe('pages', () => {
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perPlayed"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perRanked"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="placements"]')).toHaveCount(0);
-    await expect(page.getByRole('heading', { name: 'Scump Overall Trace' })).toBeVisible();
+    await expect(page.locator('#cc-overall-trace-card')).toHaveCount(0);
+
+    await page.locator('#cc-overall-table .tabulator-row').filter({ hasText: 'Simp' }).click();
+    await expect(page).toHaveURL(/p=Simp/);
+    await expect(page.getByRole('heading', { name: 'Simp Overall Trace' })).toBeVisible();
+    await page.waitForFunction(() => document.activeElement?.id === 'cc-overall-trace-card');
     await expect(page.locator('.calc-summary')).toContainText('Total:');
-    await expect(page.locator('.cc-calc-table')).toContainText('Title score');
-    await expect(page.locator('.cc-calc-table')).toContainText('Sources');
-    await expect(page.locator('.cc-calc-table')).toContainText('Overall points');
-    await expect(page.locator('.cc-calc-table')).toContainText('((31 - 1) / 30) ** 2.5');
-    await expect(page.locator('.cc-calc-table').getByRole('link', { name: 'MW3 #1' })).toHaveAttribute('href', /view=title/);
+    await expect(page.locator('.cc-calc-table')).toContainText('Rank points');
+    await expect(page.locator('.cc-calc-table')).not.toContainText('Title score');
+    await expect(page.locator('.cc-calc-table')).not.toContainText('Sources');
+    await expect(page.locator('.cc-calc-table')).not.toContainText('Rank-points formula');
+    await expect(page.locator('.cc-calc-table').getByRole('link').first()).toHaveAttribute('href', /view=title/);
+    await expect(page.locator('.cc-calc-table').getByRole('link')).toHaveText([
+      'BO4 #2',
+      'MW #1',
+      'BOCW #1',
+      'VG #5',
+      'MWII #10',
+      'MWIII #1',
+      'BO6 #10',
+    ]);
+    await expect(page.getByRole('link', { name: 'the rank-points curve' })).toHaveAttribute('href', 'methodology.html#community-rank-points');
+
     const overallLayout = await page.evaluate(() => {
       const table = document.querySelector('#cc-overall-table') as HTMLElement;
       const holder = document.querySelector('#cc-overall-table .tabulator-tableholder') as HTMLElement;
       const trace = document.querySelector('#cc-overall-trace-card') as HTMLElement;
       const tableBox = table.getBoundingClientRect();
       const traceBox = trace.getBoundingClientRect();
+      const selectedRowBox = document.querySelector('#cc-overall-table .tabulator-row.community-selected-row')?.getBoundingClientRect();
       return {
-        traceBelowTable: traceBox.top > tableBox.bottom,
+        traceInsideTable: traceBox.top > tableBox.top && traceBox.top < tableBox.bottom,
+        traceInsideSelectedRow: !!selectedRowBox && traceBox.top >= selectedRowBox.top && traceBox.bottom <= selectedRowBox.bottom + 1,
         tableUsesMostWidth: tableBox.width > window.innerWidth * 0.75,
         pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         tableScrollsInside: holder.scrollWidth > holder.clientWidth,
       };
     });
-    expect(overallLayout.traceBelowTable).toBe(true);
+    expect(overallLayout.traceInsideTable).toBe(true);
+    expect(overallLayout.traceInsideSelectedRow).toBe(true);
     expect(overallLayout.tableUsesMostWidth).toBe(true);
     expect(overallLayout.pageOverflow).toBe(false);
 
@@ -743,6 +775,9 @@ test.describe('pages', () => {
       els => els.map(el => el.getAttribute('data-tip')));
     expect(tips).toContain('Shotzzy, MW19: 4/9 majors (44%) · World Champion');
     expect(tips).toContain('HyDra, BO7: 1/6 majors (17%)');
+    await expect(page.locator('svg.hm rect.cell[tabindex="0"][role="img"]').first()).toBeVisible();
+    await page.locator('svg.hm rect.cell[aria-label^="Shotzzy, MW19"]').first().focus();
+    await expect(page.locator('.charttip.on')).toContainText('Shotzzy, MW19');
   });
 
   test('player page links to the wiki and toggles wins vs every major entered', async ({ page }) => {
@@ -819,6 +854,11 @@ test.describe('pages', () => {
     await expect(page.locator('#winlist .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
     await expect(page.locator('#winlist img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
     await expect(page.locator('#ml-note')).toContainText('same normalized list');
+
+    await page.goto('/player.html?p=Scump&majors=all#major-wins');
+    await expect(page.locator('#seg-all')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#ml-title')).toHaveText(/Every major entered \(\d+\)/);
+    await expect(page.locator('#winlist tr.faint').first()).toBeVisible();
     const consistent = await page.evaluate(async () => {
       const D = (window as any).APP_DATA;
       const p = D.players.Scump;
@@ -934,6 +974,7 @@ test.describe('compare page', () => {
       els => els.map(el => getComputedStyle(el).getPropertyValue('--summary-score').trim()),
     );
     expect(adjustedScores).toEqual(['100%', '0%']);
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('.best-badge')).toHaveText(/Best/);
 
     const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
     await expect(bo7).toContainText('in progress');
@@ -1114,7 +1155,8 @@ test.describe('GOAT Builder', () => {
     expect(longevity.scump.input).toBe(13);
     expect(longevity.crim.input).toBe(11);
     expect(longevity.clayster.score).toBe(100);
-    expect(longevity.scump.sub).toContain('placing titles');
+    expect(longevity.scump.sub).toContain('titles');
+    expect(longevity.scump.sub).toContain('skill sets');
   });
 
   test('ranking columns sort and expose header explanations', async ({ page }) => {
@@ -1154,7 +1196,9 @@ test.describe('GOAT Builder', () => {
     await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A40%2Cskill%3A30%2Clongevity%3A20%2Cpeak%3A10&rings=3&era=postBo2&view=rank');
     const crimsixRow = page.locator('#goatTable .tabulator-row').filter({ hasText: 'Crimsix' });
     await crimsixRow.evaluate(row => row.scrollIntoView({ block: 'center' }));
-    await crimsixRow.click();
+    await expect(crimsixRow).toHaveAttribute('role', 'button');
+    await crimsixRow.focus();
+    await page.keyboard.press('Enter');
     const detail = page.locator('#goatTable .gb-row-detail[data-detail="Crimsix"]');
     await expect(detail).toBeVisible();
     await expect(detail.locator('.gb-explain-table')).toBeVisible();
@@ -1162,7 +1206,15 @@ test.describe('GOAT Builder', () => {
     await expect(detail).toContainText('4.30 consensus points');
     await expect(detail).toContainText('Rank points use ((31 - rank) / 30)^2.5');
     await expect(detail).toContainText('Title resume input 6.1 = 4.1 title-adjusted wins + 1 Champs ring x 2.0 extra');
+    await expect(detail.getByRole('link', { name: 'Resume' })).toHaveAttribute('href', 'player.html?p=Crimsix#adjusted-wins');
+    await expect(detail.getByRole('link', { name: 'Individual Skill' })).toHaveAttribute('href', 'community.html?view=overall&p=Crimsix');
+    await expect(detail.getByRole('link', { name: 'Longevity' })).toHaveAttribute('href', 'player.html?p=Crimsix&majors=all#major-wins');
+    await expect(detail).toContainText('10 major-entry titles');
+    await expect(detail).not.toContainText('placing titles');
     await expect(detail.locator('.gb-fact')).toHaveCount(0);
+    await expect(detail.locator('.scrollhint')).toHaveCount(0);
+    await expect(detail.locator('.scroll-region, .scroll-x, [data-scroll-region]')).toHaveCount(0);
+    await expect(crimsixRow.locator('.gb-delta')).toHaveCount(0);
   });
 
   test('is available directly but not linked from global navigation', async ({ page }) => {

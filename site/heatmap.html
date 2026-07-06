@@ -82,7 +82,7 @@ rows.forEach((r,i)=>{
     const wins=season?.wins||0, majors=season?.majors||GAMES[g].denom;
     const fill=v>0?seq(v/mx):'#f8fafc';
     const tip=v>0?`${nm}, ${ABBR[g]}: ${wins}/${majors} majors (${Math.round(v*100)}%)${isChamp?' · World Champion':''}`:`${nm}, ${ABBR[g]}: no majors`;
-    s+=`<rect class="cell" x="${x+1}" y="${y+1}" width="${cw-2}" height="${rh-2}" rx="4" fill="${fill}" data-tip="${esc(tip)}"></rect>`;
+    s+=`<rect class="cell" tabindex="0" focusable="true" role="img" aria-label="${esc(tip)}" x="${x+1}" y="${y+1}" width="${cw-2}" height="${rh-2}" rx="4" fill="${fill}" data-tip="${esc(tip)}"></rect>`;
     if(v>=0.30 || (isChamp && v>0)){
       // flip to white only where white actually reaches AA on the interpolated ramp (~t 0.62)
       const dark=v/mx>0.62; s+=`<text class="pct" x="${x+cw/2}" y="${y+rh/2+4}" text-anchor="middle" fill="${dark?'#fff':'var(--ink)'}">${Math.round(v*100)}</text>`;
@@ -93,7 +93,7 @@ rows.forEach((r,i)=>{
 s+='</svg>';
 
 // keyboard/AT (and touch) alternative: the same numbers as an HTML table
-let tbl = `<table class="data">${tableCaption('Dominance heatmap table alternative')}<thead><tr><th scope="col">Player</th>${ORDER.map(g=>`<th scope="col" class="n">${esc(ABBR[g])}</th>`).join('')}</tr></thead><tbody>`;
+let tbl = `<thead><tr><th scope="col">Player</th>${ORDER.map(g=>`<th scope="col" class="n">${esc(ABBR[g])}</th>`).join('')}</tr></thead><tbody>`;
 for(const r of rows){
   tbl += `<tr><th scope="row"><a href="player.html?p=${encodeURIComponent(r.name)}">${esc(r.name)}</a></th>`;
   for(const g of ORDER){
@@ -102,7 +102,7 @@ for(const r of rows){
   }
   tbl += '</tr>';
 }
-tbl += '</tbody></table>';
+tbl += '</tbody>';
 
 document.getElementById('root').innerHTML = `
   <h1>Dominance heatmap</h1>
@@ -114,15 +114,19 @@ document.getElementById('root').innerHTML = `
   <div class="chart-wrap">${s}</div>
   <p class="small muted">Top 16 by era-adjusted wins (all seasons). Hover or tap a cell for the exact wins.</p>
   <details class="sim-method"><summary>View as a table (wins / majors, ◆ = World Championship season)</summary>
-    <div ${scrollRegionAttrs('Dominance heatmap table alternative')} style="margin-top:var(--space-2)">${tbl}</div></details>`;
+    ${TableSurface.dataTable({
+      label: 'Dominance heatmap table alternative',
+      caption: 'Dominance heatmap table alternative',
+      wrapperClass: 'heatmap-table-wrap',
+      tableClass: 'data',
+      html: tbl
+    })}</details>`;
 
 // styled HTML tooltip: instant, works on tap, and replaces the slow native <title>
 const wrapEl = document.querySelector('.chart-wrap');
 const tipEl = document.createElement('div');
 tipEl.className = 'charttip'; wrapEl.appendChild(tipEl);
-wrapEl.addEventListener('mouseover', e=>{
-  const c = e.target.closest('rect.cell');
-  if(!c || !c.dataset.tip){ tipEl.classList.remove('on'); return; }
+function showCellTip(c){
   tipEl.textContent = c.dataset.tip; tipEl.classList.add('on');
   const wr = wrapEl.getBoundingClientRect(), cr = c.getBoundingClientRect();
   let x = cr.left - wr.left + wrapEl.scrollLeft + cr.width/2 - tipEl.offsetWidth/2;
@@ -130,6 +134,18 @@ wrapEl.addEventListener('mouseover', e=>{
   let y = cr.top - wr.top - tipEl.offsetHeight - 8;
   if(y < 0) y = cr.bottom - wr.top + 8;
   tipEl.style.left = x+'px'; tipEl.style.top = y+'px';
+}
+wrapEl.addEventListener('mouseover', e=>{
+  const c = e.target.closest('rect.cell');
+  if(!c || !c.dataset.tip){ tipEl.classList.remove('on'); return; }
+  showCellTip(c);
+});
+wrapEl.addEventListener('focusin', e=>{
+  const c = e.target.closest('rect.cell');
+  if(c && c.dataset.tip) showCellTip(c);
+});
+wrapEl.addEventListener('focusout', e=>{
+  if(e.target.closest('rect.cell')) tipEl.classList.remove('on');
 });
 wrapEl.addEventListener('mouseleave', ()=>tipEl.classList.remove('on'));
 mountFoot();

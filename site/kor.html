@@ -50,6 +50,8 @@ const gameSel = document.getElementById('kor-game');
 const splitBtns = [...document.querySelectorAll('#kor-split button')];
 const host = document.getElementById('kor-root');
 let KOR = null;
+let showAllRows = false;
+const KOR_ALL_ROW_LIMIT = 100;
 
 const pct = v => v == null ? '<span class="faint">–</span>' : `${Math.round(v * 100)}%`;
 const num = (v, d=2) => v == null ? '<span class="faint">–</span>' : Number(v).toFixed(d);
@@ -155,6 +157,10 @@ function render(game, split){
   }
   const marker = game === 'all' ? null : replacementMarker(score);
   const title = game === 'all' ? `All-time ${splitLabel(split)} KOR/map` : `${esc(game)} ${splitLabel(split)} KOR/map`;
+  const visibleRows = game === 'all' && !showAllRows ? rows.slice(0, KOR_ALL_ROW_LIMIT) : rows;
+  const rowLimitNote = game === 'all' && rows.length > visibleRows.length
+    ? `<p class="small muted kor-row-limit">Showing top ${visibleRows.length} of ${rows.length}. <button type="button" class="link-button" id="kor-show-all">Show all rows</button></p>`
+    : '';
   host.innerHTML = `
     <section class="kor-summary">
       <div class="stat"><div class="k">Leader</div><div class="v sm">${esc(leader.player)}</div><div class="small faint">${esc(leader.game)} · ${signedNum(leader.korPerMap)} KOR/map</div></div>
@@ -173,13 +179,20 @@ function render(game, split){
     </section>
     <section>
       <h2>${title}</h2>
-      <p class="scrollhint small faint">Swipe the table sideways to see role, sample, and opponent context →</p>
-      <div ${scrollRegionAttrs(`${title} leaderboard table`)}><table class="data kor-table">
-        ${tableCaption(`${title} leaderboard with role, sample, replacement, and opponent context`)}
-        <thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col">Role</th><th scope="col">Title</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">K/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col" class="n">Replacement</th><th scope="col" class="n">Median opp place</th><th scope="col" class="n">Top-8 opp maps</th></tr></thead>
-        <tbody>${tableRows(rows, split, marker)}</tbody>
-      </table></div>
+      ${TableSurface.dataTable({
+        label: `${title} leaderboard table`,
+        caption: `${title} leaderboard with role, sample, replacement, and opponent context`,
+        tableClass: 'data kor-table',
+        hint: 'Swipe the table sideways to see role, sample, and opponent context.',
+        head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col">Role</th><th scope="col">Title</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">K/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col" class="n">Replacement</th><th scope="col" class="n">Median opp place</th><th scope="col" class="n">Top-8 opp maps</th></tr></thead>',
+        rows: tableRows(visibleRows, split, marker)
+      })}
+      ${rowLimitNote}
     </section>`;
+  host.querySelector('#kor-show-all')?.addEventListener('click', () => {
+    showAllRows = true;
+    render(game, split);
+  });
 }
 
 fetch('kor.json')
@@ -190,8 +203,14 @@ fetch('kor.json')
     gameSel.innerHTML += games.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
     const state = readState();
     render(state.game, state.split);
-    gameSel.addEventListener('change', () => render(gameSel.value, splitBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.split));
-    splitBtns.forEach(btn => btn.addEventListener('click', () => render(gameSel.value, btn.dataset.split)));
+    gameSel.addEventListener('change', () => {
+      showAllRows = false;
+      render(gameSel.value, splitBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.split);
+    });
+    splitBtns.forEach(btn => btn.addEventListener('click', () => {
+      showAllRows = false;
+      render(gameSel.value, btn.dataset.split);
+    }));
   })
   .catch(err => {
     console.error(err);

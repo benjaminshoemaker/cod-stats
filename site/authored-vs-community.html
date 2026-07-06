@@ -60,29 +60,21 @@
 
   <section class="article-section" id="results">
     <h2>The result</h2>
-    <div class="scroll-x" tabindex="0" role="region" aria-label="Authored source comparison table">
-      <p class="scrollhint small muted">Scroll sideways to see the full comparison.</p>
-      <table class="data article-table">
-        <caption class="sr-only">Authored source overlap with community consensus by title</caption>
-        <thead>
-          <tr><th scope="col">Title</th><th scope="col">Authored source</th><th scope="col">Compared range</th><th scope="col">Match</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Black Ops 2</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
-          <tr><td>Ghosts</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
-          <tr><td>Advanced Warfare</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
-          <tr><td>Black Ops 3</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
-          <tr><td>World War II</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
-          <tr><td>Black Ops 4</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
-          <tr><td>Modern Warfare 2019</td><td>Breaking Point Top 20</td><td>Top 10</td><td>8/10</td></tr>
-          <tr><td>Black Ops Cold War</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
-          <tr><td>Vanguard</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
-          <tr><td>Modern Warfare II</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
-          <tr><td>Modern Warfare III</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
-          <tr><td>Black Ops 6</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <div id="authored-comparison-table"></div>
+    <template id="authored-comparison-rows">
+      <tr><td>Black Ops 2</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+      <tr><td>Ghosts</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+      <tr><td>Advanced Warfare</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+      <tr><td>Black Ops 3</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+      <tr><td>World War II</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+      <tr><td>Black Ops 4</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+      <tr><td>Modern Warfare 2019</td><td>Breaking Point Top 20</td><td>Top 10</td><td>8/10</td></tr>
+      <tr><td>Black Ops Cold War</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+      <tr><td>Vanguard</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+      <tr><td>Modern Warfare II</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+      <tr><td>Modern Warfare III</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+      <tr><td>Black Ops 6</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+    </template>
   </section>
 
   <section class="article-section" id="differences">
@@ -130,6 +122,14 @@
 <script src="assets/app.js"></script>
 <script>
 mountNav('authored-vs-community.html');
+document.getElementById('authored-comparison-table').innerHTML = TableSurface.dataTable({
+  label: 'Authored source comparison table',
+  caption: 'Authored source overlap with community consensus by title',
+  tableClass: 'data article-table',
+  hint: 'Scroll sideways to see the full comparison.',
+  head: '<thead><tr><th scope="col">Title</th><th scope="col">Authored source</th><th scope="col">Compared range</th><th scope="col">Match</th></tr></thead>',
+  rows: document.getElementById('authored-comparison-rows').innerHTML
+});
 mountFoot();
 </script>
 </body>

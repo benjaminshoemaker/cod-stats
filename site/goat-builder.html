@@ -125,16 +125,12 @@ button,input{font:inherit}
 .gb-rank-view .tabulator-row{cursor:pointer}
 .gb-rank-view .tabulator-row.gb-selected-row{background:var(--gb-blue-soft)}
 .gb-rank-view .tabulator .tabulator-tableholder{width:100%!important;max-width:100%;overflow-x:auto}
-.gb-rank-cell{display:grid;gap:2px;justify-items:end}
-.gb-delta{display:inline-flex;align-items:center;justify-content:center;min-width:34px;border-radius:999px;padding:1px 5px;font-size:11px;font-weight:850}
-.gb-delta.up{background:var(--gb-teal-soft);color:var(--gb-teal)}
-.gb-delta.down{background:var(--gb-red-soft);color:var(--gb-red)}
-.gb-delta.same{background:var(--gb-panel-2);color:var(--gb-faint)}
+.gb-rank-cell{display:grid;justify-items:end}
 .gb-player{display:flex;align-items:center;gap:9px;min-width:150px}
 .gb-player-cell{display:flex;align-items:center;gap:9px;width:100%;min-width:0}
 .gb-avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#1f2937;color:#fff;font-size:11px;font-weight:850;flex:0 0 auto}
 .gb-name{font-weight:850}
-.gb-sub{display:block;color:var(--gb-faint);font-size:12px;font-weight:500}
+.gb-sub{display:block;color:var(--gb-faint);font-size:12px;font-weight:500;white-space:nowrap}
 .gb-score-cell{min-width:190px}
 .gb-score-line{display:flex;align-items:center;gap:8px}
 .gb-track{height:10px;background:#edf0f5;border-radius:999px;overflow:hidden;flex:1;display:flex;gap:1px}
@@ -145,7 +141,7 @@ button,input{font:inherit}
 .gb-segment.longevity{background:var(--gb-gold)}
 .gb-segment.peak{background:var(--gb-purple)}
 .gb-row-detail{clear:both;display:block;width:100%;background:#fbfcff;border-top:1px solid var(--gb-line);padding:12px 14px;cursor:default}
-.gb-row-detail .scroll-x{max-width:100%;overflow:auto}
+.gb-detail-table{max-width:none;overflow:visible}
 .gb-detail-head{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--gb-line)}
 .gb-detail-head h3{margin:0;font-size:15px}
 .gb-detail-head p{margin:3px 0 0;color:var(--gb-muted);font-size:12px}
@@ -695,9 +691,11 @@ function criterionInputDetail(row, key){
   const s = row.stats;
   const peak = row.peakDetail || {};
   const extraRing = state.ring - 1;
+  const profileUrl = `player.html?p=${encodeURIComponent(row.player.name)}`;
   if(key === 'resume'){
     const raw = s.adj + s.champs * extraRing;
     return {
+      href:`${profileUrl}#adjusted-wins`,
       input:`${num(raw)} ring-weighted wins`,
       leader:`${num(renderScales.maxes?.resume)} leader input`,
       note:`${num(s.adj)} adjusted wins + ${s.champs || 0} Champs ring${s.champs === 1 ? '' : 's'} x ${num(extraRing)} extra`,
@@ -705,6 +703,7 @@ function criterionInputDetail(row, key){
   }
   if(key === 'skill'){
     return {
+      href:`community.html?view=overall&p=${encodeURIComponent(row.player.name)}`,
       input:`${num(s.consensus?.totalPoints, 2)} consensus points`,
       leader:`${num(renderScales.maxes?.skill, 2)} leader input`,
       note:`Sum of rank points from ${s.consensus?.rankedTitles || 0} selected title ranking dataset${(s.consensus?.rankedTitles || 0) === 1 ? '' : 's'}. Rank points use ((31 - rank) / 30)^2.5.`,
@@ -712,9 +711,10 @@ function criterionInputDetail(row, key){
   }
   if(key === 'longevity'){
     return {
-      input:`${s.titles} placing title${s.titles === 1 ? '' : 's'}`,
+      href:`${profileUrl}&majors=all#major-wins`,
+      input:`${s.titles} major-entry title${s.titles === 1 ? '' : 's'}`,
       leader:`${num(renderScales.maxes?.longevity, 0)} leader input`,
-      note:'A title counts when the player has at least one recorded major placing in that selected title.',
+      note:'A title counts when this player has at least one recorded major entry in that selected title.',
     };
   }
   if(key === 'peak'){
@@ -730,8 +730,11 @@ function criterionInputDetail(row, key){
 function explanationRows(row, active){
   return contributionParts(row, active).map(part => {
     const detail = criterionInputDetail(row, part.key);
+    const label = detail.href
+      ? `<a href="${escapeAttr(detail.href)}">${escapeHtml(part.label)}</a>`
+      : escapeHtml(part.label);
     return `<tr>
-      <th scope="row"><span class="lane-dot ${part.key}"></span>${escapeHtml(part.label)}</th>
+      <th scope="row"><span class="lane-dot ${part.key}"></span>${label}</th>
       <td>${detail.input}<span class="note">${escapeHtml(detail.note)}</span></td>
       <td class="n">${detail.leader}</td>
       <td class="n">${num(part.laneScore)} x ${Math.round(part.share * 100)}%</td>
@@ -750,7 +753,7 @@ function detailHtml(row, active){
       <div class="gb-detail-score">${num(row.score)}</div>
     </div>
     <div class="gb-detail-body">
-      <div class="scroll-x" tabindex="0" role="region" aria-label="${escapeAttr(row.player.name)} score explanation">
+      <div class="gb-detail-table">
         <table class="data gb-explain-table">
           ${tableCaption(`${row.player.name} GOAT Builder score explanation`)}
           <thead><tr><th scope="col">Criterion</th><th scope="col">Input</th><th scope="col" class="n">Leader</th><th scope="col" class="n">Lane x weight</th><th scope="col" class="n">Pts</th></tr></thead>
@@ -768,7 +771,7 @@ function rowData(row, active, baseRanks){
     deltaText:delta.text,
     deltaCls:delta.cls,
     player:row.player.name,
-    playerSub:`${s.titles} placing titles · ${s.consensus?.rankedTitles || 0} skill datasets`,
+    playerSub:`${s.titles} titles · ${s.consensus?.rankedTitles || 0} skill sets`,
     score:row.score,
     resume:row.lane.resume,
     skill:row.lane.skill,
@@ -782,11 +785,11 @@ function rowData(row, active, baseRanks){
 }
 function playerFormatter(cell){
   const data = cell.getRow().getData();
-  return `<span class="gb-player-cell"><span class="gb-avatar">${initials(data.player)}</span><span><span class="gb-name">${escapeHtml(data.player)}</span><span class="gb-sub">${escapeHtml(data.playerSub)}</span></span></span>`;
+  return `<span class="gb-player-cell" title="${escapeAttr(data.playerSub)}"><span class="gb-avatar">${initials(data.player)}</span><span><span class="gb-name">${escapeHtml(data.player)}</span><span class="gb-sub">${escapeHtml(data.playerSub)}</span></span></span>`;
 }
 function rankFormatter(cell){
   const data = cell.getRow().getData();
-  return `<div class="gb-rank-cell"><span>${data.rank}</span><span class="gb-delta ${data.deltaCls}">${escapeHtml(data.deltaText)}</span></div>`;
+  return `<div class="gb-rank-cell"><span>${data.rank}</span></div>`;
 }
 function scoreFormatter(cell){
   const data = cell.getRow().getData();
@@ -823,14 +826,38 @@ function applyHeaderTooltips(){
 function markTableSelection(){
   if(!goatTable) return;
   goatTable.getRows().forEach(row => {
-    row.getElement().classList.toggle('gb-selected-row', row.getData().player === selectedPlayerName);
+    const selected = row.getData().player === selectedPlayerName;
+    const el = row.getElement();
+    el.classList.toggle('gb-selected-row', selected);
+    el.setAttribute('aria-expanded', String(selected));
   });
+}
+function toggleSelectedRow(row, scrollSelected=false){
+  selectedPlayerName = selectedPlayerName === row.getData().player ? null : row.getData().player;
+  goatTable.redraw(true);
+  if(scrollSelected && selectedPlayerName){
+    requestAnimationFrame(() => row.getElement().scrollIntoView({block:'nearest', behavior:'smooth'}));
+  }
 }
 function formatExpandedRow(row){
   const el = row.getElement();
   el.querySelector('.gb-row-detail')?.remove();
   const data = row.getData();
   const selected = data.player === selectedPlayerName;
+  if(el.tabIndex < 0) el.tabIndex = 0;
+  el.setAttribute('role', 'button');
+  el.setAttribute('aria-expanded', String(selected));
+  el.setAttribute('aria-label', `${data.player} score row. Press Enter to ${selected ? 'collapse' : 'expand'} details.`);
+  if(!el.dataset.gbRowKeydown){
+    el.dataset.gbRowKeydown = 'true';
+    el.addEventListener('keydown', e => {
+      if(e.target !== el || (e.key !== 'Enter' && e.key !== ' ')) return;
+      const activeRow = goatTable?.getRows().find(candidate => candidate.getElement() === el);
+      if(!activeRow) return;
+      e.preventDefault();
+      toggleSelectedRow(activeRow, true);
+    });
+  }
   el.classList.toggle('gb-selected-row', selected);
   if(!selected) return;
   const detail = document.createElement('div');
@@ -880,11 +907,7 @@ function renderGoatTable(rankedRows, active, baseRanks){
     });
     goatTable.on('rowClick', (e, row) => {
       if(e.target.closest('.gb-row-detail')) return;
-      selectedPlayerName = selectedPlayerName === row.getData().player ? null : row.getData().player;
-      goatTable.redraw(true);
-      if(selectedPlayerName){
-        requestAnimationFrame(() => row.getElement().scrollIntoView({block:'nearest', behavior:'smooth'}));
-      }
+      toggleSelectedRow(row, true);
     });
   }else{
     goatTable.setData(data);

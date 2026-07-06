@@ -264,7 +264,7 @@ function summaryCell(row, name, val, vals, index, isBest){
   const color = PLAYER_COLORS[index % PLAYER_COLORS.length];
   return `<td class="${isBest ? 'cell-best' : ''}" style="--cmp-color:${color};--summary-score:${score}%">
     <div class="compare-summary-cell">
-      <div class="summary-main">${row.html(name)}</div>
+      <div class="summary-main">${isBest ? '<span class="best-badge">Best<span class="sr-only"> value</span></span>' : ''}${row.html(name)}</div>
       ${row.noBest ? '' : '<div class="summary-meter" aria-hidden="true"><i></i></div>'}
     </div>
   </td>`;
@@ -350,7 +350,7 @@ function seasonCell(name, game, bestShare, index){
   const heat = Math.round(8 + v.share * 34);
   const color = PLAYER_COLORS[index % PLAYER_COLORS.length];
   return `<div class="compare-season-cell${best}" style="--cmp-color:${color};--heat:${heat}%;--season-score:${fill}%">
-    <div class="season-top"><strong>${v.wins} / ${v.entered}</strong>${v.champ ? ' <span class="pill champ" title="Won Champs">◆</span>' : ''}</div>
+    <div class="season-top">${best ? '<span class="best-badge">Best<span class="sr-only"> value</span></span>' : ''}<strong>${v.wins} / ${v.entered}</strong>${v.champ ? ' <span class="pill champ" title="Won Champs">◆</span>' : ''}</div>
     <div class="season-meter" aria-hidden="true"><i></i></div>
     <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of entered</span>
     ${teams.length ? `<span class="season-teams">${teams.map(t => teamBadge(t, 'compact')).join('')}</span>` : ''}
@@ -381,11 +381,15 @@ function renderSummary(){
     const cells = selected.map((n, i) => summaryCell(m, n, vals[i], vals, i, best != null && vals[i] === best && best > 0)).join('');
     return `<tr><th scope="row">${esc(m.label)}</th>${cells}</tr>`;
   }).join('');
-  summary.innerHTML = `<div ${scrollRegionAttrs('Player comparison summary table', 'compare-summary-wrap')}><table class="data compare-summary" style="--players:${selected.length}">
-    ${tableCaption('Player comparison metric summary')}
-    <thead><tr><th scope="col">Metric</th>${selected.map(n => `<th scope="col"><a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a></th>`).join('')}</tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>`;
+  summary.innerHTML = TableSurface.dataTable({
+    label: 'Player comparison summary table',
+    caption: 'Player comparison metric summary',
+    wrapperClass: 'compare-summary-wrap',
+    tableClass: 'data compare-summary',
+    tableAttrs: {style: `--players:${selected.length}`},
+    head: `<thead><tr><th scope="col">Metric</th>${selected.map(n => `<th scope="col"><a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a></th>`).join('')}</tr></thead>`,
+    rows
+  });
 }
 
 function renderTable(){

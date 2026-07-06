@@ -368,14 +368,18 @@ function gameAbbrev(game){
 function playerKeyForRollup(player){
   return playerLookupKey(canonicalPlayerName(player) || player);
 }
-function playedTitleCount(player, placements, selectedGames){
+function playedTitleSet(player, placements, selectedGames){
   const pl = playerRecord(player);
   const allowed = selectedGames || new Set(CONSENSUS_GAMES);
   const played = new Set((pl && pl.placements || []).map(p => p.game).filter(g => g && allowed.has(g)));
-  if(played.size) return played.size;
+  if(played.size) return played;
   (pl && pl.seasons || []).forEach(s => s.game && allowed.has(s.game) && played.add(s.game));
   placements.forEach(p => p.game && allowed.has(p.game) && played.add(p.game));
-  return played.size || placements.length;
+  if(!played.size) placements.forEach(p => p.game && played.add(p.game));
+  return played;
+}
+function playedTitleCount(player, placements, selectedGames){
+  return playedTitleSet(player, placements, selectedGames).size || placements.length;
 }
 function totalEventWins(player, selectedGames){
   const pl = playerRecord(player);
@@ -416,12 +420,14 @@ function buildOverallRows(selectedGames){
   }
   const seasonOrder = new Map(D.meta.seasonOrder.map((g, i) => [g, i]));
   return [...byPlayer.values()].map(rec => {
-    rec.placements.sort((a, b) => a.rank - b.rank || (seasonOrder.get(a.game) ?? 999) - (seasonOrder.get(b.game) ?? 999));
+    rec.placements.sort((a, b) => (seasonOrder.get(a.game) ?? 999) - (seasonOrder.get(b.game) ?? 999) || a.rank - b.rank);
     rec.rankedTitles = rec.placements.length;
     rec.playedTitles = playedTitleCount(rec.player, rec.placements, selectedGames);
     rec.perPlayed = rec.playedTitles ? rec.total / rec.playedTitles : 0;
     rec.perRanked = rec.rankedTitles ? rec.total / rec.rankedTitles : 0;
-    rec.averageRank = rec.rankedTitles ? rec.placements.reduce((sum, p) => sum + Number(p.rank || 0), 0) / rec.rankedTitles : null;
+    rec.unrankedPlayedTitles = Math.max(0, rec.playedTitles - rec.rankedTitles);
+    const rankedRankSum = rec.placements.reduce((sum, p) => sum + Number(p.rank || 0), 0);
+    rec.averageRank = rec.playedTitles ? (rankedRankSum + rec.unrankedPlayedTitles * 31) / rec.playedTitles : null;
     rec.eventWins = totalEventWins(rec.player, selectedGames);
     rec.top1 = rec.placements.filter(p => p.rank === 1).length;
     rec.top3 = rec.placements.filter(p => p.rank <= 3).length;
@@ -445,18 +451,7 @@ function titlePlacementChip(player, placement){
   return `<a class="title-pill${weak}" href="${esc(selectedUrl(placement.game, player))}" data-title-link="${esc(placement.game)}" data-title-player="${esc(player)}">${esc(gameAbbrev(placement.game))} #${placement.rank}</a>`;
 }
 function renderOverallSummary(rows, selectedGames){
-  const titles = selectedGames.size;
-  const players = rows.length;
-  const aggregateTitles = new Set((CC.sources || [])
-    .filter(s => s.status === 'scored' && s.source_kind === 'community_aggregate_survey' && selectedGames.has(s.game))
-    .map(s => s.game)).size;
-  const totalWins = rows.reduce((sum, r) => sum + r.eventWins, 0);
-  return `<div class="stat-row community-stats">
-    <div class="stat"><div class="k">Scored titles</div><div class="v">${titles}</div><div class="small faint">linked to title traces</div></div>
-    <div class="stat"><div class="k">Ranked players</div><div class="v">${players}</div><div class="small faint">unique consensus rows</div></div>
-    <div class="stat"><div class="k">Aggregate-poll titles</div><div class="v">${aggregateTitles}</div><div class="small faint">often recent games</div></div>
-    <div class="stat"><div class="k">Event wins shown</div><div class="v">${totalWins}</div><div class="small faint">context only</div></div>
-  </div>`;
+  return '';
 }
 function renderOverallTable(rows, selected, mode){
   const cfg = OVERALL_MODES[mode];
@@ -466,7 +461,7 @@ function renderOverallTable(rows, selected, mode){
       <span class="pill tag">${esc(cfg.badge)}</span>
     </div>
     <div class="panel-body">
-      <p class="scrollhint small muted">Swipe the table sideways to see all columns →</p>
+      <p class="small muted">Click a player row to expand its trace. Event wins are context only and do not affect the score.</p>
       <div id="cc-overall-table" class="community-overall-table" role="region" aria-label="Overall community consensus table"></div>
     </div>
   </section>`;
@@ -498,6 +493,7 @@ function mountOverallTable(rows, selected, mode){
       {title:'Active score', field:'activeScore', minWidth:M?112:136, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum score',
         formatter:c=>`${Number(c.getValue()).toFixed(3)}<span class="bar-mini"><span style="width:${c.getData().activeWidth}%"></span></span>`},
       {title:'Average rank', field:'averageRank', minWidth:116, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        headerTooltip:'Average across played titles; played-but-unranked titles count as rank 31.',
         formatter:c=>c.getValue() == null ? '<span class="faint">-</span>' : Number(c.getValue()).toFixed(1)},
       {title:'Event wins', field:'eventWins', minWidth:108, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum context-band',
         formatter:c=>`${c.getValue()}<span class="sub">not scored</span>`},
@@ -505,24 +501,35 @@ function mountOverallTable(rows, selected, mode){
       {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Top 5', field:'top5', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
-      {title:'Trace', field:'player', minWidth:82, formatter:c=>{
-        const player = c.getValue();
-        return `<a class="evidence-link" href="${esc(overallUrl(player, mode))}" data-overall-player="${esc(player)}">Trace</a>`;
-      }},
     ],
-    rowFormatter:row => row.getElement().classList.toggle('community-selected-row', !!row.getData().selected),
+    rowFormatter:row => formatOverallExpandedRow(row, mode),
   });
+  overallTable.on('rowClick', (e, row) => {
+    if(e.target.closest('.cc-row-detail,a,button,input,label,select,textarea')) return;
+    const nextPlayer = row.getData().selected ? null : row.getData().player;
+    renderOverall(mode, nextPlayer, {focusTrace: !!nextPlayer});
+  });
+}
+function formatOverallExpandedRow(row, mode){
+  const el = row.getElement();
+  el.querySelector('.cc-row-detail')?.remove();
+  const data = row.getData();
+  el.classList.toggle('community-selected-row', !!data.selected);
+  if(!data.selected) return;
+  const detail = document.createElement('div');
+  detail.className = 'cc-row-detail';
+  detail.id = 'cc-overall-trace-card';
+  detail.tabIndex = -1;
+  detail.setAttribute('data-detail', data.player);
+  detail.innerHTML = renderOverallDetail(data, mode);
+  el.appendChild(detail);
+  row.normalizeHeight?.();
 }
 function renderOverallDetail(playerRow, mode){
   const cfg = OVERALL_MODES[mode];
-  const best = playerRow.placements.slice(0, 12).map(p => titlePlacementChip(playerRow.player, p)).join('');
   const calcRows = playerRow.placements.map(p => `<tr>
     <td>${titlePlacementChip(playerRow.player, p)}</td>
     <td class="n">${p.rank}</td>
-    <td class="n">${Number(p.score || 0).toFixed(3)}</td>
-    <td class="n">${p.sourceCount || 0}</td>
-    <td>${confidencePill(p.confidence)}</td>
-    <td class="n"><span class="formula">((31 - ${p.rank}) / 30) ** 2.5</span></td>
     <td class="n">${p.points.toFixed(3)}</td>
     <td class="context-band n">${p.wins}<span class="sub">not scored</span></td>
   </tr>`).join('');
@@ -532,38 +539,33 @@ function renderOverallDetail(playerRow, mode){
       <span class="pill tag">${esc(cfg.badge)}</span>
     </div>
     <div class="panel-body">
-      <div class="mini-grid community-mini-grid">
-        <div class="mini"><div class="k">Total</div><div class="v">${playerRow.total.toFixed(3)}</div></div>
-        <div class="mini"><div class="k">/ played</div><div class="v">${playerRow.perPlayed.toFixed(3)}</div></div>
-        <div class="mini"><div class="k">/ ranked</div><div class="v">${playerRow.perRanked.toFixed(3)}</div></div>
-        <div class="mini"><div class="k">Event wins</div><div class="v">${playerRow.eventWins}<span class="sub">not scored</span></div></div>
-      </div>
-      <p class="small muted">Overall points are the sum of title ranks converted with <span class="formula">((31 - rank) / 30) ** 2.5</span>. Use the title links for the source-level trace behind each title rank.</p>
+      <p class="small muted">Overall points are the sum of title ranks converted with
+        <a href="methodology.html#community-rank-points">the rank-points curve</a>:
+        <span class="formula">((31 - rank) / 30) ** 2.5</span>. Use the title links for the source-level trace behind each title rank.</p>
       <div class="calc-summary small muted">
-        <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}<br>
-        <strong>Per played title:</strong> ${playerRow.total.toFixed(3)} / ${playerRow.playedTitles} = ${playerRow.perPlayed.toFixed(3)}<br>
-        <strong>Per ranked title:</strong> ${playerRow.total.toFixed(3)} / ${playerRow.rankedTitles} = ${playerRow.perRanked.toFixed(3)}
+        <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}
       </div>
-      <div class="scroll-x cc-calc-table-wrap" tabindex="0" role="region" aria-label="${esc(playerRow.player)} overall trace">
-        <table class="data cc-calc-table">
-          ${tableCaption(`${playerRow.player} overall community consensus trace`)}
-          <thead><tr><th scope="col">Title trace</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Title score</th><th scope="col" class="n">Sources</th><th scope="col">Conf.</th><th scope="col" class="n">Rank-points formula</th><th scope="col" class="n">Overall points</th><th scope="col" class="context-band n">Event wins</th></tr></thead>
-          <tbody>${calcRows}</tbody>
-        </table>
-      </div>
-      <div class="rank-list">
-        <div class="rank-row"><span class="rank-no">${playerRow.top1}</span><span>Top-1 titles</span><strong class="num">${playerRow.top1}</strong></div>
-        <div class="rank-row"><span class="rank-no">${playerRow.top3}</span><span>Top-3 titles</span><strong class="num">${playerRow.top3}</strong></div>
-        <div class="rank-row"><span class="rank-no">${playerRow.top10}</span><span>Top-10 titles</span><strong class="num">${playerRow.top10}</strong></div>
-      </div>
-      <div class="title-strip detail-title-strip">${best}</div>
+      ${TableSurface.dataTable({
+        label: `${playerRow.player} overall trace`,
+        caption: `${playerRow.player} overall community consensus trace`,
+        wrapperClass: 'cc-calc-table-wrap',
+        tableClass: 'data cc-calc-table',
+        head: '<thead><tr><th scope="col">Title trace</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Rank points</th><th scope="col" class="context-band n">Event wins</th></tr></thead>',
+        rows: calcRows
+      })}
     </div>
   </aside>`;
 }
-function renderOverall(mode, player){
+function focusOverallTrace(){
+  const card = document.getElementById('cc-overall-trace-card');
+  if(!card) return;
+  card.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  card.focus({preventScroll: true});
+}
+function renderOverall(mode, player, opts={}){
   const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
   const rows = overallRows(mode, selectedGames);
-  const selected = matchingOverallRow(rows, player);
+  const selected = player ? matchingOverallRow(rows, player) : null;
   setActiveView('overall');
   modeSel.value = mode;
   setOverallUrl(mode, selected && selected.player);
@@ -571,21 +573,15 @@ function renderOverall(mode, player){
     ${renderOverallSummary(rows, selectedGames)}
     <div class="note community-method-note">Recent titles may be driven by a single large community poll; older titles are often reconstructed from smaller preserved threads and lists. Use the title links to inspect the underlying evidence.</div>
     ${renderOverallTable(rows, selected, mode)}
-    <div class="community-expanded-trace" id="cc-overall-trace-card">
-      ${renderOverallDetail(selected, mode)}
-    </div>
   `;
   mountOverallTable(rows, selected, mode);
-  bindOverallLinks(mode);
+  bindOverallLinks();
+  if(opts.focusTrace){
+    requestAnimationFrame(() => setTimeout(focusOverallTrace, 0));
+  }
 }
-function bindOverallLinks(mode){
+function bindOverallLinks(){
   host.onclick = e => {
-    const overall = e.target.closest('[data-overall-player]');
-    if(overall){
-      e.preventDefault();
-      renderOverall(mode, overall.dataset.overallPlayer);
-      return;
-    }
     const title = e.target.closest('[data-title-link]');
     if(title){
       e.preventDefault();
@@ -625,14 +621,15 @@ function renderTable(game, rows, selectedPlayer){
       <div><h2>${esc(game)} Ranking</h2><p class="small muted">Community score is source-weighted. Event wins are shown only for context.</p></div>
       <span class="pill tag">Top ${rows.length} retained</span>
     </div>
-    <div class="panel-body scroll-x" tabindex="0" role="region" aria-label="${esc(game)} community consensus table">
-      <p class="scrollhint small muted">Scroll sideways to see source count, event wins, and trace links.</p>
-      <table class="data community-table">
-        ${tableCaption(`${game} community consensus ranking`)}
-        <thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n">Event wins</th><th scope="col">Trace</th></tr></thead>
-        <tbody>${body}</tbody>
-      </table>
-    </div>
+    ${TableSurface.dataTable({
+      label: `${game} community consensus table`,
+      caption: `${game} community consensus ranking`,
+      wrapperClass: 'panel-body',
+      tableClass: 'data community-table',
+      hint: 'Scroll sideways to see source count, event wins, and trace links.',
+      head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n">Event wins</th><th scope="col">Trace</th></tr></thead>',
+      rows: body
+    })}
   </section>`;
 }
 function renderTrace(game, player){
@@ -688,14 +685,14 @@ function renderSourceLedger(game, sources){
   }).join('');
   return `<section class="panel-shell source-ledger">
     <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted">Scored, reviewed, and excluded sources for this title.</p></div></div>
-    <div class="panel-body scroll-x" tabindex="0" role="region" aria-label="${esc(game)} source ledger">
-      <p class="scrollhint small muted">Scroll sideways to see source type, timing, ballot count, and weight.</p>
-      <table class="data">
-        ${tableCaption(`${game} community consensus source ledger`)}
-        <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Timing</th><th scope="col" class="n">Ballots</th><th scope="col" class="n">Weight</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
+    ${TableSurface.dataTable({
+      label: `${game} source ledger`,
+      caption: `${game} community consensus source ledger`,
+      wrapperClass: 'panel-body',
+      hint: 'Scroll sideways to see source type, timing, ballot count, and weight.',
+      head: '<thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Timing</th><th scope="col" class="n">Ballots</th><th scope="col" class="n">Weight</th></tr></thead>',
+      rows
+    })}
   </section>`;
 }
 function renderTitle(game, player){

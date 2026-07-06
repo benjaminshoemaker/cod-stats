@@ -166,9 +166,10 @@
   <!-- ============ TABLES ============ -->
   <section class="sg-sec" id="tables">
     <h2>Tables</h2>
-    <p class="sg-note"><span class="num">table.data</span> is the plain-table style; the leaderboard
-    uses the themed Tabulator (rendered below). Wide data tables should sit inside a labeled
-    <span class="num">.scroll-x</span> region, include a screen-reader caption, and use scoped headers.</p>
+    <p class="sg-note"><span class="num">table.data</span> is the plain-table style; interactive
+    grids use themed Tabulator through <span class="num">TableSurface.mountTabulator()</span>.
+    Wide data tables should be rendered with <span class="num">TableSurface.dataTable()</span>
+    so the labeled scroll region, caption, scoped headers, and keyboard scroll behavior stay shared.</p>
     <div class="scroll-x" tabindex="0" role="region" aria-label="Styleguide plain data table">
     <table class="data" style="margin:var(--space-4) 0">
       <caption class="sr-only">Example plain data table</caption>
@@ -181,30 +182,22 @@
     </table>
     </div>
     <div id="demo-table" style="margin:var(--space-4) 0"></div>
-    <p class="sg-code">.scroll-x[role="region"][tabindex="0"] › table.data + caption.sr-only + th[scope] · .tabulator theme (see #demo-table)</p>
+    <p class="sg-code">TableSurface.dataTable(...) · TableSurface.mountTabulator(...) · .scroll-x[role="region"][tabindex="0"] › table.data + caption.sr-only + th[scope]</p>
   </section>
 
   <!-- ============ DATA SURFACES ============ -->
   <section class="sg-sec" id="data-surfaces">
     <h2>Data surfaces</h2>
-    <p class="sg-note">Generated pages should use shared helpers for repeated table chrome:
-    <span class="num">scrollRegionAttrs(label)</span> for the focusable horizontal-scroll wrapper and
-    <span class="num">tableCaption(label)</span> for the invisible caption. This keeps KOR, player,
-    season, compare, and chart table alternatives aligned.</p>
+    <p class="sg-note">Generated pages should use the table-surface API for repeated table chrome:
+    <span class="num">TableSurface.dataTable()</span> for semantic HTML tables and
+    <span class="num">TableSurface.mountTabulator()</span> for sortable/filterable grids. Page code owns
+    the rows and allowed columns; the shared handler owns labels, captions, scroll behavior, and
+    Tabulator header accessibility.</p>
     <div class="sg-render">
-      <p class="scrollhint small faint">Swipe the table sideways to see sample and context →</p>
-      <div class="scroll-x" tabindex="0" role="region" aria-label="Example analytical table">
-        <table class="data">
-          <caption class="sr-only">Example analytical table with sample context</caption>
-          <thead><tr><th scope="col">Metric</th><th scope="col" class="n">Value</th><th scope="col">Context</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">KOR/map</th><td class="n">+2.41</td><td><span class="pill tag">title split</span></td></tr>
-            <tr><th scope="row">Maps</th><td class="n">102</td><td><span class="pill flat">qualified</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div id="table-surface-example"></div>
+      <div id="table-overflow-example" style="margin-top:var(--space-4)"></div>
     </div>
-    <p class="sg-code">scrollRegionAttrs(label[, extraClass]) · tableCaption(label) · .scrollhint on mobile-only overflow cues</p>
+    <p class="sg-code">TableSurface.dataTable({label, caption, tableClass, head, rows, hint}) · legacy aliases: scrollRegionAttrs(), tableCaption()</p>
   </section>
 
   <!-- ============ PILLS & DELTAS ============ -->
@@ -388,6 +381,22 @@ document.getElementById('type-ramp').innerHTML = TEXT.map(t=>{
 }).join('');
 
 // ---- A tiny Tabulator so the themed table style is on the page too. ----
+document.getElementById('table-surface-example').innerHTML = TableSurface.dataTable({
+  label:'Example analytical table',
+  caption:'Example analytical table with sample context',
+  hint:'Swipe the table sideways to see sample and context.',
+  head:'<thead><tr><th scope="col">Metric</th><th scope="col" class="n">Value</th><th scope="col">Context</th></tr></thead>',
+  rows:'<tr><th scope="row">KOR/map</th><td class="n">+2.41</td><td><span class="pill tag">title split</span></td></tr><tr><th scope="row">Maps</th><td class="n">102</td><td><span class="pill flat">qualified</span></td></tr>'
+});
+document.getElementById('table-overflow-example').innerHTML = TableSurface.dataTable({
+  label:'Overflowing table-surface example',
+  caption:'Overflowing table-surface example with scroll hint and edge states',
+  tableAttrs:{style:'min-width:760px'},
+  hint:'Scroll sideways to see the full overflow example.',
+  head:'<thead><tr><th scope="col">Player</th><th scope="col">Title</th><th scope="col">Role</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col">Context</th></tr></thead>',
+  rows:'<tr><th scope="row">Player A</th><td>Black Ops 6</td><td><span class="pill tag">SMG</span></td><td class="n">+2.41</td><td class="n">102</td><td class="n">5</td><td>Wide example column</td></tr><tr><th scope="row">Player B</th><td>Modern Warfare III</td><td><span class="pill flat">AR</span></td><td class="n">+1.84</td><td class="n">88</td><td class="n">4</td><td>Overflow remains keyboard-scrollable</td></tr>'
+});
+
 TableSurface.mountTabulator('#demo-table', {
   label:'Styleguide Tabulator demo table',
   layout:'fitColumns',

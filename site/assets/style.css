@@ -351,6 +351,8 @@ footer.site-foot a{color:var(--muted)}
 .sharebtn,.clearfilters,.toggle,.seg button,.sim-row,.stat{
   transition:background-color var(--transition),color var(--transition),
     border-color var(--transition),box-shadow var(--transition)}
+.link-button{border:0;background:transparent;color:var(--accent);font:inherit;font-weight:800;padding:0;cursor:pointer;text-decoration:underline}
+.link-button:hover{color:var(--accent-ink)}
 /* accessibility: visible focus + adequate tap targets */
 a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .tabulator .tabulator-col:focus-visible,[tabindex]:focus-visible{
@@ -392,6 +394,8 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   box-shadow:inset -12px 0 12px -14px rgba(15,23,42,.55)}
 .scroll-x:focus-visible{border-radius:var(--radius-sm)}
 .scrollhint{display:none;margin:var(--space-1) 0 var(--space-2)}
+.scroll-region[data-overflow-x="false"]>.scrollhint{display:none}
+.heatmap-table-wrap{margin-top:var(--space-2)}
 /* compact-header key: shown only on phones, where headerTooltips can't fire */
 .colkey{display:none;margin:var(--space-1) 0 var(--space-2)}
 @media(max-width:760px){.colkey{display:block}}
@@ -408,6 +412,8 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 @media(min-width:761px){#table .tabulator{width:100%;max-width:100%}}
 @media(max-width:760px){
   .scrollhint{display:block}
+  table.data a,table.sim-table a,.tabulator-cell a,.refs a{display:inline-flex;align-items:center;min-height:44px;max-width:100%}
+  .tabulator-cell a{margin-top:calc(-1 * var(--space-2));margin-bottom:calc(-1 * var(--space-2))}
   /* tighter cells on phones so the compact columns fit their labels */
   .tabulator .tabulator-cell{padding:var(--space-2) var(--space-2)}
   .tabulator .tabulator-header .tabulator-col .tabulator-col-content{padding:var(--space-2) var(--space-2)}
@@ -466,6 +472,11 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .compare-summary td .pill{display:inline-block;text-align:center}
 .compare-summary-cell{display:grid;gap:var(--space-1)}
 .summary-main{min-height:2.4rem}
+.best-badge{display:inline-flex!important;align-items:center;justify-content:center;width:max-content;min-height:1.25rem;
+  padding:0 var(--space-1);border:1px solid color-mix(in srgb,var(--cmp-color,var(--accent)) 45%,var(--line));
+  border-radius:var(--radius-sm);background:#fff;color:var(--accent-ink);font-size:var(--text-xs);font-weight:800;
+  text-transform:uppercase;letter-spacing:.04em;line-height:1;text-align:center!important}
+.summary-main .best-badge{margin-left:auto;margin-bottom:2px}
 .summary-meter{height:6px;background:var(--panel-2);border-radius:var(--radius-pill);overflow:hidden}
 .summary-meter>i{display:block;width:var(--summary-score,0);height:100%;background:var(--cmp-color,var(--accent));border-radius:var(--radius-pill)}
 .compare-summary td.cell-best{background:var(--accent-soft)}
@@ -478,6 +489,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .compare-table td.season-heat{background:color-mix(in srgb,var(--cmp-color,var(--accent)) var(--heat,0),#fff)}
 .compare-season-cell{border-radius:var(--radius-sm);padding:var(--space-2);margin:calc(-1 * var(--space-2)) calc(-1 * var(--space-3))}
 .season-top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-2)}
+.season-top .best-badge{margin-right:auto}
 .season-top strong{font-family:var(--mono);font-size:var(--text-md)}
 .season-meter{height:6px;background:var(--panel-2);border-radius:var(--radius-sm);overflow:hidden;margin:var(--space-1) 0}
 .season-meter>i{display:block;width:var(--season-score,0);height:100%;background:var(--cmp-color,var(--accent));border-radius:var(--radius-sm)}
@@ -583,9 +595,12 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .kor-bar-row .bar-fill{height:100%;border-radius:var(--radius-sm);background:var(--accent)}
 .kor-bar-row .bar-value{font-family:var(--mono);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
 .kor-table th,.kor-table td{white-space:nowrap}
+.kor-table th:first-child,.kor-table td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line)}
+.kor-table thead th:first-child{z-index:3;background:var(--panel)}
 .kor-table td.strong{font-weight:700}
 .kor-baseline-row td{background:var(--accent-soft);color:var(--muted);font-size:var(--text-sm);text-align:center}
 .kor-baseline-row span{font-weight:700;color:var(--accent)}
+.kor-row-limit{margin:var(--space-2) 0 0}
 @media(max-width:760px){
   .select{width:100%;min-width:0}
   .kor-controls{align-items:stretch}
@@ -606,10 +621,11 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .community-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(22rem,.48fr);gap:var(--space-4);align-items:start}
 .community-table{min-width:760px}
 .community-overall-table:empty{min-height:420px}
+.community-overall-table .tabulator-row{cursor:pointer}
 .community-overall-table .tabulator-row.community-selected-row{background:var(--accent-soft)}
 .community-overall-table .tabulator-cell.score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
-.community-expanded-trace{margin-top:var(--space-4)}
-.community-expanded-trace .panel-shell{margin-bottom:0}
+.cc-row-detail{clear:both;border-top:1px solid var(--accent-line);background:#fff;padding:var(--space-3)}
+.cc-row-detail .panel-shell{margin-bottom:0}
 .community-table th,.community-table td{vertical-align:middle}
 .community-table .score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
 .bar-mini{display:block;height:6px;margin-top:4px;border-radius:999px;background:var(--panel-2);overflow:hidden}

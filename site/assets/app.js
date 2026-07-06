@@ -33,6 +33,12 @@ if (DEPLOYED) {
 
 /* shared helpers */
 const D = window.APP_DATA || null;
+if (!D && Array.from(document.scripts).some(s => /(^|\/)data\.js(\?|$)/.test(s.getAttribute('src') || s.src || ''))) {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div class="note" style="margin:1rem">Sorry, the data failed to load. ' +
+    'Try a hard refresh (Cmd/Ctrl+Shift+R); if it persists, use the feedback button.</div>');
+  console.error('APP_DATA missing: data.js failed to load');
+}
 function qs(name){return new URLSearchParams(location.search).get(name);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function yr(date){return date?String(date).slice(0,4):'';}
@@ -165,11 +171,12 @@ function tableCaption(label){
 function scrollHint(text='Scroll sideways to see all columns.'){
   return `<p class="scrollhint small muted">${esc(text)}</p>`;
 }
-function dataTableSurface({label, caption, className='', tableClass='data', tableAttrs={}, wrapperClass='', hint=false, head='', body='', rows='', foot='', html=null }={}){
+function dataTableSurface({label, caption, className='', tableClass='data', tableAttrs={}, wrapperClass='', hint='auto', head='', body='', rows='', foot='', html=null }={}){
   const content = body || rows || '';
   const inner = html == null ? `${head}<tbody>${content}</tbody>${foot}` : html;
   const table = `<table ${attrString({class: tableClass, ...tableAttrs})}>${tableCaption(caption || label)}${inner}</table>`;
-  return `<div ${scrollRegionAttrs(label, wrapperClass || className)}>${hint ? scrollHint(typeof hint === 'string' ? hint : undefined) : ''}${table}</div>`;
+  const hintText = hint === false ? '' : scrollHint(typeof hint === 'string' && hint !== 'auto' ? hint : undefined);
+  return `<div ${scrollRegionAttrs(label, wrapperClass || className)}>${hintText}${table}</div>`;
 }
 const SCROLL_REGION_SELECTOR = '.scroll-x, [data-scroll-region], .tabulator-tableholder';
 const scrollRegionState = new WeakMap();

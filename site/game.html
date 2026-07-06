@@ -87,20 +87,22 @@ if(!g){
     <div class="grid cols-2" style="margin-top:var(--space-6)">
       <section id="events">
         <h2>${inprog?`The ${g.majors} majors played so far`:`All ${g.majors} majors`} ${anchorLink('events','Season events')}</h2>
-        <div ${scrollRegionAttrs(`${g.game} season events table`)}><table class="data">
-          ${tableCaption(`${g.game} major events and winners`)}
-          <thead><tr><th scope="col">Date</th><th scope="col">Event</th><th scope="col">Winner</th><th scope="col">Type</th><th scope="col" class="n">Weight</th></tr></thead>
-          <tbody>${evRows}</tbody>
-        </table></div>
+        ${TableSurface.dataTable({
+          label: `${g.game} season events table`,
+          caption: `${g.game} major events and winners`,
+          head: '<thead><tr><th scope="col">Date</th><th scope="col">Event</th><th scope="col">Winner</th><th scope="col">Type</th><th scope="col" class="n">Weight</th></tr></thead>',
+          rows: evRows
+        })}
       </section>
       <section id="players">
         <h2>Leaderboard players this season ${anchorLink('players','Leaderboard players')}</h2>
         <p class="small muted">Their wins here, and the season-share each earned.</p>
-        <div ${scrollRegionAttrs(`${g.game} leaderboard players table`)}><table class="data">
-          ${tableCaption(`${g.game} leaderboard players and season-share wins`)}
-          <thead><tr><th scope="col">Player</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Share earned</th></tr></thead>
-          <tbody>${players||'<tr><td colspan=3 class="muted">No leaderboard players won this season.</td></tr>'}</tbody>
-        </table></div>
+        ${TableSurface.dataTable({
+          label: `${g.game} leaderboard players table`,
+          caption: `${g.game} leaderboard players and season-share wins`,
+          head: '<thead><tr><th scope="col">Player</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Share earned</th></tr></thead>',
+          rows: players || '<tr><td colspan=3 class="muted">No leaderboard players won this season.</td></tr>'
+        })}
       </section>
     </div>
   `;
