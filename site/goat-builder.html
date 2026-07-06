@@ -314,7 +314,7 @@ button,input{font:inherit}
             <div class="gb-formula-grid">
               <div class="gb-formula-item"><strong>Resume</strong><span>Ring-weighted adjusted wins, scaled to the selected-era leader.</span></div>
               <div class="gb-formula-item"><strong>Individual Skill</strong><span>Additive community-consensus score, scaled to the selected-era leader.</span></div>
-              <div class="gb-formula-item"><strong>Longevity</strong><span>Winning titles, scaled to the selected-era leader.</span></div>
+              <div class="gb-formula-item"><strong>Longevity</strong><span>Titles with a recorded major placing, scaled to the selected-era leader.</span></div>
               <div class="gb-formula-item"><strong>Peak</strong><span>Best single-title 50/50 blend of title resume peak and same-title consensus score.</span></div>
             </div>
             <p class="gb-foot">Missing community-consensus rows are treated as neutral for the Skill lane, not zero.</p>
@@ -332,7 +332,7 @@ button,input{font:inherit}
 const CRITERIA = [
   {key:'resume', label:'Resume', group:'Primary criteria', help:'Team success: adjusted wins plus explicit Champs ring bonus.'},
   {key:'skill', label:'Individual Skill', group:'Primary criteria', help:'Additive community-consensus score across selected titles.'},
-  {key:'longevity', label:'Longevity', group:'Primary criteria', help:'Titles with at least one major win in the selected era.'},
+  {key:'longevity', label:'Longevity', group:'Primary criteria', help:'Titles with at least one recorded major placing in the selected era.'},
   {key:'peak', label:'Peak', group:'Primary criteria', help:'Best single-title blend of winning peak and same-title consensus.'},
 ];
 const SORT_FIELDS = new Set(['rank','player','score','resume','skill','longevity','peak','adj','rings']);
@@ -342,7 +342,7 @@ const GOAT_HEADER_TIPS = {
   score:'Final weighted GOAT Builder score.',
   resume:'0-100 score from ring-weighted adjusted wins.',
   skill:'0-100 score from additive community-consensus points.',
-  longevity:'0-100 score from titles with at least one major win.',
+  longevity:'0-100 score from titles with at least one recorded major placing.',
   peak:'Best single-title 50/50 blend of title resume peak and title consensus peak.',
   adj:'Era-adjusted wins before the extra Champs ring bonus is applied.',
   rings:'Champs wins in the selected era.',
@@ -534,6 +534,9 @@ function consensusFor(p){
 function selectedStats(p){
   if(renderCache.has(p.name)) return renderCache.get(p.name);
   const seasons = (p.seasons || []).filter(s => state.selectedGames.has(s.game));
+  const placementTitles = new Set((p.placements || [])
+    .filter(row => state.selectedGames.has(row.game) && Number(row.events || 0) > 0)
+    .map(row => row.game)).size;
   const mbar = selectedMbar();
   const share = seasons.reduce((sum,s) => sum + (s.majors ? s.wins / s.majors : 0), 0);
   const adj = share * mbar;
@@ -566,7 +569,8 @@ function selectedStats(p){
     consensus,
     adj,
     champs,
-    titles:seasons.length,
+    titles:placementTitles,
+    winningTitles:seasons.length,
     titlePeaks,
   };
   renderCache.set(p.name, out);
@@ -708,9 +712,9 @@ function criterionInputDetail(row, key){
   }
   if(key === 'longevity'){
     return {
-      input:`${s.titles} winning title${s.titles === 1 ? '' : 's'}`,
+      input:`${s.titles} placing title${s.titles === 1 ? '' : 's'}`,
       leader:`${num(renderScales.maxes?.longevity, 0)} leader input`,
-      note:'A title counts when the player has at least one major win in that selected title.',
+      note:'A title counts when the player has at least one recorded major placing in that selected title.',
     };
   }
   if(key === 'peak'){
@@ -764,7 +768,7 @@ function rowData(row, active, baseRanks){
     deltaText:delta.text,
     deltaCls:delta.cls,
     player:row.player.name,
-    playerSub:`${s.titles} winning titles · ${s.consensus?.rankedTitles || 0} skill datasets`,
+    playerSub:`${s.titles} placing titles · ${s.consensus?.rankedTitles || 0} skill datasets`,
     score:row.score,
     resume:row.lane.resume,
     skill:row.lane.skill,

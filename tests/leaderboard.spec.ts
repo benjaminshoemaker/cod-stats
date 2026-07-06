@@ -1093,6 +1093,30 @@ test.describe('GOAT Builder', () => {
     expect(comparison.scump.skillScore - comparison.crim.skillScore).toBeGreaterThan(35);
   });
 
+  test('longevity uses titles with recorded major placements', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A50%2Cskill%3A25%2Clongevity%3A15%2Cpeak%3A10&rings=3&era=all&view=rank');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+
+    const longevity = await page.evaluate(() => {
+      const rows = rowsFor(activeWeights(), renderScales, state.ring);
+      const pick = (name: string) => {
+        const row = rows.find((r: any) => r.player.name === name);
+        return {
+          input: row.stats.titles,
+          score: row.lane.longevity,
+          sub: rowData(row, activeWeights(), new Map()).playerSub,
+        };
+      };
+      return {clayster: pick('Clayster'), scump: pick('Scump'), crim: pick('Crimsix')};
+    });
+
+    expect(longevity.clayster.input).toBe(15);
+    expect(longevity.scump.input).toBe(13);
+    expect(longevity.crim.input).toBe(11);
+    expect(longevity.clayster.score).toBe(100);
+    expect(longevity.scump.sub).toContain('placing titles');
+  });
+
   test('ranking columns sort and expose header explanations', async ({ page }) => {
     await page.goto('/goat-builder.html');
     await expect(page.locator('#goatTable .tabulator-col[tabulator-field="skill"]'))
