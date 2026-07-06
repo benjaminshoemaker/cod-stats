@@ -32,14 +32,7 @@ if (DEPLOYED) {
 }
 
 /* shared helpers */
-const D = window.APP_DATA;
-if (!D) {
-  document.body.insertAdjacentHTML('afterbegin',
-    '<div class="note" style="margin:1rem">Sorry, the data failed to load. ' +
-    'Try a hard refresh (Cmd/Ctrl+Shift+R); if it persists, use the feedback button.</div>');
-  throw new Error('APP_DATA missing: data.js failed to load');
-}
-
+const D = window.APP_DATA || null;
 function qs(name){return new URLSearchParams(location.search).get(name);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function yr(date){return date?String(date).slice(0,4):'';}
@@ -60,13 +53,13 @@ function uniquePlayerIndex(names, keyFn){
   });
   return out;
 }
-const PLAYER_NAMES = Object.keys(D.players || {});
+const PLAYER_NAMES = Object.keys((D && D.players) || {});
 const PLAYER_BY_LOWER = uniquePlayerIndex(PLAYER_NAMES, name => String(name).trim().toLowerCase());
 const PLAYER_BY_LOOKUP = uniquePlayerIndex(PLAYER_NAMES, playerLookupKey);
 function canonicalPlayerName(name){
   const raw = String(name || '').trim();
   if(!raw) return null;
-  if(Object.prototype.hasOwnProperty.call(D.players || {}, raw)) return raw;
+  if(Object.prototype.hasOwnProperty.call((D && D.players) || {}, raw)) return raw;
   const lowerMatch = PLAYER_BY_LOWER.get(raw.toLowerCase());
   if(lowerMatch) return lowerMatch;
   if(/\([^)]*\)/.test(raw)) return null;
@@ -74,7 +67,7 @@ function canonicalPlayerName(name){
 }
 function playerRecord(name){
   const canonical = canonicalPlayerName(name);
-  return canonical ? D.players[canonical] : null;
+  return canonical && D ? D.players[canonical] : null;
 }
 
 /* localStorage can throw (private browsing, storage disabled); degrade to defaults */
@@ -88,7 +81,7 @@ function deltaPill(d){
 }
 function teamBadge(team, cls=''){
   if(!team) return '<span class="small faint">—</span>';
-  const logo = D.teamLogos && D.teamLogos[team];
+  const logo = D && D.teamLogos && D.teamLogos[team];
   const img = logo && logo.src
     ? `<img class="team-logo" src="${esc(logo.src)}" alt="" title="${esc(team)}" decoding="async" onerror="this.remove()">`
     : '';
@@ -145,11 +138,37 @@ function playerLink(name){
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 function fmtInt(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toLocaleString();}
 function fmtKd(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toFixed(3);}
-function scrollRegionAttrs(label, extraClass=''){
-  return `class="scroll-x${extraClass ? ' '+esc(extraClass) : ''}" tabindex="0" role="region" aria-label="${esc(label)}" data-scroll-region`;
+function attrString(attrs={}){
+  return Object.entries(attrs)
+    .filter(([,v]) => v !== false && v != null)
+    .map(([k,v]) => v === true ? esc(k) : `${esc(k)}="${esc(v)}"`)
+    .join(' ');
+}
+function scrollRegionAttrs(label, extraClass='', extraAttrs={}){
+  if(extraClass && typeof extraClass === 'object'){
+    extraAttrs = extraClass;
+    extraClass = '';
+  }
+  const cls = `scroll-x${extraClass ? ' '+extraClass : ''}`;
+  return attrString({
+    class: cls,
+    tabindex: '0',
+    role: 'region',
+    'aria-label': label,
+    'data-scroll-region': true,
+    ...extraAttrs
+  });
 }
 function tableCaption(label){
   return `<caption class="sr-only">${esc(label)}</caption>`;
+}
+function scrollHint(text='Scroll sideways to see all columns.'){
+  return `<p class="scrollhint small muted">${esc(text)}</p>`;
+}
+function dataTableSurface({label, caption, className='', tableClass='data', tableAttrs={}, wrapperClass='', hint=false, head='', body='', rows='', foot='' }={}){
+  const content = body || rows || '';
+  const table = `<table ${attrString({class: tableClass, ...tableAttrs})}>${tableCaption(caption || label)}${head}<tbody>${content}</tbody>${foot}</table>`;
+  return `<div ${scrollRegionAttrs(label, wrapperClass)}>${hint ? scrollHint(typeof hint === 'string' ? hint : undefined) : ''}${table}</div>`;
 }
 const SCROLL_REGION_SELECTOR = '.scroll-x, [data-scroll-region], .tabulator-tableholder';
 const scrollRegionState = new WeakMap();
@@ -216,6 +235,83 @@ function enhanceScrollRegions(root=document){
   if(scope.matches && scope.matches(SCROLL_REGION_SELECTOR)) mountHorizontalTableScroll(scope);
   scope.querySelectorAll?.(SCROLL_REGION_SELECTOR).forEach(mountHorizontalTableScroll);
 }
+function wireTabulatorHeaderA11y(root){
+  const scope = root instanceof Element ? root : document.querySelector(root);
+  if(!scope) return;
+  scope.querySelectorAll('.tabulator-col[tabulator-field]').forEach(col=>{
+    if(!col.getAttribute('tabindex')) col.setAttribute('tabindex','0');
+    col.setAttribute('role','button');
+    if(col.dataset.tableSurfaceKeydown) return;
+    col.dataset.tableSurfaceKeydown = 'true';
+    col.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){
+        e.preventDefault();
+        col.querySelector('.tabulator-col-content')?.click();
+      }
+    });
+  });
+}
+function markTabulatorSort(table, root){
+  const scope = root instanceof Element ? root : document.querySelector(root);
+  if(!scope || !table || typeof table.getSorters !== 'function') return;
+  const s = table.getSorters()[0];
+  scope.querySelectorAll('.tabulator-col[tabulator-field]').forEach(col=>{
+    if(s && col.getAttribute('tabulator-field')===s.field)
+      col.setAttribute('aria-sort', s.dir==='asc' ? 'ascending' : 'descending');
+    else col.removeAttribute('aria-sort');
+  });
+}
+function enhanceTabulatorSurface(table, root, label){
+  const scope = root instanceof Element ? root : document.querySelector(root);
+  if(!scope) return;
+  if(label) scope.querySelectorAll('.tabulator-tableholder').forEach(holder=>{
+    if(!holder.getAttribute('aria-label')) holder.setAttribute('aria-label', label);
+  });
+  enhanceScrollRegions(scope);
+  wireTabulatorHeaderA11y(scope);
+  markTabulatorSort(table, scope);
+}
+function mountTabulatorSurface(selector, config={}){
+  if(!window.Tabulator) throw new Error('Tabulator missing: include vendor/tabulator.min.js before app.js');
+  const {
+    label='Interactive data table',
+    onBuilt,
+    onRenderComplete,
+    onDataSorted,
+    ...tabulatorOptions
+  } = config;
+  const root = selector instanceof Element ? selector : document.querySelector(selector);
+  const table = new Tabulator(selector, tabulatorOptions);
+  const enhance = () => enhanceTabulatorSurface(table, root, label);
+  table.on('tableBuilt', () => {
+    enhance();
+    if(onBuilt) onBuilt(table);
+  });
+  table.on('renderComplete', () => {
+    enhance();
+    if(onRenderComplete) onRenderComplete(table);
+  });
+  table.on('dataSorted', () => {
+    markTabulatorSort(table, root);
+    if(onDataSorted) onDataSorted(table);
+  });
+  return table;
+}
+const TableSurface = {
+  attrs: attrString,
+  scrollRegionAttrs,
+  tableCaption,
+  scrollHint,
+  dataTable: dataTableSurface,
+  enhanceScrollRegions,
+  wireTabulatorHeaderA11y,
+  markTabulatorSort,
+  enhanceTabulator: enhanceTabulatorSurface,
+  mountTabulator: mountTabulatorSurface,
+};
+window.TableSurface = TableSurface;
+window.scrollRegionAttrs = scrollRegionAttrs;
+window.tableCaption = tableCaption;
 window.enhanceScrollRegions = enhanceScrollRegions;
 if(document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', ()=>enhanceScrollRegions());
@@ -260,7 +356,7 @@ window.GAME_ABBR = {'Call of Duty 4':'CoD4','Modern Warfare 2':'MW2','Black Ops'
 
 /* event -> season lookup, shared by the chart pages (heatmap, trajectory) */
 window.EVENT2GAME = {};
-for(const g of D.games) for(const e of g.events) window.EVENT2GAME[e.event]=g.game;
+if(D && Array.isArray(D.games)) for(const g of D.games) for(const e of g.events) window.EVENT2GAME[e.event]=g.game;
 
 /* interpolate two #rrggbb colors — shared by the sequential ramps (heatmap, map) */
 window.mixHex = (a,b,t)=>{
@@ -310,9 +406,11 @@ function mountColumnMenu(table, cols, onChange){
    paint (avoids the layout shift of injecting it here). Pages' mountNav('...')
    calls hit its already-mounted guard and are no-ops. */
 function mountFoot(){
+  const dataNote = D && D.meta
+    ? ` · ${D.meta.numEvents} events across ${D.meta.seasonOrder.length} seasons · raw totals match the wiki exactly · data as of ${D.meta.asOf}`
+    : '';
   document.body.insertAdjacentHTML('beforeend',
     `<footer class="site-foot">Reconstructed from the
       <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player" target="_blank" rel="noopener">Call of Duty Esports Wiki</a>
-      · major = Tier &ldquo;Major&rdquo;/&ldquo;Premier&rdquo;, 1st place · ${D.meta.numEvents} events across ${D.meta.seasonOrder.length} seasons ·
-      raw totals match the wiki exactly · data as of ${D.meta.asOf}.</footer>`);
+      · major = Tier &ldquo;Major&rdquo;/&ldquo;Premier&rdquo;, 1st place${dataNote}.</footer>`);
 }

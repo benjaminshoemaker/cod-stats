@@ -215,12 +215,21 @@ const buildColumns = M => [
 const columns = buildColumns(mq.matches);
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
-const table = new Tabulator("#table",{
+const table = TableSurface.mountTabulator("#table",{
+  label: 'Leaderboard table',
   data: cr(selected, ringN),
   layout: "fitColumns",   // fill the desktop table while respecting compact min widths for expanded views
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
   columns,
+  onBuilt:t=>{
+    // apply search from URL
+    if(startQ){ searchInput.value = startQ; t.setFilter("name","like",startQ); }
+    // column show/hide menu (reflects the visibility already applied to `columns`)
+    mountColumnMenu(t, COLS, syncURL);
+    syncCompareUI();
+  },
+  onDataSorted:()=>syncURL(),
 });
 
 // ---- write current state into the URL so the view is shareable ----
@@ -245,35 +254,6 @@ function syncURL(){
   if(clearBtn) clearBtn.hidden = !qs;   // "Clear filters" shows only when some state is active
 }
 
-// keyboard-accessible sorting; re-run whenever the header DOM is rebuilt
-function wireHeaderA11y(){
-  document.querySelectorAll('#table .tabulator-col[tabulator-field]').forEach(col=>{
-    if(col.getAttribute('tabindex')) return;
-    col.setAttribute('tabindex','0'); col.setAttribute('role','button');
-    col.addEventListener('keydown',e=>{
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();
-        col.querySelector('.tabulator-col-content')?.click();}});
-  });
-}
-// expose the active sort to AT (the arrow is visual-only)
-function markSort(){
-  const s = table.getSorters()[0];
-  document.querySelectorAll('#table .tabulator-col[tabulator-field]').forEach(col=>{
-    if(s && col.getAttribute('tabulator-field')===s.field)
-      col.setAttribute('aria-sort', s.dir==='asc' ? 'ascending' : 'descending');
-    else col.removeAttribute('aria-sort');
-  });
-}
-table.on("tableBuilt",()=>{
-  wireHeaderA11y(); markSort();
-  enhanceScrollRegions(document.getElementById('table'));
-  // apply search from URL
-  if(startQ){ searchInput.value = startQ; table.setFilter("name","like",startQ); }
-  // column show/hide menu (reflects the visibility already applied to `columns`)
-  mountColumnMenu(table, COLS, syncURL);
-  syncCompareUI();
-});
-table.on("dataSorted",()=>{ syncURL(); markSort(); });
 table.on("dataFiltered",()=>syncCompareUI());
 
 // crossing the breakpoint swaps column definitions in place (widths + short labels),
@@ -283,8 +263,7 @@ mq.addEventListener('change', ()=>{
   const cols = buildColumns(mq.matches);
   cols.forEach(c=>{ if(hidden.has(c.field)) c.visible = false; });
   table.setColumns(cols);
-  enhanceScrollRegions(document.getElementById('table'));
-  wireHeaderA11y(); markSort();
+  TableSurface.enhanceTabulator(table, document.getElementById('table'), 'Leaderboard table');
   syncCompareUI();
 });
 
