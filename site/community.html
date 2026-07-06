@@ -740,7 +740,7 @@ fetch('community-consensus.json')
     });
     gameSel.value = state.game;
     if(state.view === 'title') renderTitle(state.game, state.player);
-    else renderOverall(state.mode, state.overallPlayer);
+    else renderOverall(state.mode, state.overallPlayer, {focusTrace: !!state.overallPlayer});
     document.querySelectorAll('[data-cc-view]').forEach(btn => {
       btn.addEventListener('click', () => {
         if(btn.dataset.ccView === 'title') renderTitle(gameSel.value || defaultConsensusGame(), null);
