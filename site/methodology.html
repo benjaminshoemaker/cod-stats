@@ -49,6 +49,13 @@
 .qa h3{margin:0 0 var(--space-2);font-size:var(--text-md)}
 .qa p{margin:var(--space-2) 0}
 .jump{margin:var(--space-1) 0 var(--space-4)}
+.method-hub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin:var(--space-5) 0 var(--space-6)}
+.method-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--space-5);color:var(--ink)}
+.method-card:hover{text-decoration:none;border-color:var(--accent)}
+.method-card h2{margin:var(--space-2) 0;font-size:var(--text-xl)}
+.method-card p{margin:0;color:var(--muted)}
+.method-card .pill{margin-bottom:var(--space-2)}
+@media(max-width:720px){.method-hub{grid-template-columns:1fr}}
 .src-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin:var(--space-3) 0}
 @media(max-width:640px){.src-split{grid-template-columns:1fr}}
 .src-split .opt h3{font-size:var(--text-base);margin:0 0 var(--space-1)}
@@ -102,9 +109,29 @@ const bo2=D.majors['Black Ops 2'], small=6;
 
 root.innerHTML=`
   <h1>Methodology</h1>
-  <p class="lede">This page explains the site's rules: how adjusted wins convert raw major wins into season-share value,
-  how community consensus and Kills Over Replacement are computed, which tournaments count, why totals can differ from other trackers, and where optional extras like ring weighting fit.
-  The core adjustment is narrow: it corrects for how many majors were available in each season.</p>
+  <p class="lede">The site has several distinct evidence lanes. Start with the lane you care about, then use the detailed sections below to see what is measured, what is excluded, and how to reproduce the numbers.</p>
+  <div class="method-hub" aria-label="Methodology areas">
+    <a class="method-card" href="#era-adjustment">
+      <span class="pill tag">Core leaderboard</span>
+      <h2>Era-adjusted wins</h2>
+      <p>Major denominators, season share, rescaling, ring weighting, placement stats, and tournament inclusion rules.</p>
+    </a>
+    <a class="method-card" href="#community-consensus">
+      <span class="pill tag">Community evidence</span>
+      <h2>Community consensus</h2>
+      <p>Fan/community source collection, source weighting, title rankings, career rollups, and source traceability.</p>
+    </a>
+    <a class="method-card" href="#kills-over-replacement">
+      <span class="pill flat">Objective stats</span>
+      <h2>Kills Over Replacement</h2>
+      <p>Major-event kill production, respawn/S&amp;D splits, replacement baselines, qualification filters, and caveats.</p>
+    </a>
+    <a class="method-card" href="#formal-accolades">
+      <span class="pill flat">Formal recognition</span>
+      <h2>Formal accolades</h2>
+      <p>Official award rows, MVPs, All-Star/All-Pro teams, player-page honors, source boundaries, and coverage gaps.</p>
+    </a>
+  </div>
   ${pageToc([
     ['era-adjustment','Adjusted wins'],
     ['season-share','Season share'],
@@ -113,6 +140,7 @@ root.innerHTML=`
     ['placement','Placement stats'],
     ['kills-over-replacement','Kills Over Replacement'],
     ['community-consensus','Community consensus'],
+    ['formal-accolades','Formal accolades'],
     ['tournaments','Tournament rules']
   ])}
 
@@ -236,12 +264,18 @@ root.innerHTML=`
   <h2 id="community-consensus">7. Community consensus ${anchorLink('community-consensus','Community consensus')}</h2>
   <p>The <a href="community.html">Community Consensus</a> page is a separate evidence lane from era-adjusted wins, KOR, formal honors, and authored/media rankings. It tries to answer one narrower question: <strong>what did the available community ranking evidence say about the best players in each title?</strong> It is not an author ranking and it does not use event wins as a scoring input.</p>
   <p>Each title is scored from explicit ranked community evidence: aggregate survey results where available, thread clusters with extractable ranked ballots, and rare single community ballots when they are the only usable source. A player's ballot points are normalized by list size, source contributions are weighted by source type, sample size, timing, season coverage, and bounded Reddit-score signals, then summed within that title.</p>
+  <p>Source density is not uniform across eras. For recent titles, the strongest usable evidence is often a single large community poll with thousands of votes, so that poll may carry the title by itself. Older titles generally do not have comparable aggregate polls preserved, so their rankings are reconstructed from smaller Reddit threads, archived discussions, and other extractable community lists. The goal is not to pretend every title has identical source depth; it is to create a consistent, auditable community-ranking lane across all titles using the best available evidence for each era.</p>
   <p>Thread comments from the same discussion are averaged into one source before source weighting, because they are not fully independent publications. When individual comment scores are captured, they only redistribute influence <em>inside that source</em>; they do not make the whole thread count as more independent evidence. Reviewed-but-not-scored sources remain visible in the ledger so missing or rejected evidence does not disappear.</p>
   <p>The cross-title rollup converts each title rank to a top-heavy score with <span class="formula">((31 - rank) / 30) ** 2.5</span>. Every played title can contribute the same maximum; source quality is handled inside the title, not by making modern titles count more. The normalized view divides by titles played so shorter careers can be evaluated beside longer ones.</p>
   <p><strong>How to read it:</strong> consensus is useful for preserving the community's memory of title-level player quality, especially where raw wins miss the story. It should sit beside resume, stats, honors, and source caveats. A blank or low score means the current source inventory did not capture support, not that no support existed.</p>
 
+  <h2 id="formal-accolades">8. Formal accolades ${anchorLink('formal-accolades','Formal accolades')}</h2>
+  <p><strong>Formal accolades</strong> are profile context, not an input to adjusted wins, community consensus, or Kills Over Replacement. Player pages and compare rows surface official recognition rows from the CoD Esports Wiki awards table: Champs MVPs, Event MVPs, Grand Finals MVPs, Season MVP, Rookie of the Year, CDL First/Second Team, and CWL All-Star selections.</p>
+  <p>The build keeps this lane intentionally narrow. Media rankings, Breaking Point lists, Reddit/community rankings, eye-test arguments, role-adjusted skill claims, and performance stats do not enter this honors section. Those belong in community consensus or objective-stat lanes when they are usable there.</p>
+  <p>Coverage is uneven by era. CDL-era awards are more standardized; early-era awards are sparse and sometimes do not exist in the current source table. A blank honors list therefore means <em>no row in the current formal-awards source set</em>, not proof that the player never received contemporaneous recognition.</p>
+
   <a id="data-source"></a>
-  <h2 id="tournaments">8. Which tournaments count, and who decides ${anchorLink('tournaments','Tournament rules')}</h2>
+  <h2 id="tournaments">9. Which tournaments count, and who decides ${anchorLink('tournaments','Tournament rules')}</h2>
   <p class="lede" style="font-size:var(--text-md)"><strong>The short version: we don't decide.</strong> An event counts here if and only if
   the CoD Esports Wiki tags it <strong>Major</strong> or <strong>Premier</strong> tier and the player finished 1st. That's it. We mirror the
   wiki's <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">Major Wins list</a>, the community's

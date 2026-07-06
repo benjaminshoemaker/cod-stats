@@ -487,7 +487,9 @@ test.describe('pages', () => {
     await expect(page.locator('table.data th[scope="col"]')).toHaveCount(6);
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
-    await expect(page.getByText('how adjusted wins convert raw major wins into season-share value')).toBeVisible();
+    await expect(page.getByText('The site has several distinct evidence lanes')).toBeVisible();
+    await expect(page.locator('.method-hub .method-card', { hasText: 'Era-adjusted wins' })).toHaveAttribute('href', '#era-adjustment');
+    await expect(page.locator('.method-hub .method-card', { hasText: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
     await page.goto('/community.html');
     await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
   });
@@ -508,9 +510,11 @@ test.describe('pages', () => {
     const methodToc = page.getByRole('navigation', { name: 'On this page' });
     await expect(methodToc.getByRole('link', { name: 'Community consensus' })).toHaveAttribute('href', '#community-consensus');
     await expect(methodToc.getByRole('link', { name: 'Kills Over Replacement' })).toHaveAttribute('href', '#kills-over-replacement');
+    await expect(methodToc.getByRole('link', { name: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
     await expect(methodToc.getByRole('link', { name: 'Tournament rules' })).toHaveAttribute('href', '#tournaments');
     await expect(page.locator('#community-consensus .anchor-link')).toHaveAttribute('href', '#community-consensus');
     await expect(page.locator('#kills-over-replacement .anchor-link')).toHaveAttribute('href', '#kills-over-replacement');
+    await expect(page.locator('#formal-accolades .anchor-link')).toHaveAttribute('href', '#formal-accolades');
     await expect(page.locator('#tournaments .anchor-link')).toHaveAttribute('href', '#tournaments');
 
     await page.goto('/methodology.html#kills-over-replacement');
@@ -518,6 +522,9 @@ test.describe('pages', () => {
 
     await page.goto('/methodology.html#community-consensus');
     await expect(page.locator('#community-consensus')).toBeInViewport();
+
+    await page.goto('/methodology.html#formal-accolades');
+    await expect(page.locator('#formal-accolades')).toBeInViewport();
 
     await page.goto('/methodology.html#tournaments');
     await expect(page.locator('#tournaments')).toBeInViewport();
