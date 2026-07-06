@@ -367,6 +367,67 @@ def test_player_stats_source_is_slimmed_to_reproducible_kill_death_rows():
     }]
 
 
+def test_kills_over_replacement_is_title_and_mode_specific(data):
+    kor = data["_kor"]
+    assert set(kor["meta"]["splits"]) == {"respawn", "snd"}
+
+    bo2 = kor["games"]["Black Ops 2"]["splits"]
+    assert bo2["respawn"]["replacementKpm"] == 24.24
+    assert bo2["snd"]["replacementKpm"] == 5.69
+    assert bo2["respawn"]["rows"][0]["player"] == "Scump"
+    assert bo2["respawn"]["rows"][0]["rank"] == 1
+    assert bo2["respawn"]["rows"][0]["korPerMap"] == 5.036
+
+    xlnc = next(r for r in bo2["snd"]["rows"] if r["player"] == "XLNC")
+    assert xlnc["rank"] == 1
+    assert xlnc["korPerMap"] == 3.391
+    assert xlnc["medianOpponentPlace"] == 7.0
+    assert xlnc["top8OpponentPct"] == 0.667
+
+    aw = kor["games"]["Advanced Warfare"]["splits"]
+    assert aw["respawn"]["rows"][0]["player"] == "Scump"
+    assert aw["snd"]["rows"][0]["player"] == "ZooMaa"
+    assert aw["respawn"]["rows"][0]["opponentMaps"] == aw["respawn"]["rows"][0]["maps"]
+
+    bo6 = kor["games"]["Black Ops 6"]["splits"]["respawn"]
+    assert bo6["qualified"] == 36
+    assert bo6["playersWithMaps"] == 77
+    assert bo6["minMaps"] == 28
+
+
+def test_kills_over_replacement_excludes_non_major_stat_rows():
+    from types import SimpleNamespace
+
+    rows = []
+    for i in range(28):
+        rows.append({
+            "Player": "Scump", "Event": "Synthetic Major", "EventId": "major", "Game": "Black Ops 2",
+            "Date": "2013-01-01", "Mode": "Hardpoint", "TeamVs": "Major Opp",
+            "Kills": 20, "Deaths": 20,
+        })
+        rows.append({
+            "Player": "Scump", "Event": "Synthetic Minor", "EventId": "minor", "Game": "Black Ops 2",
+            "Date": "2013-01-02", "Mode": "Hardpoint", "TeamVs": "Minor Opp",
+            "Kills": 40, "Deaths": 20,
+        })
+    tpart = [
+        {"Event": "Synthetic Major", "EventId": "major", "Game": "Black Ops 2", "Team": "Major Opp", "Place": "1"},
+        {"Event": "Synthetic Minor", "EventId": "minor", "Game": "Black Ops 2", "Team": "Minor Opp", "Place": "1"},
+    ]
+    S = SimpleNamespace(order=["Black Ops 2"], order_idx={"Black Ops 2": 0})
+    kor = build_data.build_kor(
+        rows,
+        tpart,
+        S,
+        {"byName": {}, "nameById": {}},
+        {"major"},
+    )
+    scump = kor["games"]["Black Ops 2"]["splits"]["respawn"]["rows"][0]
+    assert scump["maps"] == 28
+    assert scump["kpm"] == 20
+    assert scump["opponentMaps"] == 28
+
+
 def test_event_registry_adds_canonical_ids_to_participation_and_skill_rows(data):
     simp_part = data["_participation"]["Simp"]
     assert any(r["event"] == "CWL London 2019"
@@ -519,7 +580,7 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
     monkeypatch.setattr(build_data, "HERE", str(tmp_path))
-    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages = build_data.load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
     registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
     _, part_rows = build_data.index_participation(ppart, top, registry)

@@ -63,6 +63,19 @@ def test_data_js_matches_data_json(dataset):
     assert appdata == dataset
 
 
+def test_kor_json_is_generated_with_mode_specific_rows():
+    kor = json.load(open(os.path.join(ROOT, "site", "kor.json")))
+    assert set(kor["meta"]["splits"]) == {"respawn", "snd"}
+    assert "overall" not in kor["meta"]["splits"]
+    bo6 = kor["games"]["Black Ops 6"]["splits"]
+    assert bo6["respawn"]["qualified"] > 0
+    assert bo6["respawn"]["playersWithMaps"] >= bo6["respawn"]["qualified"]
+    assert bo6["snd"]["qualified"] > 0
+    assert bo6["respawn"]["rows"][0]["korPerMap"] > 0
+    assert bo6["respawn"]["rows"][0]["medianOpponentPlace"] is not None
+    assert bo6["respawn"]["rows"][0]["top8OpponentPct"] is not None
+
+
 def test_clusters_covers_every_leaderboard_player(clusters, lb):
     names = {p["name"] for p in clusters["players"]}
     assert names == set(lb), (

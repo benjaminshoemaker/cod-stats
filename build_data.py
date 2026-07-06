@@ -90,6 +90,7 @@ PLAYER_NOTES = {
 
 def norm(n): return re.sub(r'\s*\(.*?\)\s*', '', n).strip()   # strip disambiguation parenthetical
 def mkey(n): return norm(n).lower()                           # case-insensitive join key (ABeZy vs aBeZy)
+def compact_key(n): return re.sub(r'[^a-z0-9]+', '', norm(n or '').lower())
 
 def _played(d): return (d or '0000') <= ASOF
 def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
@@ -101,7 +102,8 @@ def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVEN
 def load_sources():
     """Load the four wiki source files, restricted to the console-major universe
     (DROP_GAMES / DROP_EVENTS out; wins on/before ASOF). Returns
-    (events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats) — events_all keeps
+    (events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats,
+    player_stats_participants, event_pages) — events_all keeps
     future-dated scheduled majors for in-progress denominators; ppart is
     filtered per-row later (it also needs the DNS/place rules)."""
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
@@ -113,13 +115,15 @@ def load_sources():
     accolades = json.load(open(apath)) if os.path.exists(apath) else []
     spath = _p('player_stats.json')
     player_stats = json.load(open(spath)) if os.path.exists(spath) else []
+    pspath = _p('player_stats_participants.json')
+    player_stats_participants = json.load(open(pspath)) if os.path.exists(pspath) else []
     epath = _p('player_stats_participants.events.json')
     event_pages = json.load(open(epath)) if os.path.exists(epath) else []
 
     events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
     events = [e for e in events_all if _played(e.get('Date'))]
     pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
-    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages
+    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages
 
 
 def build_event_registry(events_all, event_pages, *row_groups):
@@ -237,6 +241,16 @@ def avg_place_from_x2(place_x2_sum, events):
     if not events:
         return None
     return ((place_x2_sum * 100 + events) // (2 * events)) / 100
+
+
+def median(values):
+    values = sorted(v for v in values if v is not None)
+    if not values:
+        return None
+    mid = len(values) // 2
+    if len(values) % 2:
+        return values[mid]
+    return (values[mid - 1] + values[mid]) / 2
 
 
 def rate_from_counts(numer, denom):
@@ -588,6 +602,155 @@ def index_skill_stats(rows, top50_mkeys, S, event_registry):
     return out
 
 
+KOR_SPLITS = {
+    'respawn': {'label': 'Respawn', 'minMaps': 28},
+    'snd': {'label': 'S&D', 'minMaps': 10},
+}
+KOR_REPLACEMENT_PERCENTILE = Fraction(1, 4)
+
+
+def _kor_empty_bucket():
+    return {'kills': 0, 'deaths': 0, 'maps': 0, 'events': set(), 'opponentPlaces': [], 'top8Maps': 0, 'opponentMaps': 0}
+
+
+def _kor_percentile(values, pct):
+    values = sorted(values)
+    if not values:
+        return None
+    if len(values) == 1:
+        return values[0]
+    pos = Fraction(len(values) - 1, 1) * pct
+    lo = pos.numerator // pos.denominator
+    hi = (pos.numerator + pos.denominator - 1) // pos.denominator
+    if lo == hi:
+        return values[lo]
+    weight = pos - lo
+    return values[lo] + (values[hi] - values[lo]) * weight
+
+
+def _kor_add(bucket, row, kills, deaths, opponent_place):
+    bucket['kills'] += kills
+    bucket['deaths'] += deaths
+    bucket['maps'] += 1
+    event_id = row.get('EventId') or row.get('Event')
+    if event_id:
+        bucket['events'].add(event_id)
+    if opponent_place is not None:
+        bucket['opponentPlaces'].append(opponent_place)
+        bucket['opponentMaps'] += 1
+        if opponent_place <= 8:
+            bucket['top8Maps'] += 1
+
+
+def _kor_finish_bucket(bucket):
+    maps, kills, deaths = bucket['maps'], bucket['kills'], bucket['deaths']
+    return {
+        'maps': maps,
+        'kills': kills,
+        'deaths': deaths,
+        'events': len(bucket['events']),
+        'kpm': Fraction(kills, maps) if maps else None,
+        'kd': Fraction(kills, deaths) if deaths else None,
+        'medianOpponentPlace': median(bucket['opponentPlaces']),
+        'top8OpponentPct': Fraction(bucket['top8Maps'], bucket['opponentMaps']) if bucket['opponentMaps'] else None,
+        'opponentMaps': bucket['opponentMaps'],
+    }
+
+
+def index_opponent_places(tpart, event_registry, major_event_ids=None):
+    places = {}
+    for r in tpart:
+        if not _keep(r):
+            continue
+        event_id = event_id_for(r, event_registry)
+        if major_event_ids is not None and event_id not in major_event_ids:
+            continue
+        team = str(r.get('Team') or '').strip()
+        if not team:
+            continue
+        px2 = place_x2({'Place': r.get('Place'), 'PlaceNumber': r.get('PlaceNumber')})
+        if px2 is None:
+            continue
+        places[(event_id, compact_key(team))] = px2 / 2
+    return places
+
+
+def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids):
+    """Build title/mode Kills Over Replacement tables from major-event stats.
+
+    KOR is deliberately title/mode-only: no role adjustment, no overall split.
+    """
+    opponent_places = index_opponent_places(tpart, event_registry, major_event_ids)
+    by_game_player = defaultdict(lambda: defaultdict(lambda: {split: _kor_empty_bucket() for split in KOR_SPLITS}))
+    for r in player_stat_rows:
+        if not _keep(r) or not _played(r.get('Date')):
+            continue
+        game = r.get('Game') or ''
+        if game not in S.order_idx:
+            continue
+        player = r.get('Player') or r.get('PlayerLink') or r.get('PlayerName')
+        if not player:
+            continue
+        kills, deaths = _stat_int(r.get('Kills')), _stat_int(r.get('Deaths'))
+        if kills is None or deaths is None:
+            continue
+        split = 'snd' if _is_snd_mode(r.get('Mode') or r.get('Gamemode')) else 'respawn'
+        event_id = event_id_for(r, event_registry)
+        if event_id not in major_event_ids:
+            continue
+        opponent_place = opponent_places.get((event_id, compact_key(r.get('TeamVs') or '')))
+        _kor_add(by_game_player[game][player][split], r, kills, deaths, opponent_place)
+
+    out = {'meta': {
+        'replacementPercentile': float(KOR_REPLACEMENT_PERCENTILE),
+        'splits': KOR_SPLITS,
+        'description': 'Major-event kills per map above the 25th-percentile qualified player in the same title/mode split.',
+    }, 'games': {}}
+    for game in S.order:
+        if game not in by_game_player:
+            continue
+        game_out = {'splits': {}}
+        for split, cfg in KOR_SPLITS.items():
+            finished = []
+            players_with_maps = 0
+            for player, splits in by_game_player[game].items():
+                b = _kor_finish_bucket(splits[split])
+                if b['maps']:
+                    players_with_maps += 1
+                if b['maps'] >= cfg['minMaps'] and b['kpm'] is not None:
+                    finished.append((player, b))
+            replacement = _kor_percentile([b['kpm'] for _, b in finished], KOR_REPLACEMENT_PERCENTILE)
+            rows = []
+            if replacement is not None:
+                for player, b in finished:
+                    kor = b['kpm'] - replacement
+                    rows.append({
+                        'player': player,
+                        'korPerMap': round(float(kor), 3),
+                        'kpm': round(float(b['kpm']), 2),
+                        'totalKor': round(float(kor * b['maps']), 1),
+                        'maps': b['maps'],
+                        'events': b['events'],
+                        'kd': round(float(b['kd']), 3) if b['kd'] is not None else None,
+                        'medianOpponentPlace': round(b['medianOpponentPlace'], 1) if b['medianOpponentPlace'] is not None else None,
+                        'top8OpponentPct': round(float(b['top8OpponentPct']), 3) if b['top8OpponentPct'] is not None else None,
+                        'opponentMaps': b['opponentMaps'],
+                    })
+                rows.sort(key=lambda r: (-r['korPerMap'], -r['maps'], r['player']))
+                for i, row in enumerate(rows, 1):
+                    row['rank'] = i
+            game_out['splits'][split] = {
+                'label': cfg['label'],
+                'minMaps': cfg['minMaps'],
+                'replacementKpm': round(float(replacement), 2) if replacement is not None else None,
+                'playersWithMaps': players_with_maps,
+                'qualified': len(rows),
+                'rows': rows,
+            }
+        out['games'][game] = game_out
+    return out
+
+
 def load_role_stints():
     """Load curated primary-role stints.
 
@@ -904,7 +1067,7 @@ def build_meta(S, events):
 def build():
     """Compute the full APP_DATA dict. Raises RuntimeError if any player's
     reconstructed wins do not equal their published wiki total."""
-    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, event_pages = load_sources()
+    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = load_sources()
     S = season_context(events, events_all)
     event_registry = build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
 
@@ -934,7 +1097,14 @@ def build():
             'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry),
             'majors': dict(S.majors),
             'teamLogos': build_team_logos(participation, load_team_logos()),
-            '_participation': participation}
+            '_participation': participation,
+            '_kor': build_kor(
+                player_stats_participants,
+                tpart,
+                S,
+                event_registry,
+                {event_id_for(e, event_registry) for e in events},
+            )}
 
 
 def write(data, path=None):
@@ -945,6 +1115,9 @@ def write(data, path=None):
     participation = data.pop('_participation', {})
     with open(_p('site', 'participation.json'), 'w') as f:
         json.dump(participation, f)
+    kor = data.pop('_kor', {})
+    with open(_p('site', 'kor.json'), 'w') as f:
+        json.dump(kor, f)
     # Tournament-level stat rows are useful only on player profiles. Keep the
     # leaderboard payload focused on career and season aggregates, then lazy-load
     # the event drilldown from player.html.
