@@ -1077,6 +1077,53 @@ def build_meta(S, events):
             'consoleMajors': sum(S.majors[g] for g in S.order), 'numEvents': len(events)}
 
 
+def load_community_consensus_payload():
+    """Bundle the manually curated community-consensus sources for static serving.
+
+    The raw source files live at the repo root, but Vercel serves site/ as the
+    deployment root. Keep this as a lazy JSON artifact so ballots and source
+    traces do not inflate every page's data.js payload.
+    """
+    paths = {
+        'consensus': _p('community_consensus.json'),
+        'sources': _p('community_consensus_sources.json'),
+        'ballots': _p('community_consensus_ballots.json'),
+    }
+    if not all(os.path.exists(p) for p in paths.values()):
+        return {'schema_version': 1, 'consensus': {}, 'sources': [], 'ballots': []}
+    consensus = json.load(open(paths['consensus']))
+    sources = json.load(open(paths['sources']))
+    ballots = json.load(open(paths['ballots']))
+    return {
+        'schema_version': 1,
+        'consensus': consensus,
+        'sources': sources.get('sources', []),
+        'ballots': ballots.get('ballots', []),
+        'resumeWins': build_community_resume_wins(),
+    }
+
+
+def build_community_resume_wins():
+    """Raw major wins by title for players appearing in consensus tables.
+
+    This intentionally uses the full player_event_wins source, not only the
+    published 2+ win leaderboard, so a consensus top-10 player with a single win
+    is not displayed as zero.
+    """
+    path = _p('player_event_wins.json')
+    if not os.path.exists(path):
+        return {}
+    wins = defaultdict(Counter)
+    for r in json.load(open(path)):
+        if not _keep(r) or not _played(r.get('Date')):
+            continue
+        player = norm(r.get('Player') or '')
+        game = r.get('Game') or ''
+        if player and game:
+            wins[game][player] += 1
+    return {game: dict(rows) for game, rows in wins.items()}
+
+
 # --------------------------------------------------------------------------- #
 # Assembly
 # --------------------------------------------------------------------------- #
@@ -1135,6 +1182,8 @@ def write(data, path=None):
     kor = data.pop('_kor', {})
     with open(_p('site', 'kor.json'), 'w') as f:
         json.dump(kor, f)
+    with open(_p('site', 'community-consensus.json'), 'w') as f:
+        json.dump(load_community_consensus_payload(), f)
     # Tournament-level stat rows are useful only on player profiles. Keep the
     # leaderboard payload focused on career and season aggregates, then lazy-load
     # the event drilldown from player.html.

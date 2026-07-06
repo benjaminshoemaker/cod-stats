@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Source-backed community consensus rankings by Call of Duty title, with source traces and event-win sanity context.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Community Consensus">
+<meta property="og:description" content="Per-title Call of Duty community consensus rankings with reproducible source traces.">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/nav.js" as="script">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="assets/nav.js"></script>
+<main class="wrap wide community-page" id="root" tabindex="-1">
+  <h1>Community Consensus</h1>
+  <p class="lede">A source-backed compilation of community rankings by title. These are not site-authored player rankings; they are an attempt to make the available community evidence visible and reproducible.</p>
+  <div class="note community-method-note">
+    Event wins are shown as a sanity check only. They do <strong>not</strong> affect community score.
+    <a href="methodology.html#community-consensus">Methodology →</a>
+  </div>
+  <div class="community-controls">
+    <label class="field-label">Title
+      <select id="cc-game" class="select"></select>
+    </label>
+    <button type="button" class="sharebtn" id="cc-share">Share view</button>
+  </div>
+  <div id="cc-root" aria-live="polite"><p class="note">Loading community consensus data...</p></div>
+</main>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('community.html');
+
+const gameSel = document.getElementById('cc-game');
+const host = document.getElementById('cc-root');
+const shareBtn = document.getElementById('cc-share');
+let CC = null;
+let sourceById = {};
+let ballotsBySource = {};
+
+const clean = s => String(s || '').replace(/\s*\(.*?\)\s*/g, '').trim();
+const sourceLabel = s => String(s || '').replaceAll('_', ' ');
+const sourceStatusPill = status => {
+  if(status === 'scored') return '<span class="pill up">scored</span>';
+  if(status === 'reviewed_not_scored') return '<span class="pill warn">reviewed not scored</span>';
+  return '<span class="pill flat">excluded</span>';
+};
+const confidencePill = conf => {
+  if(conf === 'high') return '<span class="pill up">high</span>';
+  if(conf === 'medium') return '<span class="pill flat">medium</span>';
+  return '<span class="pill warn">low</span>';
+};
+const playerCell = name => D.players[name] ? playerLink(name) : esc(name);
+const selectedUrl = (game, player) => {
+  const url = new URL(location.href);
+  url.searchParams.set('g', game);
+  url.searchParams.set('p', player);
+  return url.pathname + '?' + url.searchParams.toString();
+};
+const sourceUrl = src => src && src.url
+  ? `<a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.title || src.source_id)}</a>`
+  : esc(src ? src.title || src.source_id : 'Unknown source');
+
+function titleOrder(games){
+  const order = new Map(D.meta.seasonOrder.map((g, i) => [g, i]));
+  return games.slice().sort((a, b) => (order.get(a) ?? 999) - (order.get(b) ?? 999) || a.localeCompare(b));
+}
+function readState(){
+  const params = new URLSearchParams(location.search);
+  const games = titleOrder(Object.keys(CC.consensus.games || {}));
+  const game = games.includes(params.get('g')) ? params.get('g') : (games.includes('Black Ops 2') ? 'Black Ops 2' : games[0]);
+  const rows = CC.consensus.games[game] || [];
+  const player = rows.some(r => r.player === params.get('p')) ? params.get('p') : (rows[0] && rows[0].player);
+  return {game, player};
+}
+function setUrl(game, player){
+  const url = new URL(location.href);
+  url.searchParams.set('g', game);
+  if(player) url.searchParams.set('p', player);
+  history.replaceState(null, '', url);
+}
+function rawWins(game, player){
+  const byGame = CC.resumeWins && CC.resumeWins[game] || {};
+  return byGame[player] ?? byGame[clean(player)] ?? 0;
+}
+function winningEvents(game, player){
+  const pl = D.players[player];
+  const season = pl && (pl.seasons || []).find(s => s.game === game);
+  if(season && season.events) return season.events.map(e => e.event).join(', ');
+  const wins = rawWins(game, player);
+  return wins ? `${wins} event${wins === 1 ? '' : 's'} in source data` : 'No major wins in source data';
+}
+function gameSources(game){
+  return (CC.sources || []).filter(s => s.game === game).sort((a, b) => {
+    const order = {scored: 0, reviewed_not_scored: 1, excluded: 2};
+    return (order[a.status] ?? 9) - (order[b.status] ?? 9) || (a.published_year || 9999) - (b.published_year || 9999);
+  });
+}
+function gameContributions(game, player){
+  return Object.entries(CC.consensus.source_contributions || {})
+    .map(([id, c]) => ({id, ...c, source: sourceById[id], contribution: c.scores && c.scores[player] || 0}))
+    .filter(c => c.game === game && c.contribution > 0)
+    .sort((a, b) => b.contribution - a.contribution);
+}
+function sourceBallotCount(id){
+  return ballotsBySource[id] ? ballotsBySource[id].length : 0;
+}
+function renderSummary(game, rows, sources){
+  const scored = sources.filter(s => s.status === 'scored');
+  const aggregate = scored.filter(s => s.source_kind === 'community_aggregate_survey').length;
+  const ballots = sources.reduce((n, s) => n + sourceBallotCount(s.source_id), 0);
+  const high = rows.filter(r => r.confidence === 'high').length;
+  return `<div class="stat-row community-stats">
+    <div class="stat"><div class="k">Ranked players</div><div class="v">${rows.length}</div></div>
+    <div class="stat"><div class="k">Scored sources</div><div class="v">${scored.length}</div><div class="small faint">${aggregate} aggregate surveys</div></div>
+    <div class="stat"><div class="k">Extracted ballots</div><div class="v">${ballots}</div><div class="small faint">thread ballots only</div></div>
+    <div class="stat"><div class="k">High confidence</div><div class="v">${high}</div><div class="small faint">${rows.length ? Math.round(high / rows.length * 100) : 0}% of ranked rows</div></div>
+  </div>`;
+}
+function renderTable(game, rows, selectedPlayer){
+  const body = rows.map(r => {
+    const selected = r.player === selectedPlayer ? ' class="selected"' : '';
+    const wins = rawWins(game, r.player);
+    const events = winningEvents(game, r.player);
+    return `<tr${selected}>
+      <td class="n">${r.consensus_rank}</td>
+      <td><strong>${playerCell(r.player)}</strong>${r.close_race ? '<span class="sub">close race</span>' : ''}</td>
+      <td class="n score">${Number(r.consensus_score).toFixed(3)}</td>
+      <td>${confidencePill(r.confidence)}</td>
+      <td class="n">${r.source_count}</td>
+      <td class="context-band n" title="${esc(events)}">${wins}<span class="sub">not scored</span></td>
+      <td><a class="evidence-link" href="${esc(selectedUrl(game, r.player))}" data-select-player="${esc(r.player)}">Trace</a></td>
+    </tr>`;
+  }).join('');
+  return `<section class="panel-shell">
+    <div class="panel-head">
+      <div><h2>${esc(game)} Ranking</h2><p class="small muted">Community score is source-weighted. Event wins are shown only for context.</p></div>
+      <span class="pill tag">Top ${rows.length} retained</span>
+    </div>
+    <div class="panel-body scroll-x" tabindex="0" role="region" aria-label="${esc(game)} community consensus table">
+      <p class="scrollhint small muted">Scroll sideways to see source count, event wins, and trace links.</p>
+      <table class="data community-table">
+        ${tableCaption(`${game} community consensus ranking`)}
+        <thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n">Event wins</th><th scope="col">Trace</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+  </section>`;
+}
+function renderTrace(game, player){
+  const rows = gameContributions(game, player);
+  const rank = (CC.consensus.games[game] || []).find(r => r.player === player);
+  if(!rank) return '';
+  const items = rows.map(c => {
+    const avg = c.weight ? c.contribution / c.weight : 0;
+    const ballots = c.ballot_count || sourceBallotCount(c.id);
+    return `<div class="calc-row">
+      <div class="calc-row-head"><span class="calc-title">${sourceUrl(c.source)}</span><span class="contribution">${c.contribution.toFixed(3)}</span></div>
+      <span class="sub">${sourceLabel(c.source_kind)} · ${ballots} ballot${ballots === 1 ? '' : 's'} · ${sourceLabel(c.source && c.source.coverage)}</span>
+      <div class="calc-math">
+        <span class="math-chip"><span class="k">Avg points</span><span class="v">${avg.toFixed(3)}</span></span>
+        <span class="math-op">×</span>
+        <span class="math-chip"><span class="k">Source weight</span><span class="v">${Number(c.weight || 0).toFixed(3)}</span></span>
+        <span class="math-op">=</span>
+        <span class="math-chip"><span class="k">Contribution</span><span class="v">${c.contribution.toFixed(3)}</span></span>
+      </div>
+    </div>`;
+  }).join('') || '<p class="small muted">No positive source contribution for this selected player.</p>';
+  return `<aside class="panel-shell">
+    <div class="panel-head">
+      <div><h2>${esc(player)} Trace</h2><p class="small muted">${esc(game)} source contributions for the selected player.</p></div>
+      <span class="pill tag">Rank #${rank.consensus_rank}</span>
+    </div>
+    <div class="panel-body">
+      <div class="mini-grid community-mini-grid">
+        <div class="mini"><div class="k">Score</div><div class="v">${Number(rank.consensus_score).toFixed(3)}</div></div>
+        <div class="mini"><div class="k">Sources</div><div class="v">${rank.source_count}</div></div>
+        <div class="mini"><div class="k">Confidence</div><div class="v sm">${esc(rank.confidence)}</div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${rawWins(game, player)}<span class="sub">not scored</span></div></div>
+      </div>
+      <p class="small muted">Contribution = the player's average rank-points inside a source multiplied by that source's final weight.</p>
+      <span class="formula">contribution = avg_rank_points × final_source_weight</span>
+      <div class="calc-list">${items}</div>
+    </div>
+  </aside>`;
+}
+function renderSourceLedger(game, sources){
+  const rows = sources.map(s => {
+    const count = sourceBallotCount(s.source_id);
+    const c = (CC.consensus.source_contributions || {})[s.source_id];
+    const weight = c && c.weight != null ? Number(c.weight).toFixed(3) : '—';
+    return `<tr>
+      <td>${sourceUrl(s)}<span class="sub">${esc(s.source_id)}</span></td>
+      <td>${sourceStatusPill(s.status)}</td>
+      <td>${sourceLabel(s.source_kind)}</td>
+      <td>${sourceLabel(s.coverage)}</td>
+      <td class="n">${count || s.ballot_count || '—'}</td>
+      <td class="n">${weight}</td>
+    </tr>`;
+  }).join('');
+  return `<section class="panel-shell source-ledger">
+    <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted">Scored, reviewed, and excluded sources for this title.</p></div></div>
+    <div class="panel-body scroll-x" tabindex="0" role="region" aria-label="${esc(game)} source ledger">
+      <p class="scrollhint small muted">Scroll sideways to see source type, timing, ballot count, and weight.</p>
+      <table class="data">
+        ${tableCaption(`${game} community consensus source ledger`)}
+        <thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Timing</th><th scope="col" class="n">Ballots</th><th scope="col" class="n">Weight</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </section>`;
+}
+function render(game, player){
+  const rows = (CC.consensus.games[game] || []).filter(r => r.ranked);
+  const sources = gameSources(game);
+  const selected = rows.some(r => r.player === player) ? player : (rows[0] && rows[0].player);
+  setUrl(game, selected);
+  gameSel.value = game;
+  host.innerHTML = `
+    ${renderSummary(game, rows, sources)}
+    <div class="community-layout">
+      ${renderTable(game, rows, selected)}
+      ${renderTrace(game, selected)}
+    </div>
+    ${renderSourceLedger(game, sources)}
+  `;
+  host.querySelectorAll('[data-select-player]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      render(game, a.dataset.selectPlayer);
+    });
+  });
+}
+
+fetch('community-consensus.json')
+  .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(data => {
+    CC = data;
+    sourceById = Object.fromEntries((CC.sources || []).map(s => [s.source_id, s]));
+    ballotsBySource = {};
+    (CC.ballots || []).forEach(b => (ballotsBySource[b.source_id] ||= []).push(b));
+    const games = titleOrder(Object.keys(CC.consensus.games || {}));
+    gameSel.innerHTML = games.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
+    const state = readState();
+    render(state.game, state.player);
+    gameSel.addEventListener('change', () => render(gameSel.value, null));
+    shareBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        shareBtn.textContent = 'Copied';
+        setTimeout(() => shareBtn.textContent = 'Share view', 1200);
+      } catch(e) {}
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    host.innerHTML = '<p class="note">Community consensus data failed to load.</p>';
+  })
+  .finally(() => mountFoot());
+</script>
+</body>
+</html>

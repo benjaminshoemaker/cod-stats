@@ -77,6 +77,18 @@ def test_kor_json_is_generated_with_mode_specific_rows():
     assert bo6["respawn"]["rows"][0]["top8OpponentPct"] is not None
 
 
+def test_community_consensus_json_is_generated_for_static_site():
+    payload = json.load(open(os.path.join(ROOT, "site", "community-consensus.json")))
+    assert payload["schema_version"] == 1
+    assert "Black Ops 2" in payload["consensus"]["games"]
+    assert payload["consensus"]["games"]["Black Ops 2"][0]["player"] == "Karma"
+    assert len(payload["sources"]) >= 40
+    assert any(s["source_id"] == "bo2_reddit_2016_top10_thread" for s in payload["sources"])
+    assert any(b["ballot_id"] == "bo2_2016_top10_002" and "/comment/d6a5d59/" in b["url"]
+               for b in payload["ballots"])
+    assert payload["resumeWins"]["Black Ops 4"]["Dashy"] == 1
+
+
 def test_clusters_covers_every_leaderboard_player(clusters, lb):
     names = {p["name"] for p in clusters["players"]}
     assert names == set(lb), (

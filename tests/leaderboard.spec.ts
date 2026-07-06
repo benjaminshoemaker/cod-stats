@@ -478,6 +478,8 @@ test.describe('pages', () => {
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
     await expect(page.getByText('how adjusted wins convert raw major wins into season-share value')).toBeVisible();
+    await page.goto('/community.html');
+    await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
   });
 
   test('styleguide documents KOR and data-surface patterns', async ({ page }) => {
@@ -494,13 +496,18 @@ test.describe('pages', () => {
   test('reference pages expose stable section anchors and direct hash links', async ({ page }) => {
     await page.goto('/methodology.html');
     const methodToc = page.getByRole('navigation', { name: 'On this page' });
+    await expect(methodToc.getByRole('link', { name: 'Community consensus' })).toHaveAttribute('href', '#community-consensus');
     await expect(methodToc.getByRole('link', { name: 'Kills Over Replacement' })).toHaveAttribute('href', '#kills-over-replacement');
     await expect(methodToc.getByRole('link', { name: 'Tournament rules' })).toHaveAttribute('href', '#tournaments');
+    await expect(page.locator('#community-consensus .anchor-link')).toHaveAttribute('href', '#community-consensus');
     await expect(page.locator('#kills-over-replacement .anchor-link')).toHaveAttribute('href', '#kills-over-replacement');
     await expect(page.locator('#tournaments .anchor-link')).toHaveAttribute('href', '#tournaments');
 
     await page.goto('/methodology.html#kills-over-replacement');
     await expect(page.locator('#kills-over-replacement')).toBeInViewport();
+
+    await page.goto('/methodology.html#community-consensus');
+    await expect(page.locator('#community-consensus')).toBeInViewport();
 
     await page.goto('/methodology.html#tournaments');
     await expect(page.locator('#tournaments')).toBeInViewport();
@@ -573,6 +580,30 @@ test.describe('pages', () => {
     await page.locator('#kor-split button[data-split="snd"]').click();
     await expect(page).toHaveURL(/split=snd/);
     await expect(page.getByRole('heading', { name: 'Advanced Warfare S&D KOR/map' })).toBeVisible();
+  });
+
+  test('Community Consensus page renders title rankings and source traces', async ({ page }) => {
+    await page.goto('/community.html');
+    await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
+    await expect(page.locator('.nav a.active')).toHaveText('Community');
+    await expect(page.locator('#cc-game')).toHaveValue('Black Ops 2');
+    await expect(page.getByRole('heading', { name: 'Black Ops 2 Ranking' })).toBeVisible();
+    await expect(page.locator('.community-table tbody tr').first()).toContainText('Karma');
+    await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).toContainText('4');
+    await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).toContainText('not scored');
+    await expect(page.getByRole('heading', { name: 'Karma Trace' })).toBeVisible();
+    await expect(page.locator('.calc-list')).toContainText('Top 10 Players in BO2');
+    await expect(page.locator('.source-ledger')).toContainText('reviewed not scored');
+    await expect(page.locator('.source-ledger table caption')).toContainText('Black Ops 2 community consensus source ledger');
+
+    await page.locator('#cc-game').selectOption('Ghosts');
+    await expect(page).toHaveURL(/g=Ghosts/);
+    await expect(page.getByRole('heading', { name: 'Ghosts Ranking' })).toBeVisible();
+    await expect(page.locator('.community-table tbody tr').first()).toContainText('Crimsix');
+
+    await page.goto('/community.html?g=Ghosts&p=Scump');
+    await expect(page.getByRole('heading', { name: 'Scump Trace' })).toBeVisible();
+    await expect(page.locator('.community-table tr.selected')).toContainText('Scump');
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
