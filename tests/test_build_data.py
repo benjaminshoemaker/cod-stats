@@ -556,6 +556,12 @@ def test_curated_primary_roles_can_switch_across_real_careers(data):
     assert joshh["Black Ops 4"] == "AR"
     assert data["players"]["Joshh"]["primary_role"] == "Unknown"
 
+    gunless = {r["game"]: r["role"] for r in data["players"]["Gunless"]["role_by_game"]}
+    assert gunless["World War II"] == "SMG"
+    assert gunless["Black Ops 4"] == "Flex"
+    assert gunless["Modern Warfare"] == "SMG"
+    assert data["players"]["Gunless"]["primary_role"] == "Unknown"
+
 
 def test_recent_curated_unknowns_now_have_roles(data):
     expected = {
