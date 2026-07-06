@@ -12,6 +12,7 @@
 <meta property="og:description" content="Per-title Call of Duty community consensus rankings with reproducible source traces.">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -27,7 +28,23 @@
     <a href="methodology.html#community-consensus">Methodology →</a>
   </div>
   <div class="community-controls">
-    <label class="field-label">Title
+    <div class="field-label">View
+      <div class="cc-segmented" aria-label="Community consensus view">
+        <button type="button" id="cc-view-overall" data-cc-view="overall">Overall</button>
+        <button type="button" id="cc-view-title" data-cc-view="title">Per-title</button>
+      </div>
+    </div>
+    <label class="field-label" id="cc-mode-field">Overall ranking
+      <select id="cc-mode" class="select">
+        <option value="total">Career total</option>
+        <option value="played">Per played title</option>
+        <option value="ranked">Per ranked title</option>
+      </select>
+    </label>
+    <div class="field-label" id="cc-era-field">Eras
+      <div class="colmenu eramenu" id="cc-eramenu"></div>
+    </div>
+    <label class="field-label" id="cc-title-field">Title
       <select id="cc-game" class="select"></select>
     </label>
     <button type="button" class="sharebtn" id="cc-share">Share view</button>
@@ -35,16 +52,46 @@
   <div id="cc-root" aria-live="polite"><p class="note">Loading community consensus data...</p></div>
 </main>
 <script src="data.js"></script>
+<script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
 <script>
 mountNav('community.html');
 
 const gameSel = document.getElementById('cc-game');
+const modeSel = document.getElementById('cc-mode');
+const modeField = document.getElementById('cc-mode-field');
+const titleField = document.getElementById('cc-title-field');
+const eraField = document.getElementById('cc-era-field');
 const host = document.getElementById('cc-root');
 const shareBtn = document.getElementById('cc-share');
 let CC = null;
 let sourceById = {};
 let ballotsBySource = {};
+let currentEraSelection = new Set();
+let CONSENSUS_GAMES = [];
+let ERA_HELPERS = null;
+let overallTable = null;
+
+const OVERALL_MODES = {
+  total: {
+    label: 'Career Total Ranking',
+    metric: r => r.total,
+    note: 'Rewards accumulated title-level community consensus across a full career.',
+    badge: 'GOAT accumulation',
+  },
+  played: {
+    label: 'Per Played Title Ranking',
+    metric: r => r.perPlayed,
+    note: 'Divides total consensus points by every title the player entered, including played-but-unranked titles.',
+    badge: 'Career-length normalized',
+  },
+  ranked: {
+    label: 'Per Ranked Title Ranking',
+    metric: r => r.perRanked,
+    note: 'Divides total consensus points by ranked titles only, emphasizing peak quality when the player made a title list.',
+    badge: 'Peak / quality',
+  },
+};
 
 const sourceLabel = s => String(s || '').replaceAll('_', ' ');
 const sourceStatusPill = status => {
@@ -60,8 +107,21 @@ const confidencePill = conf => {
 const playerCell = name => canonicalPlayerName(name) ? playerLink(name) : esc(name);
 const selectedUrl = (game, player) => {
   const url = new URL(location.href);
+  url.searchParams.set('view', 'title');
   url.searchParams.set('g', game);
   url.searchParams.set('p', player);
+  url.searchParams.delete('mode');
+  return url.pathname + '?' + url.searchParams.toString();
+};
+const overallUrl = (player, mode) => {
+  const url = new URL(location.href);
+  url.searchParams.set('view', 'overall');
+  if(mode) url.searchParams.set('mode', mode);
+  if(player) url.searchParams.set('p', player);
+  const token = selectionToken(currentEraSelection);
+  if(token !== 'all') url.searchParams.set('eras', token);
+  else url.searchParams.delete('eras');
+  url.searchParams.delete('g');
   return url.pathname + '?' + url.searchParams.toString();
 };
 const sourceUrl = src => src && src.url
@@ -72,20 +132,177 @@ function titleOrder(games){
   const order = new Map(D.meta.seasonOrder.map((g, i) => [g, i]));
   return games.slice().sort((a, b) => (order.get(a) ?? 999) - (order.get(b) ?? 999) || a.localeCompare(b));
 }
+function slugOf(game){
+  return String(game || '').toLowerCase().replace(/[^a-z0-9]+/g, '').trim();
+}
+function buildEraHelpers(games){
+  const order = titleOrder(games);
+  const pre = new Set(D.meta.preBo2 || []);
+  const cdlStart = D.meta.seasonOrder.indexOf('Modern Warfare');
+  const eraOf = game => pre.has(game) ? 'prebo2' : (D.meta.seasonOrder.indexOf(game) >= cdlStart ? 'cdl' : 'mlgcwl');
+  const presets = {
+    all: order,
+    post: order.filter(g => !pre.has(g)),
+    prebo2: order.filter(g => eraOf(g) === 'prebo2'),
+    mlgcwl: order.filter(g => eraOf(g) === 'mlgcwl'),
+    cdl: order.filter(g => eraOf(g) === 'cdl'),
+  };
+  const bySlug = Object.fromEntries(order.map(g => [slugOf(g), g]));
+  return {order, eraOf, presets, bySlug};
+}
+function setsEqual(a, b){
+  if(a.size !== b.size) return false;
+  for(const item of a) if(!b.has(item)) return false;
+  return true;
+}
+function selectionToken(sel){
+  if(!ERA_HELPERS || !sel || sel.size === 0) return 'all';
+  for(const [key, titles] of Object.entries(ERA_HELPERS.presets)){
+    if(setsEqual(sel, new Set(titles))) return key;
+  }
+  return 't:' + ERA_HELPERS.order.filter(g => sel.has(g)).map(slugOf).join('-');
+}
+function parseEraSelection(token){
+  if(!ERA_HELPERS) return new Set();
+  if(!token) return new Set(ERA_HELPERS.presets.all);
+  if(ERA_HELPERS.presets[token]) return new Set(ERA_HELPERS.presets[token]);
+  if(token.startsWith('t:')){
+    const titles = token.slice(2).split('-').map(slug => ERA_HELPERS.bySlug[slug]).filter(Boolean);
+    return new Set(titles.length ? titles : ERA_HELPERS.presets.all);
+  }
+  return new Set(ERA_HELPERS.presets.all);
+}
 function readState(){
   const params = new URLSearchParams(location.search);
   const games = titleOrder(Object.keys(CC.consensus.games || {}));
+  const requestedView = params.get('view');
+  const view = requestedView === 'overall' || requestedView === 'title'
+    ? requestedView
+    : (params.has('g') ? 'title' : 'overall');
+  const mode = OVERALL_MODES[params.get('mode')] ? params.get('mode') : 'total';
   const game = games.includes(params.get('g')) ? params.get('g') : (games.includes('Black Ops 2') ? 'Black Ops 2' : games[0]);
   const rows = CC.consensus.games[game] || [];
   const selected = matchingConsensusRow(rows, params.get('p'));
   const player = selected ? selected.player : (rows[0] && rows[0].player);
-  return {game, player};
+  return {view, mode, game, player, overallPlayer: params.get('p'), eras: parseEraSelection(params.get('eras'))};
 }
-function setUrl(game, player){
+function defaultConsensusGame(){
+  return CONSENSUS_GAMES.includes('Black Ops 2') ? 'Black Ops 2' : CONSENSUS_GAMES[0];
+}
+function setTitleUrl(game, player){
   const url = new URL(location.href);
-  url.searchParams.set('g', game);
-  if(player) url.searchParams.set('p', player);
+  url.searchParams.set('view', 'title');
+  if(game === defaultConsensusGame()) url.searchParams.delete('g');
+  else url.searchParams.set('g', game);
+  const defaultPlayer = (CC.consensus.games[game] || []).filter(r => r.ranked)[0]?.player;
+  if(player && player !== defaultPlayer) url.searchParams.set('p', player);
+  else url.searchParams.delete('p');
+  url.searchParams.delete('mode');
+  url.searchParams.delete('eras');
   history.replaceState(null, '', url);
+}
+function setOverallUrl(mode, player){
+  const url = new URL(location.href);
+  url.searchParams.delete('view');
+  if(mode === 'total') url.searchParams.delete('mode');
+  else url.searchParams.set('mode', mode);
+  const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
+  const defaultPlayer = overallRows(mode, selectedGames)[0]?.player;
+  if(player && player !== defaultPlayer) url.searchParams.set('p', player);
+  else url.searchParams.delete('p');
+  const token = selectionToken(currentEraSelection);
+  if(token !== 'all') url.searchParams.set('eras', token);
+  else url.searchParams.delete('eras');
+  url.searchParams.delete('g');
+  history.replaceState(null, '', url);
+}
+function setActiveView(view){
+  document.querySelectorAll('[data-cc-view]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.ccView === view);
+  });
+  modeField.hidden = view !== 'overall';
+  eraField.hidden = view !== 'overall';
+  titleField.hidden = view !== 'title';
+}
+function mountCommunityEraMenu(initial, onChange){
+  const container = document.getElementById('cc-eramenu');
+  container.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'colmenu-btn';
+  btn.setAttribute('aria-haspopup', 'true');
+  btn.setAttribute('aria-expanded', 'false');
+  const panel = document.createElement('div');
+  panel.className = 'colmenu-panel eramenu-panel';
+  panel.hidden = true;
+  const eras = [
+    {key: 'prebo2', label: 'Pre-BO2 (open era)'},
+    {key: 'mlgcwl', label: 'MLG-CWL era'},
+    {key: 'cdl', label: 'CDL era'},
+  ];
+  const presetBtns = [['post', 'Post-BO2'], ['prebo2', 'Pre-BO2'], ['mlgcwl', 'MLG-CWL'], ['cdl', 'CDL']];
+  const groups = eras.map(er => {
+    const items = ERA_HELPERS.order.filter(g => ERA_HELPERS.eraOf(g) === er.key).map(g =>
+      `<label class="colmenu-item"><input type="checkbox" data-title="${ERA_HELPERS.order.indexOf(g)}"> ${esc(g)}</label>`
+    ).join('');
+    return `<div class="era-group"><div class="era-group-h">${esc(er.label)}</div>${items || '<div class="small muted" style="padding:var(--space-1) var(--space-2)">No scored titles</div>'}</div>`;
+  }).join('');
+  panel.innerHTML = `<div class="era-presets">${presetBtns.map(([k, label]) =>
+      `<button type="button" class="era-preset" data-preset="${k}">${esc(label)}</button>`).join('')}`
+    + `<button type="button" class="era-preset era-clear" data-preset="all">Reset</button></div>`
+    + `<div class="era-groups">${groups}</div>`;
+  container.append(btn, panel);
+  const boxes = () => Array.from(panel.querySelectorAll('input[data-title]'));
+  const currentSet = () => {
+    const sel = new Set();
+    boxes().forEach(box => { if(box.checked) sel.add(ERA_HELPERS.order[Number(box.dataset.title)]); });
+    return sel;
+  };
+  const syncChecks = sel => boxes().forEach(box => { box.checked = sel.has(ERA_HELPERS.order[Number(box.dataset.title)]); });
+  const labels = {all: 'All', post: 'Post-BO2', prebo2: 'Pre-BO2', mlgcwl: 'MLG-CWL', cdl: 'CDL'};
+  const updateLabel = sel => {
+    const token = selectionToken(sel);
+    const label = labels[token] || `${sel.size} titles`;
+    btn.innerHTML = `Eras: ${esc(label)} <span aria-hidden="true">▾</span>`;
+  };
+  syncChecks(initial);
+  updateLabel(initial);
+  const close = refocus => {
+    if(panel.hidden) return;
+    panel.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    if(refocus) btn.focus();
+  };
+  const open = () => {
+    panel.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+  };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    panel.hidden ? open() : close(false);
+  });
+  panel.addEventListener('click', e => {
+    e.stopPropagation();
+    const preset = e.target.dataset && e.target.dataset.preset;
+    if(!preset) return;
+    const sel = new Set(ERA_HELPERS.presets[preset]);
+    syncChecks(sel);
+    updateLabel(sel);
+    onChange(sel);
+    close(false);
+  });
+  panel.addEventListener('change', e => {
+    if(!e.target.dataset.title) return;
+    let sel = currentSet();
+    if(sel.size === 0){
+      e.target.checked = true;
+      sel = currentSet();
+    }
+    updateLabel(sel);
+    onChange(sel);
+  });
+  document.addEventListener('click', () => close(false));
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') close(true); });
 }
 function lookupPlayerKeyed(obj, player){
   if(!obj || !player) return undefined;
@@ -124,6 +341,256 @@ function gameContributions(game, player){
 }
 function sourceBallotCount(id){
   return ballotsBySource[id] ? ballotsBySource[id].length : 0;
+}
+function rankPoints(rank){
+  return Math.pow(Math.max(0, (31 - Number(rank || 31)) / 30), 2.5);
+}
+function gameAbbrev(game){
+  const map = {
+    'Black Ops': 'BO',
+    'Black Ops 2': 'BO2',
+    'Black Ops 3': 'BO3',
+    'Black Ops 4': 'BO4',
+    'Black Ops Cold War': 'BOCW',
+    'Black Ops 6': 'BO6',
+    'Black Ops 7': 'BO7',
+    'Modern Warfare': 'MW',
+    'Modern Warfare 3': 'MW3',
+    'Modern Warfare II': 'MWII',
+    'Modern Warfare III': 'MWIII',
+    'Advanced Warfare': 'AW',
+    'Infinite Warfare': 'IW',
+    'World War II': 'WWII',
+    'Vanguard': 'VG',
+  };
+  return map[game] || game;
+}
+function playerKeyForRollup(player){
+  return playerLookupKey(canonicalPlayerName(player) || player);
+}
+function playedTitleCount(player, placements, selectedGames){
+  const pl = playerRecord(player);
+  const allowed = selectedGames || new Set(CONSENSUS_GAMES);
+  const played = new Set((pl && pl.placements || []).map(p => p.game).filter(g => g && allowed.has(g)));
+  if(played.size) return played.size;
+  (pl && pl.seasons || []).forEach(s => s.game && allowed.has(s.game) && played.add(s.game));
+  placements.forEach(p => p.game && allowed.has(p.game) && played.add(p.game));
+  return played.size || placements.length;
+}
+function totalEventWins(player, selectedGames){
+  const pl = playerRecord(player);
+  if(pl && selectedGames){
+    return (pl.seasons || []).filter(s => selectedGames.has(s.game)).reduce((sum, s) => sum + Number(s.wins || 0), 0);
+  }
+  if(pl && Number.isFinite(pl.raw)) return pl.raw;
+  const key = playerLookupKey(player);
+  return Object.entries(CC.resumeWins || {}).reduce((sum, [game, byGame]) => {
+    if(selectedGames && !selectedGames.has(game)) return sum;
+    const match = Object.keys(byGame || {}).find(name => playerLookupKey(name) === key);
+    return sum + (match ? Number(byGame[match] || 0) : 0);
+  }, 0);
+}
+function buildOverallRows(selectedGames){
+  const byPlayer = new Map();
+  for(const [game, rows] of Object.entries(CC.consensus.games || {})){
+    if(selectedGames && !selectedGames.has(game)) continue;
+    rows.filter(r => r.ranked).forEach(r => {
+      const canonical = canonicalPlayerName(r.player) || r.player;
+      const key = playerKeyForRollup(canonical);
+      if(!byPlayer.has(key)){
+        byPlayer.set(key, {player: canonical, total: 0, placements: []});
+      }
+      const rec = byPlayer.get(key);
+      const points = rankPoints(r.consensus_rank);
+      rec.total += points;
+      rec.placements.push({
+        game,
+        rank: r.consensus_rank,
+        score: Number(r.consensus_score || 0),
+        confidence: r.confidence,
+        sourceCount: r.source_count,
+        points,
+        wins: rawWins(game, r.player),
+      });
+    });
+  }
+  const seasonOrder = new Map(D.meta.seasonOrder.map((g, i) => [g, i]));
+  return [...byPlayer.values()].map(rec => {
+    rec.placements.sort((a, b) => a.rank - b.rank || (seasonOrder.get(a.game) ?? 999) - (seasonOrder.get(b.game) ?? 999));
+    rec.rankedTitles = rec.placements.length;
+    rec.playedTitles = playedTitleCount(rec.player, rec.placements, selectedGames);
+    rec.perPlayed = rec.playedTitles ? rec.total / rec.playedTitles : 0;
+    rec.perRanked = rec.rankedTitles ? rec.total / rec.rankedTitles : 0;
+    rec.averageRank = rec.rankedTitles ? rec.placements.reduce((sum, p) => sum + Number(p.rank || 0), 0) / rec.rankedTitles : null;
+    rec.eventWins = totalEventWins(rec.player, selectedGames);
+    rec.top1 = rec.placements.filter(p => p.rank === 1).length;
+    rec.top3 = rec.placements.filter(p => p.rank <= 3).length;
+    rec.top5 = rec.placements.filter(p => p.rank <= 5).length;
+    rec.top10 = rec.placements.filter(p => p.rank <= 10).length;
+    rec.highConfidence = rec.placements.filter(p => p.confidence === 'high').length;
+    return rec;
+  });
+}
+function overallRows(mode, selectedGames){
+  const metric = OVERALL_MODES[mode].metric;
+  return buildOverallRows(selectedGames).slice().sort((a, b) => metric(b) - metric(a) || b.total - a.total || a.player.localeCompare(b.player));
+}
+function matchingOverallRow(rows, player){
+  if(!player) return rows[0];
+  const key = playerLookupKey(player);
+  return rows.find(r => playerLookupKey(r.player) === key) || rows[0];
+}
+function titlePlacementChip(player, placement){
+  const weak = placement.rank > 10 ? ' weak' : '';
+  return `<a class="title-pill${weak}" href="${esc(selectedUrl(placement.game, player))}" data-title-link="${esc(placement.game)}" data-title-player="${esc(player)}">${esc(gameAbbrev(placement.game))} #${placement.rank}</a>`;
+}
+function renderOverallSummary(rows, selectedGames){
+  const titles = selectedGames.size;
+  const players = rows.length;
+  const aggregateTitles = new Set((CC.sources || [])
+    .filter(s => s.status === 'scored' && s.source_kind === 'community_aggregate_survey' && selectedGames.has(s.game))
+    .map(s => s.game)).size;
+  const totalWins = rows.reduce((sum, r) => sum + r.eventWins, 0);
+  return `<div class="stat-row community-stats">
+    <div class="stat"><div class="k">Scored titles</div><div class="v">${titles}</div><div class="small faint">linked to title traces</div></div>
+    <div class="stat"><div class="k">Ranked players</div><div class="v">${players}</div><div class="small faint">unique consensus rows</div></div>
+    <div class="stat"><div class="k">Aggregate-poll titles</div><div class="v">${aggregateTitles}</div><div class="small faint">often recent games</div></div>
+    <div class="stat"><div class="k">Event wins shown</div><div class="v">${totalWins}</div><div class="small faint">context only</div></div>
+  </div>`;
+}
+function renderOverallTable(rows, selected, mode){
+  const cfg = OVERALL_MODES[mode];
+  return `<section class="panel-shell">
+    <div class="panel-head">
+      <div><h2>${esc(cfg.label)}</h2><p class="small muted">${esc(cfg.note)} Event wins are shown only for resume context.</p></div>
+      <span class="pill tag">${esc(cfg.badge)}</span>
+    </div>
+    <div class="panel-body">
+      <p class="scrollhint small muted">Swipe the table sideways to see all columns →</p>
+      <div id="cc-overall-table" class="community-overall-table" role="region" aria-label="Overall community consensus table"></div>
+    </div>
+  </section>`;
+}
+function mountOverallTable(rows, selected, mode){
+  if(overallTable){
+    try { overallTable.destroy(); } catch(e) {}
+    overallTable = null;
+  }
+  const cfg = OVERALL_MODES[mode];
+  const metric = cfg.metric;
+  const topMetric = metric(rows[0] || {total: 1, perPlayed: 1, perRanked: 1}) || 1;
+  const data = rows.map((r, i) => ({
+    ...r,
+    rank: i + 1,
+    activeScore: metric(r),
+    activeWidth: Math.max(4, Math.round(metric(r) / topMetric * 100)),
+    selected: selected && r.player === selected.player,
+  }));
+  const M = window.matchMedia('(max-width: 760px)').matches;
+  overallTable = new Tabulator('#cc-overall-table', {
+    data,
+    layout: 'fitColumns',
+    placeholder: 'No players match this era selection.',
+    columns: [
+      {title:'Rank', field:'rank', width:M?58:64, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Player', field:'player', minWidth:M?130:160, widthGrow:1.2, formatter:c=>`<strong>${playerCell(c.getValue())}</strong>`},
+      {title:'Active score', field:'activeScore', minWidth:M?112:136, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum score',
+        formatter:c=>`${Number(c.getValue()).toFixed(3)}<span class="bar-mini"><span style="width:${c.getData().activeWidth}%"></span></span>`},
+      {title:'Average rank', field:'averageRank', minWidth:116, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        formatter:c=>c.getValue() == null ? '<span class="faint">-</span>' : Number(c.getValue()).toFixed(1)},
+      {title:'Event wins', field:'eventWins', minWidth:108, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum context-band',
+        formatter:c=>`${c.getValue()}<span class="sub">not scored</span>`},
+      {title:'Top 1', field:'top1', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Top 5', field:'top5', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Trace', field:'player', minWidth:82, formatter:c=>{
+        const player = c.getValue();
+        return `<a class="evidence-link" href="${esc(overallUrl(player, mode))}" data-overall-player="${esc(player)}">Trace</a>`;
+      }},
+    ],
+    rowFormatter:row => row.getElement().classList.toggle('community-selected-row', !!row.getData().selected),
+  });
+}
+function renderOverallDetail(playerRow, mode){
+  const cfg = OVERALL_MODES[mode];
+  const best = playerRow.placements.slice(0, 12).map(p => titlePlacementChip(playerRow.player, p)).join('');
+  const calcRows = playerRow.placements.map(p => `<tr>
+    <td>${titlePlacementChip(playerRow.player, p)}</td>
+    <td class="n">${p.rank}</td>
+    <td class="n">${Number(p.score || 0).toFixed(3)}</td>
+    <td class="n">${p.sourceCount || 0}</td>
+    <td>${confidencePill(p.confidence)}</td>
+    <td class="n"><span class="formula">((31 - ${p.rank}) / 30) ** 2.5</span></td>
+    <td class="n">${p.points.toFixed(3)}</td>
+    <td class="context-band n">${p.wins}<span class="sub">not scored</span></td>
+  </tr>`).join('');
+  return `<aside class="panel-shell">
+    <div class="panel-head">
+      <div><h2>${esc(playerRow.player)} Overall Trace</h2><p class="small muted">Every title row links to the per-title trace where the source inputs are shown.</p></div>
+      <span class="pill tag">${esc(cfg.badge)}</span>
+    </div>
+    <div class="panel-body">
+      <div class="mini-grid community-mini-grid">
+        <div class="mini"><div class="k">Total</div><div class="v">${playerRow.total.toFixed(3)}</div></div>
+        <div class="mini"><div class="k">/ played</div><div class="v">${playerRow.perPlayed.toFixed(3)}</div></div>
+        <div class="mini"><div class="k">/ ranked</div><div class="v">${playerRow.perRanked.toFixed(3)}</div></div>
+        <div class="mini"><div class="k">Event wins</div><div class="v">${playerRow.eventWins}<span class="sub">not scored</span></div></div>
+      </div>
+      <p class="small muted">Overall points are the sum of title ranks converted with <span class="formula">((31 - rank) / 30) ** 2.5</span>. Use the title links for the source-level trace behind each title rank.</p>
+      <div class="calc-summary small muted">
+        <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}<br>
+        <strong>Per played title:</strong> ${playerRow.total.toFixed(3)} / ${playerRow.playedTitles} = ${playerRow.perPlayed.toFixed(3)}<br>
+        <strong>Per ranked title:</strong> ${playerRow.total.toFixed(3)} / ${playerRow.rankedTitles} = ${playerRow.perRanked.toFixed(3)}
+      </div>
+      <div class="scroll-x cc-calc-table-wrap" tabindex="0" role="region" aria-label="${esc(playerRow.player)} overall trace">
+        <table class="data cc-calc-table">
+          ${tableCaption(`${playerRow.player} overall community consensus trace`)}
+          <thead><tr><th scope="col">Title trace</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Title score</th><th scope="col" class="n">Sources</th><th scope="col">Conf.</th><th scope="col" class="n">Rank-points formula</th><th scope="col" class="n">Overall points</th><th scope="col" class="context-band n">Event wins</th></tr></thead>
+          <tbody>${calcRows}</tbody>
+        </table>
+      </div>
+      <div class="rank-list">
+        <div class="rank-row"><span class="rank-no">${playerRow.top1}</span><span>Top-1 titles</span><strong class="num">${playerRow.top1}</strong></div>
+        <div class="rank-row"><span class="rank-no">${playerRow.top3}</span><span>Top-3 titles</span><strong class="num">${playerRow.top3}</strong></div>
+        <div class="rank-row"><span class="rank-no">${playerRow.top10}</span><span>Top-10 titles</span><strong class="num">${playerRow.top10}</strong></div>
+      </div>
+      <div class="title-strip detail-title-strip">${best}</div>
+    </div>
+  </aside>`;
+}
+function renderOverall(mode, player){
+  const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
+  const rows = overallRows(mode, selectedGames);
+  const selected = matchingOverallRow(rows, player);
+  setActiveView('overall');
+  modeSel.value = mode;
+  setOverallUrl(mode, selected && selected.player);
+  host.innerHTML = `
+    ${renderOverallSummary(rows, selectedGames)}
+    <div class="note community-method-note">Recent titles may be driven by a single large community poll; older titles are often reconstructed from smaller preserved threads and lists. Use the title links to inspect the underlying evidence.</div>
+    ${renderOverallTable(rows, selected, mode)}
+    <div class="community-expanded-trace" id="cc-overall-trace-card">
+      ${renderOverallDetail(selected, mode)}
+    </div>
+  `;
+  mountOverallTable(rows, selected, mode);
+  bindOverallLinks(mode);
+}
+function bindOverallLinks(mode){
+  host.onclick = e => {
+    const overall = e.target.closest('[data-overall-player]');
+    if(overall){
+      e.preventDefault();
+      renderOverall(mode, overall.dataset.overallPlayer);
+      return;
+    }
+    const title = e.target.closest('[data-title-link]');
+    if(title){
+      e.preventDefault();
+      renderTitle(title.dataset.titleLink, title.dataset.titlePlayer);
+    }
+  };
 }
 function renderSummary(game, rows, sources){
   const scored = sources.filter(s => s.status === 'scored');
@@ -230,12 +697,15 @@ function renderSourceLedger(game, sources){
     </div>
   </section>`;
 }
-function render(game, player){
+function renderTitle(game, player){
+  host.onclick = null;
+  if(!CC.consensus.games[game]) game = defaultConsensusGame();
   const rows = (CC.consensus.games[game] || []).filter(r => r.ranked);
   const sources = gameSources(game);
   const selectedRow = matchingConsensusRow(rows, player);
   const selected = selectedRow ? selectedRow.player : (rows[0] && rows[0].player);
-  setUrl(game, selected);
+  setActiveView('title');
+  setTitleUrl(game, selected);
   gameSel.value = game;
   host.innerHTML = `
     ${renderSummary(game, rows, sources)}
@@ -248,7 +718,7 @@ function render(game, player){
   host.querySelectorAll('[data-select-player]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
-      render(game, a.dataset.selectPlayer);
+      renderTitle(game, a.dataset.selectPlayer);
     });
   });
 }
@@ -261,10 +731,30 @@ fetch('community-consensus.json')
     ballotsBySource = {};
     (CC.ballots || []).forEach(b => (ballotsBySource[b.source_id] ||= []).push(b));
     const games = titleOrder(Object.keys(CC.consensus.games || {}));
+    CONSENSUS_GAMES = games;
+    ERA_HELPERS = buildEraHelpers(games);
     gameSel.innerHTML = games.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
     const state = readState();
-    render(state.game, state.player);
-    gameSel.addEventListener('change', () => render(gameSel.value, null));
+    currentEraSelection = state.eras;
+    mountCommunityEraMenu(currentEraSelection, sel => {
+      currentEraSelection = sel;
+      renderOverall(modeSel.value, new URLSearchParams(location.search).get('p'));
+    });
+    gameSel.value = state.game;
+    if(state.view === 'title') renderTitle(state.game, state.player);
+    else renderOverall(state.mode, state.overallPlayer);
+    document.querySelectorAll('[data-cc-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(btn.dataset.ccView === 'title') renderTitle(gameSel.value || defaultConsensusGame(), null);
+        else renderOverall(modeSel.value, null);
+      });
+    });
+    modeSel.addEventListener('change', () => {
+      const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
+      const selected = matchingOverallRow(overallRows(modeSel.value, selectedGames), new URLSearchParams(location.search).get('p'));
+      renderOverall(modeSel.value, selected && selected.player);
+    });
+    gameSel.addEventListener('change', () => renderTitle(gameSel.value, null));
     shareBtn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(location.href);

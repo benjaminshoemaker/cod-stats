@@ -85,7 +85,7 @@ function readState(){
 function setUrl(game, split){
   const url = new URL(location.href);
   if(game === 'all') url.searchParams.delete('g'); else url.searchParams.set('g', game);
-  url.searchParams.set('split', split);
+  if(split === 'respawn') url.searchParams.delete('split'); else url.searchParams.set('split', split);
   history.replaceState(null, '', url);
 }
 function syncControls(game, split){

@@ -48,26 +48,19 @@ test.describe('leaderboard', () => {
     expect(fields).toEqual(FULL_COLUMN_ORDER);
   });
 
-  test('stats columns are opt-in and use the generated player stats', async ({ page }) => {
-    await page.goto('/index.html');
-    await expect(page.locator('#table .tabulator-col[tabulator-field="skillKd"]')).toBeHidden();
-    await expect(page.locator('#table .tabulator-col[tabulator-field="skillInteractions"]')).toBeHidden();
+  test('stat columns are not exposed on the leaderboard', async ({ page }) => {
+    await page.goto('/index.html?hide=adjRank&show=primaryRole%2CwinConversion%2CeventsPlaced%2CavgPlace%2CskillKd%2CskillKills%2CskillDeaths%2CskillInteractions%2CskillEvents');
+
+    for (const field of ['skillKd', 'skillKills', 'skillDeaths', 'skillInteractions', 'skillEvents']) {
+      await expect(page.locator(`#table .tabulator-col[tabulator-field="${field}"]`)).toHaveCount(0);
+    }
 
     await page.locator('#colmenu .colmenu-btn').click();
-    await page.locator('.colmenu-panel input[data-field="skillKd"]').check();
-    await page.locator('.colmenu-panel input[data-field="skillInteractions"]').check();
-    await expect(page).toHaveURL(/show=.*skillKd/);
-    await expect(page).toHaveURL(/show=.*skillInteractions/);
-    await expect(page.locator('#table .tabulator-col[tabulator-field="skillKd"]')).toBeVisible();
-    await expect(page.locator('#table .tabulator-col[tabulator-field="skillInteractions"]')).toBeVisible();
-
-    const expected = await page.evaluate(() => {
-      const s = (window as any).APP_DATA.players.Scump.skillStats.overall;
-      return { kd: s.kd.toFixed(3), interactions: s.interactions.toLocaleString() };
-    });
-    const scump = page.locator('#table .tabulator-row').filter({ hasText: 'Scump' });
-    await expect(scump.locator('[tabulator-field="skillKd"]')).toHaveText(expected.kd);
-    await expect(scump.locator('[tabulator-field="skillInteractions"]')).toHaveText(expected.interactions);
+    for (const field of ['skillKd', 'skillKills', 'skillDeaths', 'skillInteractions', 'skillEvents']) {
+      await expect(page.locator(`.colmenu-panel input[data-field="${field}"]`)).toHaveCount(0);
+    }
+    await expect(page).toHaveURL(/show=primaryRole%2CwinConversion%2CeventsPlaced%2CavgPlace|show=primaryRole,winConversion,eventsPlaced,avgPlace/);
+    await expect(page).not.toHaveURL(/skillKd|skillKills|skillDeaths|skillInteractions|skillEvents/);
   });
 
   test('compare mode selects leaderboard players and opens compare page', async ({ page }) => {
@@ -450,11 +443,26 @@ test.describe('mobile layout', () => {
   test('all columns reachable via horizontal scroll', async ({ page }) => {
     test.skip(test.info().project.name !== 'mobile', 'mobile only');
     await page.goto('/index.html');
-    const { sw, cw } = await page.evaluate(() => {
+    const { sw, cw, role, label, tabIndex, enhanced } = await page.evaluate(() => {
       const h = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
-      return { sw: h.scrollWidth, cw: h.clientWidth };
+      return {
+        sw: h.scrollWidth,
+        cw: h.clientWidth,
+        role: h.getAttribute('role'),
+        label: h.getAttribute('aria-label'),
+        tabIndex: h.tabIndex,
+        enhanced: h.classList.contains('scroll-region'),
+      };
     });
     expect(sw).toBeGreaterThan(cw); // overflow exists → swipe to see the rest
+    expect(role).toBe('region');
+    expect(label).toBe('Leaderboard table');
+    expect(tabIndex).toBeGreaterThanOrEqual(0);
+    expect(enhanced).toBe(true);
+
+    const holder = page.locator('#table .tabulator-tableholder');
+    await holder.evaluate(el => el.dispatchEvent(new KeyboardEvent('keydown', {key:'End', bubbles:true, cancelable:true})));
+    await expect.poll(() => holder.evaluate(el => (el as HTMLElement).scrollLeft)).toBeGreaterThan(0);
   });
 
   test('rank column is compact (not wasting horizontal space)', async ({ page }) => {
@@ -584,6 +592,7 @@ test.describe('pages', () => {
     await page.goto('/kor.html');
     await expect(page.getByRole('heading', { name: 'Kills Over Replacement' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'All-time Respawn KOR/map' })).toBeVisible();
+    await expect(page).toHaveURL(/\/kor\.html$/);
     await expect(page.locator('.kor-method a')).toHaveAttribute('href', 'methodology.html#kills-over-replacement');
     await expect(page.locator('.kor-table thead')).toContainText('Role');
     await expect(page.locator('.kor-table thead')).toContainText('Median opp place');
@@ -620,7 +629,60 @@ test.describe('pages', () => {
   test('Community Consensus page renders title rankings and source traces', async ({ page }) => {
     await page.goto('/community.html');
     await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
+    await expect(page).toHaveURL(/\/community\.html$/);
     await expect(page.locator('.nav a.active')).toHaveText('Community');
+    await expect(page.locator('#cc-view-overall')).toHaveClass(/active/);
+    await expect(page.locator('#cc-title-field')).toBeHidden();
+    await expect(page.locator('#cc-era-field')).toBeVisible();
+    await expect(page.locator('#cc-eramenu .colmenu-btn')).toContainText('Eras: All');
+    await expect(page.getByRole('heading', { name: 'Career Total Ranking' })).toBeVisible();
+    const overallHeaders = await page.locator('#cc-overall-table .tabulator-col-title').allTextContents();
+    expect(overallHeaders.at(-1)).toBe('Trace');
+    const firstOverallRow = page.locator('#cc-overall-table .tabulator-row').first();
+    await expect(firstOverallRow).toContainText('Scump');
+    await expect(firstOverallRow.locator('.context-band')).toContainText('28');
+    await expect(firstOverallRow).toContainText('not scored');
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="averageRank"]')).toContainText('Average rank');
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="total"]')).toHaveCount(0);
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perPlayed"]')).toHaveCount(0);
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perRanked"]')).toHaveCount(0);
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="placements"]')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Scump Overall Trace' })).toBeVisible();
+    await expect(page.locator('.calc-summary')).toContainText('Total:');
+    await expect(page.locator('.cc-calc-table')).toContainText('Title score');
+    await expect(page.locator('.cc-calc-table')).toContainText('Sources');
+    await expect(page.locator('.cc-calc-table')).toContainText('Overall points');
+    await expect(page.locator('.cc-calc-table')).toContainText('((31 - 1) / 30) ** 2.5');
+    await expect(page.locator('.cc-calc-table').getByRole('link', { name: 'MW3 #1' })).toHaveAttribute('href', /view=title/);
+    const overallLayout = await page.evaluate(() => {
+      const table = document.querySelector('#cc-overall-table') as HTMLElement;
+      const holder = document.querySelector('#cc-overall-table .tabulator-tableholder') as HTMLElement;
+      const trace = document.querySelector('#cc-overall-trace-card') as HTMLElement;
+      const tableBox = table.getBoundingClientRect();
+      const traceBox = trace.getBoundingClientRect();
+      return {
+        traceBelowTable: traceBox.top > tableBox.bottom,
+        tableUsesMostWidth: tableBox.width > window.innerWidth * 0.75,
+        pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        tableScrollsInside: holder.scrollWidth > holder.clientWidth,
+      };
+    });
+    expect(overallLayout.traceBelowTable).toBe(true);
+    expect(overallLayout.tableUsesMostWidth).toBe(true);
+    expect(overallLayout.pageOverflow).toBe(false);
+
+    await page.locator('#cc-eramenu .colmenu-btn').click();
+    await page.locator('#cc-eramenu .era-preset[data-preset="cdl"]').click();
+    await expect(page).toHaveURL(/eras=cdl/);
+    await expect(page.locator('#cc-eramenu .colmenu-btn')).toContainText('Eras: CDL');
+    await expect(page.locator('#cc-overall-table .tabulator-row').first()).toContainText('Simp');
+
+    await page.locator('#cc-mode').selectOption('played');
+    await expect(page).toHaveURL(/mode=played/);
+    await expect(page).not.toHaveURL(/view=overall/);
+    await expect(page.getByRole('heading', { name: 'Per Played Title Ranking' })).toBeVisible();
+
+    await page.locator('#cc-view-title').click();
     await expect(page.locator('#cc-game')).toHaveValue('Black Ops 2');
     await expect(page.getByRole('heading', { name: 'Black Ops 2 Ranking' })).toBeVisible();
     await expect(page.locator('.community-table tbody tr').first()).toContainText('Karma');
@@ -963,16 +1025,28 @@ test.describe('GOAT Builder', () => {
     await page.goto('/goat-builder.html');
 
     await expect(page.getByRole('heading', { name: 'GOAT Ranking Builder' })).toBeVisible();
+    await expect(page).toHaveURL(/\/goat-builder\.html$/);
     await expect(page.locator('#skillCoverage')).toHaveText('15');
     await expect(page.locator('#laneCount')).toHaveText('4');
     await expect(page.locator('#activeShare')).toHaveText('100 pts');
     await expect(page.locator('#ringStat')).toHaveText('2.0x');
 
-    const skills = await page.locator('#rankRows > tr:not(.gb-detail-row)').evaluateAll(rows =>
-      rows.slice(0, 8).map(row => row.children[4].textContent?.trim()));
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    const skills = await page.locator('#goatTable .tabulator-cell[tabulator-field="skill"]').evaluateAll(cells =>
+      cells.slice(0, 8).map(cell => cell.textContent?.trim()));
     expect(new Set(skills)).not.toEqual(new Set(['50']));
     expect(skills).toContain('100');
     expect(errors).toEqual([]);
+  });
+
+  test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A25%2Cskill%3A25%2Clongevity%3A25%2Cpeak%3A25&rings=2&era=all&view=rank&sort=rank&dir=asc');
+
+    await expect(page.getByRole('heading', { name: 'GOAT Ranking Builder' })).toBeVisible();
+    await expect(page.locator('#laneCount')).toHaveText('4');
+    await expect(page.locator('#activeShare')).toHaveText('100 pts');
+    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+    await expect(page).toHaveURL(/\/goat-builder\.html$/);
   });
 
   test('primary criteria can be removed and round-trip through the URL', async ({ page }) => {
@@ -990,6 +1064,81 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('[data-enabled="skill"]')).not.toBeChecked();
     await expect(page.locator('[data-weight="skill"]')).toBeDisabled();
     await expect(page.locator('#laneCount')).toHaveText('3');
+  });
+
+  test('criterion scoring preserves raw input magnitude', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A50%2Cskill%3A25%2Clongevity%3A15%2Cpeak%3A10&rings=3&era=all&view=rank');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+
+    const comparison = await page.evaluate(() => {
+      const rows = rowsFor(activeWeights(), renderScales, state.ring);
+      const pick = (name: string) => {
+        const row = rows.find((r: any) => r.player.name === name);
+        const stats = row.stats;
+        return {
+          rank: rows.findIndex((r: any) => r.player.name === name) + 1,
+          resumeScore: row.lane.resume,
+          resumeInput: stats.adj + stats.champs * (state.ring - 1),
+          skillScore: row.lane.skill,
+          skillInput: stats.consensus?.totalPoints,
+        };
+      };
+      return {crim: pick('Crimsix'), scump: pick('Scump')};
+    });
+
+    expect(comparison.crim.resumeInput).toBeGreaterThan(32);
+    expect(comparison.scump.resumeInput).toBeLessThan(26);
+    expect(comparison.crim.resumeScore - comparison.scump.resumeScore).toBeGreaterThan(20);
+    expect(comparison.scump.skillInput).toBeGreaterThan(comparison.crim.skillInput);
+    expect(comparison.scump.skillScore - comparison.crim.skillScore).toBeGreaterThan(35);
+  });
+
+  test('ranking columns sort and expose header explanations', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="skill"]'))
+      .toHaveAttribute('title', /community-consensus points/);
+
+    await page.locator('#goatTable .tabulator-col[tabulator-field="skill"]').click();
+    await expect(page).toHaveURL(/sort=skill/);
+    const firstSkillSort = page.locator('#goatTable .tabulator-row').first();
+    await expect(firstSkillSort.locator('.gb-name')).toHaveText('Scump');
+
+    await page.locator('#goatTable .tabulator-col[tabulator-field="player"]').click();
+    const firstPlayerSort = page.locator('#goatTable .tabulator-row').first();
+    await expect(firstPlayerSort.locator('.gb-name')).toHaveText('aBeZy');
+  });
+
+  test('ranking table scrolls inside the table container', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+
+    const metrics = await page.evaluate(() => {
+      const holder = document.querySelector('#goatTable .tabulator-tableholder') as HTMLElement;
+      return {
+        pageScrollWidth: document.documentElement.scrollWidth,
+        viewportWidth: window.innerWidth,
+        tableClientWidth: holder.clientWidth,
+        tableScrollWidth: holder.scrollWidth,
+      };
+    });
+
+    expect(metrics.pageScrollWidth).toBeLessThanOrEqual(metrics.viewportWidth);
+    expect(metrics.tableScrollWidth).toBeGreaterThan(metrics.tableClientWidth);
+  });
+
+  test('expanded player row explains peak and consensus inputs without fact-card clutter', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A40%2Cskill%3A30%2Clongevity%3A20%2Cpeak%3A10&rings=3&era=postBo2&view=rank');
+    const crimsixRow = page.locator('#goatTable .tabulator-row').filter({ hasText: 'Crimsix' });
+    await crimsixRow.evaluate(row => row.scrollIntoView({ block: 'center' }));
+    await crimsixRow.click();
+    const detail = page.locator('#goatTable .gb-row-detail[data-detail="Crimsix"]');
+    await expect(detail).toBeVisible();
+    await expect(detail.locator('.gb-explain-table')).toBeVisible();
+    await expect(detail).toContainText('Crimsix score build');
+    await expect(detail).toContainText('4.30 consensus points');
+    await expect(detail).toContainText('Rank points use ((31 - rank) / 30)^2.5');
+    await expect(detail).toContainText('Title resume input 6.1 = 4.1 title-adjusted wins + 1 Champs ring x 2.0 extra');
+    await expect(detail.locator('.gb-fact')).toHaveCount(0);
   });
 
   test('is available directly but not linked from global navigation', async ({ page }) => {

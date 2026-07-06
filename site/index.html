@@ -102,7 +102,7 @@ const searchInput = document.getElementById("search");
 
 // ---- read shareable state from the URL (falls back to saved prefs / defaults) ----
 const params = new URLSearchParams(location.search);
-const VALID = new Set(['adjRank','name','adjusted','adjWeighted','primaryRole','peak','eras','raw','winConversion','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs','skillKd','skillKills','skillDeaths','skillInteractions','skillMaps','skillEvents','skillRespawnKd','skillSndKd']);
+const VALID = new Set(['adjRank','name','adjusted','adjWeighted','primaryRole','peak','eras','raw','winConversion','eventsPlaced','avgPlace','winsChange','rawRank','delta','champs']);
 const startQ    = params.get('q') || '';
 
 // era/title selection is stored as one token: a preset key (all/post/prebo2/mlgcwl/cdl)
@@ -135,17 +135,9 @@ const COLS = [
   {field:'peak',      label:'Peak'},
   {field:'eras',      label:'Eras'},
   {field:'champs',    label:'Champs'},
-  {field:'skillKd',   label:'K/D'},
-  {field:'skillKills',label:'Kills'},
-  {field:'skillDeaths',label:'Deaths'},
-  {field:'skillInteractions',label:'Interactions'},
-  {field:'skillMaps', label:'Maps'},
-  {field:'skillEvents',label:'Events w/ stats'},
-  {field:'skillRespawnKd',label:'Respawn K/D'},
-  {field:'skillSndKd',label:'S&D K/D'},
 ];
 const COL_FIELDS = new Set(COLS.map(c=>c.field));
-const DEFAULT_HIDE = new Set(['primaryRole','winConversion','eventsPlaced','avgPlace','skillKd','skillKills','skillDeaths','skillInteractions','skillMaps','skillEvents','skillRespawnKd','skillSndKd']);
+const DEFAULT_HIDE = new Set(['primaryRole','winConversion','eventsPlaced','avgPlace']);
 const startHide = new Set([
   ...Array.from(DEFAULT_HIDE).filter(f => !(params.get('show') || '').split(',').includes(f)),
   ...(params.get('hide') || '').split(',').filter(f=>COL_FIELDS.has(f)),
@@ -159,8 +151,6 @@ const champFmt  = c=>{const v=c.getValue(); return v?`<span class="pill champ">$
 const placeFmt  = c=>{const v=c.getValue(); return v==null?'<span class="faint">–</span>':v.toFixed(1);};
 const pctFmt = c => { const v = c.getValue(); return v == null ? '<span class="faint">–</span>' : `${Math.round(v * 100)}%`; };
 const roleFmt = c => rolePill(c.getValue());
-const statNumFmt = c => fmtInt(c.getValue());
-const statKdFmt = c => fmtKd(c.getValue());
 const compareFmt = c => {
   const name = c.getRow().getData().name;
   const checked = compareNames.has(name);
@@ -169,27 +159,6 @@ const compareFmt = c => {
     <input type="checkbox" data-compare-name="${esc(name)}" aria-label="Compare ${esc(name)}"${checked?' checked':''}${disabled?' disabled':''}>
   </label>`;
 };
-
-function addSkillFields(rows){
-  return rows.map(row=>{
-    const p = D.players[row.name] || {};
-    const stats = p.skillStats;
-    const overall = skillBucket(stats, 'overall') || {};
-    const respawn = skillBucket(stats, 'respawn') || {};
-    const snd = skillBucket(stats, 'snd') || {};
-    return {
-      ...row,
-      skillKd: overall.kd ?? null,
-      skillKills: overall.kills ?? null,
-      skillDeaths: overall.deaths ?? null,
-      skillInteractions: overall.interactions ?? null,
-      skillMaps: overall.maps ?? null,
-      skillEvents: stats && stats.coverage ? stats.coverage.events : null,
-      skillRespawnKd: respawn.kd ?? null,
-      skillSndKd: snd.kd ?? null,
-    };
-  });
-}
 
 // No fixed height → the table flows in the page so the header can stick to the window
 // (see .tabulator-header sticky rule in style.css). Mobile uses compact widths + short labels.
@@ -241,37 +210,13 @@ const buildColumns = M => [
     {title:"Champs", field:"champs", ...colSize(M,96,100,.8), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
       headerTooltip:"Call of Duty World Championship wins (unweighted, one per year)", formatter:champFmt},
-    {title:"K/D", field:"skillKd", ...colSize(M,78,82,.8), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
-      headerTooltip:"On-record PlayerStats kills divided by deaths"},
-    {title:"Kills", field:"skillKills", ...colSize(M,92,96,.9), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
-      headerTooltip:"On-record PlayerStats kills"},
-    {title:"Deaths", field:"skillDeaths", ...colSize(M,94,96,.9), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
-      headerTooltip:"On-record PlayerStats deaths"},
-    {title:M?"Int.":"Interactions", field:"skillInteractions", ...colSize(M,104,118,1.05), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
-      headerTooltip:"On-record kills + deaths"},
-    {title:"Maps", field:"skillMaps", ...colSize(M,84,84,.8), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
-      headerTooltip:"Scored map rows in PlayerStats"},
-    {title:M?"Stat ev.":"Events w/ stats", field:"skillEvents", ...colSize(M,92,112,1), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statNumFmt,
-      headerTooltip:"Tournaments represented in PlayerStats"},
-    {title:M?"Resp K/D":"Respawn K/D", field:"skillRespawnKd", ...colSize(M,96,108,1), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
-      headerTooltip:"On-record K/D for every non-S&D mode"},
-    {title:"S&D K/D", field:"skillSndKd", ...colSize(M,92,96,.9), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", formatter:statKdFmt,
-      headerTooltip:"On-record Search and Destroy K/D"},
 ];
 // apply saved/URL column visibility before first render (no flicker)
 const columns = buildColumns(mq.matches);
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
 const table = new Tabulator("#table",{
-  data: addSkillFields(cr(selected, ringN)),
+  data: cr(selected, ringN),
   layout: "fitColumns",   // fill the desktop table while respecting compact min widths for expanded views
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
@@ -321,6 +266,7 @@ function markSort(){
 }
 table.on("tableBuilt",()=>{
   wireHeaderA11y(); markSort();
+  enhanceScrollRegions(document.getElementById('table'));
   // apply search from URL
   if(startQ){ searchInput.value = startQ; table.setFilter("name","like",startQ); }
   // column show/hide menu (reflects the visibility already applied to `columns`)
@@ -337,6 +283,7 @@ mq.addEventListener('change', ()=>{
   const cols = buildColumns(mq.matches);
   cols.forEach(c=>{ if(hidden.has(c.field)) c.visible = false; });
   table.setColumns(cols);
+  enhanceScrollRegions(document.getElementById('table'));
   wireHeaderA11y(); markSort();
   syncCompareUI();
 });
@@ -412,7 +359,7 @@ function mountEraMenu(initial, onChange){
 setNote(selected);
 mountEraMenu(selected, sel=>{
   selected = sel;
-  table.replaceData(addSkillFields(cr(selected, ringN))).catch(()=>{});   // .catch: see COD-STATS-4/5
+  table.replaceData(cr(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
   setNote(selected);
   syncURL();
 });
@@ -427,7 +374,7 @@ ringRange.addEventListener('input', e=>{
   ringVal.textContent = '×'+ringN;
   const col = table.getColumn('adjWeighted');
   if(col) (ringN>1 ? col.show() : col.hide());
-  table.replaceData(addSkillFields(cr(selected, ringN))).catch(()=>{});
+  table.replaceData(cr(selected, ringN)).catch(()=>{});
   table.redraw(true);        // refit columns after showing/hiding the weighted column
   setNote(selected);
   syncURL();

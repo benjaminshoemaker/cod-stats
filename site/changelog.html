@@ -41,6 +41,24 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-06', tag:'Improved', title:'Reusable horizontal table scrolling',
+   body:`Wide tables now share one horizontal-scroll handler for focusable regions, keyboard scrolling, shift-wheel
+   scrolling, and edge-state cues. The leaderboard's Tabulator table uses the same handler as plain data tables, so
+   future scroll fixes can land in one shared place. Rankings and scores are unchanged.`},
+  {date:'2026-07-06', tag:'Fixed', title:'Default view URLs stay clean',
+   body:`GOAT Builder, Community Consensus, and Kills Over Replacement now match the leaderboard's URL behavior:
+   the URL remains bare for default views, while non-default filters and selections still round-trip in shared links.
+   Rankings and scores are unchanged.`},
+  {date:'2026-07-06', tag:'Changed', title:'Leaderboard stat columns removed',
+   body:`The main leaderboard no longer offers on-record K/D, kills, deaths, interactions, maps, or stat-event columns
+   in the Columns menu. Those objective-stat views remain on the dedicated player, compare, similarity, and Kills Over
+   Replacement pages where the coverage context is visible. Rankings and era-adjusted totals are unchanged.`},
+  {date:'2026-07-06', tag:'New', title:'Community Consensus overall rollup',
+   body:`The <a href="community.html">Community Consensus</a> page now opens with an overall career rollup, including
+   career total, per-played-title, and per-ranked-title views. The overall view includes the same era selector pattern as
+   the leaderboard, shows an overall trace with the title-by-title rank-points computation for the selected player, and
+   keeps each trace title linked back to the per-title evidence where the source math lives. Event wins remain visible as
+   non-scoring resume context.`},
   {date:'2026-07-06', tag:'New', title:'Authored-list consensus check',
    body:`A new <a href="authored-vs-community.html">Authored-list check</a> insight compares player/media lists
    against the Community Consensus rankings. The finding: authored lists mostly confirm the community list, so they

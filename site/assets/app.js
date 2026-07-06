@@ -146,11 +146,87 @@ function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}
 function fmtInt(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toLocaleString();}
 function fmtKd(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toFixed(3);}
 function scrollRegionAttrs(label, extraClass=''){
-  return `class="scroll-x${extraClass ? ' '+esc(extraClass) : ''}" tabindex="0" role="region" aria-label="${esc(label)}"`;
+  return `class="scroll-x${extraClass ? ' '+esc(extraClass) : ''}" tabindex="0" role="region" aria-label="${esc(label)}" data-scroll-region`;
 }
 function tableCaption(label){
   return `<caption class="sr-only">${esc(label)}</caption>`;
 }
+const SCROLL_REGION_SELECTOR = '.scroll-x, [data-scroll-region], .tabulator-tableholder';
+const scrollRegionState = new WeakMap();
+function scrollRegionLabel(el){
+  const labelledBy = el.getAttribute('aria-labelledby');
+  if(labelledBy) return '';
+  if(el.getAttribute('aria-label')) return '';
+  const table = el.querySelector('table');
+  const caption = table && table.querySelector('caption');
+  if(caption && caption.textContent && caption.textContent.trim()) return caption.textContent.trim();
+  if(el.closest('#table')) return 'Leaderboard table';
+  return 'Scrollable data table';
+}
+function updateScrollRegionState(el){
+  const max = Math.max(0, el.scrollWidth - el.clientWidth);
+  const x = Math.max(0, Math.min(el.scrollLeft, max));
+  const overflow = max > 1;
+  el.dataset.overflowX = overflow ? 'true' : 'false';
+  el.dataset.atStart = x <= 1 ? 'true' : 'false';
+  el.dataset.atEnd = x >= max - 1 ? 'true' : 'false';
+}
+function mountHorizontalTableScroll(el){
+  if(!el || scrollRegionState.has(el)) return;
+  if(!el.matches(SCROLL_REGION_SELECTOR)) return;
+  el.classList.add('scroll-region');
+  if(el.tabIndex < 0) el.tabIndex = 0;
+  if(!el.getAttribute('role')) el.setAttribute('role', 'region');
+  const label = scrollRegionLabel(el);
+  if(label) el.setAttribute('aria-label', label);
+
+  scrollRegionState.set(el, true);
+  const step = () => Math.max(80, Math.floor(el.clientWidth * 0.8));
+  const setLeft = x => {
+    const max = Math.max(0, el.scrollWidth - el.clientWidth);
+    el.scrollLeft = Math.max(0, Math.min(max, x));
+    updateScrollRegionState(el);
+  };
+  const scrollBy = dx => setLeft(el.scrollLeft + dx);
+  const onScroll = () => updateScrollRegionState(el);
+  const onKeydown = e => {
+    if(e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key === 'ArrowRight'){ e.preventDefault(); scrollBy(step()); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); scrollBy(-step()); }
+    if(e.key === 'Home'){ e.preventDefault(); setLeft(0); }
+    if(e.key === 'End'){ e.preventDefault(); setLeft(el.scrollWidth); }
+  };
+  const onWheel = e => {
+    if(!e.shiftKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    const max = Math.max(0, el.scrollWidth - el.clientWidth);
+    if(max <= 1) return;
+    const next = Math.max(0, Math.min(max, el.scrollLeft + e.deltaY));
+    if(next === el.scrollLeft) return;
+    e.preventDefault();
+    el.scrollLeft = next;
+  };
+  el.addEventListener('scroll', onScroll, {passive:true});
+  el.addEventListener('keydown', onKeydown);
+  el.addEventListener('wheel', onWheel, {passive:false});
+  updateScrollRegionState(el);
+  requestAnimationFrame(()=>updateScrollRegionState(el));
+}
+function enhanceScrollRegions(root=document){
+  const scope = root instanceof Element ? root : document;
+  if(scope.matches && scope.matches(SCROLL_REGION_SELECTOR)) mountHorizontalTableScroll(scope);
+  scope.querySelectorAll?.(SCROLL_REGION_SELECTOR).forEach(mountHorizontalTableScroll);
+}
+window.enhanceScrollRegions = enhanceScrollRegions;
+if(document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ()=>enhanceScrollRegions());
+} else {
+  enhanceScrollRegions();
+}
+new MutationObserver(records=>{
+  for(const rec of records) for(const node of rec.addedNodes) {
+    if(node.nodeType === 1) enhanceScrollRegions(node);
+  }
+}).observe(document.documentElement, {childList:true, subtree:true});
 function skillBucket(stats, split='overall'){
   if(!stats) return null;
   return split === 'overall' ? stats.overall : (stats.splits && stats.splits[split]) || null;
