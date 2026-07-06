@@ -46,6 +46,14 @@ Do not ship yet:
 - `player_authored_summary.json` is a generated research artifact with
   per-player authored evidence counts, best/median all-time ranks, claim tags,
   and verification leads.
+- `analysis/authored_rankings_recent_titles.md` documents the recent-title
+  Breaking Point Top 20 deep dive for MW2019 through BO6.
+- `analysis/authored_rankings_legacy_titles.md` documents the legacy-title
+  Enable Top 5 deep dive for BO2, Ghosts, AW, BO3, WWII, and BO4, plus
+  authored-vs-community comparisons.
+- `analysis/authored_vs_community_insight.md` summarizes the product conclusion:
+  authored title lists mostly confirm the community list and should be used as
+  corroboration, not as a separate ranking lane.
 - `tests/test_authored_sources.py` locks the v1 contract: source identity is
   preserved, verification leads are not ranked, and the builder does not create
   a consensus score.

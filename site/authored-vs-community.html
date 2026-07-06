@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Authored lists vs community consensus · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="A check on whether player and media rankings add a separate signal from the community consensus title lists.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Authored lists mostly confirm the community list">
+<meta property="og:description" content="Player and media rankings were compared against community title rankings. The result: they mostly validate the community list, not a separate ranking lane.">
+<meta property="og:url" content="https://cod-stats-one.vercel.app/authored-vs-community.html">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Authored lists mostly confirm the community list">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/nav.js" as="script">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+<style>
+  .article-meta{display:flex;gap:var(--space-2);flex-wrap:wrap;margin:var(--space-3) 0 var(--space-5)}
+  .article-section{margin-top:var(--space-6)}
+  .article-section h2{margin-bottom:var(--space-2)}
+  .article-section p,.article-section li{max-width:72ch}
+  .article-table{min-width:760px}
+  .article-table td:last-child,.article-table th:last-child{text-align:center}
+  .refs{columns:2;column-gap:var(--space-6);padding-left:var(--space-4)}
+  .refs li{break-inside:avoid;margin-bottom:var(--space-1)}
+  @media(max-width:760px){.refs{columns:1}.article-table{min-width:680px}}
+</style>
+</head>
+<body>
+<script src="assets/nav.js"></script>
+<main class="wrap narrow" id="root" tabindex="-1">
+  <h1>Authored lists mostly confirm the community list</h1>
+  <p class="lede">Player, creator, and media rankings were worth checking. They do not look worth turning into a separate leaderboard.</p>
+  <div class="article-meta">
+    <span class="pill tag">Community Consensus</span>
+    <span class="pill flat">External check</span>
+    <span class="pill flat">Rankings unchanged</span>
+  </div>
+
+  <p>The site already has a <a href="community.html">Community Consensus</a> page: title-by-title rankings built from fan and community sources. The open question was whether authored lists from players, creators, and media add a different signal.</p>
+
+  <p>Mostly, they do not. The authored lists are useful, but as validation. When independent player/media lists and community lists keep landing on the same names, the community list gets more credible. It does not need a second, parallel version saying almost the same thing.</p>
+
+  <section class="article-section" id="what-we-checked">
+    <h2>What was checked</h2>
+    <p>Two authored source families were clean enough to compare:</p>
+    <ul>
+      <li>Enable's player-authored Top 5 videos for BO2, Ghosts, AW, BO3, WWII, and BO4.</li>
+      <li>Breaking Point's Top 20 player lists for MW2019, Cold War, Vanguard, MWII, MWIII, and BO6.</li>
+    </ul>
+    <p>Those lists were compared with the existing community Top 5 or Top 10 for the same title.</p>
+  </section>
+
+  <section class="article-section" id="results">
+    <h2>The result</h2>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="Authored source comparison table">
+      <p class="scrollhint small muted">Scroll sideways to see the full comparison.</p>
+      <table class="data article-table">
+        <caption class="sr-only">Authored source overlap with community consensus by title</caption>
+        <thead>
+          <tr><th scope="col">Title</th><th scope="col">Authored source</th><th scope="col">Compared range</th><th scope="col">Match</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Black Ops 2</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+          <tr><td>Ghosts</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+          <tr><td>Advanced Warfare</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+          <tr><td>Black Ops 3</td><td>Enable Top 5</td><td>Top 5</td><td>5/5, exact order</td></tr>
+          <tr><td>World War II</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+          <tr><td>Black Ops 4</td><td>Enable Top 5</td><td>Top 5</td><td>4/5</td></tr>
+          <tr><td>Modern Warfare 2019</td><td>Breaking Point Top 20</td><td>Top 10</td><td>8/10</td></tr>
+          <tr><td>Black Ops Cold War</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+          <tr><td>Vanguard</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+          <tr><td>Modern Warfare II</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+          <tr><td>Modern Warfare III</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+          <tr><td>Black Ops 6</td><td>Breaking Point Top 20</td><td>Top 10</td><td>10/10, exact order</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="article-section" id="differences">
+    <h2>Where they differ</h2>
+    <p>The misses are normal boundary and ordering debates, not a different theory of the season.</p>
+    <ul>
+      <li>Ghosts: Enable has FormaL in the Top 5; the community list has TeeP.</li>
+      <li>WWII: Enable has TJHaLy in the Top 5; the community list has ZooMaa. SlasheR and Accuracy are swapped.</li>
+      <li>BO4: Enable has Envoy in the Top 5; the community list has Dylan. Dashy, Simp, and Octane are the same top-three group in a different order.</li>
+      <li>MW2019: Breaking Point has Mack and GodRx in the Top 10; the community list has Huke and Scump.</li>
+    </ul>
+  </section>
+
+  <section class="article-section" id="recommendation">
+    <h2>Recommendation</h2>
+    <p>Keep the community list as the ranking.</p>
+    <p>Do not add an authored-list leaderboard right now. It would create a second concept with almost the same output, weaker sample logic, and more caveats.</p>
+    <p>Do not quietly roll authored lists into the community score either. A player video, a media Top 20, and a community survey are different kinds of evidence. Blending them would require arbitrary weights, and the result would barely change.</p>
+    <div class="note">
+      Use authored lists as corroboration: mention them in methodology, keep the source inventory for auditability, and call out exceptions only when an authored source clearly disagrees with the community list.
+    </div>
+  </section>
+
+  <section class="article-section" id="references">
+    <h2>References</h2>
+    <ul class="refs">
+      <li><a href="community.html">Community Consensus page</a></li>
+      <li><a href="methodology.html#community-consensus">Community Consensus methodology</a></li>
+      <li><a href="https://www.youtube.com/watch?v=XsHwB9IWIN0" target="_blank" rel="noopener">Enable: Black Ops 2 Top 5</a></li>
+      <li><a href="https://www.youtube.com/watch?v=vL_MvgR-EY0" target="_blank" rel="noopener">Enable: Ghosts Top 5</a></li>
+      <li><a href="https://www.youtube.com/watch?v=8yOFcbN8wos" target="_blank" rel="noopener">Enable: Advanced Warfare Top 5</a></li>
+      <li><a href="https://www.youtube.com/watch?v=Q1C4i3Vtt4A" target="_blank" rel="noopener">Enable: Black Ops 3 Top 5</a></li>
+      <li><a href="https://www.reddit.com/r/CoDCompetitive/comments/lgrlkk/enables_top_5_black_ops_3_players/" target="_blank" rel="noopener">BO3 extraction summary</a></li>
+      <li><a href="https://www.youtube.com/watch?v=nUytyxjFt7Y" target="_blank" rel="noopener">Enable: WWII Top 5</a></li>
+      <li><a href="https://www.youtube.com/watch?v=6DfAHGPqQGQ" target="_blank" rel="noopener">Enable: Black Ops 4 Top 5</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2020_Breaking_Point_Awards" target="_blank" rel="noopener">2020 Breaking Point Awards</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2021_Breaking_Point_Awards" target="_blank" rel="noopener">2021 Breaking Point Awards</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2022_Breaking_Point_Awards" target="_blank" rel="noopener">2022 Breaking Point Awards</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2023_Breaking_Point_Awards" target="_blank" rel="noopener">2023 Breaking Point Awards</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2024_Breaking_Point_Awards" target="_blank" rel="noopener">2024 Breaking Point Awards</a></li>
+      <li><a href="https://cod-esports.fandom.com/wiki/2025_Breaking_Point_Awards" target="_blank" rel="noopener">2025 Breaking Point Awards</a></li>
+    </ul>
+  </section>
+</main>
+<script src="assets/app.js"></script>
+<script>
+mountNav('authored-vs-community.html');
+mountFoot();
+</script>
+</body>
+</html>

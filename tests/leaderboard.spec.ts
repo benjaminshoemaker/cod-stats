@@ -99,6 +99,16 @@ test.describe('leaderboard', () => {
   });
 });
 
+test.describe('insights', () => {
+  test('authored-list check publishes the conclusion', async ({ page }) => {
+    await page.goto('/authored-vs-community.html');
+    await expect(page.getByRole('heading', { name: 'Authored lists mostly confirm the community list' })).toBeVisible();
+    await expect(page.getByText('Keep the community list as the ranking.')).toBeVisible();
+    await page.getByRole('button', { name: /Insights/ }).click();
+    await expect(page.getByRole('link', { name: 'Authored-list check' })).toBeVisible();
+  });
+});
+
 test.describe('era filter', () => {
   test('recompute reproduces the baked leaderboard exactly (All & Post-BO2 oracle)', async ({ page }) => {
     await page.goto('/index.html');
@@ -551,7 +561,7 @@ test.describe('pages', () => {
     await page.goto('/index.html');
     await page.click('.navdrop-btn');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['kor.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
+    expect(links).toEqual(['kor.html', 'authored-vs-community.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
   });
 
   test('Kills Over Replacement page renders all-time and title splits', async ({ page }) => {

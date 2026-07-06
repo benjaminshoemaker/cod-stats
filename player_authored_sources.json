@@ -109,51 +109,244 @@
       ]
     },
     {
-      "source_id": "breaking_point_2024_mw3_top20_series",
+      "source_id": "breaking_point_2020_mw_top20",
       "family": "authored_title_ranking",
-      "status": "verification_lead",
-      "title": "Top 20 Players of MW3 article series",
-      "url": "https://breakingpoint.gg/posts/top-20-players-of-mw3-1-simp",
-      "published_date": "2024-08-11",
+      "status": "seeded",
+      "title": "2020 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2020_Breaking_Point_Awards",
+      "published_date": "2020-10-25",
       "retrieved_date": "2026-07-06",
       "outlet": "Breaking Point",
-      "author": "EasyMac",
+      "author": "Breaking Point",
       "author_type": "media_stats",
-      "scope": {
-        "kind": "title",
-        "game": "Modern Warfare III",
-        "ranking_size": 20
-      },
+      "scope": {"kind": "title", "game": "Modern Warfare", "ranking_size": 20},
       "source_quality": "high",
-      "methodology_summary": "Title-season Top 20 article series with player-specific rationale and stat context.",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Modern Warfare 2019 season.",
       "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
       "caveats": [
-        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
         "Do not mix title-season ranks with all-time greatness lists."
       ]
     },
     {
-      "source_id": "breaking_point_2025_bo6_top20_series",
+      "source_id": "breaking_point_2021_bocw_top20",
       "family": "authored_title_ranking",
-      "status": "verification_lead",
-      "title": "Top 20 Players of Black Ops 6 article series",
-      "url": "https://breakingpoint.gg/posts/1-scrap-top-20-players-of-black-ops-6",
-      "published_date": "2025-08-11",
+      "status": "seeded",
+      "title": "2021 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2021_Breaking_Point_Awards",
+      "published_date": "2021-09-08",
       "retrieved_date": "2026-07-06",
       "outlet": "Breaking Point",
-      "author": "EasyMac",
+      "author": "Breaking Point",
       "author_type": "media_stats",
-      "scope": {
-        "kind": "title",
-        "game": "Black Ops 6",
-        "ranking_size": 20
-      },
+      "scope": {"kind": "title", "game": "Black Ops Cold War", "ranking_size": 20},
       "source_quality": "high",
-      "methodology_summary": "Title-season Top 20 article series with player-specific rationale and stat context.",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Black Ops Cold War season.",
       "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
       "caveats": [
-        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
         "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2022_vanguard_top20",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "2022 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2022_Breaking_Point_Awards",
+      "published_date": "2022-09-04",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "Breaking Point",
+      "author_type": "media_stats",
+      "scope": {"kind": "title", "game": "Vanguard", "ranking_size": 20},
+      "source_quality": "high",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Vanguard season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2023_mwii_top20",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "2023 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2023_Breaking_Point_Awards",
+      "published_date": "2023-08-12",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "Breaking Point",
+      "author_type": "media_stats",
+      "scope": {"kind": "title", "game": "Modern Warfare II", "ranking_size": 20},
+      "source_quality": "high",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Modern Warfare II season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2024_mwiii_top20",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "2024 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2024_Breaking_Point_Awards",
+      "published_date": "2024-08-17",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "Breaking Point",
+      "author_type": "media_stats",
+      "scope": {"kind": "title", "game": "Modern Warfare III", "ranking_size": 20},
+      "source_quality": "high",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Modern Warfare III season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2025_bo6_top20",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "2025 Breaking Point Awards - Top 20 players",
+      "url": "https://cod-esports.fandom.com/wiki/2025_Breaking_Point_Awards",
+      "published_date": "2025-08-16",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "Breaking Point",
+      "author_type": "media_stats",
+      "scope": {"kind": "title", "game": "Black Ops 6", "ranking_size": 20},
+      "source_quality": "high",
+      "methodology_summary": "Breaking Point title-season Top 20 ranking for the Black Ops 6 season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Treat as authored/media ranking evidence, not a formal award for #11.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo2_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "Ranking The Top 5 COD Pros: Black Ops 2",
+      "url": "https://www.youtube.com/watch?v=XsHwB9IWIN0",
+      "published_date": "2021-01-18",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Black Ops 2", "ranking_size": 5},
+      "source_quality": "high",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the Black Ops 2 season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Player-authored retrospective video list; preserve source identity and do not treat as community consensus.",
+        "Top-5 scope means absence from this list is weaker evidence than absence from a Top 20."
+      ]
+    },
+    {
+      "source_id": "enable_2021_ghosts_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "Ranking The Top 5 COD Pros: GHOSTS",
+      "url": "https://www.youtube.com/watch?v=vL_MvgR-EY0",
+      "published_date": "2021-01-26",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Ghosts", "ranking_size": 5},
+      "source_quality": "high",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the Ghosts season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Player-authored retrospective video list; preserve source identity and do not treat as community consensus.",
+        "Top-5 scope means absence from this list is weaker evidence than absence from a Top 20."
+      ]
+    },
+    {
+      "source_id": "enable_2021_aw_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "Ranking The Top 5 COD Pros: ADVANCED WARFARE",
+      "url": "https://www.youtube.com/watch?v=8yOFcbN8wos",
+      "published_date": "2021-02-01",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Advanced Warfare", "ranking_size": 5},
+      "source_quality": "high",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the Advanced Warfare season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Player-authored retrospective video list; preserve source identity and do not treat as community consensus.",
+        "Top-5 scope means absence from this list is weaker evidence than absence from a Top 20."
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo3_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "Ranking The Top 5 COD Pros: Black Ops 3",
+      "url": "https://www.youtube.com/watch?v=Q1C4i3Vtt4A",
+      "extraction_url": "https://www.reddit.com/r/CoDCompetitive/comments/lgrlkk/enables_top_5_black_ops_3_players/",
+      "published_date": "2021-02-09",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Black Ops 3", "ranking_size": 5},
+      "source_quality": "medium",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the Black Ops 3 season, extracted through a contemporary community summary because captions were unavailable.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Seeded from a Reddit summary of the Enable video because YouTube captions were unavailable during extraction.",
+        "Needs future manual video timestamp verification before being treated as high-confidence evidence."
+      ]
+    },
+    {
+      "source_id": "enable_2021_wwii_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "RANKING THE TOP 5 COD PROS: WW2",
+      "url": "https://www.youtube.com/watch?v=nUytyxjFt7Y",
+      "published_date": "2021-03-01",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "World War II", "ranking_size": 5},
+      "source_quality": "high",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the World War II season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Player-authored retrospective video list; preserve source identity and do not treat as community consensus.",
+        "Top-5 scope means absence from this list is weaker evidence than absence from a Top 20."
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo4_top5",
+      "family": "authored_title_ranking",
+      "status": "seeded",
+      "title": "RANKING THE TOP 5 COD PROS: BLACK OPS 4",
+      "url": "https://www.youtube.com/watch?v=6DfAHGPqQGQ",
+      "published_date": "2021-03-22",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Black Ops 4", "ranking_size": 5},
+      "source_quality": "high",
+      "methodology_summary": "Enable player-authored Top 5 ranking for the Black Ops 4 season.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Player-authored retrospective video list; preserve source identity and do not treat as community consensus.",
+        "Top-5 scope means absence from this list is weaker evidence than absence from a Top 20."
       ]
     },
     {
@@ -186,6 +379,57 @@
       "caveats": [
         "Needs stable episode URL, timestamp, speaker identity, and transcript or hand-verified quote.",
         "Discussion segments should be labeled as discussion rather than formal ranking unless the source presents a ranked list."
+      ]
+    },
+    {
+      "source_id": "enable_2021_iw_top5_lead",
+      "family": "authored_title_ranking",
+      "status": "verification_lead",
+      "title": "RANKING THE TOP 5 COD PROS: INFINITE WARFARE",
+      "url": "https://www.youtube.com/watch?v=sMV-Y1_w5zw",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Enable",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "scope": {"kind": "title", "game": "Infinite Warfare", "ranking_size": 5},
+      "source_quality": "medium",
+      "methodology_summary": "Enable player-authored Infinite Warfare Top 5 video located, but ranked entries were not seeded because captions were unavailable.",
+      "methodology_tags": ["title_specific", "skill_weighted", "player_view"],
+      "caveats": [
+        "Needs manual timestamp extraction before becoming seeded evidence.",
+        "Do not use third-party repost snippets as a replacement for the original player-authored list."
+      ]
+    },
+    {
+      "source_id": "black_ops_authored_title_gap",
+      "family": "authored_title_ranking",
+      "status": "verification_lead",
+      "title": "Black Ops player-authored title ranking gap",
+      "retrieved_date": "2026-07-06",
+      "author_type": "unknown",
+      "scope": {"kind": "title", "game": "Black Ops", "ranking_size": 5},
+      "source_quality": "low",
+      "methodology_summary": "No stable player/media/creator-authored Black Ops title ranking was found in this pass.",
+      "methodology_tags": ["title_specific", "research_gap"],
+      "caveats": [
+        "Community threads and prize-money tables are not authored #16 evidence.",
+        "MLG-era formal or player-voted awards, if verified, should be routed to #11 instead of this lane."
+      ]
+    },
+    {
+      "source_id": "mw3_2011_authored_title_gap",
+      "family": "authored_title_ranking",
+      "status": "verification_lead",
+      "title": "Modern Warfare 3 player-authored title ranking gap",
+      "retrieved_date": "2026-07-06",
+      "author_type": "unknown",
+      "scope": {"kind": "title", "game": "Modern Warfare 3", "ranking_size": 5},
+      "source_quality": "low",
+      "methodology_summary": "No stable player/media/creator-authored Modern Warfare 3 title ranking was found in this pass.",
+      "methodology_tags": ["title_specific", "research_gap"],
+      "caveats": [
+        "Third-party reposts without source identity are too weak for seeded authored evidence.",
+        "Keep community retrospectives in #15 unless they point back to a sourceable authored list."
       ]
     }
   ],
@@ -233,6 +477,216 @@
         {"rank": 8, "player": "TeeP", "claim_tags": ["greatest", "leadership", "legacy_weighted"]},
         {"rank": 9, "player": "SlasheR", "claim_tags": ["greatest", "best_ar"]},
         {"rank": 10, "player": "John", "claim_tags": ["greatest", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo2_top5",
+      "entries": [
+        {"rank": 1, "player": "Karma", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "Crimsix", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "Clayster", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "ACHES", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "Parasite", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_ghosts_top5",
+      "entries": [
+        {"rank": 1, "player": "Crimsix", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "Scump", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "ACHES", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "Karma", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "FormaL", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_aw_top5",
+      "entries": [
+        {"rank": 1, "player": "Scump", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "Clayster", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "FormaL", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "Huke", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "ZooMaa", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo3_top5",
+      "entries": [
+        {"rank": 1, "player": "Scump", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "FormaL", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "John", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "SlasheR", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "Apathy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_wwii_top5",
+      "entries": [
+        {"rank": 1, "player": "Kenny", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "Gunless", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "Accuracy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "SlasheR", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "TJHaLy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "enable_2021_bo4_top5",
+      "entries": [
+        {"rank": 1, "player": "Octane", "claim_tags": ["title_specific", "best_player", "skill_weighted", "player_view"]},
+        {"rank": 2, "player": "Simp", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 3, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 4, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]},
+        {"rank": 5, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted", "player_view"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2020_mw_top20",
+      "entries": [
+        {"rank": 1, "player": "Shotzzy", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "Simp", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 3, "player": "Cellium", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Skyz", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Octane", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "Arcitys", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "Mack", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "GodRx", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "Wuskin", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "Attach", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "Prestinni", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "MajorManiak", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "Kenny", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "Skrapz", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "Owakening", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "SlasheR", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "iLLeY", "claim_tags": ["title_specific", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2021_bocw_top20",
+      "entries": [
+        {"rank": 1, "player": "Simp", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 3, "player": "Cammy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "Cellium", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Insight", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Shotzzy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "Scump", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Standy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "HyDra", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "CleanX", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "Octane", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "Afro", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "Bance", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "Attach", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "Clayster", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "Priestahh", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "Huke", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "Crimsix", "claim_tags": ["title_specific", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2022_vanguard_top20",
+      "entries": [
+        {"rank": 1, "player": "Cellium", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "Pred", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 3, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "HyDra", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Simp", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Kenny", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "Shotzzy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Sib", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "Attach", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "CleanX", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "Scump", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "Cammy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "Gunless", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "iLLeY", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "Methodz", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "Afro", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "Octane", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "Priestahh", "claim_tags": ["title_specific", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2023_mwii_top20",
+      "entries": [
+        {"rank": 1, "player": "HyDra", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 3, "player": "Scrap", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "Cellium", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Pred", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Octane", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "KiSMET", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "Shotzzy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "Simp", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "Skyz", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "Drazah", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "CleanX", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "Owakening", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "Ghosty", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "Priestahh", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "Huke", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "Kenny", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "SlasheR", "claim_tags": ["title_specific", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2024_mwiii_top20",
+      "entries": [
+        {"rank": 1, "player": "Simp", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "Shotzzy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 3, "player": "HyDra", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "Scrap", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Cellium", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "Drazah", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Pred", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "Ghosty", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "Sib", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "Kenny", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "CleanX", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "Abuzah", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "Envoy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "Gwinn", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "Skyz", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "Insight", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "Attach", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "04", "claim_tags": ["title_specific", "skill_weighted"]}
+      ]
+    },
+    {
+      "source_id": "breaking_point_2025_bo6_top20",
+      "entries": [
+        {"rank": 1, "player": "Scrap", "claim_tags": ["title_specific", "best_player", "skill_weighted"]},
+        {"rank": 2, "player": "Shotzzy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 3, "player": "Mercules", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 4, "player": "HyDra", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 5, "player": "Dashy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 6, "player": "Huke", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 7, "player": "Neptune", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 8, "player": "Cellium", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 9, "player": "JoeDeceives", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 10, "player": "Simp", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 11, "player": "RenKoR", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 12, "player": "04", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 13, "player": "aBeZy", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 14, "player": "Abuzah", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 15, "player": "SupeR", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 16, "player": "Drazah", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 17, "player": "CleanX", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 18, "player": "ReeaL", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 19, "player": "Ghosty", "claim_tags": ["title_specific", "skill_weighted"]},
+        {"rank": 20, "player": "Nastie", "claim_tags": ["title_specific", "skill_weighted"]}
       ]
     }
   ],

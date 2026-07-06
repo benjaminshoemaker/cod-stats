@@ -2,10 +2,10 @@
   "schema_version": 1,
   "meta": {
     "retrieved_date": "2026-07-06",
-    "source_count": 8,
-    "seeded_source_count": 4,
-    "verification_lead_count": 4,
-    "ranking_source_count": 3,
+    "source_count": 21,
+    "seeded_source_count": 16,
+    "verification_lead_count": 5,
+    "ranking_source_count": 15,
     "claim_count": 1,
     "verdict": "Authored rankings and claims are evidence, not a scored consensus model."
   },
@@ -287,6 +287,1333 @@
           ]
         }
       ]
+    },
+    "enable_2021_bo2_top5": {
+      "source_id": "enable_2021_bo2_top5",
+      "family": "authored_title_ranking",
+      "title": "Ranking The Top 5 COD Pros: Black Ops 2",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Karma",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Crimsix",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Clayster",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "ACHES",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Parasite",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "enable_2021_ghosts_top5": {
+      "source_id": "enable_2021_ghosts_top5",
+      "family": "authored_title_ranking",
+      "title": "Ranking The Top 5 COD Pros: GHOSTS",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Crimsix",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Scump",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "ACHES",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Karma",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "FormaL",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "enable_2021_aw_top5": {
+      "source_id": "enable_2021_aw_top5",
+      "family": "authored_title_ranking",
+      "title": "Ranking The Top 5 COD Pros: ADVANCED WARFARE",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Scump",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Clayster",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "FormaL",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Huke",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "ZooMaa",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "enable_2021_bo3_top5": {
+      "source_id": "enable_2021_bo3_top5",
+      "family": "authored_title_ranking",
+      "title": "Ranking The Top 5 COD Pros: Black Ops 3",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Scump",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "FormaL",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "John",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "SlasheR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Apathy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "enable_2021_wwii_top5": {
+      "source_id": "enable_2021_wwii_top5",
+      "family": "authored_title_ranking",
+      "title": "RANKING THE TOP 5 COD PROS: WW2",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Kenny",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Gunless",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Accuracy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "SlasheR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "TJHaLy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "enable_2021_bo4_top5": {
+      "source_id": "enable_2021_bo4_top5",
+      "family": "authored_title_ranking",
+      "title": "RANKING THE TOP 5 COD PROS: BLACK OPS 4",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Octane",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted",
+            "player_view"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2020_mw_top20": {
+      "source_id": "breaking_point_2020_mw_top20",
+      "family": "authored_title_ranking",
+      "title": "2020 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Skyz",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Octane",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Arcitys",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "Mack",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "GodRx",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "Wuskin",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "Attach",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "Prestinni",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "MajorManiak",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "Kenny",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "Skrapz",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "Owakening",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "SlasheR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "iLLeY",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2021_bocw_top20": {
+      "source_id": "breaking_point_2021_bocw_top20",
+      "family": "authored_title_ranking",
+      "title": "2021 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Cammy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Insight",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Scump",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Standy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "HyDra",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "CleanX",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "Octane",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "Afro",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "Bance",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "Attach",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "Clayster",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "Priestahh",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "Huke",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "Crimsix",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2022_vanguard_top20": {
+      "source_id": "breaking_point_2022_vanguard_top20",
+      "family": "authored_title_ranking",
+      "title": "2022 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Pred",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "HyDra",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Kenny",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Sib",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "Attach",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "CleanX",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "Scump",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "Cammy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "Gunless",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "iLLeY",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "Methodz",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "Afro",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "Octane",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "Priestahh",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2023_mwii_top20": {
+      "source_id": "breaking_point_2023_mwii_top20",
+      "family": "authored_title_ranking",
+      "title": "2023 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "HyDra",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Scrap",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Pred",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Octane",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "KiSMET",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "Skyz",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "Drazah",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "CleanX",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "Owakening",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "Ghosty",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "Priestahh",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "Huke",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "Kenny",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "SlasheR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2024_mwiii_top20": {
+      "source_id": "breaking_point_2024_mwiii_top20",
+      "family": "authored_title_ranking",
+      "title": "2024 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "HyDra",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Scrap",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Drazah",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Pred",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "Ghosty",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "Sib",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "Kenny",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "CleanX",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "Abuzah",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "Envoy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "Gwinn",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "Skyz",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "Insight",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "Attach",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "04",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
+    },
+    "breaking_point_2025_bo6_top20": {
+      "source_id": "breaking_point_2025_bo6_top20",
+      "family": "authored_title_ranking",
+      "title": "2025 Breaking Point Awards - Top 20 players",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Scrap",
+          "claim_tags": [
+            "title_specific",
+            "best_player",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Shotzzy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Mercules",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "HyDra",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Dashy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Huke",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Neptune",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Cellium",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "JoeDeceives",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "Simp",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 11,
+          "player": "RenKoR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 12,
+          "player": "04",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 13,
+          "player": "aBeZy",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 14,
+          "player": "Abuzah",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 15,
+          "player": "SupeR",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 16,
+          "player": "Drazah",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 17,
+          "player": "CleanX",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 18,
+          "player": "ReeaL",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 19,
+          "player": "Ghosty",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 20,
+          "player": "Nastie",
+          "claim_tags": [
+            "title_specific",
+            "skill_weighted"
+          ]
+        }
+      ]
     }
   },
   "claims": [
@@ -310,72 +1637,146 @@
   "players": [
     {
       "player": "Crimsix",
-      "source_count": 3,
+      "source_count": 6,
       "source_ids": [
+        "breaking_point_2021_bocw_top20",
         "dexerto_2022_top10_all_time",
-        "nerd_street_2022_top10_all_time",
-        "tacticalrab_2018_codwiki_top10_all_time"
-      ],
-      "families": [
-        "authored_all_time_ranking"
-      ],
-      "ranking_count": 3,
-      "claim_count": 0,
-      "all_time_list_count": 3,
-      "best_all_time_rank": 1,
-      "median_all_time_rank": 1,
-      "title_ranks": [],
-      "claim_tags": [
-        "goat",
-        "greatest",
-        "resume_weighted",
-        "skill_weighted"
-      ],
-      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
-    },
-    {
-      "player": "Karma",
-      "source_count": 3,
-      "source_ids": [
-        "dexerto_2022_top10_all_time",
-        "nerd_street_2022_top10_all_time",
-        "tacticalrab_2018_codwiki_top10_all_time"
-      ],
-      "families": [
-        "authored_all_time_ranking"
-      ],
-      "ranking_count": 3,
-      "claim_count": 0,
-      "all_time_list_count": 3,
-      "best_all_time_rank": 2,
-      "median_all_time_rank": 3,
-      "title_ranks": [],
-      "claim_tags": [
-        "greatest",
-        "resume_weighted"
-      ],
-      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
-    },
-    {
-      "player": "Scump",
-      "source_count": 4,
-      "source_ids": [
-        "dexerto_2022_top10_all_time",
-        "dexerto_2023_nadeshot_scump_goat",
+        "enable_2021_bo2_top5",
+        "enable_2021_ghosts_top5",
         "nerd_street_2022_top10_all_time",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
         "authored_all_time_ranking",
+        "authored_title_ranking"
+      ],
+      "ranking_count": 6,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 1,
+      "median_all_time_rank": 1,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo2_top5",
+          "game": "Black Ops 2",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 20
+        },
+        {
+          "source_id": "enable_2021_ghosts_top5",
+          "game": "Ghosts",
+          "rank": 1
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "goat",
+        "greatest",
+        "player_view",
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Karma",
+      "source_count": 5,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "enable_2021_bo2_top5",
+        "enable_2021_ghosts_top5",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking",
+        "authored_title_ranking"
+      ],
+      "ranking_count": 5,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 2,
+      "median_all_time_rank": 3,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo2_top5",
+          "game": "Black Ops 2",
+          "rank": 1
+        },
+        {
+          "source_id": "enable_2021_ghosts_top5",
+          "game": "Ghosts",
+          "rank": 4
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "greatest",
+        "player_view",
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Scump",
+      "source_count": 9,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "dexerto_2022_top10_all_time",
+        "dexerto_2023_nadeshot_scump_goat",
+        "enable_2021_aw_top5",
+        "enable_2021_bo3_top5",
+        "enable_2021_ghosts_top5",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking",
+        "authored_title_ranking",
         "reported_player_claim"
       ],
-      "ranking_count": 3,
+      "ranking_count": 8,
       "claim_count": 1,
       "all_time_list_count": 3,
       "best_all_time_rank": 2,
       "median_all_time_rank": 2,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_aw_top5",
+          "game": "Advanced Warfare",
+          "rank": 1
+        },
+        {
+          "source_id": "enable_2021_bo3_top5",
+          "game": "Black Ops 3",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 7
+        },
+        {
+          "source_id": "enable_2021_ghosts_top5",
+          "game": "Ghosts",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 13
+        }
+      ],
       "claim_tags": [
+        "best_player",
         "best_smg",
         "context_adjusted",
         "goat",
@@ -383,81 +1784,145 @@
         "hardest_to_kill",
         "map_impact",
         "most_talented",
+        "player_view",
         "resume_weighted",
-        "skill_weighted"
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "Clayster",
-      "source_count": 3,
+      "source_count": 6,
       "source_ids": [
+        "breaking_point_2021_bocw_top20",
         "dexerto_2022_top10_all_time",
+        "enable_2021_aw_top5",
+        "enable_2021_bo2_top5",
         "nerd_street_2022_top10_all_time",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 3,
+      "ranking_count": 6,
       "claim_count": 0,
       "all_time_list_count": 3,
       "best_all_time_rank": 3,
       "median_all_time_rank": 3,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_aw_top5",
+          "game": "Advanced Warfare",
+          "rank": 2
+        },
+        {
+          "source_id": "enable_2021_bo2_top5",
+          "game": "Black Ops 2",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 17
+        }
+      ],
       "claim_tags": [
         "best_ar",
         "greatest",
+        "player_view",
         "resume_weighted",
-        "skill_weighted"
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "ACHES",
-      "source_count": 3,
+      "source_count": 5,
       "source_ids": [
         "dexerto_2022_top10_all_time",
+        "enable_2021_bo2_top5",
+        "enable_2021_ghosts_top5",
         "nerd_street_2022_top10_all_time",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 3,
+      "ranking_count": 5,
       "claim_count": 0,
       "all_time_list_count": 3,
       "best_all_time_rank": 5,
       "median_all_time_rank": 9,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo2_top5",
+          "game": "Black Ops 2",
+          "rank": 4
+        },
+        {
+          "source_id": "enable_2021_ghosts_top5",
+          "game": "Ghosts",
+          "rank": 3
+        }
+      ],
       "claim_tags": [
         "greatest",
-        "resume_weighted"
+        "player_view",
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "FormaL",
-      "source_count": 3,
+      "source_count": 6,
       "source_ids": [
         "dexerto_2022_top10_all_time",
+        "enable_2021_aw_top5",
+        "enable_2021_bo3_top5",
+        "enable_2021_ghosts_top5",
         "nerd_street_2022_top10_all_time",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 3,
+      "ranking_count": 6,
       "claim_count": 0,
       "all_time_list_count": 3,
       "best_all_time_rank": 5,
       "median_all_time_rank": 6,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_aw_top5",
+          "game": "Advanced Warfare",
+          "rank": 3
+        },
+        {
+          "source_id": "enable_2021_bo3_top5",
+          "game": "Black Ops 3",
+          "rank": 2
+        },
+        {
+          "source_id": "enable_2021_ghosts_top5",
+          "game": "Ghosts",
+          "rank": 5
+        }
+      ],
       "claim_tags": [
         "best_ar",
         "greatest",
         "highest_peak",
-        "resume_weighted"
+        "player_view",
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
@@ -487,96 +1952,229 @@
     },
     {
       "player": "Simp",
-      "source_count": 2,
+      "source_count": 9,
       "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20",
         "dexerto_2022_top10_all_time",
+        "enable_2021_bo4_top5",
         "nerd_street_2022_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 2,
+      "ranking_count": 9,
       "claim_count": 0,
       "all_time_list_count": 2,
       "best_all_time_rank": 5,
       "median_all_time_rank": 6.0,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo4_top5",
+          "game": "Black Ops 4",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 10
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 10
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 5
+        }
+      ],
       "claim_tags": [
         "best_player",
         "future_goat_candidate",
         "greatest",
-        "most_talented"
+        "most_talented",
+        "player_view",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "Arcitys",
-      "source_count": 2,
+      "source_count": 3,
       "source_ids": [
+        "breaking_point_2020_mw_top20",
         "dexerto_2022_top10_all_time",
         "nerd_street_2022_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 2,
+      "ranking_count": 3,
       "claim_count": 0,
       "all_time_list_count": 2,
       "best_all_time_rank": 7,
       "median_all_time_rank": 7.5,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 7
+        }
+      ],
       "claim_tags": [
         "best_ar",
         "greatest",
         "leadership",
-        "resume_weighted"
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "aBeZy",
-      "source_count": 2,
+      "source_count": 9,
       "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20",
         "dexerto_2022_top10_all_time",
+        "enable_2021_bo4_top5",
         "nerd_street_2022_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 2,
+      "ranking_count": 9,
       "claim_count": 0,
       "all_time_list_count": 2,
       "best_all_time_rank": 8,
       "median_all_time_rank": 8.5,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo4_top5",
+          "game": "Black Ops 4",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 13
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 9
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 10
+        }
+      ],
       "claim_tags": [
         "best_entry",
         "best_smg",
         "greatest",
-        "resume_weighted"
+        "player_view",
+        "resume_weighted",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
     {
       "player": "SlasheR",
-      "source_count": 2,
+      "source_count": 6,
       "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2023_mwii_top20",
         "dexerto_2022_top10_all_time",
+        "enable_2021_bo3_top5",
+        "enable_2021_wwii_top5",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 2,
+      "ranking_count": 6,
       "claim_count": 0,
       "all_time_list_count": 2,
       "best_all_time_rank": 9,
       "median_all_time_rank": 9.5,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo3_top5",
+          "game": "Black Ops 3",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 19
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 20
+        },
+        {
+          "source_id": "enable_2021_wwii_top5",
+          "game": "World War II",
+          "rank": 4
+        }
+      ],
       "claim_tags": [
         "best_ar",
         "greatest",
-        "leadership"
+        "leadership",
+        "player_view",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     },
@@ -604,51 +2202,1734 @@
     },
     {
       "player": "John",
-      "source_count": 1,
+      "source_count": 2,
       "source_ids": [
+        "enable_2021_bo3_top5",
         "tacticalrab_2018_codwiki_top10_all_time"
       ],
       "families": [
-        "authored_all_time_ranking"
+        "authored_all_time_ranking",
+        "authored_title_ranking"
       ],
-      "ranking_count": 1,
+      "ranking_count": 2,
       "claim_count": 0,
       "all_time_list_count": 1,
       "best_all_time_rank": 10,
       "median_all_time_rank": 10,
-      "title_ranks": [],
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo3_top5",
+          "game": "Black Ops 3",
+          "rank": 3
+        }
+      ],
       "claim_tags": [
         "greatest",
-        "skill_weighted"
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "04",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 12
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 20
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Abuzah",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 14
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 14
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Accuracy",
+      "source_count": 1,
+      "source_ids": [
+        "enable_2021_wwii_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_wwii_top5",
+          "game": "World War II",
+          "rank": 3
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Afro",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 14
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 18
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Apathy",
+      "source_count": 1,
+      "source_ids": [
+        "enable_2021_bo3_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo3_top5",
+          "game": "Black Ops 3",
+          "rank": 5
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Attach",
+      "source_count": 4,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 4,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 16
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 12
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 19
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 9
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Bance",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 15
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Cammy",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 14
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Cellium",
+      "source_count": 6,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 6,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 8
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 6
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 1
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "CleanX",
+      "source_count": 5,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 5,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 17
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 10
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 14
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 13
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 12
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Dashy",
+      "source_count": 7,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20",
+        "enable_2021_bo4_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 7,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo4_top5",
+          "game": "Black Ops 4",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 11
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 16
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 8
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 3
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Drazah",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 16
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 12
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 7
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Envoy",
+      "source_count": 6,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "enable_2021_bo4_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 6,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo4_top5",
+          "game": "Black Ops 4",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 12
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 8
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 13
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 15
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 11
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Ghosty",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 19
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 16
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 10
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "GodRx",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 10
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Gunless",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2022_vanguard_top20",
+        "enable_2021_wwii_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 15
+        },
+        {
+          "source_id": "enable_2021_wwii_top5",
+          "game": "World War II",
+          "rank": 2
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Gwinn",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 16
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Huke",
+      "source_count": 4,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2025_bo6_top20",
+        "enable_2021_aw_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 4,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_aw_top5",
+          "game": "Advanced Warfare",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 6
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 19
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 18
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "HyDra",
+      "source_count": 5,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 5,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 4
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 9
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 4
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "iLLeY",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2022_vanguard_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 20
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 16
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Insight",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 18
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "JoeDeceives",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 9
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Kenny",
+      "source_count": 5,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "enable_2021_wwii_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 5,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 15
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 19
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 12
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 6
+        },
+        {
+          "source_id": "enable_2021_wwii_top5",
+          "game": "World War II",
+          "rank": 1
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "KiSMET",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2023_mwii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 7
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Mack",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 9
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "MajorManiak",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 14
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Mercules",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 3
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Methodz",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2022_vanguard_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 17
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Nastie",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 20
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Neptune",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 7
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Octane",
+      "source_count": 5,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "enable_2021_bo4_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 5,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo4_top5",
+          "game": "Black Ops 4",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 13
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 6
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 6
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 19
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Owakening",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2023_mwii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 18
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 15
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Parasite",
+      "source_count": 1,
+      "source_ids": [
+        "enable_2021_bo2_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_bo2_top5",
+          "game": "Black Ops 2",
+          "rank": 5
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Pred",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 8
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 2
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Prestinni",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 13
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Priestahh",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 18
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 17
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 20
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "ReeaL",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 18
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "RenKoR",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 11
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Scrap",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 3
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 4
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Shotzzy",
+      "source_count": 6,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2021_bocw_top20",
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20",
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 6,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 6
+        },
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 1
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 9
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 2
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 7
+        }
+      ],
+      "claim_tags": [
+        "best_player",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Sib",
+      "source_count": 2,
+      "source_ids": [
+        "breaking_point_2022_vanguard_top20",
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 11
+        },
+        {
+          "source_id": "breaking_point_2022_vanguard_top20",
+          "game": "Vanguard",
+          "rank": 8
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Skrapz",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 17
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Skyz",
+      "source_count": 3,
+      "source_ids": [
+        "breaking_point_2020_mw_top20",
+        "breaking_point_2023_mwii_top20",
+        "breaking_point_2024_mwiii_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 5
+        },
+        {
+          "source_id": "breaking_point_2023_mwii_top20",
+          "game": "Modern Warfare II",
+          "rank": 11
+        },
+        {
+          "source_id": "breaking_point_2024_mwiii_top20",
+          "game": "Modern Warfare III",
+          "rank": 17
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Standy",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2021_bocw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2021_bocw_top20",
+          "game": "Black Ops Cold War",
+          "rank": 8
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "SupeR",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2025_bo6_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2025_bo6_top20",
+          "game": "Black Ops 6",
+          "rank": 15
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "TJHaLy",
+      "source_count": 1,
+      "source_ids": [
+        "enable_2021_wwii_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_wwii_top5",
+          "game": "World War II",
+          "rank": 5
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Wuskin",
+      "source_count": 1,
+      "source_ids": [
+        "breaking_point_2020_mw_top20"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "breaking_point_2020_mw_top20",
+          "game": "Modern Warfare",
+          "rank": 11
+        }
+      ],
+      "claim_tags": [
+        "skill_weighted",
+        "title_specific"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "ZooMaa",
+      "source_count": 1,
+      "source_ids": [
+        "enable_2021_aw_top5"
+      ],
+      "families": [
+        "authored_title_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 0,
+      "best_all_time_rank": null,
+      "median_all_time_rank": null,
+      "title_ranks": [
+        {
+          "source_id": "enable_2021_aw_top5",
+          "game": "Advanced Warfare",
+          "rank": 5
+        }
+      ],
+      "claim_tags": [
+        "player_view",
+        "skill_weighted",
+        "title_specific"
       ],
       "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
     }
   ],
   "verification_leads": [
-    {
-      "source_id": "breaking_point_2024_mw3_top20_series",
-      "family": "authored_title_ranking",
-      "title": "Top 20 Players of MW3 article series",
-      "url": "https://breakingpoint.gg/posts/top-20-players-of-mw3-1-simp",
-      "author": "EasyMac",
-      "author_type": "media_stats",
-      "caveats": [
-        "Seed only after all 20 ranks are extracted from stable article URLs.",
-        "Do not mix title-season ranks with all-time greatness lists."
-      ]
-    },
-    {
-      "source_id": "breaking_point_2025_bo6_top20_series",
-      "family": "authored_title_ranking",
-      "title": "Top 20 Players of Black Ops 6 article series",
-      "url": "https://breakingpoint.gg/posts/1-scrap-top-20-players-of-black-ops-6",
-      "author": "EasyMac",
-      "author_type": "media_stats",
-      "caveats": [
-        "Seed only after all 20 ranks are extracted from stable article URLs.",
-        "Do not mix title-season ranks with all-time greatness lists."
-      ]
-    },
     {
       "source_id": "tacticalrab_video_goat_debate_leads",
       "family": "creator_video_claim",
@@ -670,6 +3951,42 @@
       "caveats": [
         "Needs stable episode URL, timestamp, speaker identity, and transcript or hand-verified quote.",
         "Discussion segments should be labeled as discussion rather than formal ranking unless the source presents a ranked list."
+      ]
+    },
+    {
+      "source_id": "enable_2021_iw_top5_lead",
+      "family": "authored_title_ranking",
+      "title": "RANKING THE TOP 5 COD PROS: INFINITE WARFARE",
+      "url": "https://www.youtube.com/watch?v=sMV-Y1_w5zw",
+      "author": "Enable",
+      "author_type": "player_creator",
+      "caveats": [
+        "Needs manual timestamp extraction before becoming seeded evidence.",
+        "Do not use third-party repost snippets as a replacement for the original player-authored list."
+      ]
+    },
+    {
+      "source_id": "black_ops_authored_title_gap",
+      "family": "authored_title_ranking",
+      "title": "Black Ops player-authored title ranking gap",
+      "url": null,
+      "author": null,
+      "author_type": "unknown",
+      "caveats": [
+        "Community threads and prize-money tables are not authored #16 evidence.",
+        "MLG-era formal or player-voted awards, if verified, should be routed to #11 instead of this lane."
+      ]
+    },
+    {
+      "source_id": "mw3_2011_authored_title_gap",
+      "family": "authored_title_ranking",
+      "title": "Modern Warfare 3 player-authored title ranking gap",
+      "url": null,
+      "author": null,
+      "author_type": "unknown",
+      "caveats": [
+        "Third-party reposts without source identity are too weak for seeded authored evidence.",
+        "Keep community retrospectives in #15 unless they point back to a sourceable authored list."
       ]
     }
   ]
