@@ -93,9 +93,9 @@ rows.forEach((r,i)=>{
 s+='</svg>';
 
 // keyboard/AT (and touch) alternative: the same numbers as an HTML table
-let tbl = `<table class="data"><thead><tr><th>Player</th>${ORDER.map(g=>`<th class="n">${esc(ABBR[g])}</th>`).join('')}</tr></thead><tbody>`;
+let tbl = `<table class="data">${tableCaption('Dominance heatmap table alternative')}<thead><tr><th scope="col">Player</th>${ORDER.map(g=>`<th scope="col" class="n">${esc(ABBR[g])}</th>`).join('')}</tr></thead><tbody>`;
 for(const r of rows){
-  tbl += `<tr><td><a href="player.html?p=${encodeURIComponent(r.name)}">${esc(r.name)}</a></td>`;
+  tbl += `<tr><th scope="row"><a href="player.html?p=${encodeURIComponent(r.name)}">${esc(r.name)}</a></th>`;
   for(const g of ORDER){
     const season=seasonOf[r.name][g], v=season?.share||0, isChamp=champGames[r.name].has(g);
     tbl += `<td class="n">${v>0?`${season.wins}/${season.majors}${isChamp?' ◆':''}`:'<span class="faint">–</span>'}</td>`;
@@ -114,7 +114,7 @@ document.getElementById('root').innerHTML = `
   <div class="chart-wrap">${s}</div>
   <p class="small muted">Top 16 by era-adjusted wins (all seasons). Hover or tap a cell for the exact wins.</p>
   <details class="sim-method"><summary>View as a table (wins / majors, ◆ = World Championship season)</summary>
-    <div class="scroll-x" style="margin-top:var(--space-2)">${tbl}</div></details>`;
+    <div ${scrollRegionAttrs('Dominance heatmap table alternative')} style="margin-top:var(--space-2)">${tbl}</div></details>`;
 
 // styled HTML tooltip: instant, works on tap, and replaces the slow native <title>
 const wrapEl = document.querySelector('.chart-wrap');

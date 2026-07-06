@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus Wireframe B</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<link rel="stylesheet" href="community-consensus-wireframes.css">
+</head>
+<body>
+<main class="wrap wide" id="root" tabindex="-1">
+  <div class="wf-top">
+    <div>
+      <p class="wf-label">Wireframe B</p>
+      <h1>Title-First Workbench</h1>
+      <p class="lede">Make the per-title view the primary experience. Overall blended score becomes a summary lens derived from the title workbench.</p>
+    </div>
+    <div class="wf-mode"><span>Overall</span><span class="on">Per-title</span></div>
+  </div>
+
+  <div class="wf-board">
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Per-Title Workbench</h2><p class="small muted">Title selection, source inventory, ranking, and selected-player contribution are all visible together.</p></div>
+        <span class="pill tag">Screen 1</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="wf-grid-wide">
+          <aside class="wf-card">
+            <h3>Titles</h3>
+            <div class="wf-title-list">
+              <span>BO2 <b>high</b></span>
+              <span>Ghosts <b>high</b></span>
+              <span>AW <b>med</b></span>
+              <span class="on">BO6 <b>high</b></span>
+            </div>
+          </aside>
+          <div>
+            <div class="wf-note"><strong>Black Ops 6:</strong> one end-of-title aggregate survey. Source confidence is high, but source diversity is low.</div>
+            <div class="wf-scroll" style="margin-top:var(--space-3)">
+              <table class="wf-table">
+                <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Title score</th><th class="n">Career points</th><th class="n">Wins</th><th>Source trace</th></tr></thead>
+                <tbody>
+                  <tr class="sel"><td class="n">1</td><td><strong>Scrap</strong></td><td class="n">1.800</td><td class="n">1.000</td><td class="n">4</td><td><span class="pill up">open computation</span></td></tr>
+                  <tr><td class="n">2</td><td><strong>Shotzzy</strong></td><td class="n">1.740</td><td class="n">0.919</td><td class="n">9</td><td><span class="pill up">source linked</span></td></tr>
+                  <tr><td class="n">3</td><td><strong>Mercules</strong></td><td class="n">1.680</td><td class="n">0.842</td><td class="n">2</td><td><span class="pill up">source linked</span></td></tr>
+                  <tr><td class="n">4</td><td><strong>HyDra</strong></td><td class="n">1.620</td><td class="n">0.768</td><td class="n">7</td><td><span class="pill up">source linked</span></td></tr>
+                  <tr><td class="n">5</td><td><strong>Dashy</strong></td><td class="n">1.560</td><td class="n">0.699</td><td class="n">6</td><td><span class="pill up">source linked</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="wf-card">
+            <h3>Computation Panel</h3>
+            <p class="small muted">This panel changes when a row is selected.</p>
+            <div class="wf-flow">
+              <div class="wf-step"><span class="k">Published rank</span><span class="v">#1</span></div>
+              <div class="wf-step"><span class="k">Rank pts</span><span class="v">1.000</span></div>
+              <div class="wf-step"><span class="k">Base</span><span class="v">1.50</span></div>
+              <div class="wf-step"><span class="k">Timing</span><span class="v">1.20</span></div>
+              <div class="wf-step"><span class="k">Final</span><span class="v">1.800</span></div>
+            </div>
+            <div class="wf-row"><span>Source</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/1n1ujv2/rcodcompetitives_top_30_black_ops_6_players/">r/CoDCompetitive BO6 Top 30</a><strong>open</strong></div>
+            <div class="wf-row"><span>Sample</span><span>201 visible votes</span><strong>logged</strong></div>
+            <div class="wf-row"><span>Rule</span><span>aggregate survey, end-of-title</span><strong>1.00x</strong></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Overall Summary From Selected Scope</h2><p class="small muted">A lighter career page that summarizes what the title workbench produces.</p></div>
+        <span class="pill tag">Screen 2</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="controls">
+          <input class="search" type="text" placeholder="Search player..." aria-label="Search player">
+          <div class="colmenu eramenu"><button type="button" class="colmenu-btn">Eras: CDL <span aria-hidden="true">▾</span></button></div>
+          <button class="sharebtn" type="button">Share view</button>
+        </div>
+        <p class="small muted">This view answers: who accumulated the most community-recognized title seasons in the selected scope?</p>
+        <div class="wf-scroll">
+          <table class="wf-table">
+            <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Scope score</th><th class="n">/ played</th><th class="n">Top 1</th><th class="n">Top 5</th><th class="n">Top 10</th><th>Best title rows</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td><strong>Simp</strong></td><td class="n wf-score">5.438</td><td class="n">0.777</td><td class="n">3</td><td class="n">5</td><td class="n">7</td><td>MW #1; BOCW #1; MWIII #1</td></tr>
+              <tr><td class="n">2</td><td><strong>Cellium</strong></td><td class="n wf-score">4.533</td><td class="n">0.648</td><td class="n">1</td><td class="n">4</td><td class="n">6</td><td>VG #1; BOCW #4; MWII #4</td></tr>
+              <tr><td class="n">3</td><td><strong>aBeZy</strong></td><td class="n wf-score">4.524</td><td class="n">0.565</td><td class="n">0</td><td class="n">4</td><td class="n">6</td><td>BOCW #2; MWII #2; BO4 #4</td></tr>
+              <tr><td class="n">4</td><td><strong>Shotzzy</strong></td><td class="n wf-score">4.346</td><td class="n">0.724</td><td class="n">0</td><td class="n">3</td><td class="n">6</td><td>MW #3; MWIII #2; BO6 #2</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -71,9 +71,10 @@ root.innerHTML=`
     <div class="stat"><div class="k">Range</div><div class="v sm">${minM}–${maxM}</div></div>
   </div>
 
-  <div class="scroll-x"><table class="data">
-    <thead><tr><th>Season</th><th class="n">First major</th><th class="n">Majors</th>
-      <th class="n">Per win</th><th>Relative volume</th><th class="n">vs avg</th></tr></thead>
+  <div ${scrollRegionAttrs('Season major-count table')}><table class="data">
+    ${tableCaption('Major count by Call of Duty season')}
+    <thead><tr><th scope="col">Season</th><th scope="col" class="n">First major</th><th scope="col" class="n">Majors</th>
+      <th scope="col" class="n">Per win</th><th scope="col">Relative volume</th><th scope="col" class="n">vs avg</th></tr></thead>
     <tbody>${rows}</tbody>
   </table></div>
   <p class="small muted">A "vs avg" above 1.0× means that season had more majors than average, so each win there is worth

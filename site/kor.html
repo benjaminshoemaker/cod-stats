@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kills Over Replacement · CoD Era-Adjusted</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="All-time Call of Duty major-event Kills Over Replacement leaderboards by title and mode.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:title" content="Kills Over Replacement">
+<meta property="og:description" content="Major-event kill production above title-specific replacement baselines.">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/nav.js" as="script">
+<script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
+  integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="assets/nav.js"></script>
+<main class="wrap wide" id="root" tabindex="-1">
+  <p class="crumb"><a href="index.html">← Leaderboard</a></p>
+  <h1>Kills Over Replacement</h1>
+  <p class="lede">Major-event kills per map above a title-and-mode replacement baseline. Respawn and S&amp;D are separate because their kill environments are different.</p>
+
+  <div class="note kor-method">
+    <strong>Formula.</strong> KOR/map = player K/map − replacement K/map. Replacement is the 25th percentile K/map among qualified players in the same title and mode split. Opponent placement columns are context only, not part of the score. <a href="methodology.html#kills-over-replacement">Methodology →</a>
+  </div>
+
+  <div class="kor-controls">
+    <label class="field-label">Title
+      <select id="kor-game" class="select">
+        <option value="all">All titles</option>
+      </select>
+    </label>
+    <div class="seg" id="kor-split" role="group" aria-label="Mode split">
+      <button type="button" data-split="respawn" aria-pressed="true">Respawn</button>
+      <button type="button" data-split="snd" aria-pressed="false">S&amp;D</button>
+    </div>
+  </div>
+
+  <div id="kor-root" aria-live="polite"><p class="note">Loading KOR data...</p></div>
+</main>
+<script src="data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+mountNav('kor.html');
+const gameSel = document.getElementById('kor-game');
+const splitBtns = [...document.querySelectorAll('#kor-split button')];
+const host = document.getElementById('kor-root');
+let KOR = null;
+
+const pct = v => v == null ? '<span class="faint">–</span>' : `${Math.round(v * 100)}%`;
+const num = (v, d=2) => v == null ? '<span class="faint">–</span>' : Number(v).toFixed(d);
+const signedNum = (v, d=2) => v == null ? '<span class="faint">–</span>' : `${v >= 0 ? '+' : ''}${Number(v).toFixed(d)}`;
+const splitLabel = split => split === 'snd' ? 'S&D' : 'Respawn';
+const lowSampleLimit = split => split === 'respawn' ? 40 : 15;
+const samplePill = (maps, split) => maps < lowSampleLimit(split) ? '<span class="pill warn">low sample</span>' : '';
+const ord = n => {
+  if(n == null) return '<span class="faint">–</span>';
+  if(!Number.isInteger(n)) return Number(n).toFixed(1);
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+function allRows(split, game){
+  const rows = [];
+  Object.entries(KOR.games).forEach(([g, gameData]) => {
+    if(game !== 'all' && g !== game) return;
+    const score = gameData.splits?.[split];
+    if(!score || !score.rows) return;
+    score.rows.forEach(row => rows.push({...row, game: g, replacementKpm: score.replacementKpm, qualified: score.qualified}));
+  });
+  return rows.sort((a, b) => b.korPerMap - a.korPerMap || b.maps - a.maps || a.player.localeCompare(b.player));
+}
+
+function readState(){
+  const params = new URLSearchParams(location.search);
+  const games = Object.keys(KOR.games);
+  const game = games.includes(params.get('g')) ? params.get('g') : 'all';
+  const split = params.get('split') === 'snd' ? 'snd' : 'respawn';
+  return {game, split};
+}
+function setUrl(game, split){
+  const url = new URL(location.href);
+  if(game === 'all') url.searchParams.delete('g'); else url.searchParams.set('g', game);
+  url.searchParams.set('split', split);
+  history.replaceState(null, '', url);
+}
+function syncControls(game, split){
+  gameSel.value = game;
+  splitBtns.forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.split === split ? 'true' : 'false'));
+}
+function replacementMarker(score){
+  if(!score || score.replacementKpm == null || !score.rows?.length) return '';
+  const idx = score.rows.findIndex(r => r.kpm < score.replacementKpm);
+  const insertAt = idx < 0 ? score.rows.length : idx;
+  const above = score.rows[insertAt - 1];
+  const below = score.rows[insertAt];
+  const names = above && below
+    ? `between ${esc(above.player)} and ${esc(below.player)}`
+    : above
+    ? `below ${esc(above.player)}`
+    : below
+    ? `above ${esc(below.player)}`
+    : '';
+  return {insertAt, html: `<tr class="kor-baseline-row">
+    <td colspan="11"><span>Replacement baseline</span> ${num(score.replacementKpm)} K/map · 25th percentile of ${score.qualified} qualified players${names ? ` · ${names}` : ''}</td>
+  </tr>`};
+}
+function tableRows(rows, split, marker){
+  const out = [];
+  rows.forEach((r, i) => {
+    if(marker && marker.insertAt === i) out.push(marker.html);
+    out.push(`<tr>
+      <td class="n">${i + 1}</td>
+      <td>${playerLink(r.player)}</td>
+      <td>${rolePill(r.role || 'Unknown')}</td>
+      <td>${gameLink(r.game)}</td>
+      <td class="n strong">${signedNum(r.korPerMap)}</td>
+      <td class="n">${num(r.kpm)}</td>
+      <td class="n">${r.maps} ${samplePill(r.maps, split)}</td>
+      <td class="n">${r.events}</td>
+      <td class="n">${num(r.replacementKpm)}</td>
+      <td class="n">${ord(r.medianOpponentPlace)}</td>
+      <td class="n">${pct(r.top8OpponentPct)}</td>
+    </tr>`);
+  });
+  if(marker && marker.insertAt === rows.length) out.push(marker.html);
+  return out.join('');
+}
+function barRows(rows){
+  const top = rows.slice(0, 10);
+  const max = Math.max(...top.map(r => Math.abs(r.korPerMap)), 1);
+  return top.map((r, i) => {
+    const width = 12 + Math.abs(r.korPerMap) / max * 80;
+    return `<div class="kor-bar-row">
+      <div class="rank">${i + 1}</div>
+      <div class="bar-name">${playerLink(r.player)} <span>${esc(r.game)}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${width.toFixed(1)}%"></div></div>
+      <div class="bar-value">${signedNum(r.korPerMap)}</div>
+    </div>`;
+  }).join('');
+}
+function render(game, split){
+  const rows = allRows(split, game);
+  const score = game === 'all' ? null : KOR.games[game]?.splits?.[split];
+  const leader = rows[0];
+  syncControls(game, split);
+  setUrl(game, split);
+  if(!rows.length){
+    host.innerHTML = '<p class="note">No qualified KOR rows for this selection.</p>';
+    return;
+  }
+  const marker = game === 'all' ? null : replacementMarker(score);
+  const title = game === 'all' ? `All-time ${splitLabel(split)} KOR/map` : `${esc(game)} ${splitLabel(split)} KOR/map`;
+  host.innerHTML = `
+    <section class="kor-summary">
+      <div class="stat"><div class="k">Leader</div><div class="v sm">${esc(leader.player)}</div><div class="small faint">${esc(leader.game)} · ${signedNum(leader.korPerMap)} KOR/map</div></div>
+      <div class="stat"><div class="k">Qualified rows</div><div class="v">${rows.length}</div><div class="small faint">${splitLabel(split)} · ${game === 'all' ? 'all titles' : `${score.minMaps}+ maps`}</div></div>
+      <div class="stat"><div class="k">Replacement</div><div class="v sm">${game === 'all' ? 'per title' : `${num(score.replacementKpm)} K/map`}</div><div class="small faint">25th percentile qualified player</div></div>
+    </section>
+    <section class="kor-grid">
+      <div class="kor-panel">
+        <h2>Top 10</h2>
+        ${barRows(rows)}
+      </div>
+      <div class="kor-panel">
+        <h2>Read this as</h2>
+        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; low-sample rows can be real but fragile. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
+      </div>
+    </section>
+    <section>
+      <h2>${title}</h2>
+      <p class="scrollhint small faint">Swipe the table sideways to see role, sample, and opponent context →</p>
+      <div ${scrollRegionAttrs(`${title} leaderboard table`)}><table class="data kor-table">
+        ${tableCaption(`${title} leaderboard with role, sample, replacement, and opponent context`)}
+        <thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col">Role</th><th scope="col">Title</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">K/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col" class="n">Replacement</th><th scope="col" class="n">Median opp place</th><th scope="col" class="n">Top-8 opp maps</th></tr></thead>
+        <tbody>${tableRows(rows, split, marker)}</tbody>
+      </table></div>
+    </section>`;
+}
+
+fetch('kor.json')
+  .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(data => {
+    KOR = data;
+    const games = D.meta.seasonOrder.filter(g => KOR.games[g]?.splits?.respawn || KOR.games[g]?.splits?.snd);
+    gameSel.innerHTML += games.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
+    const state = readState();
+    render(state.game, state.split);
+    gameSel.addEventListener('change', () => render(gameSel.value, splitBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.split));
+    splitBtns.forEach(btn => btn.addEventListener('click', () => render(gameSel.value, btn.dataset.split)));
+  })
+  .catch(err => {
+    console.error(err);
+    host.innerHTML = '<p class="note">KOR data failed to load.</p>';
+  })
+  .finally(() => mountFoot());
+</script>
+</body>
+</html>

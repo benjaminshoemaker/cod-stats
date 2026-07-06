@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BO2 Source Calculation Detail</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<style>
+.detail-wrap{max-width:1180px}
+.back{display:inline-block;margin-bottom:var(--space-3)}
+.detail-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--space-4);align-items:start}
+.formula-block{display:grid;gap:var(--space-2);margin-top:var(--space-3)}
+.step{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;padding:var(--space-3)}
+.step h3{margin:0 0 var(--space-2)}
+.ballot-table th,.ballot-table td{vertical-align:middle;white-space:nowrap}
+.ballot-table .n{white-space:nowrap}
+.source-meta{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-3)}
+.raw-list{color:var(--muted);font-size:var(--text-xs);max-width:none;white-space:nowrap}
+.metadata-panel{margin-top:var(--space-4)}
+@media(max-width:900px){
+  .detail-grid{display:block}
+  .panel-shell{margin-bottom:var(--space-4)}
+  .ballot-table{min-width:980px}
+}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="inner">
+  <a class="brand" href="../../site/index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
+  <nav class="nav"><a href="../../site/index.html">Leaderboard</a><a href="community-consensus-bo2-title.html" class="active">BO2 Consensus</a><a href="../../site/methodology.html">Methodology</a></nav>
+</div></header>
+
+<main class="wrap wide detail-wrap" id="root" tabindex="-1">
+  <a class="back" href="community-consensus-bo2-title.html">← Back to BO2 consensus</a>
+  <h1>Source Contribution Detail</h1>
+  <p class="lede">This drilldown shows exactly how Karma receives <strong>1.363</strong> community-score points from the source <strong><a href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/">Top 10 Players in BO2</a></strong>.</p>
+
+  <div class="callout"><strong>Terminology:</strong> `1.363` is Karma's contribution from this source. The source's final weight is `1.484924...`; Karma's comment-weighted average rank-points inside the source are `0.917648`.</div>
+
+  <div class="detail-grid">
+    <section class="panel-shell">
+      <div class="panel-head">
+        <h2>Raw Ballot Inputs</h2>
+        <p class="small muted">Each row is one ranked community ballot extracted from the thread. Comment scores adjust ballot influence only inside this source; they do not change the source's final weight.</p>
+      </div>
+      <div class="panel-body scroll-x">
+        <p class="scrollhint small muted">Scroll sideways to see each ballot formula and visible ranked list.</p>
+        <table class="data ballot-table">
+          <thead><tr><th>Ballot</th><th class="n">List size</th><th class="n">Karma rank</th><th class="n">Ballot points</th><th class="n">Comment score</th><th class="n">Ballot weight</th><th class="n">Weighted pts</th><th>Formula</th><th>Visible ranked list</th></tr></thead>
+          <tbody>
+            <tr class="selected"><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/">bo2_2016_top10_001</a></td><td class="n">10</td><td class="n">1</td><td class="n">1.000</td><td class="n">n/a</td><td class="n">0.908714</td><td class="n">0.908714</td><td><span class="formula">(10 + 1 - 1) / 10</span></td><td class="raw-list">Karma, Crimsix, Clayster, Parasite/ACHES tie, TeeP, MiRx, Scump, KiLLa, JKap</td></tr>
+            <tr><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a5d59/">bo2_2016_top10_002</a></td><td class="n">10</td><td class="n">4</td><td class="n">0.700</td><td class="n">7</td><td class="n">1.135892</td><td class="n">0.795124</td><td><span class="formula">(10 + 1 - 4) / 10</span></td><td class="raw-list">Crimsix/ACHES tie, Clayster, Karma, TeeP, Parasite, ProoFy, JKap, MiRx, KiLLa</td></tr>
+            <tr class="selected"><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6agt57/">bo2_2016_top10_003</a></td><td class="n">10</td><td class="n">1</td><td class="n">1.000</td><td class="n">4</td><td class="n">1.084544</td><td class="n">1.084544</td><td><span class="formula">(10 + 1 - 1) / 10</span></td><td class="raw-list">Karma, Crimsix, ACHES, Clayster, TeeP, Parasite, MiRx, KiLLa, JKap, Sharp</td></tr>
+            <tr><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6akbjp/">bo2_2016_top10_004</a></td><td class="n">5</td><td class="n">2</td><td class="n">0.800</td><td class="n">3</td><td class="n">1.060166</td><td class="n">0.848133</td><td><span class="formula">(5 + 1 - 2) / 5</span></td><td class="raw-list">Crimsix, Karma, Clayster, ACHES, Parasite</td></tr>
+            <tr><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a85a5/">bo2_2016_top10_005</a></td><td class="n">10</td><td class="n">2</td><td class="n">0.900</td><td class="n">3</td><td class="n">1.060166</td><td class="n">0.954149</td><td><span class="formula">(10 + 1 - 2) / 10</span></td><td class="raw-list">Crimsix, Karma, Clayster, ACHES, Parasite, TeeP, KiLLa, JKap, MiRx, ProoFy</td></tr>
+            <tr class="selected"><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a9pat/">bo2_2016_top10_006</a></td><td class="n">10</td><td class="n">1</td><td class="n">1.000</td><td class="n">4</td><td class="n">1.084544</td><td class="n">1.084544</td><td><span class="formula">(10 + 1 - 1) / 10</span></td><td class="raw-list">Karma, Crimsix, Clayster, Parasite, ACHES, MiRx, TeeP, ProoFy, Scump, KiLLa</td></tr>
+            <tr class="selected"><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6agto5/">bo2_2016_top10_007</a></td><td class="n">10</td><td class="n">1</td><td class="n">1.000</td><td class="n">1</td><td class="n">0.984440</td><td class="n">0.984440</td><td><span class="formula">(10 + 1 - 1) / 10</span></td><td class="raw-list">Karma, Crimsix, Clayster/ACHES tie, Parasite, TeeP, MiRx, KiLLa, ProoFy, Scump</td></tr>
+            <tr class="selected"><td><a class="evidence-link" href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a7e0n/">bo2_2016_top10_008</a></td><td class="n">10</td><td class="n">1</td><td class="n">1.000</td><td class="n">-11</td><td class="n">0.681535</td><td class="n">0.681535</td><td><span class="formula">(10 + 1 - 1) / 10</span></td><td class="raw-list">Karma, Crimsix, Clayster, Scump, ACHES, Parasite, JKap, Saints, MiRx, John</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="panel-shell">
+      <div class="panel-head">
+        <h2>Reproduce The Number</h2>
+        <p class="small muted">Follow these steps with the ballot table.</p>
+      </div>
+      <div class="panel-body">
+        <div class="math-card">
+          <div class="k">1. Compute comment reception weights</div>
+          <div class="v">0.75-1.25</div>
+          <p class="small muted"><span class="formula">raw = 1 +/- 0.25 * log1p(score) / log1p(thread max)</span></p>
+          <p class="small muted">Raw weights are normalized so the eight ballot weights still sum to 8.000.</p>
+        </div>
+        <div class="math-card">
+          <div class="k">2. Weighted average Karma points</div>
+          <div class="v">0.917647838</div>
+          <p class="small muted"><span class="formula">(0.908714 + 0.795124 + 1.084544 + 0.848133 + 0.954149 + 1.084544 + 0.984440 + 0.681535) / 8</span></p>
+        </div>
+        <div class="math-card">
+          <div class="k">3. Compute sample weight</div>
+          <div class="v">1.414213562</div>
+          <p class="small muted"><span class="formula">min(1.5, sqrt(8) / 2)</span></p>
+          <p class="small muted">Eight ballots gives this thread more weight than a one- or two-ballot source, with a cap at 1.5.</p>
+        </div>
+        <div class="math-card">
+          <div class="k">4. Apply Reddit score multiplier</div>
+          <div class="v">1.05</div>
+          <p class="small muted">The thread's Reddit score is 7, which falls in the 3-9 bucket.</p>
+        </div>
+        <div class="math-card">
+          <div class="k">5. Apply timing multiplier</div>
+          <div class="v">1.00</div>
+          <p class="small muted">The source is retrospective, not near-contemporaneous or contemporaneous.</p>
+        </div>
+        <div class="math-card">
+          <div class="k">6. Final source weight</div>
+          <div class="v">1.484924240</div>
+          <p class="small muted"><span class="formula">1.414213562 × 1.05 × 1.00</span></p>
+        </div>
+        <div class="math-card sum">
+          <div class="k">7. Karma source contribution</div>
+          <div class="v">1.362637518</div>
+          <p class="small muted"><span class="formula">0.917647838 × 1.484924240</span></p>
+          <p class="small muted">Displayed on the title page as <strong>1.363</strong>.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <section class="panel-shell metadata-panel">
+    <div class="panel-head">
+      <h2>Source Metadata</h2>
+      <p class="small muted">This is the metadata used to determine the source weight.</p>
+    </div>
+    <div class="panel-body">
+      <div class="source-meta">
+        <span class="pill flat">source kind: community_thread_cluster</span>
+        <span class="pill flat">ballot count: 8</span>
+        <span class="pill flat">reddit score: 7</span>
+        <span class="pill flat">coverage: retrospective</span>
+        <span class="pill flat">ranking size: mixed 5/10 ballots</span>
+        <span class="pill flat">comment scores observed: 2026-07-06</span>
+        <span class="pill flat">status: scored</span>
+      </div>
+      <p class="small muted" style="margin-top:var(--space-3)">Thread comments are averaged before weighting because comments in one thread are not fully independent sources. Comment scores are net score snapshots, not exact upvote/downvote counts.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

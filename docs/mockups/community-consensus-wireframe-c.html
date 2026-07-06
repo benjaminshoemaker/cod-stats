@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus Wireframe C</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<link rel="stylesheet" href="community-consensus-wireframes.css">
+</head>
+<body>
+<main class="wrap wide" id="root" tabindex="-1">
+  <div class="wf-top">
+    <div>
+      <p class="wf-label">Wireframe C</p>
+      <h1>Player x Title Matrix</h1>
+      <p class="lede">Use a matrix to make the blended score auditable at a glance. Per-title details expand from the cells.</p>
+    </div>
+    <div class="wf-mode"><span class="on">Matrix</span><span>Title detail</span></div>
+  </div>
+
+  <div class="wf-board">
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Overall Blended Matrix</h2><p class="small muted">The overall score is a sum of visible title cells, so users can see why the blend ranks players where it does.</p></div>
+        <span class="pill tag">Screen 1</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="controls">
+          <input class="search" type="text" placeholder="Search player..." aria-label="Search player">
+          <div class="colmenu eramenu"><button type="button" class="colmenu-btn">Eras: All <span aria-hidden="true">▾</span></button></div>
+          <button class="sharebtn" type="button">Share matrix</button>
+        </div>
+        <div class="wf-scroll">
+          <table class="wf-table">
+            <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Score</th><th class="n">Wins</th><th class="n">BO2</th><th class="n">Ghosts</th><th class="n">AW</th><th class="n">BO3</th><th class="n">MW</th><th class="n">BOCW</th><th class="n">VG</th><th class="n">MWII</th><th class="n">MWIII</th><th class="n">BO6</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td><strong>Scump</strong></td><td class="n wf-score">7.636</td><td class="n">28</td><td class="n">#8</td><td class="n">#4</td><td class="n">#1</td><td class="n">#1</td><td class="n">#10</td><td class="n">#7</td><td class="n">#12</td><td class="n">#21</td><td class="n">-</td><td class="n">-</td></tr>
+              <tr><td class="n">2</td><td><strong>Simp</strong></td><td class="n wf-score">5.438</td><td class="n">13</td><td class="n">-</td><td class="n">-</td><td class="n">-</td><td class="n">-</td><td class="n">#1</td><td class="n">#1</td><td class="n">#5</td><td class="n">#10</td><td class="n">#1</td><td class="n">#10</td></tr>
+              <tr class="sel"><td class="n">5</td><td><strong>aBeZy</strong></td><td class="n wf-score">4.524</td><td class="n">13</td><td class="n">-</td><td class="n">-</td><td class="n">-</td><td class="n">-</td><td class="n">#4</td><td class="n">#2</td><td class="n">#10</td><td class="n">#2</td><td class="n">#9</td><td class="n">#13</td></tr>
+              <tr><td class="n">7</td><td><strong>Crimsix</strong></td><td class="n wf-score">4.305</td><td class="n">38</td><td class="n">#2</td><td class="n">#1</td><td class="n">#6</td><td class="n">#6</td><td class="n">#15</td><td class="n">#23</td><td class="n">-</td><td class="n">-</td><td class="n">-</td><td class="n">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted" style="margin-top:var(--space-2)">Cell click opens the per-title computation for that player/title. Dash means no ranked row in the active inventory or not played in scope, depending on row state.</p>
+      </div>
+    </section>
+
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Expanded Cell: aBeZy in Black Ops Cold War</h2><p class="small muted">This is the heavy detail surface reached from a matrix cell.</p></div>
+        <span class="pill tag">Screen 2</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="wf-grid">
+          <div>
+            <div class="wf-note"><strong>aBeZy, BOCW:</strong> consensus rank #2. This title contributes 0.919 career points to the blended score.</div>
+            <div class="wf-flow">
+              <div class="wf-step"><span class="k">Source rank</span><span class="v">#2</span></div>
+              <div class="wf-step"><span class="k">Title score</span><span class="v">3.210</span></div>
+              <div class="wf-step"><span class="k">Title rank</span><span class="v">#2</span></div>
+              <div class="wf-step"><span class="k">Power curve</span><span class="v">0.919</span></div>
+              <div class="wf-step"><span class="k">Career total</span><span class="v">4.524</span></div>
+            </div>
+            <div class="wf-scroll" style="margin-top:var(--space-3)">
+              <table class="wf-table">
+                <thead><tr><th>Input</th><th>Value</th><th>Why it matters</th></tr></thead>
+                <tbody>
+                  <tr><td>Community source</td><td><a href="https://www.reddit.com/r/CoDCompetitive/comments/po7hvz/reddits_top_30_black_ops_cold_war_players/">Reddit's Top 30 Black Ops Cold War Players</a></td><td>published aggregate survey</td></tr>
+                  <tr><td>Source kind</td><td>community_aggregate_survey</td><td>highest source tier</td></tr>
+                  <tr><td>Sample</td><td>766 visible votes</td><td>raises base source weight</td></tr>
+                  <tr><td>Timing</td><td>contemporaneous</td><td>1.20 multiplier</td></tr>
+                  <tr><td>Season coverage</td><td>end_of_title</td><td>1.00 multiplier</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="wf-card">
+            <h3>Title Context</h3>
+            <div class="wf-row"><span>BOCW rank</span><strong>#2</strong><strong>top 3</strong></div>
+            <div class="wf-row"><span>Wins</span><strong>3</strong><strong>shown only</strong></div>
+            <div class="wf-row"><span>Confidence</span><strong>high</strong><strong>survey</strong></div>
+            <div class="wf-row"><span>Race</span><strong>close</strong><strong>flagged</strong></div>
+            <h3 style="margin-top:var(--space-4)">Nearby Players</h3>
+            <div class="wf-row"><span>#1</span><span>Simp</span><strong>3.321</strong></div>
+            <div class="wf-row"><span>#2</span><span>aBeZy</span><strong>3.210</strong></div>
+            <div class="wf-row"><span>#3</span><span>Cammy</span><strong>3.100</strong></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

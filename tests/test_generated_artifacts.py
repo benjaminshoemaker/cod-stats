@@ -72,6 +72,7 @@ def test_kor_json_is_generated_with_mode_specific_rows():
     assert bo6["respawn"]["playersWithMaps"] >= bo6["respawn"]["qualified"]
     assert bo6["snd"]["qualified"] > 0
     assert bo6["respawn"]["rows"][0]["korPerMap"] > 0
+    assert bo6["respawn"]["rows"][0]["role"] in {"AR", "Flex", "SMG", "Unknown"}
     assert bo6["respawn"]["rows"][0]["medianOpponentPlace"] is not None
     assert bo6["respawn"]["rows"][0]["top8OpponentPct"] is not None
 

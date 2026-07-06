@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "retrieved_date": "2026-07-06",
+  "methodology": {
+    "issue": 16,
+    "verdict": "Authored rankings and claims are evidence, not a scored consensus model.",
+    "notes": [
+      "Keep authored media, player, creator, caster, and coach evidence separate from fan/community consensus, objective stats, and formal honors.",
+      "Do not aggregate across source families until the site has a product surface that can show caveats beside every source.",
+      "Video and podcast sources require stable URLs plus timestamped transcript or hand-verified quote before they become seeded evidence."
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "nerd_street_2022_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "status": "seeded",
+      "title": "Top 10 greatest Call of Duty players of all time",
+      "url": "https://nerdstreet.com/news/2022/8/top-10-greatest-call-of-duty-players-all-time",
+      "published_date": "2022-08-12",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Nerd Street",
+      "author": "Brian Bencomo",
+      "author_type": "media",
+      "scope": {
+        "kind": "all_time",
+        "ranking_size": 10,
+        "games": [],
+        "season": null
+      },
+      "methodology_summary": "Greatness list weighted by tournament wins, Champs titles, Champs top-three finishes, and individual accolades.",
+      "methodology_tags": ["greatest", "resume_weighted"],
+      "source_quality": "high",
+      "caveats": [
+        "Retrospective list as of the end of the Vanguard season.",
+        "Mixes resume, Champs, and individual accolades; not a pure skill list."
+      ]
+    },
+    {
+      "source_id": "dexerto_2022_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "status": "seeded",
+      "title": "Top 10 best Call of Duty players of all time",
+      "url": "https://www.dexerto.com/call-of-duty/top-10-best-call-of-duty-players-of-all-time-1900543/",
+      "published_date": "2022-08-12",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Dexerto",
+      "author": "Jacob Hale",
+      "author_type": "media",
+      "scope": {
+        "kind": "all_time",
+        "ranking_size": 10,
+        "games": [],
+        "season": null
+      },
+      "methodology_summary": "All-time list weighing event wins, world championship rings, raw talent, and intangibles.",
+      "methodology_tags": ["greatest", "resume_weighted", "skill_weighted"],
+      "source_quality": "high",
+      "caveats": [
+        "Retrospective list before the Modern Warfare II season.",
+        "Uses a mixed greatness definition rather than one explicit formula."
+      ]
+    },
+    {
+      "source_id": "tacticalrab_2018_codwiki_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "status": "seeded",
+      "title": "Top 10 BEST Players of All Time",
+      "url": "https://cod-esports.fandom.com/wiki/Article%3ATop_10_Players_of_All_Time",
+      "published_date": "2018-06-11",
+      "retrieved_date": "2026-07-06",
+      "outlet": "CoD Esports Wiki Articles",
+      "author": "Arran Francis",
+      "author_handle": "TacticalRab",
+      "author_type": "creator_media",
+      "scope": {
+        "kind": "all_time",
+        "ranking_size": 10,
+        "games": [],
+        "season": null
+      },
+      "methodology_summary": "Historical all-time list through June 2018, based on skill, accolades, and wider contribution, with Champs rings not weighted especially heavily.",
+      "methodology_tags": ["greatest", "skill_weighted", "resume_weighted", "legacy_weighted"],
+      "source_quality": "high",
+      "caveats": [
+        "Historical snapshot before the Black Ops 4 and CDL eras.",
+        "Hosted as a wiki article but should be treated as authored opinion, not wiki fact."
+      ]
+    },
+    {
+      "source_id": "dexerto_2023_nadeshot_scump_goat",
+      "family": "reported_player_claim",
+      "status": "seeded",
+      "title": "Nadeshot gives his take on whether Scump is the COD GOAT",
+      "url": "https://www.dexerto.com/call-of-duty/nadeshot-gives-his-take-on-whether-scump-is-the-cod-goat-2036855/",
+      "published_date": "2023-01-18",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Dexerto",
+      "author": "Ryan Lemay",
+      "author_type": "media",
+      "claimant": "Nadeshot",
+      "claimant_type": "player_owner",
+      "source_quality": "high",
+      "methodology_summary": "Reported claim from Nadeshot's 100 Thieves Cast discussion, emphasizing Scump's talent, map impact, context, and difficulty to kill.",
+      "methodology_tags": ["goat", "skill_weighted", "context_adjusted"],
+      "caveats": [
+        "Reported and quoted from a podcast discussion; preserve claimant and context.",
+        "This is an explicit endorsement, not a ranked list."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2024_mw3_top20_series",
+      "family": "authored_title_ranking",
+      "status": "verification_lead",
+      "title": "Top 20 Players of MW3 article series",
+      "url": "https://breakingpoint.gg/posts/top-20-players-of-mw3-1-simp",
+      "published_date": "2024-08-11",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "EasyMac",
+      "author_type": "media_stats",
+      "scope": {
+        "kind": "title",
+        "game": "Modern Warfare III",
+        "ranking_size": 20
+      },
+      "source_quality": "high",
+      "methodology_summary": "Title-season Top 20 article series with player-specific rationale and stat context.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2025_bo6_top20_series",
+      "family": "authored_title_ranking",
+      "status": "verification_lead",
+      "title": "Top 20 Players of Black Ops 6 article series",
+      "url": "https://breakingpoint.gg/posts/1-scrap-top-20-players-of-black-ops-6",
+      "published_date": "2025-08-11",
+      "retrieved_date": "2026-07-06",
+      "outlet": "Breaking Point",
+      "author": "EasyMac",
+      "author_type": "media_stats",
+      "scope": {
+        "kind": "title",
+        "game": "Black Ops 6",
+        "ranking_size": 20
+      },
+      "source_quality": "high",
+      "methodology_summary": "Title-season Top 20 article series with player-specific rationale and stat context.",
+      "methodology_tags": ["title_specific", "skill_weighted", "stat_context"],
+      "caveats": [
+        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "tacticalrab_video_goat_debate_leads",
+      "family": "creator_video_claim",
+      "status": "verification_lead",
+      "title": "TacticalRab GOAT/player debate videos",
+      "url": "https://www.youtube.com/@TacticalRab",
+      "retrieved_date": "2026-07-06",
+      "outlet": "TacticalRab",
+      "author": "TacticalRab",
+      "author_type": "creator_media",
+      "source_quality": "medium",
+      "methodology_summary": "Creator/video leads for GOAT and player-ranking discussion.",
+      "methodology_tags": ["goat", "creator_video_claim"],
+      "caveats": [
+        "Needs specific video URLs, timestamps, and transcript or hand-verified quote before scoring or display."
+      ]
+    },
+    {
+      "source_id": "the_flank_reverse_sweep_player_claim_leads",
+      "family": "creator_video_claim",
+      "status": "verification_lead",
+      "title": "The Flank, Reverse Sweep, and player-podcast ranking claims",
+      "retrieved_date": "2026-07-06",
+      "author_type": "creator_player_caster",
+      "source_quality": "medium",
+      "methodology_summary": "Podcast/video leads for player, caster, and coach claims.",
+      "methodology_tags": ["reported_player_claim", "reported_caster_claim", "reported_coach_claim"],
+      "caveats": [
+        "Needs stable episode URL, timestamp, speaker identity, and transcript or hand-verified quote.",
+        "Discussion segments should be labeled as discussion rather than formal ranking unless the source presents a ranked list."
+      ]
+    }
+  ],
+  "rankings": [
+    {
+      "source_id": "nerd_street_2022_top10_all_time",
+      "entries": [
+        {"rank": 1, "player": "Crimsix", "claim_tags": ["goat", "greatest", "resume_weighted"]},
+        {"rank": 2, "player": "Karma", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 3, "player": "Clayster", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 4, "player": "Scump", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 5, "player": "FormaL", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 6, "player": "JKap", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 7, "player": "Simp", "claim_tags": ["greatest", "future_goat_candidate"]},
+        {"rank": 8, "player": "Arcitys", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 9, "player": "aBeZy", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 10, "player": "ACHES", "claim_tags": ["greatest", "resume_weighted"]}
+      ]
+    },
+    {
+      "source_id": "dexerto_2022_top10_all_time",
+      "entries": [
+        {"rank": 1, "player": "Crimsix", "claim_tags": ["goat", "greatest", "resume_weighted"]},
+        {"rank": 2, "player": "Scump", "claim_tags": ["greatest", "most_talented", "skill_weighted"]},
+        {"rank": 3, "player": "Clayster", "claim_tags": ["greatest", "resume_weighted", "best_ar"]},
+        {"rank": 4, "player": "Karma", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 5, "player": "Simp", "claim_tags": ["greatest", "best_player", "most_talented", "future_goat_candidate"]},
+        {"rank": 6, "player": "FormaL", "claim_tags": ["greatest", "best_ar", "highest_peak"]},
+        {"rank": 7, "player": "Arcitys", "claim_tags": ["greatest", "best_ar", "leadership"]},
+        {"rank": 8, "player": "aBeZy", "claim_tags": ["greatest", "best_entry", "best_smg"]},
+        {"rank": 9, "player": "ACHES", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 10, "player": "SlasheR", "claim_tags": ["greatest", "best_ar", "leadership"]}
+      ]
+    },
+    {
+      "source_id": "tacticalrab_2018_codwiki_top10_all_time",
+      "entries": [
+        {"rank": 1, "player": "Crimsix", "claim_tags": ["goat", "greatest", "resume_weighted", "skill_weighted"]},
+        {"rank": 2, "player": "Scump", "claim_tags": ["greatest", "best_smg", "most_talented"]},
+        {"rank": 3, "player": "Karma", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 4, "player": "JKap", "claim_tags": ["greatest", "leadership", "legacy_weighted"]},
+        {"rank": 5, "player": "ACHES", "claim_tags": ["greatest", "resume_weighted"]},
+        {"rank": 6, "player": "Clayster", "claim_tags": ["greatest", "best_ar", "skill_weighted"]},
+        {"rank": 7, "player": "FormaL", "claim_tags": ["greatest", "best_ar", "highest_peak"]},
+        {"rank": 8, "player": "TeeP", "claim_tags": ["greatest", "leadership", "legacy_weighted"]},
+        {"rank": 9, "player": "SlasheR", "claim_tags": ["greatest", "best_ar"]},
+        {"rank": 10, "player": "John", "claim_tags": ["greatest", "skill_weighted"]}
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "source_id": "dexerto_2023_nadeshot_scump_goat",
+      "claimant": "Nadeshot",
+      "claimant_type": "player_owner",
+      "player": "Scump",
+      "claim_tags": ["goat", "most_talented", "map_impact", "hardest_to_kill", "context_adjusted"],
+      "rationale_summary": "Nadeshot frames Scump's GOAT case around talent, map impact, difficulty to kill, and roster/context disadvantages rather than only trophies.",
+      "quote": "best and most talented player of all time",
+      "quote_location": "Dexerto article body quoting 100 Thieves Cast"
+    }
+  ]
+}

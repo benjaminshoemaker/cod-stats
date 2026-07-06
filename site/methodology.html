@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Methodology · CoD Era-Adjusted</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<meta name="description" content="How the era-adjustment works, which tournaments count and why (the wiki Major Wins list as source of truth), and why Scump shows 28 not 30.">
+<meta name="description" content="How the era-adjustment works, how Kills Over Replacement is computed, which tournaments count, and why Scump shows 28 not 30.">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
-<meta property="og:title" content="Methodology: adjusted wins, source rules, and tournament counts">
-<meta property="og:description" content="How adjusted wins work, which tournaments count, why totals can differ from other trackers, and why we mirror the wiki's Major Wins list rather than adjudicate.">
+<meta property="og:title" content="Methodology: adjusted wins, KOR, source rules, and tournament counts">
+<meta property="og:description" content="How adjusted wins and Kills Over Replacement work, which tournaments count, why totals can differ from other trackers, and why we mirror the wiki's Major Wins list.">
 <meta property="og:url" content="https://cod-stats-one.vercel.app/methodology.html">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -103,7 +103,7 @@ const bo2=D.majors['Black Ops 2'], small=6;
 root.innerHTML=`
   <h1>Methodology</h1>
   <p class="lede">This page explains the site's rules: how adjusted wins convert raw major wins into season-share value,
-  which tournaments count, why totals can differ from other trackers, and where optional extras like ring weighting fit.
+  how Kills Over Replacement is computed, which tournaments count, why totals can differ from other trackers, and where optional extras like ring weighting fit.
   The core adjustment is narrow: it corrects for how many majors were available in each season.</p>
   ${pageToc([
     ['era-adjustment','Adjusted wins'],
@@ -111,6 +111,7 @@ root.innerHTML=`
     ['scoring-options','Scoring options'],
     ['crimsix-simp','Crimsix vs. Simp'],
     ['placement','Placement stats'],
+    ['kills-over-replacement','Kills Over Replacement'],
     ['tournaments','Tournament rules']
   ])}
 
@@ -208,8 +209,31 @@ root.innerHTML=`
   inputs. They are useful for comparing consistency and conversion, but top-2/top-4 rates are not fully field-size-normalized:
   a top 4 in an 8-team playoff is not identical to a top 4 in a large open bracket.</p>
 
+  <h2 id="kills-over-replacement">6. Kills Over Replacement ${anchorLink('kills-over-replacement','Kills Over Replacement')}</h2>
+  <p><strong>Kills Over Replacement</strong> is a rate stat for the on-record map database. It asks:
+  how many more kills per map did this player produce than a replacement-level qualified player in the same title and mode?
+  The public leaderboard shows two separate splits because the kill environment is different:
+  <strong>Respawn KOR/map</strong> and <strong>S&amp;D KOR/map</strong>.</p>
+  <p>The formula is intentionally simple:</p>
+  <div class="formula">KOR/map = player kills per map − replacement kills per map</div>
+  <p><strong>Replacement</strong> is the 25th percentile kills per map among qualified players in that title and mode split.
+  In other words, it is not a universal number. Black Ops 4 Respawn has its own baseline, Advanced Warfare S&amp;D has its
+  own baseline, and the all-time view compares each player to the replacement baseline from their own title/mode row.</p>
+  <p>The qualification filters are there to keep tiny samples from driving the board: <strong>28+ Respawn maps</strong>
+  or <strong>10+ S&amp;D maps</strong> in a title. Rows with relatively small qualified samples are still shown, but marked
+  as fragile context. The score is built from major-event maps only, using kills and maps from the objective-stat source
+  coverage available for that title.</p>
+  <p>Opponent context is shown beside the score but is not baked into it. <strong>Median opponent placement</strong> is the
+  median event finish of the teams a player faced in those maps. <strong>Top-8 opponent map share</strong> is the share of
+  maps against teams that placed top 8 at that event. Those fields help identify easier or harder paths, but we do not yet
+  adjust the KOR number for opponent strength.</p>
+  <p><strong>How to read it:</strong> KOR is a contextualized kill-production rate, not a full WAR-style value model.
+  It does not include damage, objective work, trading, comms, role, team system, or map wins. It is most useful as a cleaner
+  version of kills per map: title-adjusted, mode-split, and sample-aware. It should sit beside resume metrics, not replace them.
+  <a href="kor.html">Open the KOR leaderboard →</a></p>
+
   <a id="data-source"></a>
-  <h2 id="tournaments">6. Which tournaments count, and who decides ${anchorLink('tournaments','Tournament rules')}</h2>
+  <h2 id="tournaments">7. Which tournaments count, and who decides ${anchorLink('tournaments','Tournament rules')}</h2>
   <p class="lede" style="font-size:var(--text-md)"><strong>The short version: we don't decide.</strong> An event counts here if and only if
   the CoD Esports Wiki tags it <strong>Major</strong> or <strong>Premier</strong> tier and the player finished 1st. That's it. We mirror the
   wiki's <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player">Major Wins list</a>, the community's

@@ -88,8 +88,15 @@ PLAYER_NOTES = {
            "rather than hand-picking tournaments."),
 }
 
+PLAYER_ALIASES = {
+    # The wiki awards table uses C6 for Crimsix's 2020 Champs Grand Finals MVP.
+    'c6': 'crimsix',
+}
+
 def norm(n): return re.sub(r'\s*\(.*?\)\s*', '', n).strip()   # strip disambiguation parenthetical
-def mkey(n): return norm(n).lower()                           # case-insensitive join key (ABeZy vs aBeZy)
+def mkey(n):                                                   # case-insensitive join key (ABeZy vs aBeZy)
+    k = norm(n).lower()
+    return PLAYER_ALIASES.get(k, k)
 def compact_key(n): return re.sub(r'[^a-z0-9]+', '', norm(n or '').lower())
 
 def _played(d): return (d or '0000') <= ASOF
@@ -675,7 +682,15 @@ def index_opponent_places(tpart, event_registry, major_event_ids=None):
     return places
 
 
-def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids):
+def kor_role_for_game(player, game, S, role_stints):
+    if not role_stints or game not in S.order_idx:
+        return 'Unknown'
+    gi = S.order_idx[game]
+    matches = [s for s in role_stints.get(mkey(player), []) if s['start'] <= gi <= s['end']]
+    return matches[0]['role'] if matches else 'Unknown'
+
+
+def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_stints=None):
     """Build title/mode Kills Over Replacement tables from major-event stats.
 
     KOR is deliberately title/mode-only: no role adjustment, no overall split.
@@ -726,6 +741,7 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids):
                     kor = b['kpm'] - replacement
                     rows.append({
                         'player': player,
+                        'role': kor_role_for_game(player, game, S, role_stints),
                         'korPerMap': round(float(kor), 3),
                         'kpm': round(float(b['kpm']), 2),
                         'totalKor': round(float(kor * b['maps']), 1),
@@ -1104,6 +1120,7 @@ def build():
                 S,
                 event_registry,
                 {event_id_for(e, event_registry) for e in events},
+                idx.role_stints,
             )}
 
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Methodology Hub Mockup</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<style>
+.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-5)}
+.hub-card{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--space-5);color:var(--ink)}
+.hub-card:hover{text-decoration:none;border-color:var(--accent)}
+.hub-card h2{margin:0 0 var(--space-2)}
+.hub-card p{margin:0;color:var(--muted)}
+.hub-card .pill{margin-bottom:var(--space-3)}
+@media(max-width:720px){.hub-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="inner">
+  <a class="brand" href="#">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
+  <nav class="nav">
+    <a href="#">Leaderboard</a><a href="#">Compare</a><a href="#">Insights</a><a href="#">Seasons</a><a class="active" href="#">Methodology</a>
+  </nav>
+</div></header>
+<main class="wrap narrow" id="root" tabindex="-1">
+  <h1>Methodology</h1>
+  <p class="lede">The site now has several distinct data lanes. Each lane gets its own methodology page so users can see what is being measured, what is excluded, and how to reproduce the numbers.</p>
+  <div class="hub-grid">
+    <a class="hub-card" href="#">
+      <span class="pill tag">Current core page</span>
+      <h2>Era-Adjusted Wins</h2>
+      <p>Major denominators, season share, rescaling, ring weighting, placement stats, and tournament inclusion rules.</p>
+    </a>
+    <a class="hub-card" href="community-consensus-methodology.html">
+      <span class="pill tag">New page</span>
+      <h2>Community Consensus</h2>
+      <p>Fan/community source collection, source weighting, title rankings, era-scoped career rollups, and source traceability.</p>
+    </a>
+    <a class="hub-card" href="#">
+      <span class="pill flat">Separate lane</span>
+      <h2>Objective Stats</h2>
+      <p>Kills, deaths, K/D, interactions, respawn/S&D splits, source coverage, and missing-data caveats.</p>
+    </a>
+    <a class="hub-card" href="#">
+      <span class="pill flat">Separate lane</span>
+      <h2>Formal Accolades</h2>
+      <p>Official awards, MVPs, all-pro teams, source tiers, and historical coverage gaps.</p>
+    </a>
+  </div>
+</main>
+</body>
+</html>

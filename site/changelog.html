@@ -41,6 +41,22 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-06', tag:'Improved', title:'Tighter data-surface design system',
+   body:`The Kills Over Replacement page, season tables, player profile tables, compare tables, and heatmap table alternative now share
+   the same accessible data-surface contract: labeled horizontal-scroll regions, screen-reader captions, scoped table headers, and
+   globally-sized segmented controls. The style guide now documents the KOR widget, role pills, and reusable table helpers. Rankings
+   and stats are unchanged.`},
+  {date:'2026-07-06', tag:'New', title:'Kills Over Replacement leaderboard',
+   body:`A new <a href="kor.html">Kills Over Replacement</a> page under Insights ranks major-event kill production
+   above a title-and-mode replacement baseline. It shows separate <strong>Respawn KOR/map</strong> and
+   <strong>S&amp;D KOR/map</strong> leaderboards, all-time and by title, with role labels, maps, events, replacement baselines,
+   median opponent placement, and top-8 opponent map share as context. The <a href="methodology.html#kills-over-replacement">methodology</a>
+   explains the formula, qualification filters, and limits. This is an on-record stats view only; it does not change the
+   era-adjusted wins leaderboard.`},
+  {date:'2026-07-05', tag:'Fixed', title:'Crimsix 2020 Grand Finals MVP honor',
+   body:`Crimsix's 2020 Call of Duty League Championship <strong>Grand Finals MVP</strong> now appears in his player
+   honors. The source award row uses his alternate wiki handle <strong>C6</strong>, which is now normalized to Crimsix
+   during the data build. Rankings and era-adjusted totals are unchanged.`},
   {date:'2026-07-04', tag:'Improved', title:'Similar players now include skill-rate shape',
    body:`Similar players and the similarity map now include on-record <strong>K/D</strong>, <strong>Respawn K/D</strong>,
    <strong>S&amp;D K/D</strong>, and <strong>interactions per map</strong> as a labeled Skill component. Sparse stat

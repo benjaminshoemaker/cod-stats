@@ -154,6 +154,11 @@ def test_formal_accolades_are_normalized_for_player_pages(data):
                and h["event"] == "Call of Duty Championship 2015"
                for h in clayster)
 
+    crimsix = data["players"]["Crimsix"]["honors"]
+    assert any(h["type"] == "grand_finals_mvp"
+               and h["event"] == "Call of Duty League Championship 2020"
+               for h in crimsix)
+
 
 def test_accolades_keep_formal_boundary(data):
     allowed = {
@@ -425,6 +430,7 @@ def test_kills_over_replacement_excludes_non_major_stat_rows():
     scump = kor["games"]["Black Ops 2"]["splits"]["respawn"]["rows"][0]
     assert scump["maps"] == 28
     assert scump["kpm"] == 20
+    assert scump["role"] == "Unknown"
     assert scump["opponentMaps"] == 28
 
 

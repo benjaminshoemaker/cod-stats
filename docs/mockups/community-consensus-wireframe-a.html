@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus Wireframe A</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<link rel="stylesheet" href="community-consensus-wireframes.css">
+</head>
+<body>
+<main class="wrap wide" id="root" tabindex="-1">
+  <div class="wf-top">
+    <div>
+      <p class="wf-label">Wireframe A</p>
+      <h1>Overall First, Evidence On Per-Title</h1>
+      <p class="lede">Use the overall blended page as a scoreboard. Push most explainability into a source-heavy per-title tab.</p>
+    </div>
+    <div class="wf-mode"><span class="on">Overall</span><span>Per-title</span></div>
+  </div>
+
+  <div class="wf-board">
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Overall Blended Score</h2><p class="small muted">Simple leaderboard. Source details are one click away, not all visible by default.</p></div>
+        <span class="pill tag">Screen 1</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="controls">
+          <input class="search" type="text" placeholder="Search player..." aria-label="Search player">
+          <div class="colmenu eramenu">
+            <button type="button" class="colmenu-btn">Eras: All <span aria-hidden="true">▾</span></button>
+          </div>
+          <button class="sharebtn" type="button">Share view</button>
+        </div>
+        <p class="small muted">Showing <strong>all seasons</strong>. Changing Eras recomputes the rollup, not just row visibility.</p>
+        <div class="wf-tabs"><span class="on">Career total</span><span>Per played title</span><span>Peak rate</span></div>
+        <div class="wf-scroll">
+          <table class="wf-table">
+            <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Score</th><th class="n">/ played</th><th class="n">Wins</th><th class="n">Top 1</th><th class="n">Top 3</th><th class="n">Top 5</th><th class="n">Top 10</th><th>Evidence</th></tr></thead>
+            <tbody>
+              <tr><td class="n">1</td><td><strong>Scump</strong><span class="sub">13 ranked titles</span></td><td class="n wf-score">7.636</td><td class="n">0.587</td><td class="n">28</td><td class="n">3</td><td class="n">5</td><td class="n">6</td><td class="n">9</td><td><span class="pill up">13 title rows</span></td></tr>
+              <tr><td class="n">2</td><td><strong>Simp</strong><span class="sub">7 ranked titles</span></td><td class="n wf-score">5.438</td><td class="n">0.777</td><td class="n">13</td><td class="n">3</td><td class="n">4</td><td class="n">5</td><td class="n">7</td><td><span class="pill up">7 title rows</span></td></tr>
+              <tr class="sel"><td class="n">5</td><td><strong>aBeZy</strong><span class="sub">selected</span></td><td class="n wf-score">4.524</td><td class="n">0.565</td><td class="n">13</td><td class="n">0</td><td class="n">2</td><td class="n">4</td><td class="n">6</td><td><span class="pill up">view trace</span></td></tr>
+              <tr><td class="n">7</td><td><strong>Crimsix</strong><span class="sub">9 ranked titles</span></td><td class="n wf-score">4.305</td><td class="n">0.430</td><td class="n">38</td><td class="n">1</td><td class="n">2</td><td class="n">2</td><td class="n">6</td><td><span class="pill warn">mixed evidence</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="wf-screen">
+      <div class="wf-screen-h">
+        <div><h2>Per-Title Computation Tab</h2><p class="small muted">This is where source links, source weights, and player contribution math live.</p></div>
+        <span class="pill tag">Screen 2</span>
+      </div>
+      <div class="wf-screen-b">
+        <div class="wf-grid">
+          <div>
+            <div class="controls">
+              <div class="colmenu eramenu"><button type="button" class="colmenu-btn">Title: Black Ops 6 <span aria-hidden="true">▾</span></button></div>
+              <button class="sharebtn" type="button">Share title</button>
+            </div>
+            <div class="wf-scroll">
+              <table class="wf-table">
+                <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Title score</th><th class="n">Career points</th><th>Sources</th></tr></thead>
+                <tbody>
+                  <tr class="sel"><td class="n">1</td><td><strong>Scrap</strong></td><td class="n">1.800</td><td class="n">1.000</td><td><span class="pill up">1 aggregate survey</span></td></tr>
+                  <tr><td class="n">2</td><td><strong>Shotzzy</strong></td><td class="n">1.740</td><td class="n">0.919</td><td><span class="pill up">1 aggregate survey</span></td></tr>
+                  <tr><td class="n">3</td><td><strong>Mercules</strong></td><td class="n">1.680</td><td class="n">0.842</td><td><span class="pill up">1 aggregate survey</span></td></tr>
+                  <tr><td class="n">4</td><td><strong>HyDra</strong></td><td class="n">1.620</td><td class="n">0.768</td><td><span class="pill up">1 aggregate survey</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <aside class="wf-card">
+            <h3>Selected Player: Scrap</h3>
+            <p class="small muted">Show the full computation for the selected title row.</p>
+            <div class="wf-flow">
+              <div class="wf-step"><span class="k">Source rank</span><span class="v">#1</span></div>
+              <div class="wf-step"><span class="k">Rank points</span><span class="v">1.000</span></div>
+              <div class="wf-step"><span class="k">Source weight</span><span class="v">1.800</span></div>
+              <div class="wf-step"><span class="k">Title score</span><span class="v">1.800</span></div>
+              <div class="wf-step"><span class="k">Career pts</span><span class="v">1.000</span></div>
+            </div>
+            <div class="wf-row"><span>Source</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/1n1ujv2/rcodcompetitives_top_30_black_ops_6_players/">BO6 Top 30 survey</a><strong>linked</strong></div>
+            <div class="wf-row"><span>Type</span><span>community aggregate survey</span><strong>high</strong></div>
+            <div class="wf-row"><span>Coverage</span><span>end-of-title, contemporaneous</span><strong>1.20x</strong></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

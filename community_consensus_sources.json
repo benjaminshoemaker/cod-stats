@@ -1,0 +1,3002 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 Players in BO2",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/",
+      "published_year": 2016,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 10,
+      "reddit_score": 7,
+      "methodology_notes": "Thread cluster with multiple explicit ranked community lists. Ballots are averaged before applying source multipliers."
+    },
+    {
+      "source_id": "bo2_reddit_2020_top5_by_cod_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title thread. Only explicit Black Ops 2 ballots are scored."
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Curious for those who watched back then, who were the top 10 players in BO2?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/y6esqm/curious_for_those_who_watched_back_then_who_were/",
+      "published_year": 2022,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 10,
+      "reddit_score": 28,
+      "methodology_notes": "Thread cluster with ranked comments and one ordered tier approximation from the post body."
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Pro Vote for Best Players in Black Ops II?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/299gyj/pro_vote_for_best_players_in_black_ops_ii/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 5,
+      "reddit_score": 5,
+      "methodology_notes": "The requested pro vote result was not found. Explicit fan top-five comments in the thread are scored."
+    },
+    {
+      "source_id": "bo2_reddit_2020_detailed_top10_post",
+      "game": "Black Ops 2",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Detailed Top Bo2 Players with the addition of",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/hswjc1/detailed_top_bo2_players_with_the_addition_of/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 10,
+      "reddit_score": 11,
+      "methodology_notes": "Single detailed community top-ten post."
+    },
+    {
+      "source_id": "bo2_reddit_2019_crimsix_vs_karma_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who was better at BO2: Crimsix or Karma?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ao35zf/who_was_better_at_bo2_crimsix_or_karma/",
+      "published_year": 2019,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Useful head-to-head debate, but not a full ranked Black Ops 2 ballot source."
+    },
+    {
+      "source_id": "bo2_reddit_2014_how_good_was_clayster_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "How good was Clayster?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/2bza8x/how_good_was_clayster/",
+      "published_year": 2014,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "reviewed_reason": "Corroborates Clayster/Karma/Crimsix top-three consensus, but not a complete ranked ballot."
+    },
+    {
+      "source_id": "bo2_reddit_2018_karma_bo2_aw_ghosts_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "How good was Karma on BO2, AW and Ghosts?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/8f8kdd/how_good_was_karma_on_bo2_aw_and_ghosts/",
+      "published_year": 2018,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Useful player-specific consensus, not a ranked Black Ops 2 list."
+    },
+    {
+      "source_id": "bo2_reddit_2014_best_player_each_cod_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best Player from each COD?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/26lqwg/best_player_from_each_cod/",
+      "published_year": 2014,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "reviewed_reason": "Extractable top-one/top-three comments exist, but no consistent top-five/top-ten ballot set was extracted in this pass."
+    },
+    {
+      "source_id": "bo2_reddit_2013_top3_each_game_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 3 players in each game since cod 4?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1tonlo/top_3_players_in_each_game_since_cod_4/",
+      "published_year": 2013,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "reviewed_reason": "Contains useful ordered Black Ops 2 comments, but the complete ranked-ballot extraction was not clean enough for this manual pass."
+    },
+    {
+      "source_id": "bo2_reddit_2017_top5_each_cod_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Contains Black Ops 2 top-five comments, but needs full comment extraction before scoring."
+    },
+    {
+      "source_id": "bo2_reddit_2021_top5_each_game_thread",
+      "game": "Black Ops 2",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 in each individual game BO1 through IW",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/qbcepx/top_5_in_each_individual_game_bo1_through_iw/",
+      "published_year": 2021,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Contains Black Ops 2 top-five/honorable-mention comments, but needs full comment extraction before scoring."
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who were the top 5 players in MW2 and BO1?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/3g521r/who_were_the_top_5_players_in_mw2_and_bo1/",
+      "published_year": 2015,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 5,
+      "reddit_score": 17,
+      "methodology_notes": "Thread cluster with explicit Black Ops top-five comments plus a repeated claim that JKap was voted best player. Only extractable ranked/tiered ballots are scored."
+    },
+    {
+      "source_id": "black_ops_reddit_2020_t10_bo1_mw3_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who Were The T10 Players In Black Ops 1 & MW3",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/hcc8ir/who_were_the_t10_players_in_black_ops_1_mw3/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 10,
+      "reddit_score": null,
+      "methodology_notes": "Thread asked for top-ten Black Ops and MW3 players. Most Black Ops comments are explicitly unordered, so players are scored as tied within each comment's listed group."
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 3 players in each game since cod 4?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1tonlo/top_3_players_in_each_game_since_cod_4/",
+      "published_year": 2013,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Older multi-title thread with several explicit Black Ops top-three comments."
+    },
+    {
+      "source_id": "black_ops_reddit_2017_top5_each_cod_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD (CoD 4-IW)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread. Only explicit Black Ops entries are scored."
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best Player from each COD?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/26lqwg/best_player_from_each_cod/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 1,
+      "reddit_score": null,
+      "methodology_notes": "Best-player-by-title thread. Scored as top-one ballots, with tied best-player comments represented as tied rank 1.5."
+    },
+    {
+      "source_id": "black_ops_reddit_2015_best_players_each_title_thread",
+      "game": "Black Ops",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who were the best players in each title?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/3q5nka/who_were_the_best_players_in_each_title/",
+      "published_year": 2015,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 2,
+      "reddit_score": null,
+      "methodology_notes": "Single extractable ordered Black Ops comment: JKap and Scump, with JKap favored."
+    },
+    {
+      "source_id": "black_ops_reddit_2020_top_cod_players_post",
+      "game": "Black Ops",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top CoD Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/hs0uqu/top_cod_players/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Single multi-title ranking post with Black Ops top three."
+    },
+    {
+      "source_id": "black_ops_reddit_2016_pre_bo2_history_thread",
+      "game": "Black Ops",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "History of Competitive CoD, pre-Black Ops 2",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/50e2oz/history_of_competitive_cod_preblack_ops_2/",
+      "published_year": 2016,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Secondary community-history comment says JKap was voted best player of the year, with Scump second and ProoFy third. Original vote result was not found, so this is scored as a single community ballot, not an aggregate survey."
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best player on each title",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ww7lg7/best_player_on_each_title/",
+      "published_year": 2022,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 1,
+      "reddit_score": null,
+      "methodology_notes": "Best-player-by-title thread with several Black Ops top-one comments."
+    },
+    {
+      "source_id": "black_ops_google_old_forum_search",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Black Ops player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using gamertag combinations and terms such as Black Ops, BO1, best players, top five, forum, message board, GameBattles, Major League Gaming, TeeP, MerK, BigTymeR, JKap, ProoFy, ASSASS1N, and StaiNViLLe. No clean citable old-board ranked ballot was found in this pass."
+    },
+    {
+      "source_id": "black_ops_esports_earnings_history",
+      "game": "Black Ops",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Players of 2011 for Call of Duty: Black Ops",
+      "url": "https://www.esportsearnings.com/history/2011/games/243-call-of-duty-black-ops",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful historical/results context, but it is prize-money data, not fan/community consensus."
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 3 players in each game since cod 4?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1tonlo/top_3_players_in_each_game_since_cod_4/",
+      "published_year": 2013,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Near-contemporaneous multi-title thread with several extractable MW3 top-three comments."
+    },
+    {
+      "source_id": "mw3_reddit_2017_top5_each_cod_thread",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD (CoD 4-IW)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread with several explicit MW3 entries. One comment lists only Scump for MW3 and is scored as a top-one ballot inside the cluster."
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best Player from each COD?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/26lqwg/best_player_from_each_cod/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 1,
+      "reddit_score": null,
+      "methodology_notes": "Best-player-by-title thread. Most extractable MW3 comments name Scump as best player; longer/tied entries are preserved where present."
+    },
+    {
+      "source_id": "mw3_reddit_2025_top3_each_era_thread",
+      "game": "Modern Warfare 3",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "The Top 3 Players of Each Era",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1mztxvl/the_top_3_players_of_each_era/",
+      "published_year": 2025,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "late_retrospective",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Late retrospective single community ballot listing MW3 as Scump, BigT, MerK."
+    },
+    {
+      "source_id": "mw3_reddit_2020_t10_bo1_mw3_thread",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who Were The T10 Players In Black Ops 1 & MW3",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/hcc8ir/who_were_the_t10_players_in_black_ops_1_mw3/",
+      "published_year": 2020,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "The MW3 extractable comments found in this pass were too vague for scoring, e.g. Scump plus the rest of OpTic/TCM/other teams without a clean list."
+    },
+    {
+      "source_id": "mw3_360icons_nadeshot_top10_players",
+      "game": "Modern Warfare 3",
+      "source_kind": "single_community_ballot",
+      "platform": "web",
+      "community": "360 Icons",
+      "title": "Top 10 Players of MW3",
+      "url": "http://360icons.com/forums/showthread.php/25486-Top-10-Players-of-MW3",
+      "published_year": 2012,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "reviewed_reason": "Promising contemporaneous source referenced from Reddit as Nadeshot's MW3 list, but the original forum URL timed out and the source is a player/creator list rather than a fan/community consensus ballot."
+    },
+    {
+      "source_id": "mw3_google_old_forum_search",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Modern Warfare 3 player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using MW3/Modern Warfare 3, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/360 Icons, and gamertag clusters including Scump, BigTymeR, MerK, Rambo, ProoFy, MadCat, Joshh, Tommey, Swanny, Parasite, and NAMELESS. The 360 Icons lead was found but not scoreable for #15; no clean old-board community ranked ballot was found."
+    },
+    {
+      "source_id": "mw3_cod_esports_wiki_history",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History of Call of Duty Esports - Modern Warfare 3",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for OpTic dominance and the unusual MW3 LAN ecosystem, but not fan/community consensus."
+    },
+    {
+      "source_id": "mw3_esports_earnings_history",
+      "game": "Modern Warfare 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Call of Duty: Modern Warfare 3 Top Players",
+      "url": "https://www.esportsearnings.com/games/258-call-of-duty-modern-warfare-3/top-players-online",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful prize/results context, but not fan/community consensus."
+    },
+    {
+      "source_id": "ghosts_reddit_2014_midseason_top30_poll",
+      "game": "Ghosts",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "The Results - r/CoDCompetitive's list of the best players in Ghosts so far - Version 2",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/23hs5q/the_results_rcodcompetitives_list_of_the_best/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "mid_season",
+      "sample_size": 450,
+      "valid_ballots": 450,
+      "ranking_size": 30,
+      "quality_multiplier": 1.25,
+      "methodology_notes": "Contemporaneous mid-season aggregate poll. The post says more than 450 people voted, gives the top-ten vote columns, and says first place received 10 points, second 9, etc.; published ranking image is stored as the ranked player list.",
+      "ranked_players": [
+        {
+          "player": "Crimsix",
+          "rank": 1
+        },
+        {
+          "player": "ACHES",
+          "rank": 2
+        },
+        {
+          "player": "Scump",
+          "rank": 3
+        },
+        {
+          "player": "TeeP",
+          "rank": 4
+        },
+        {
+          "player": "Karma",
+          "rank": 5
+        },
+        {
+          "player": "Clayster",
+          "rank": 6
+        },
+        {
+          "player": "Nameless",
+          "rank": 7
+        },
+        {
+          "player": "Nadeshot",
+          "rank": 8
+        },
+        {
+          "player": "Saints",
+          "rank": 9
+        },
+        {
+          "player": "ProoFy",
+          "rank": 10
+        },
+        {
+          "player": "Apathy",
+          "rank": 11
+        },
+        {
+          "player": "JKap",
+          "rank": 12
+        },
+        {
+          "player": "Parasite",
+          "rank": 13
+        },
+        {
+          "player": "Swanny",
+          "rank": 14
+        },
+        {
+          "player": "Dedo",
+          "rank": 15
+        },
+        {
+          "player": "MerK",
+          "rank": 16
+        },
+        {
+          "player": "Theory",
+          "rank": 17
+        },
+        {
+          "player": "Jurd",
+          "rank": 18
+        },
+        {
+          "player": "FormaL",
+          "rank": 19
+        },
+        {
+          "player": "Sharp",
+          "rank": 20
+        },
+        {
+          "player": "Study",
+          "rank": 21
+        },
+        {
+          "player": "MadCat",
+          "rank": 22
+        },
+        {
+          "player": "KiLLa",
+          "rank": 23
+        },
+        {
+          "player": "Goonjar",
+          "rank": 24
+        },
+        {
+          "player": "PHiZZURP",
+          "rank": 25
+        },
+        {
+          "player": "Replays",
+          "rank": 26
+        },
+        {
+          "player": "Mochila",
+          "rank": 27
+        },
+        {
+          "player": "Tommey",
+          "rank": 28
+        },
+        {
+          "player": "Muddawg",
+          "rank": 29
+        },
+        {
+          "player": "MiRx",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_end_top50_poll",
+      "game": "Ghosts",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Official r/CoDCompetitive Top 50 Players in Ghosts",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/2b1ooe/official_rcodcompetitive_top_50_players_in_ghosts/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "sample_size": 1000,
+      "valid_ballots": 1000,
+      "ranking_size": 50,
+      "quality_multiplier": 1.25,
+      "methodology_notes": "Contemporaneous end-of-title aggregate project. Hub says the poll received around 1000 results, invalid duplicates were removed, and 50 points were awarded for first, 49 for second, etc.; final ranking image is stored as the ranked player list.",
+      "ranked_players": [
+        {
+          "player": "Crimsix",
+          "rank": 1,
+          "points": 26832
+        },
+        {
+          "player": "Scump",
+          "rank": 2,
+          "points": 26318
+        },
+        {
+          "player": "ACHES",
+          "rank": 3,
+          "points": 22287
+        },
+        {
+          "player": "Karma",
+          "rank": 4,
+          "points": 21587
+        },
+        {
+          "player": "TeeP",
+          "rank": 5,
+          "points": 21265
+        },
+        {
+          "player": "Clayster",
+          "rank": 6,
+          "points": 18921
+        },
+        {
+          "player": "Apathy",
+          "rank": 7,
+          "points": 18169
+        },
+        {
+          "player": "Nadeshot",
+          "rank": 8,
+          "points": 16749
+        },
+        {
+          "player": "ProoFy",
+          "rank": 9,
+          "points": 16620
+        },
+        {
+          "player": "Nameless",
+          "rank": 10,
+          "points": 13964
+        },
+        {
+          "player": "Dedo",
+          "rank": 11,
+          "points": 9967
+        },
+        {
+          "player": "Saints",
+          "rank": 12,
+          "points": 7286
+        },
+        {
+          "player": "JKap",
+          "rank": 13,
+          "points": 6079
+        },
+        {
+          "player": "FormaL",
+          "rank": 14,
+          "points": 5056
+        },
+        {
+          "player": "MerK",
+          "rank": 15,
+          "points": 4815
+        },
+        {
+          "player": "Goonjar",
+          "rank": 16,
+          "points": 4615
+        },
+        {
+          "player": "Mochila",
+          "rank": 17,
+          "points": 4227
+        },
+        {
+          "player": "Sharp",
+          "rank": 18,
+          "points": 3988
+        },
+        {
+          "player": "KiLLa",
+          "rank": 19,
+          "points": 3945
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 20,
+          "points": 3911
+        },
+        {
+          "player": "BigTymeR",
+          "rank": 21,
+          "points": 3854
+        },
+        {
+          "player": "Attach",
+          "rank": 22,
+          "points": 3506
+        },
+        {
+          "player": "Censor",
+          "rank": 23,
+          "points": 3390
+        },
+        {
+          "player": "Jurd",
+          "rank": 24,
+          "points": 2935
+        },
+        {
+          "player": "Tommey",
+          "rank": 25,
+          "points": 2929
+        },
+        {
+          "player": "MiRx",
+          "rank": 26,
+          "points": 2604
+        },
+        {
+          "player": "MadCat",
+          "rank": 27,
+          "points": 2372
+        },
+        {
+          "player": "Parasite",
+          "rank": 28,
+          "points": 2352
+        },
+        {
+          "player": "MBoZe",
+          "rank": 29,
+          "points": 2346
+        },
+        {
+          "player": "Neslo",
+          "rank": 30,
+          "points": 2285
+        },
+        {
+          "player": "Replays",
+          "rank": 31,
+          "points": 2178
+        },
+        {
+          "player": "Swanny",
+          "rank": 32,
+          "points": 2025
+        },
+        {
+          "player": "PHiZZURP",
+          "rank": 33,
+          "points": 1971
+        },
+        {
+          "player": "Burns",
+          "rank": 34,
+          "points": 1680
+        },
+        {
+          "player": "John",
+          "rank": 35,
+          "points": 1649
+        },
+        {
+          "player": "Ricky",
+          "rank": 36,
+          "points": 1557
+        },
+        {
+          "player": "Study",
+          "rank": 37,
+          "points": 1543
+        },
+        {
+          "player": "Theory",
+          "rank": 38,
+          "points": 1414
+        },
+        {
+          "player": "Rambo",
+          "rank": 39,
+          "points": 1395
+        },
+        {
+          "player": "Enable",
+          "rank": 40,
+          "points": 1387
+        },
+        {
+          "player": "Baroska",
+          "rank": 41,
+          "points": 1361
+        },
+        {
+          "player": "Peatie",
+          "rank": 42,
+          "points": 1348
+        },
+        {
+          "player": "Tipsy",
+          "rank": 43,
+          "points": 1191
+        },
+        {
+          "player": "MarkyB",
+          "rank": 44,
+          "points": 1169
+        },
+        {
+          "player": "ASSASS1N",
+          "rank": 45,
+          "points": 1019
+        },
+        {
+          "player": "FighTa",
+          "rank": 46,
+          "points": 865
+        },
+        {
+          "player": "Wheats",
+          "rank": 47,
+          "points": 852
+        },
+        {
+          "player": "Classic",
+          "rank": 48,
+          "points": 848
+        },
+        {
+          "player": "BennyCentral",
+          "rank": 49,
+          "points": 838
+        },
+        {
+          "player": "Vade",
+          "rank": 50,
+          "points": 810
+        }
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best Player from each COD?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/26lqwg/best_player_from_each_cod/",
+      "published_year": 2014,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "ranking_size": 8,
+      "reddit_score": null,
+      "methodology_notes": "Near-contemporaneous best-player-by-title thread. Extracted Ghosts top-one, top-two, top-three, tied-EG, and one explicit top-eight comment."
+    },
+    {
+      "source_id": "ghosts_reddit_2020_top5_by_cod_thread",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title top-five thread. Only explicit Ghosts ballots are scored."
+    },
+    {
+      "source_id": "ghosts_reddit_2018_karma_bo2_aw_ghosts_thread",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "How good was Karma on BO2, AW and Ghosts?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/8f8kdd/how_good_was_karma_on_bo2_aw_and_ghosts/",
+      "published_year": 2018,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Useful Karma-specific discussion, but not a clean ranked Ghosts ballot source."
+    },
+    {
+      "source_id": "ghosts_reddit_2015_crimsix_best_bo2_ghosts_aw_thread",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Has Crimsix been the best player in BO2, Ghosts, and AW?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/2swfaz/has_crimsix_been_the_best_player_in_bo2_ghosts/",
+      "published_year": 2015,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "reviewed_reason": "Useful head-to-head/era discussion around Crimsix, Karma, and Scump, but not a full ranked list."
+    },
+    {
+      "source_id": "ghosts_reddit_2019_scump_top_ghosts_thread",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "As someone who didn't watch Competitive COD: Ghosts, was Scump top?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/aohek1/as_someone_who_didnt_watch_competitive_cod_ghost/",
+      "published_year": 2019,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Useful Scump-specific debate and a few partial top-five claims, but not a consistent ballot source."
+    },
+    {
+      "source_id": "ghosts_google_old_forum_search",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Ghosts player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using Ghosts/Call of Duty Ghosts, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/360 Icons, and gamertag clusters including Crimsix, ACHES, Karma, Scump, TeeP, Formal, Apathy, Nadeshot, ProoFy, Nameless, Dedo, Saints, and JKap. No clean old-board community ranked ballot was found beyond results/history pages and authored retrospectives."
+    },
+    {
+      "source_id": "ghosts_cod_esports_wiki_history",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History of Call of Duty Esports - Ghosts",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for the compLexity/Evil Geniuses era, but not fan/community consensus."
+    },
+    {
+      "source_id": "ghosts_esports_earnings_history",
+      "game": "Ghosts",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Player Rankings For Call of Duty: Ghosts",
+      "url": "https://www.esportsearnings.com/games/273-call-of-duty-ghosts/top-players",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful prize/results context, but it is not fan/community consensus."
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 Players in AW Right Now; Who Are They?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/37l1zv/top_10_players_in_aw_right_now_who_are_they/",
+      "published_year": 2015,
+      "status": "scored",
+      "scope": "mixed_global_na",
+      "coverage": "contemporaneous",
+      "season_coverage": "mid_season",
+      "ranking_size": 10,
+      "reddit_score": null,
+      "methodology_notes": "Contemporaneous AW thread from May 2015 asking for top-ten players right now. Because it was before the title finished, it is marked mid-season and discounted with season coverage."
+    },
+    {
+      "source_id": "aw_reddit_2017_top5_each_cod_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD (CoD 4-IW)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread with several explicit Advanced Warfare lists. Only AW entries are scored."
+    },
+    {
+      "source_id": "aw_reddit_2020_top5_by_cod_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title top-five thread. Only explicit Advanced Warfare ballots are scored."
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 in each individual game BO1 through IW",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/qbcepx/top_5_in_each_individual_game_bo1_through_iw/",
+      "published_year": 2021,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread with several explicit Advanced Warfare lists and honorable-mention context."
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who was the best player in AW?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/j4ts18/who_was_the_best_player_in_aw/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Best-player thread with extractable top-one, top-two, top-three, and top-five comments. Scored as a thread cluster rather than an aggregate survey."
+    },
+    {
+      "source_id": "aw_reddit_2018_karma_bo2_aw_ghosts_thread",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "How good was Karma on BO2, AW and Ghosts?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/8f8kdd/how_good_was_karma_on_bo2_aw_and_ghosts/",
+      "published_year": 2018,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "reviewed_reason": "Useful Karma-specific discussion, but not a clean ranked Advanced Warfare ballot source."
+    },
+    {
+      "source_id": "aw_google_old_forum_search",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Advanced Warfare player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using Advanced Warfare/AW, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/360 Icons, and gamertag clusters including Scump, FormaL, Clayster, Crimsix, Huke, ZooMaa, SlasheR, Saints, Attach, Enable, Jurd, and Karma. No clean old-board community ranked ballot was found beyond results/history pages, authored lists, and video/tier-list content."
+    },
+    {
+      "source_id": "aw_zooMaa_youtube_tier_list",
+      "game": "Advanced Warfare",
+      "source_kind": "single_community_ballot",
+      "platform": "youtube",
+      "community": "ZooMaa/YouTube",
+      "title": "The BEST Advanced Warfare Pro Player Tier List",
+      "url": "https://www.youtube.com/watch?v=dDQyiDRK_ig",
+      "published_year": 2022,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "authored_list",
+      "reviewed_reason": "Potentially useful for the authored/player-list ticket, but excluded from #15 because it is a player/creator-authored tier list rather than community consensus."
+    },
+    {
+      "source_id": "aw_cod_esports_wiki_history",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History of Call of Duty Esports - Advanced Warfare",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for OpTic, Denial, FaZe, and EnVy, but not fan/community consensus."
+    },
+    {
+      "source_id": "aw_esports_earnings_history",
+      "game": "Advanced Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Player Rankings For Call of Duty: Advanced Warfare",
+      "url": "https://www.esportsearnings.com/games/340-call-of-duty-advanced-warfare/top-players",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful prize/results context, but it is not fan/community consensus."
+    },
+    {
+      "source_id": "bo3_reddit_2017_top30_na_aggregate",
+      "game": "Black Ops 3",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "r/CoDCompetitive's Top 30 North American Players in Black Ops 3",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/60prmj/rcodcompetitives_top_30_north_american_players_in/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "north_america",
+      "ranking_scope": "north_america",
+      "coverage": "near_contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "quality_multiplier": 1.25,
+      "methodology_notes": "End-of-title North American aggregate project. The post says the subreddit got hundreds of responses and produced a definitive ranking; the final post links a full score image for all 95 NA players. Only the published top 30 is scored as ranked_players.",
+      "ranked_players": [
+        {
+          "player": "Scump",
+          "rank": 1
+        },
+        {
+          "player": "FormaL",
+          "rank": 2
+        },
+        {
+          "player": "John",
+          "rank": 3
+        },
+        {
+          "player": "SlasheR",
+          "rank": 4
+        },
+        {
+          "player": "Apathy",
+          "rank": 5
+        },
+        {
+          "player": "Crimsix",
+          "rank": 6
+        },
+        {
+          "player": "AquA",
+          "rank": 7
+        },
+        {
+          "player": "Karma",
+          "rank": 8
+        },
+        {
+          "player": "Octane",
+          "rank": 9
+        },
+        {
+          "player": "JKap",
+          "rank": 10
+        },
+        {
+          "player": "Slacked",
+          "rank": 11
+        },
+        {
+          "player": "Clayster",
+          "rank": 12
+        },
+        {
+          "player": "Attach",
+          "rank": 13
+        },
+        {
+          "player": "Classic",
+          "rank": 14
+        },
+        {
+          "player": "Saints",
+          "rank": 15
+        },
+        {
+          "player": "Loony",
+          "rank": 16
+        },
+        {
+          "player": "Felony",
+          "rank": 17
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 18
+        },
+        {
+          "player": "Lacefield",
+          "rank": 19
+        },
+        {
+          "player": "Enable",
+          "rank": 20
+        },
+        {
+          "player": "Nagafen",
+          "rank": 21
+        },
+        {
+          "player": "Assault",
+          "rank": 22
+        },
+        {
+          "player": "Faccento",
+          "rank": 23
+        },
+        {
+          "player": "StuDyy",
+          "rank": 24
+        },
+        {
+          "player": "Havok",
+          "rank": 25
+        },
+        {
+          "player": "ACHES",
+          "rank": 26
+        },
+        {
+          "player": "Chino",
+          "rank": 27
+        },
+        {
+          "player": "Ricky",
+          "rank": 28
+        },
+        {
+          "player": "Nameless",
+          "rank": 29
+        },
+        {
+          "player": "Parasite",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 pro players from BO3?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/q5z1vl/top_10_pro_players_from_bo3/",
+      "published_year": 2021,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 10,
+      "reddit_score": null,
+      "methodology_notes": "BO3-specific top-ten discussion thread. Explicit ordered and unordered lists are scored; the thread also points back to the 2017 aggregate as provenance."
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD (CoD 4-IW)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "near_contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Near-contemporaneous multi-title top-five thread. Only explicit Black Ops 3 entries are scored."
+    },
+    {
+      "source_id": "bo3_reddit_2020_top5_by_cod_thread",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title top-five thread. Only explicit Black Ops 3 ballots are scored."
+    },
+    {
+      "source_id": "bo3_reddit_2021_top5_each_game_thread",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 in each individual game BO1 through IW",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/qbcepx/top_5_in_each_individual_game_bo1_through_iw/",
+      "published_year": 2021,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread with several explicit Black Ops 3 lists. Only BO3 entries are scored."
+    },
+    {
+      "source_id": "bo3_reddit_2016_pacman_top10_na",
+      "game": "Black Ops 3",
+      "source_kind": "single_community_ballot",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Pacman's top 10 NA Black Ops 3 players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/55b31s/pacmans_top_10_na_black_ops_3_players/",
+      "published_year": 2016,
+      "status": "excluded",
+      "scope": "north_america",
+      "coverage": "authored_list",
+      "reviewed_reason": "Player/creator-authored list discussion, useful for the authored-list lane but excluded from #15 community consensus scoring."
+    },
+    {
+      "source_id": "bo3_zooMaa_youtube_tier_list",
+      "game": "Black Ops 3",
+      "source_kind": "single_community_ballot",
+      "platform": "youtube",
+      "community": "ZooMaa/YouTube",
+      "title": "Ranking Every Black Ops 3 Pro Player Tier List",
+      "url": "https://www.youtube.com/watch?v=AwmmvLiFNfE",
+      "published_year": 2022,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "authored_list",
+      "reviewed_reason": "Player/creator-authored tier list video, not community consensus."
+    },
+    {
+      "source_id": "bo3_reddit_2016_eu_player_discussion",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Are there any non NA players that you seriously see making a mark in the scene right now?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4uo14k/are_there_any_non_na_players_that_you_seriously/",
+      "published_year": 2016,
+      "status": "reviewed_not_scored",
+      "scope": "europe",
+      "coverage": "contemporaneous",
+      "reviewed_reason": "Useful contemporaneous EU/non-NA discussion that repeatedly names Bance, Zer0, Jurd, and MadCat, but it is not a ranked title-level ballot."
+    },
+    {
+      "source_id": "bo3_google_old_forum_search",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Black Ops 3 player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using Black Ops 3/BO3, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/CWL, and gamertag clusters including Scump, FormaL, John, SlasheR, Apathy, Crimsix, AquA, Octane, Bance, Rated, Joee, Joshh, Zer0, Jurd, and MadCat. No clean old-board community ranked ballot was found beyond results/history pages and authored/video content."
+    },
+    {
+      "source_id": "bo3_cod_esports_wiki_history",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History of Call of Duty Esports - Black Ops 3",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for OpTic, EnVy, Splyce, and eLevate, but not fan/community consensus."
+    },
+    {
+      "source_id": "bo3_esports_earnings_history",
+      "game": "Black Ops 3",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Player Rankings For Call of Duty: Black Ops III",
+      "url": "https://www.esportsearnings.com/games/425-call-of-duty-black-ops-iii/top-players",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful prize/results context, but it is not fan/community consensus."
+    },
+    {
+      "source_id": "iw_reddit_2017_midseason_top10_poll",
+      "game": "Infinite Warfare",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "According to you the 10 best players in Infinite Warfare have been Formal, Octane, Gunless, Scump, Zer0, Bance, Crimsix, Arcitys, Dqvee and Karma.",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6itwrn/according_to_you_the_10_best_players_in_infinite/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "mid_season",
+      "ranking_size": 30,
+      "sample_size": 685,
+      "valid_ballots": 685,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "Aggregate subreddit poll with 685 participants. The raw vote table is ranked by vote count; it is scored as a mid-season/partial-season source because it precedes the end of the title and later events.",
+      "ranked_players": [
+        {
+          "player": "FormaL",
+          "rank": 1
+        },
+        {
+          "player": "Octane",
+          "rank": 2
+        },
+        {
+          "player": "Gunless",
+          "rank": 3
+        },
+        {
+          "player": "Scump",
+          "rank": 4
+        },
+        {
+          "player": "Zer0",
+          "rank": 5
+        },
+        {
+          "player": "Bance",
+          "rank": 6
+        },
+        {
+          "player": "Crimsix",
+          "rank": 7
+        },
+        {
+          "player": "Arcitys",
+          "rank": 8
+        },
+        {
+          "player": "Dqvee",
+          "rank": 9
+        },
+        {
+          "player": "Karma",
+          "rank": 10
+        },
+        {
+          "player": "General",
+          "rank": 11
+        },
+        {
+          "player": "Slacked",
+          "rank": 12
+        },
+        {
+          "player": "Apathy",
+          "rank": 13
+        },
+        {
+          "player": "Classic",
+          "rank": 14
+        },
+        {
+          "player": "Saints",
+          "rank": 15
+        },
+        {
+          "player": "Enable",
+          "rank": 16
+        },
+        {
+          "player": "Clayster",
+          "rank": 17
+        },
+        {
+          "player": "MadCat",
+          "rank": 18
+        },
+        {
+          "player": "Jurd",
+          "rank": 19
+        },
+        {
+          "player": "Nameless",
+          "rank": 20
+        },
+        {
+          "player": "Attach",
+          "rank": 21
+        },
+        {
+          "player": "Prestinni",
+          "rank": 22
+        },
+        {
+          "player": "Priestahh",
+          "rank": 23
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 24
+        },
+        {
+          "player": "Proto",
+          "rank": 25
+        },
+        {
+          "player": "Assault",
+          "rank": 26
+        },
+        {
+          "player": "LlamaGod",
+          "rank": 27
+        },
+        {
+          "player": "ACHES",
+          "rank": 28
+        },
+        {
+          "player": "AquA",
+          "rank": 29
+        },
+        {
+          "player": "Maux",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 Players in Infinite Warfare Heading into Champs",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6r55rb/top_10_players_in_infinite_warfare_heading_into/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "late_season",
+      "ranking_size": 10,
+      "reddit_score": null,
+      "methodology_notes": "Late-season top-10 discussion before Champs. Explicit ordered and unordered lists are scored; because Champs had not happened yet, it uses late-season coverage rather than end-of-title coverage."
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 Players from each CoD (CoD 4-IW)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/6emozs/top_5_players_from_each_cod_cod_4iw/",
+      "published_year": 2017,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "mid_season",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Contemporaneous multi-title thread, but the IW entries were written before the title finished and one list is explicitly 'IW ATM'. Only explicit IW entries are scored."
+    },
+    {
+      "source_id": "iw_reddit_2020_top5_by_cod_thread",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title top-five thread. Only explicit Infinite Warfare ballots are scored."
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 5 in each individual game BO1 through IW",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/qbcepx/top_5_in_each_individual_game_bo1_through_iw/",
+      "published_year": 2021,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "Multi-title top-five thread with several explicit Infinite Warfare lists. Only IW entries are scored."
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Best player in Infinite Warfare?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/jnkxkh/best_player_in_infinite_warfare/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 3,
+      "reddit_score": null,
+      "methodology_notes": "Best-player discussion. Only comments that make a clear best-player or compact ordered claim are scored; it mainly informs top-one/top-three signal."
+    },
+    {
+      "source_id": "iw_reddit_2017_complete_player_ratings",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Complete Infinite Warfare Player Ratings (171 Players)",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/7g37td/complete_infinite_warfare_player_ratings_171/",
+      "published_year": 2017,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "authored_model",
+      "reviewed_reason": "Interesting post-title rating project, but excluded because it is an authored model with formula choices and manual intervention, not a community-consensus ballot."
+    },
+    {
+      "source_id": "iw_google_old_forum_search",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for Infinite Warfare player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using Infinite Warfare/IW, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/CWL, and gamertag clusters including FormaL, Scump, Gunless, Octane, Zer0, Classic, Arcitys, Dqvee, Bance, SlasheR, Apathy, and Karma. No clean old-board ranked community ballot was found beyond results/history pages, authored projects, social snippets, and video content."
+    },
+    {
+      "source_id": "iw_cod_esports_wiki_history",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History/player pages for Infinite Warfare context",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for OpTic, eUnited, Luminosity, Splyce, and EnVy, but not fan/community consensus."
+    },
+    {
+      "source_id": "iw_esports_earnings_history",
+      "game": "Infinite Warfare",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Player Rankings For Call of Duty: Infinite Warfare",
+      "url": "https://www.esportsearnings.com/games/460-call-of-duty-infinite-warfare/top-players",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Prize/results context, not community consensus."
+    },
+    {
+      "source_id": "ww2_reddit_2018_end_top10_inclusion_poll",
+      "game": "World War II",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "The top 10 players in WWII according to r/CodCompetitive were Kenny, Gunless, Slasher, TJHaly, Dashy, Accuracy, Zoomaa, John, Crimsix and Skrapz.",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/a2j9sq/the_top_10_players_in_wwii_according_to/",
+      "published_year": 2018,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 666,
+      "valid_ballots": 666,
+      "quality_multiplier": 0.85,
+      "methodology_notes": "End-of-title aggregate survey with 666 respondents. The author explicitly clarifies this is top-10 inclusion frequency, not ordinal rank; the displayed order is scored as a lower-quality aggregate ranking by selection frequency.",
+      "ranked_players": [
+        {
+          "player": "Kenny",
+          "rank": 1
+        },
+        {
+          "player": "Gunless",
+          "rank": 2
+        },
+        {
+          "player": "SlasheR",
+          "rank": 3
+        },
+        {
+          "player": "TJHaLy",
+          "rank": 4
+        },
+        {
+          "player": "Dashy",
+          "rank": 5
+        },
+        {
+          "player": "Accuracy",
+          "rank": 6
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 7
+        },
+        {
+          "player": "John",
+          "rank": 8
+        },
+        {
+          "player": "Crimsix",
+          "rank": 9
+        },
+        {
+          "player": "Skrapz",
+          "rank": 10
+        },
+        {
+          "player": "Methodz",
+          "rank": 11
+        },
+        {
+          "player": "Arcitys",
+          "rank": 12
+        },
+        {
+          "player": "Octane",
+          "rank": 13
+        },
+        {
+          "player": "Assault",
+          "rank": 14
+        },
+        {
+          "player": "Rated",
+          "rank": 15
+        },
+        {
+          "player": "Apathy",
+          "rank": 16
+        },
+        {
+          "player": "Fero",
+          "rank": 17
+        },
+        {
+          "player": "Attach",
+          "rank": 18
+        },
+        {
+          "player": "Loony",
+          "rank": 19
+        },
+        {
+          "player": "Huke",
+          "rank": 20
+        },
+        {
+          "player": "Clayster",
+          "rank": 21
+        },
+        {
+          "player": "Priestahh",
+          "rank": 22
+        },
+        {
+          "player": "FormaL",
+          "rank": 23
+        },
+        {
+          "player": "Scump",
+          "rank": 24
+        },
+        {
+          "player": "ACHES",
+          "rank": 25
+        },
+        {
+          "player": "Zer0",
+          "rank": 26
+        },
+        {
+          "player": "Wuskin",
+          "rank": 27
+        },
+        {
+          "player": "Chino",
+          "rank": 28
+        },
+        {
+          "player": "JKap",
+          "rank": 29
+        },
+        {
+          "player": "Censor",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 Players on WW2",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/99xk7n/top_10_players_on_ww2/",
+      "published_year": 2018,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 10,
+      "reddit_score": null,
+      "methodology_notes": "End-of-title top-ten discussion. Explicit ordered and unordered lists are scored; vague honorable mentions are not."
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "So who were the top 5 players in WW2?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/9j193l/so_who_were_the_top_5_players_in_ww2/",
+      "published_year": 2018,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": null,
+      "methodology_notes": "End-of-title top-five discussion. Only explicit top-five lists are scored; broad 'last two spots interchangeable' comments are left as context."
+    },
+    {
+      "source_id": "ww2_reddit_2020_top5_by_cod_thread",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Who are Top 5 Pros players from each CoD since 2013",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "retrospective",
+      "season_coverage": "end_of_title",
+      "ranking_size": 5,
+      "reddit_score": 15,
+      "methodology_notes": "Multi-title top-five thread. Only explicit World War II ballots are scored."
+    },
+    {
+      "source_id": "ww2_reddit_2018_survey_collection_thread",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 players in WWII in the opinion of r/CodCompetitive - A Survey",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/a2dgog/top_10_players_in_wwii_in_the_opinion_of/",
+      "published_year": 2018,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "reviewed_reason": "Survey collection/input thread. Comments contain some useful lists, but the result post captures the aggregate and scoring both would risk double-counting the same community response pool."
+    },
+    {
+      "source_id": "ww2_reddit_2025_top10_thread",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Top 10 in WW2",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1n9bmg4/top_10_in_ww2/",
+      "published_year": 2025,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "late_retrospective",
+      "reviewed_reason": "Recent retrospective discussion with useful sanity-check commentary, but few clear independent ranked ballots beyond the OP premise."
+    },
+    {
+      "source_id": "ww2_reddit_2022_kenny_discussion",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "How good was WW2 Kenny?",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/wlamsf/how_good_was_ww2_kenny/",
+      "published_year": 2022,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "late_retrospective",
+      "reviewed_reason": "Useful best-player sanity-check thread, but the prompt is Kenny-specific and therefore too leading for neutral title-rank scoring."
+    },
+    {
+      "source_id": "ww2_google_old_forum_search",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "legacy forums/search",
+      "title": "Legacy forum/message-board search for World War II player rankings",
+      "url": "",
+      "published_year": null,
+      "status": "reviewed_not_scored",
+      "scope": "global",
+      "coverage": "research_lead",
+      "reviewed_reason": "Searched outside Reddit using World War II/WWII/WW2, best players, top five/top ten, forum/message-board terms, GameBattles/MLG/CWL, and gamertag clusters including Kenny, Gunless, SlasheR, Accuracy, TJHaLy, Dashy, ZooMaa, John, Crimsix, Skrapz, Methodz, Octane, Arcitys, Assault, Rated, and Loony. No clean old-board ranked community ballot was found beyond results/history pages, authored/stat posts, social snippets, and video content."
+    },
+    {
+      "source_id": "ww2_cod_esports_wiki_history",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "CoD Esports Wiki",
+      "title": "History/player pages for World War II context",
+      "url": "https://cod-esports.fandom.com/wiki/History_of_Call_of_Duty_Esports",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Useful results/history context for tK, Rise, EG, Luminosity, Red Reserve, and OpTic, but not fan/community consensus."
+    },
+    {
+      "source_id": "ww2_esports_earnings_history",
+      "game": "World War II",
+      "source_kind": "community_thread_cluster",
+      "platform": "web",
+      "community": "Esports Earnings",
+      "title": "Top Player Rankings For Call of Duty: WWII",
+      "url": "https://www.esportsearnings.com/games/504-call-of-duty-wwii/top-players",
+      "published_year": null,
+      "status": "excluded",
+      "scope": "global",
+      "coverage": "results_context",
+      "reviewed_reason": "Prize/results context, not community consensus."
+    },
+    {
+      "source_id": "bo4_reddit_2019_end_top10_inclusion_poll",
+      "game": "Black Ops 4",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "The top 10 players in Black Ops 4 according to r/CodCompetitive",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/cv8yev/the_top_10_players_in_black_ops_4_according_to/",
+      "published_year": 2019,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": null,
+      "quality_multiplier": 0.85,
+      "methodology_notes": "End-of-title community survey result. The chart is top-10 inclusion percentage, not an ordinal ranking; only the top 30 visible names are scored and the source is quality-discounted.",
+      "ranked_players": [
+        {
+          "player": "Dashy",
+          "rank": 1
+        },
+        {
+          "player": "Simp",
+          "rank": 2
+        },
+        {
+          "player": "Octane",
+          "rank": 3
+        },
+        {
+          "player": "aBeZy",
+          "rank": 4
+        },
+        {
+          "player": "Dylan",
+          "rank": 5
+        },
+        {
+          "player": "Envoy",
+          "rank": 6
+        },
+        {
+          "player": "Priestahh",
+          "rank": 7
+        },
+        {
+          "player": "SlasheR",
+          "rank": 8
+        },
+        {
+          "player": "Skrapz",
+          "rank": 9
+        },
+        {
+          "player": "Temp",
+          "rank": 10
+        },
+        {
+          "player": "FormaL",
+          "rank": 11
+        },
+        {
+          "player": "Arcitys",
+          "rank": 12
+        },
+        {
+          "player": "TJHaLy",
+          "rank": 13
+        },
+        {
+          "player": "Kenny",
+          "rank": 14
+        },
+        {
+          "player": "Gunless",
+          "rank": 15
+        },
+        {
+          "player": "Brack",
+          "rank": 16
+        },
+        {
+          "player": "Cellium",
+          "rank": 17
+        },
+        {
+          "player": "Scump",
+          "rank": 18
+        },
+        {
+          "player": "Huke",
+          "rank": 19
+        },
+        {
+          "player": "Attach",
+          "rank": 20
+        },
+        {
+          "player": "Maux",
+          "rank": 21
+        },
+        {
+          "player": "Karma",
+          "rank": 22
+        },
+        {
+          "player": "Havok",
+          "rank": 23
+        },
+        {
+          "player": "Clayster",
+          "rank": 24
+        },
+        {
+          "player": "GodRx",
+          "rank": 25
+        },
+        {
+          "player": "Skyz",
+          "rank": 26
+        },
+        {
+          "player": "MajorManiak",
+          "rank": 27
+        },
+        {
+          "player": "Crimsix",
+          "rank": 28
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 29
+        },
+        {
+          "player": "Enable",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "mw2019_reddit_2020_end_top30_survey",
+      "game": "Modern Warfare",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "The top 30 players in Modern Warfare according to r/CodCompetitive",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/im3gkx/the_top_30_players_in_modern_warfare_according_to/",
+      "published_year": 2020,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "valid_ballots": 345,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Author reported 545 responses, 345 counted, and a top-30 score formula based on top-10/top-20/top-30 buckets.",
+      "ranked_players": [
+        {
+          "player": "Simp",
+          "rank": 1
+        },
+        {
+          "player": "Envoy",
+          "rank": 2
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 3
+        },
+        {
+          "player": "aBeZy",
+          "rank": 4
+        },
+        {
+          "player": "Cellium",
+          "rank": 5
+        },
+        {
+          "player": "Octane",
+          "rank": 6
+        },
+        {
+          "player": "Arcitys",
+          "rank": 7
+        },
+        {
+          "player": "Huke",
+          "rank": 8
+        },
+        {
+          "player": "Skyz",
+          "rank": 9
+        },
+        {
+          "player": "Scump",
+          "rank": 10
+        },
+        {
+          "player": "Clayster",
+          "rank": 11
+        },
+        {
+          "player": "Wuskin",
+          "rank": 12
+        },
+        {
+          "player": "FormaL",
+          "rank": 13
+        },
+        {
+          "player": "iLLeY",
+          "rank": 14
+        },
+        {
+          "player": "Crimsix",
+          "rank": 15
+        },
+        {
+          "player": "Owakening",
+          "rank": 16
+        },
+        {
+          "player": "Mack",
+          "rank": 17
+        },
+        {
+          "player": "SlasheR",
+          "rank": 18
+        },
+        {
+          "player": "Priestahh",
+          "rank": 19
+        },
+        {
+          "player": "Fero",
+          "rank": 20
+        },
+        {
+          "player": "Attach",
+          "rank": 21
+        },
+        {
+          "player": "MajorManiak",
+          "rank": 22
+        },
+        {
+          "player": "Cammy",
+          "rank": 23
+        },
+        {
+          "player": "ZooMaa",
+          "rank": 24
+        },
+        {
+          "player": "Methodz",
+          "rank": 25
+        },
+        {
+          "player": "GodRx",
+          "rank": 26
+        },
+        {
+          "player": "Skrapz",
+          "rank": 27
+        },
+        {
+          "player": "Prestinni",
+          "rank": 28
+        },
+        {
+          "player": "CleanX",
+          "rank": 29
+        },
+        {
+          "player": "Kenny",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "bocw_reddit_2021_end_top30_survey",
+      "game": "Black Ops Cold War",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Reddit's Top 30 Black Ops Cold War Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/po7hvz/reddits_top_30_black_ops_cold_war_players/",
+      "published_year": 2021,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 766,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "ranked_players": [
+        {
+          "player": "Simp",
+          "rank": 1
+        },
+        {
+          "player": "aBeZy",
+          "rank": 2
+        },
+        {
+          "player": "Cammy",
+          "rank": 3
+        },
+        {
+          "player": "Cellium",
+          "rank": 4
+        },
+        {
+          "player": "Insight",
+          "rank": 5
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 6
+        },
+        {
+          "player": "Scump",
+          "rank": 7
+        },
+        {
+          "player": "Standy",
+          "rank": 8
+        },
+        {
+          "player": "HyDra",
+          "rank": 9
+        },
+        {
+          "player": "CleanX",
+          "rank": 10
+        },
+        {
+          "player": "Dashy",
+          "rank": 11
+        },
+        {
+          "player": "Arcitys",
+          "rank": 12
+        },
+        {
+          "player": "Bance",
+          "rank": 13
+        },
+        {
+          "player": "Kenny",
+          "rank": 14
+        },
+        {
+          "player": "Envoy",
+          "rank": 15
+        },
+        {
+          "player": "Clayster",
+          "rank": 16
+        },
+        {
+          "player": "Asim",
+          "rank": 17
+        },
+        {
+          "player": "Attach",
+          "rank": 18
+        },
+        {
+          "player": "Octane",
+          "rank": 19
+        },
+        {
+          "player": "Vivid",
+          "rank": 20
+        },
+        {
+          "player": "Drazah",
+          "rank": 21
+        },
+        {
+          "player": "Neptune",
+          "rank": 22
+        },
+        {
+          "player": "Crimsix",
+          "rank": 23
+        },
+        {
+          "player": "Afro",
+          "rank": 24
+        },
+        {
+          "player": "iLLeY",
+          "rank": 25
+        },
+        {
+          "player": "Priestahh",
+          "rank": 26
+        },
+        {
+          "player": "Skyz",
+          "rank": 27
+        },
+        {
+          "player": "Gunless",
+          "rank": 28
+        },
+        {
+          "player": "FormaL",
+          "rank": 29
+        },
+        {
+          "player": "SlasheR",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "vanguard_reddit_2022_end_top30_survey",
+      "game": "Vanguard",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Reddit's Top 30 Call of Duty Vanguard Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/woivlt/reddits_top_30_call_of_duty_vanguard_players/",
+      "published_year": 2022,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 343,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "ranked_players": [
+        {
+          "player": "Cellium",
+          "rank": 1
+        },
+        {
+          "player": "Pred",
+          "rank": 2
+        },
+        {
+          "player": "Dashy",
+          "rank": 3
+        },
+        {
+          "player": "HyDra",
+          "rank": 4
+        },
+        {
+          "player": "Simp",
+          "rank": 5
+        },
+        {
+          "player": "Kenny",
+          "rank": 6
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 7
+        },
+        {
+          "player": "Sib",
+          "rank": 8
+        },
+        {
+          "player": "Attach",
+          "rank": 9
+        },
+        {
+          "player": "aBeZy",
+          "rank": 10
+        },
+        {
+          "player": "Envoy",
+          "rank": 11
+        },
+        {
+          "player": "Scump",
+          "rank": 12
+        },
+        {
+          "player": "Octane",
+          "rank": 13
+        },
+        {
+          "player": "Afro",
+          "rank": 14
+        },
+        {
+          "player": "CleanX",
+          "rank": 15
+        },
+        {
+          "player": "Drazah",
+          "rank": 16
+        },
+        {
+          "player": "Temp",
+          "rank": 17
+        },
+        {
+          "player": "Arcitys",
+          "rank": 18
+        },
+        {
+          "player": "KiSMET",
+          "rank": 19
+        },
+        {
+          "player": "Owakening",
+          "rank": 20
+        },
+        {
+          "player": "iLLeY",
+          "rank": 21
+        },
+        {
+          "player": "Mack",
+          "rank": 22
+        },
+        {
+          "player": "SlasheR",
+          "rank": 23
+        },
+        {
+          "player": "Cammy",
+          "rank": 24
+        },
+        {
+          "player": "Skyz",
+          "rank": 25
+        },
+        {
+          "player": "Vivid",
+          "rank": 26
+        },
+        {
+          "player": "Methodz",
+          "rank": 27
+        },
+        {
+          "player": "Zer0",
+          "rank": 28
+        },
+        {
+          "player": "Insight",
+          "rank": 29
+        },
+        {
+          "player": "Bance",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "mwii_reddit_2023_end_top30_survey",
+      "game": "Modern Warfare II",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Reddit's Top 30 Modern Warfare II Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/151cutn/reddits_top_30_modern_warfare_ii_players/",
+      "published_year": 2023,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 244,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "ranked_players": [
+        {
+          "player": "HyDra",
+          "rank": 1
+        },
+        {
+          "player": "aBeZy",
+          "rank": 2
+        },
+        {
+          "player": "Scrap",
+          "rank": 3
+        },
+        {
+          "player": "Cellium",
+          "rank": 4
+        },
+        {
+          "player": "Pred",
+          "rank": 5
+        },
+        {
+          "player": "Octane",
+          "rank": 6
+        },
+        {
+          "player": "KiSMET",
+          "rank": 7
+        },
+        {
+          "player": "Dashy",
+          "rank": 8
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 9
+        },
+        {
+          "player": "Simp",
+          "rank": 10
+        },
+        {
+          "player": "Drazah",
+          "rank": 11
+        },
+        {
+          "player": "Envoy",
+          "rank": 12
+        },
+        {
+          "player": "CleanX",
+          "rank": 13
+        },
+        {
+          "player": "Skyz",
+          "rank": 14
+        },
+        {
+          "player": "Sib",
+          "rank": 15
+        },
+        {
+          "player": "SlasheR",
+          "rank": 16
+        },
+        {
+          "player": "Ghosty",
+          "rank": 17
+        },
+        {
+          "player": "Priestahh",
+          "rank": 18
+        },
+        {
+          "player": "Insight",
+          "rank": 19
+        },
+        {
+          "player": "Owakening",
+          "rank": 20
+        },
+        {
+          "player": "Scump",
+          "rank": 21
+        },
+        {
+          "player": "Temp",
+          "rank": 22
+        },
+        {
+          "player": "Huke",
+          "rank": 23
+        },
+        {
+          "player": "Kenny",
+          "rank": 24
+        },
+        {
+          "player": "Clayster",
+          "rank": 25
+        },
+        {
+          "player": "Capsidal",
+          "rank": 26
+        },
+        {
+          "player": "Nastie",
+          "rank": 27
+        },
+        {
+          "player": "Beans",
+          "rank": 28
+        },
+        {
+          "player": "Afro",
+          "rank": 29
+        },
+        {
+          "player": "Standy",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "mwiii_reddit_2024_end_top30_survey",
+      "game": "Modern Warfare III",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "Reddit's Top 30 Modern Warfare III Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1f6ler9/reddits_top_30_modern_warfare_iii_players/",
+      "published_year": 2024,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 162,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "ranked_players": [
+        {
+          "player": "Simp",
+          "rank": 1
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 2
+        },
+        {
+          "player": "HyDra",
+          "rank": 3
+        },
+        {
+          "player": "Scrap",
+          "rank": 4
+        },
+        {
+          "player": "Dashy",
+          "rank": 5
+        },
+        {
+          "player": "Cellium",
+          "rank": 6
+        },
+        {
+          "player": "Drazah",
+          "rank": 7
+        },
+        {
+          "player": "Pred",
+          "rank": 8
+        },
+        {
+          "player": "aBeZy",
+          "rank": 9
+        },
+        {
+          "player": "Ghosty",
+          "rank": 10
+        },
+        {
+          "player": "Sib",
+          "rank": 11
+        },
+        {
+          "player": "Kenny",
+          "rank": 12
+        },
+        {
+          "player": "CleanX",
+          "rank": 13
+        },
+        {
+          "player": "Abuzah",
+          "rank": 14
+        },
+        {
+          "player": "Envoy",
+          "rank": 15
+        },
+        {
+          "player": "Gwinn",
+          "rank": 16
+        },
+        {
+          "player": "Skyz",
+          "rank": 17
+        },
+        {
+          "player": "Insight",
+          "rank": 18
+        },
+        {
+          "player": "Attach",
+          "rank": 19
+        },
+        {
+          "player": "04",
+          "rank": 20
+        },
+        {
+          "player": "Nero",
+          "rank": 21
+        },
+        {
+          "player": "KiSMET",
+          "rank": 22
+        },
+        {
+          "player": "JoeDeceives",
+          "rank": 23
+        },
+        {
+          "player": "Gio",
+          "rank": 24
+        },
+        {
+          "player": "TJHaLy",
+          "rank": 25
+        },
+        {
+          "player": "Estreal",
+          "rank": 26
+        },
+        {
+          "player": "Beans",
+          "rank": 27
+        },
+        {
+          "player": "Lynz",
+          "rank": 28
+        },
+        {
+          "player": "ReeaL",
+          "rank": 29
+        },
+        {
+          "player": "Nastie",
+          "rank": 30
+        }
+      ]
+    },
+    {
+      "source_id": "bo6_reddit_2025_end_top30_survey",
+      "game": "Black Ops 6",
+      "source_kind": "community_aggregate_survey",
+      "platform": "reddit",
+      "community": "r/CoDCompetitive",
+      "title": "r/CodCompetitive's Top 30 Black Ops 6 Players",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/1n1ujv2/rcodcompetitives_top_30_black_ops_6_players/",
+      "published_year": 2025,
+      "status": "scored",
+      "scope": "global",
+      "coverage": "contemporaneous",
+      "season_coverage": "end_of_title",
+      "ranking_size": 30,
+      "sample_size": 201,
+      "quality_multiplier": 1.0,
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "ranked_players": [
+        {
+          "player": "Scrap",
+          "rank": 1
+        },
+        {
+          "player": "Shotzzy",
+          "rank": 2
+        },
+        {
+          "player": "Mercules",
+          "rank": 3
+        },
+        {
+          "player": "HyDra",
+          "rank": 4
+        },
+        {
+          "player": "Dashy",
+          "rank": 5
+        },
+        {
+          "player": "Huke",
+          "rank": 6
+        },
+        {
+          "player": "Neptune",
+          "rank": 7
+        },
+        {
+          "player": "Cellium",
+          "rank": 8
+        },
+        {
+          "player": "JoeDeceives",
+          "rank": 9
+        },
+        {
+          "player": "Simp",
+          "rank": 10
+        },
+        {
+          "player": "RenKoR",
+          "rank": 11
+        },
+        {
+          "player": "04",
+          "rank": 12
+        },
+        {
+          "player": "aBeZy",
+          "rank": 13
+        },
+        {
+          "player": "Abuzah",
+          "rank": 14
+        },
+        {
+          "player": "SupeR (Diego Escudero)",
+          "rank": 15
+        },
+        {
+          "player": "Drazah",
+          "rank": 16
+        },
+        {
+          "player": "CleanX",
+          "rank": 17
+        },
+        {
+          "player": "ReeaL",
+          "rank": 18
+        },
+        {
+          "player": "Ghosty",
+          "rank": 19
+        },
+        {
+          "player": "Nastie",
+          "rank": 20
+        },
+        {
+          "player": "Envoy",
+          "rank": 21
+        },
+        {
+          "player": "Snoopy",
+          "rank": 22
+        },
+        {
+          "player": "Purj",
+          "rank": 23
+        },
+        {
+          "player": "Sib",
+          "rank": 24
+        },
+        {
+          "player": "Gwinn",
+          "rank": 25
+        },
+        {
+          "player": "MettalZ",
+          "rank": 26
+        },
+        {
+          "player": "KiSMET",
+          "rank": 27
+        },
+        {
+          "player": "Pred",
+          "rank": 28
+        },
+        {
+          "player": "Cammy",
+          "rank": 29
+        },
+        {
+          "player": "Beans",
+          "rank": 30
+        }
+      ]
+    }
+  ]
+}

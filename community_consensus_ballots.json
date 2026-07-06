@@ -1,0 +1,2286 @@
+{
+  "schema_version": 1,
+  "ballots": [
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_001",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4.5},
+        {"player": "ACHES", "rank": 4.5},
+        {"player": "TeeP", "rank": 6},
+        {"player": "MiRx", "rank": 7},
+        {"player": "Scump", "rank": 8},
+        {"player": "KiLLa", "rank": 9},
+        {"player": "JKap", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_002",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a5d59/",
+      "comment_score": 7,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Crimsix", "rank": 1.5},
+        {"player": "ACHES", "rank": 1.5},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Karma", "rank": 4},
+        {"player": "TeeP", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "ProoFy", "rank": 7},
+        {"player": "JKap", "rank": 8},
+        {"player": "MiRx", "rank": 9},
+        {"player": "KiLLa", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_003",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6agt57/",
+      "comment_score": 4,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "ACHES", "rank": 3},
+        {"player": "Clayster", "rank": 4},
+        {"player": "TeeP", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "MiRx", "rank": 7},
+        {"player": "KiLLa", "rank": 8},
+        {"player": "JKap", "rank": 9},
+        {"player": "Sharp", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_004",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6akbjp/",
+      "comment_score": 3,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Parasite", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_005",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a85a5/",
+      "comment_score": 3,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Parasite", "rank": 5},
+        {"player": "TeeP", "rank": 6},
+        {"player": "KiLLa", "rank": 7},
+        {"player": "JKap", "rank": 8},
+        {"player": "MiRx", "rank": 9},
+        {"player": "ProoFy", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_006",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a9pat/",
+      "comment_score": 4,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "ACHES", "rank": 5},
+        {"player": "MiRx", "rank": 6},
+        {"player": "TeeP", "rank": 7},
+        {"player": "ProoFy", "rank": 8},
+        {"player": "Scump", "rank": 9},
+        {"player": "KiLLa", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_007",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6agto5/",
+      "comment_score": 1,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3.5},
+        {"player": "ACHES", "rank": 3.5},
+        {"player": "Parasite", "rank": 5},
+        {"player": "TeeP", "rank": 6},
+        {"player": "MiRx", "rank": 7},
+        {"player": "KiLLa", "rank": 8},
+        {"player": "ProoFy", "rank": 9},
+        {"player": "Scump", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2016_top10_thread",
+      "ballot_id": "bo2_2016_top10_008",
+      "url": "https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/comment/d6a7e0n/",
+      "comment_score": -11,
+      "comment_score_observed_at": "2026-07-06",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "ACHES", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "JKap", "rank": 7},
+        {"player": "Saints", "rank": 8},
+        {"player": "MiRx", "rank": 9},
+        {"player": "John", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo2_2020_top5_001",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "ACHES", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo2_2020_top5_002",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Parasite", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "MiRx", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo2_2020_top5_003",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "ACHES", "rank": 3},
+        {"player": "Clayster", "rank": 4},
+        {"player": "Parasite", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_001",
+      "notes": "Ordered tier approximation from post body: five top-tier players each assigned rank 3, next five assigned rank 8.",
+      "entries": [
+        {"player": "ACHES", "rank": 3},
+        {"player": "Crimsix", "rank": 3},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Karma", "rank": 3},
+        {"player": "Parasite", "rank": 3},
+        {"player": "ProoFy", "rank": 8},
+        {"player": "TeeP", "rank": 8},
+        {"player": "MiRx", "rank": 8},
+        {"player": "Scump", "rank": 8},
+        {"player": "Sharp", "rank": 8}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_002",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Parasite", "rank": 5},
+        {"player": "Scump", "rank": 6},
+        {"player": "MiRx", "rank": 7}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_003",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Scump", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "MiRx", "rank": 7},
+        {"player": "KiLLa", "rank": 8},
+        {"player": "Jurd", "rank": 9},
+        {"player": "ProoFy", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_004",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "TeeP", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "Scump", "rank": 7}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_005",
+      "entries": [
+        {"player": "Crimsix", "rank": 2},
+        {"player": "ACHES", "rank": 2},
+        {"player": "Karma", "rank": 2},
+        {"player": "MiRx", "rank": 4},
+        {"player": "Parasite", "rank": 5},
+        {"player": "Clayster", "rank": 6},
+        {"player": "Jurd", "rank": 7},
+        {"player": "Scump", "rank": 8},
+        {"player": "KiLLa", "rank": 9},
+        {"player": "TeeP", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2022_top10_watched_back_then_thread",
+      "ballot_id": "bo2_2022_top10_006",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ACHES", "rank": 3},
+        {"player": "Karma", "rank": 4},
+        {"player": "Clayster", "rank": 5},
+        {"player": "Parasite", "rank": 6},
+        {"player": "TeeP", "rank": 7},
+        {"player": "JKap", "rank": 8},
+        {"player": "MiRx", "rank": 9},
+        {"player": "KiLLa", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_001",
+      "entries": [
+        {"player": "Clayster", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Karma", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "Scump", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_002",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "ACHES", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_003",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Parasite", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_004",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "TeeP", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_005",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "MiRx", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2014_pro_vote_request_thread",
+      "ballot_id": "bo2_2014_top5_006",
+      "entries": [
+        {"player": "Crimsix", "rank": 1.5},
+        {"player": "Karma", "rank": 1.5},
+        {"player": "TeeP", "rank": 3},
+        {"player": "Parasite", "rank": 4},
+        {"player": "Clayster", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo2_reddit_2020_detailed_top10_post",
+      "ballot_id": "bo2_2020_detailed_top10_001",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "Parasite", "rank": 3},
+        {"player": "Clayster", "rank": 4},
+        {"player": "ACHES", "rank": 5},
+        {"player": "KiLLa", "rank": 6},
+        {"player": "MiRx", "rank": 7},
+        {"player": "JKap", "rank": 8},
+        {"player": "ProoFy", "rank": 9},
+        {"player": "Scump", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_top5_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 3},
+        {"player": "John", "rank": 4},
+        {"player": "StaiNViLLe", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_top5_002",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ACHES", "rank": 3},
+        {"player": "Virus", "rank": 4},
+        {"player": "ProoFy", "rank": 5.5},
+        {"player": "John", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_top5_003",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Saints", "rank": 3},
+        {"player": "Dedo", "rank": 4},
+        {"player": "ProoFy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_top5_004",
+      "entries": [
+        {"player": "John", "rank": 1},
+        {"player": "ACHES", "rank": 2},
+        {"player": "StaiNViLLe", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "JKap", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_tier_005",
+      "entries": [
+        {"player": "JKap", "rank": 4},
+        {"player": "BigTymeR", "rank": 4},
+        {"player": "MerK", "rank": 4},
+        {"player": "Rambo", "rank": 4},
+        {"player": "ASSASS1N", "rank": 4},
+        {"player": "Moho", "rank": 4},
+        {"player": "ProoFy", "rank": 4}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_top5_mw2_bo1_thread",
+      "ballot_id": "black_ops_2015_top4_006",
+      "entries": [
+        {"player": "ProoFy", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "JKap", "rank": 3},
+        {"player": "ACHES", "rank": 4}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2020_t10_bo1_mw3_thread",
+      "ballot_id": "black_ops_2020_t10_001",
+      "entries": [
+        {"player": "Scump", "rank": 5.5},
+        {"player": "TeeP", "rank": 5.5},
+        {"player": "ACHES", "rank": 5.5},
+        {"player": "BigTymeR", "rank": 5.5},
+        {"player": "Vengeance", "rank": 5.5},
+        {"player": "ASSASS1N", "rank": 5.5},
+        {"player": "MerK", "rank": 5.5},
+        {"player": "StaiNViLLe", "rank": 5.5},
+        {"player": "Censor", "rank": 5.5},
+        {"player": "JKap", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2020_t10_bo1_mw3_thread",
+      "ballot_id": "black_ops_2020_t10_002",
+      "entries": [
+        {"player": "JKap", "rank": 5},
+        {"player": "Scump", "rank": 5},
+        {"player": "ACHES", "rank": 5},
+        {"player": "ProoFy", "rank": 5},
+        {"player": "ASSASS1N", "rank": 5},
+        {"player": "John", "rank": 5},
+        {"player": "TeeP", "rank": 5},
+        {"player": "StaiNViLLe", "rank": 5},
+        {"player": "Dedo", "rank": 5},
+        {"player": "BigTymeR", "rank": 10.5},
+        {"player": "MerK", "rank": 10.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2020_t10_bo1_mw3_thread",
+      "ballot_id": "black_ops_2020_t10_003",
+      "entries": [
+        {"player": "Scump", "rank": 5.5},
+        {"player": "ACHES", "rank": 5.5},
+        {"player": "JKap", "rank": 5.5},
+        {"player": "ProoFy", "rank": 5.5},
+        {"player": "John", "rank": 5.5},
+        {"player": "TeeP", "rank": 5.5},
+        {"player": "ASSASS1N", "rank": 5.5},
+        {"player": "MerK", "rank": 5.5},
+        {"player": "BigTymeR", "rank": 5.5},
+        {"player": "TwiZz", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2020_t10_bo1_mw3_thread",
+      "ballot_id": "black_ops_2020_t10_004",
+      "entries": [
+        {"player": "ASSASS1N", "rank": 5.5},
+        {"player": "John", "rank": 5.5},
+        {"player": "JKap", "rank": 5.5},
+        {"player": "Scump", "rank": 5.5},
+        {"player": "ProoFy", "rank": 5.5},
+        {"player": "ACHES", "rank": 5.5},
+        {"player": "Bobby", "rank": 5.5},
+        {"player": "MerK", "rank": 5.5},
+        {"player": "Dedo", "rank": 5.5},
+        {"player": "TeeP", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_002",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "ACHES", "rank": 2},
+        {"player": "Scump", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_003",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "Scump", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_004",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "Scump", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_005",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2013_top3_each_game_thread",
+      "ballot_id": "black_ops_2013_top3_006",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "black_ops_2017_top5_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "ASSASS1N", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "John", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "black_ops_2017_top5_002",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Rambo", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "BigTymeR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_001",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_002",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_003",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_004",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_005",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_006",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_007",
+      "entries": [
+        {"player": "JKap", "rank": 1.5},
+        {"player": "Scump", "rank": 1.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "black_ops_2014_best_player_008",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "MerK", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "ProoFy", "rank": 4},
+        {"player": "John", "rank": 5.5},
+        {"player": "ASSASS1N", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2015_best_players_each_title_thread",
+      "ballot_id": "black_ops_2015_best_each_title_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2020_top_cod_players_post",
+      "ballot_id": "black_ops_2020_top_cod_players_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ACHES", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2016_pre_bo2_history_thread",
+      "ballot_id": "black_ops_2016_pre_bo2_history_001",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_001",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_002",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_003",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_004",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_005",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_006",
+      "entries": [
+        {"player": "JKap", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "black_ops_reddit_2022_best_player_each_title_thread",
+      "ballot_id": "black_ops_2022_best_title_007",
+      "entries": [
+        {"player": "JKap", "rank": 1},
+        {"player": "Scump", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_top3_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "MerK", "rank": 2},
+        {"player": "ProoFy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_top3_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "TeeP", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_top2_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "ProoFy", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_top3_004",
+      "entries": [
+        {"player": "Rambo", "rank": 1},
+        {"player": "MerK", "rank": 2},
+        {"player": "BigTymeR", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_unordered_005",
+      "entries": [
+        {"player": "Scump", "rank": 2},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "Parasite", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2013_top3_each_game_thread",
+      "ballot_id": "mw3_2013_top3_006",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "TeeP", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "mw3_2017_top5_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "MerK", "rank": 2},
+        {"player": "BigTymeR", "rank": 3},
+        {"player": "JKap", "rank": 4},
+        {"player": "ACHES", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "mw3_2017_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "JKap", "rank": 2},
+        {"player": "Rambo", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "BigTymeR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "mw3_2017_top5_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Rambo", "rank": 2},
+        {"player": "MerK", "rank": 3},
+        {"player": "BigTymeR", "rank": 4},
+        {"player": "PHiZZURP", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "mw3_2017_top1_004",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_top3_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "ProoFy", "rank": 2},
+        {"player": "BigTymeR", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_002",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_003",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_004",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_005",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_006",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_007",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_008",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_009",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_010",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_011",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_012",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_013",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_best_player_014",
+      "entries": [
+        {"player": "Scump", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "mw3_2014_tied_best_015",
+      "entries": [
+        {"player": "Scump", "rank": 1.5},
+        {"player": "ProoFy", "rank": 1.5}
+      ]
+    },
+    {
+      "source_id": "mw3_reddit_2025_top3_each_era_thread",
+      "ballot_id": "mw3_2025_top3_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "BigTymeR", "rank": 2},
+        {"player": "MerK", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_001",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_tied_eg_002",
+      "notes": "Comment says ACHES, Crimsix, TeeP, and Karma were all the best players in their own rights.",
+      "entries": [
+        {"player": "ACHES", "rank": 2.5},
+        {"player": "Crimsix", "rank": 2.5},
+        {"player": "TeeP", "rank": 2.5},
+        {"player": "Karma", "rank": 2.5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_top3_003",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "ACHES", "rank": 2},
+        {"player": "Scump", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_top8_004",
+      "entries": [
+        {"player": "ACHES", "rank": 1.5},
+        {"player": "Crimsix", "rank": 1.5},
+        {"player": "Karma", "rank": 3},
+        {"player": "TeeP", "rank": 4},
+        {"player": "Apathy", "rank": 5},
+        {"player": "Saints", "rank": 6},
+        {"player": "Nameless", "rank": 7},
+        {"player": "Dedo", "rank": 8}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_005",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_006",
+      "entries": [
+        {"player": "ACHES", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_007",
+      "entries": [
+        {"player": "TeeP", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_008",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_009",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_tied_eg_010",
+      "notes": "Comment lists all of EG as Ghosts best players.",
+      "entries": [
+        {"player": "Crimsix", "rank": 2.5},
+        {"player": "ACHES", "rank": 2.5},
+        {"player": "Karma", "rank": 2.5},
+        {"player": "TeeP", "rank": 2.5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_top2_011",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "ACHES", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_012",
+      "entries": [
+        {"player": "ACHES", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_tied_best_013",
+      "entries": [
+        {"player": "Crimsix", "rank": 1.5},
+        {"player": "ACHES", "rank": 1.5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_014",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2014_best_player_each_cod_thread",
+      "ballot_id": "ghosts_2014_best_player_015",
+      "entries": [
+        {"player": "Crimsix", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ghosts_2020_top5_001",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "ACHES", "rank": 2},
+        {"player": "Karma", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "FormaL", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ghosts_2020_top5_002",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Karma", "rank": 3},
+        {"player": "FormaL", "rank": 4},
+        {"player": "ACHES", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ghosts_2020_top5_003",
+      "entries": [
+        {"player": "Crimsix", "rank": 1},
+        {"player": "Karma", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "ACHES", "rank": 4},
+        {"player": "Scump", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ghosts_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ghosts_2020_top5_004",
+      "entries": [
+        {"player": "Karma", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "ACHES", "rank": 3},
+        {"player": "FormaL", "rank": 4},
+        {"player": "Scump", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top10_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Crimsix", "rank": 4},
+        {"player": "Saints", "rank": 5},
+        {"player": "SlasheR", "rank": 6},
+        {"player": "Huke", "rank": 7},
+        {"player": "Enable", "rank": 8},
+        {"player": "Loony", "rank": 9},
+        {"player": "Parasite", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2.5},
+        {"player": "FormaL", "rank": 2.5},
+        {"player": "Crimsix", "rank": 4},
+        {"player": "Saints", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top10_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "Crimsix", "rank": 3},
+        {"player": "FormaL", "rank": 4},
+        {"player": "SlasheR", "rank": 5},
+        {"player": "Saints", "rank": 6},
+        {"player": "Huke", "rank": 7},
+        {"player": "Enable", "rank": 8},
+        {"player": "Attach", "rank": 9},
+        {"player": "Jurd", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top10_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Crimsix", "rank": 4},
+        {"player": "Saints", "rank": 5},
+        {"player": "SlasheR", "rank": 6},
+        {"player": "Parasite", "rank": 7},
+        {"player": "Enable", "rank": 8},
+        {"player": "ZooMaa", "rank": 9},
+        {"player": "Huke", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top5_005",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "Crimsix", "rank": 3},
+        {"player": "FormaL", "rank": 4},
+        {"player": "Saints", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top5_006",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Jurd", "rank": 4},
+        {"player": "Saints", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top10_007",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Crimsix", "rank": 4},
+        {"player": "Saints", "rank": 5},
+        {"player": "Jurd", "rank": 6},
+        {"player": "Swanny", "rank": 7},
+        {"player": "SlasheR", "rank": 8},
+        {"player": "Karma", "rank": 9},
+        {"player": "Parasite", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2015_top10_right_now_thread",
+      "ballot_id": "aw_2015_top10_008",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Crimsix", "rank": 4},
+        {"player": "Huke", "rank": 5},
+        {"player": "SlasheR", "rank": 6},
+        {"player": "Saints", "rank": 7},
+        {"player": "Enable", "rank": 8},
+        {"player": "Parasite", "rank": 9},
+        {"player": "Loony", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "aw_2017_top5_001",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "aw_2017_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "Huke", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "aw_2017_top5_003",
+      "entries": [
+        {"player": "Clayster", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "aw_2017_top5_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "aw_2020_top4_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ZooMaa", "rank": 4}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "aw_2020_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "Attach", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "aw_2020_top5_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_top5_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "Huke", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_top5_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_unordered_top5_004",
+      "notes": "Comment explicitly says no order.",
+      "entries": [
+        {"player": "Scump", "rank": 3},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ZooMaa", "rank": 3},
+        {"player": "Huke", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_unordered_top5_005",
+      "notes": "Comment says no particular order.",
+      "entries": [
+        {"player": "FormaL", "rank": 3},
+        {"player": "Scump", "rank": 3},
+        {"player": "ZooMaa", "rank": 3},
+        {"player": "Clayster", "rank": 3},
+        {"player": "Huke", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "aw_2021_top5_006",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "Huke", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top3_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top3_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top2_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top3_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Clayster", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top5_005",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Clayster", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Huke", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_group_006",
+      "entries": [
+        {"player": "Scump", "rank": 1.5},
+        {"player": "Clayster", "rank": 1.5},
+        {"player": "FormaL", "rank": 3},
+        {"player": "ZooMaa", "rank": 4.5},
+        {"player": "SlasheR", "rank": 4.5}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_top3_007",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Huke", "rank": 2},
+        {"player": "Clayster", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_player_008",
+      "entries": [
+        {"player": "ZooMaa", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_player_009",
+      "entries": [
+        {"player": "Huke", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "aw_reddit_2020_best_player_thread",
+      "ballot_id": "aw_2020_best_tied_010",
+      "entries": [
+        {"player": "Karma", "rank": 1.5},
+        {"player": "Scump", "rank": 1.5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_top10_001",
+      "notes": "OP listed an ordered top five, then named the remaining top ten as an unordered group.",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Apathy", "rank": 5},
+        {"player": "Bance", "rank": 8},
+        {"player": "Faccento", "rank": 8},
+        {"player": "Nagafen", "rank": 8},
+        {"player": "Octane", "rank": 8},
+        {"player": "Classic", "rank": 8}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_unordered_top10_002",
+      "notes": "Comment states no order.",
+      "entries": [
+        {"player": "FormaL", "rank": 5.5},
+        {"player": "Scump", "rank": 5.5},
+        {"player": "Crimsix", "rank": 5.5},
+        {"player": "John", "rank": 5.5},
+        {"player": "SlasheR", "rank": 5.5},
+        {"player": "Apathy", "rank": 5.5},
+        {"player": "JKap", "rank": 5.5},
+        {"player": "Slacked", "rank": 5.5},
+        {"player": "Classic", "rank": 5.5},
+        {"player": "Octane", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_top10_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Crimsix", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Karma", "rank": 4},
+        {"player": "SlasheR", "rank": 5},
+        {"player": "John", "rank": 6},
+        {"player": "Apathy", "rank": 7},
+        {"player": "Nagafen", "rank": 8},
+        {"player": "Octane", "rank": 9},
+        {"player": "Classic", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_top10_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Crimsix", "rank": 5},
+        {"player": "Apathy", "rank": 6},
+        {"player": "AquA", "rank": 7},
+        {"player": "Octane", "rank": 8},
+        {"player": "Bance", "rank": 9},
+        {"player": "Slacked", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_top5_005",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Apathy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top10_thread",
+      "ballot_id": "bo3_2021_unordered_top10_006",
+      "notes": "Comment was a loose unordered list; the final 'Kap or Slacked' ambiguity is omitted rather than forcing either player.",
+      "entries": [
+        {"player": "Scump", "rank": 5},
+        {"player": "FormaL", "rank": 5},
+        {"player": "SlasheR", "rank": 5},
+        {"player": "John", "rank": 5},
+        {"player": "Apathy", "rank": 5},
+        {"player": "Crimsix", "rank": 5},
+        {"player": "AquA", "rank": 5},
+        {"player": "Octane", "rank": 5},
+        {"player": "Classic", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "bo3_2017_top5_001",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Octane", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "bo3_2017_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Crimsix", "rank": 3},
+        {"player": "Apathy", "rank": 4},
+        {"player": "Slacked", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "bo3_2017_top5_003",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "John", "rank": 4},
+        {"player": "Slacked", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "bo3_2017_top5_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "John", "rank": 2},
+        {"player": "Apathy", "rank": 3},
+        {"player": "FormaL", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "bo3_2017_top5_005",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Slacked", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo3_2020_top5_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "AquA", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo3_2020_top5_002",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Apathy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo3_2020_top5_003",
+      "notes": "Comment explicitly tied FormaL and Scump.",
+      "entries": [
+        {"player": "FormaL", "rank": 1.5},
+        {"player": "Scump", "rank": 1.5},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Bance", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "bo3_2020_top5_004",
+      "entries": [
+        {"player": "John", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Apathy", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top5_each_game_thread",
+      "ballot_id": "bo3_2021_each_game_top5_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "AquA", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top5_each_game_thread",
+      "ballot_id": "bo3_2021_each_game_unordered_top5_002",
+      "notes": "Comment says no order.",
+      "entries": [
+        {"player": "FormaL", "rank": 3},
+        {"player": "Scump", "rank": 3},
+        {"player": "John", "rank": 3},
+        {"player": "Apathy", "rank": 3},
+        {"player": "SlasheR", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top5_each_game_thread",
+      "ballot_id": "bo3_2021_each_game_top5_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "Apathy", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "bo3_reddit_2021_top5_each_game_thread",
+      "ballot_id": "bo3_2021_each_game_top4_004",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "John", "rank": 3},
+        {"player": "SlasheR", "rank": 4}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_001",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Zer0", "rank": 4},
+        {"player": "Gunless", "rank": 5},
+        {"player": "Classic", "rank": 6},
+        {"player": "Arcitys", "rank": 7},
+        {"player": "Crimsix", "rank": 8},
+        {"player": "Dqvee", "rank": 9},
+        {"player": "Clayster", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top9_002",
+      "notes": "Original list named nine players and could not decide between Saints and Prestinni for tenth; the ambiguous tenth slot is omitted.",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Zer0", "rank": 4},
+        {"player": "Classic", "rank": 5},
+        {"player": "Gunless", "rank": 6},
+        {"player": "Dqvee", "rank": 7},
+        {"player": "Arcitys", "rank": 8},
+        {"player": "Bance", "rank": 9}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_003",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "FormaL", "rank": 3},
+        {"player": "Classic", "rank": 4},
+        {"player": "Gunless", "rank": 5},
+        {"player": "Zer0", "rank": 6},
+        {"player": "Crimsix", "rank": 7},
+        {"player": "Saints", "rank": 8},
+        {"player": "Bance", "rank": 9},
+        {"player": "Arcitys", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_004",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Gunless", "rank": 4},
+        {"player": "Classic", "rank": 5},
+        {"player": "Zer0", "rank": 6},
+        {"player": "Bance", "rank": 7},
+        {"player": "Dqvee", "rank": 8},
+        {"player": "SlasheR", "rank": 9},
+        {"player": "Crimsix", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_005",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Arcitys", "rank": 4},
+        {"player": "Zer0", "rank": 5},
+        {"player": "Gunless", "rank": 6},
+        {"player": "Classic", "rank": 7},
+        {"player": "Crimsix", "rank": 8},
+        {"player": "Dqvee", "rank": 9},
+        {"player": "SlasheR", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_006",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Arcitys", "rank": 4},
+        {"player": "Gunless", "rank": 5},
+        {"player": "Crimsix", "rank": 6},
+        {"player": "Classic", "rank": 7},
+        {"player": "Zer0", "rank": 8},
+        {"player": "Enable", "rank": 9},
+        {"player": "Dqvee", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_007",
+      "entries": [
+        {"player": "Octane", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Zer0", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "Gunless", "rank": 5},
+        {"player": "Classic", "rank": 6},
+        {"player": "Bance", "rank": 7},
+        {"player": "Arcitys", "rank": 8},
+        {"player": "Dqvee", "rank": 9},
+        {"player": "Prestinni", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_top10_008",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Classic", "rank": 4},
+        {"player": "Arcitys", "rank": 5},
+        {"player": "Gunless", "rank": 6},
+        {"player": "Crimsix", "rank": 7},
+        {"player": "Bance", "rank": 8},
+        {"player": "Dqvee", "rank": 9},
+        {"player": "Saints", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_unordered_009",
+      "notes": "Comment explicitly says no particular order.",
+      "entries": [
+        {"player": "FormaL", "rank": 5.5},
+        {"player": "Scump", "rank": 5.5},
+        {"player": "Clayster", "rank": 5.5},
+        {"player": "SlasheR", "rank": 5.5},
+        {"player": "Dqvee", "rank": 5.5},
+        {"player": "Octane", "rank": 5.5},
+        {"player": "Classic", "rank": 5.5},
+        {"player": "Bance", "rank": 5.5},
+        {"player": "Zer0", "rank": 5.5},
+        {"player": "Arcitys", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_heading_into_champs_top10_thread",
+      "ballot_id": "iw_2017_champs_unordered_010",
+      "notes": "Comment explicitly says no order.",
+      "entries": [
+        {"player": "FormaL", "rank": 5.5},
+        {"player": "Karma", "rank": 5.5},
+        {"player": "Scump", "rank": 5.5},
+        {"player": "Crimsix", "rank": 5.5},
+        {"player": "Gunless", "rank": 5.5},
+        {"player": "Attach", "rank": 5.5},
+        {"player": "Clayster", "rank": 5.5},
+        {"player": "Octane", "rank": 5.5},
+        {"player": "Classic", "rank": 5.5},
+        {"player": "Bance", "rank": 5.5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "iw_2017_midseason_top5_001",
+      "notes": "Original label says IW ATM.",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Zer0", "rank": 4},
+        {"player": "Scump", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "iw_2017_midseason_top5_002",
+      "entries": [
+        {"player": "FormaL", "rank": 1.5},
+        {"player": "Scump", "rank": 1.5},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Slacked", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "iw_2017_midseason_top5_003",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Gunless", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "iw_2017_midseason_top5_004",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Gunless", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2017_top5_each_cod_thread",
+      "ballot_id": "iw_2017_midseason_top5_005",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Arcitys", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "iw_2020_top5_001",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Scump", "rank": 3},
+        {"player": "Octane", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "iw_2020_top5_002",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Karma", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "Classic", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "iw_2020_top5_003",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "Karma", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_001",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Gunless", "rank": 4},
+        {"player": "Classic", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_002",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Octane", "rank": 4},
+        {"player": "Zer0", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_003",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Classic", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "Octane", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_004",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Octane", "rank": 4},
+        {"player": "SlasheR", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_005",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Octane", "rank": 2},
+        {"player": "Zer0", "rank": 3},
+        {"player": "Scump", "rank": 4},
+        {"player": "Gunless", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_006",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Octane", "rank": 3},
+        {"player": "Classic", "rank": 4},
+        {"player": "Gunless", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_top5_007",
+      "entries": [
+        {"player": "Scump", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Arcitys", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_unordered_top4_008",
+      "notes": "Comment says lists are not in any particular order and names only four IW players.",
+      "entries": [
+        {"player": "FormaL", "rank": 2.5},
+        {"player": "Gunless", "rank": 2.5},
+        {"player": "Arcitys", "rank": 2.5},
+        {"player": "Scump", "rank": 2.5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2021_top5_each_game_thread",
+      "ballot_id": "iw_2021_reply_top5_009",
+      "notes": "Reply correcting an IW top five.",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Octane", "rank": 4},
+        {"player": "Classic", "rank": 4.5},
+        {"player": "Zer0", "rank": 4.5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_player_001",
+      "entries": [
+        {"player": "FormaL", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_tied_002",
+      "entries": [
+        {"player": "Gunless", "rank": 1.5},
+        {"player": "FormaL", "rank": 1.5}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_stretch_003",
+      "entries": [
+        {"player": "Gunless", "rank": 1},
+        {"player": "FormaL", "rank": 2},
+        {"player": "Zer0", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_player_004",
+      "entries": [
+        {"player": "FormaL", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_top3_005",
+      "entries": [
+        {"player": "FormaL", "rank": 1},
+        {"player": "Scump", "rank": 2},
+        {"player": "SlasheR", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "iw_reddit_2020_best_player_thread",
+      "ballot_id": "iw_2020_best_player_006",
+      "entries": [
+        {"player": "Gunless", "rank": 1}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "ballot_id": "ww2_2018_top10_001",
+      "notes": "OP edited the tenth slot to unknown; only the nine explicit ranked players are scored.",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "John", "rank": 5},
+        {"player": "ZooMaa", "rank": 6},
+        {"player": "Loony", "rank": 7},
+        {"player": "Rated", "rank": 8},
+        {"player": "Methodz", "rank": 9}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "ballot_id": "ww2_2018_top10_002",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "SlasheR", "rank": 2},
+        {"player": "Gunless", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "Fero", "rank": 5},
+        {"player": "Methodz", "rank": 6},
+        {"player": "John", "rank": 7},
+        {"player": "TJHaLy", "rank": 8.5},
+        {"player": "Loony", "rank": 8.5},
+        {"player": "ZooMaa", "rank": 9},
+        {"player": "Arcitys", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "ballot_id": "ww2_2018_top10_003",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "John", "rank": 4},
+        {"player": "Octane", "rank": 5},
+        {"player": "Rated", "rank": 6},
+        {"player": "Accuracy", "rank": 7},
+        {"player": "Arcitys", "rank": 8},
+        {"player": "Huke", "rank": 9},
+        {"player": "Methodz", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "ballot_id": "ww2_2018_top10_004",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "Accuracy", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "ZooMaa", "rank": 5},
+        {"player": "Methodz", "rank": 6},
+        {"player": "John", "rank": 7},
+        {"player": "Skrapz", "rank": 8},
+        {"player": "TJHaLy", "rank": 9},
+        {"player": "Attach", "rank": 10}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top10_thread",
+      "ballot_id": "ww2_2018_unordered_top5_005",
+      "notes": "Comment explicitly says no particular order.",
+      "entries": [
+        {"player": "Crimsix", "rank": 3},
+        {"player": "Gunless", "rank": 3},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Kenny", "rank": 3},
+        {"player": "Octane", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_001",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "ZooMaa", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_unordered_top5_002",
+      "notes": "Comment explicitly says no order.",
+      "entries": [
+        {"player": "Kenny", "rank": 3},
+        {"player": "Gunless", "rank": 3},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Methodz", "rank": 3},
+        {"player": "Accuracy", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_003",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "SlasheR", "rank": 2},
+        {"player": "Accuracy", "rank": 3},
+        {"player": "Gunless", "rank": 4},
+        {"player": "Replays", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_unordered_top5_004",
+      "notes": "Comment explicitly says no order.",
+      "entries": [
+        {"player": "Kenny", "rank": 3},
+        {"player": "Accuracy", "rank": 3},
+        {"player": "Gunless", "rank": 3},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "ZooMaa", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_005",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "John", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_006",
+      "entries": [
+        {"player": "Gunless", "rank": 1},
+        {"player": "Kenny", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "John", "rank": 4},
+        {"player": "Dashy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_007",
+      "entries": [
+        {"player": "Gunless", "rank": 1},
+        {"player": "Kenny", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "John", "rank": 4},
+        {"player": "Accuracy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_008",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "Arcitys", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_top5_009",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "Assault", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2018_top5_thread",
+      "ballot_id": "ww2_2018_unordered_top5_010",
+      "notes": "Comment explicitly says in no order.",
+      "entries": [
+        {"player": "Crimsix", "rank": 3},
+        {"player": "Kenny", "rank": 3},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Gunless", "rank": 3},
+        {"player": "John", "rank": 3}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ww2_2020_top5_001",
+      "entries": [
+        {"player": "Gunless", "rank": 1},
+        {"player": "Kenny", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "Accuracy", "rank": 4},
+        {"player": "TJHaLy", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ww2_2020_top5_002",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "SlasheR", "rank": 3},
+        {"player": "ZooMaa", "rank": 4},
+        {"player": "Octane", "rank": 5}
+      ]
+    },
+    {
+      "source_id": "ww2_reddit_2020_top5_by_cod_thread",
+      "ballot_id": "ww2_2020_top5_003",
+      "notes": "Comment edited Rated out for Accuracy after remembering him.",
+      "entries": [
+        {"player": "Kenny", "rank": 1},
+        {"player": "Gunless", "rank": 2},
+        {"player": "ZooMaa", "rank": 3},
+        {"player": "SlasheR", "rank": 4},
+        {"player": "Accuracy", "rank": 5}
+      ]
+    }
+  ]
+}

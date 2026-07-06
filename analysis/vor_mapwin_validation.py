@@ -7,6 +7,7 @@ data and does not use role as a replacement-level bucket.
 import html
 import json
 import math
+import os
 import re
 import sys
 import time
@@ -94,7 +95,9 @@ def corr(xs, ys):
 
 def target_events():
     rows = json.loads((ROOT / "player_stats_participants.events.json").read_text())
-    return [row for row in rows if row.get("game") in GAMES]
+    fetch_games = os.environ.get("VOR_FETCH_GAMES")
+    games = {g.strip() for g in fetch_games.split(",")} if fetch_games else set(GAMES)
+    return [row for row in rows if row.get("game") in games]
 
 
 def query_params(event):

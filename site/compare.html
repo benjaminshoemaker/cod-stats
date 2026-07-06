@@ -75,8 +75,10 @@
       </div>
       <p class="small muted">Wins divided by majors entered in that title. Champs wins carry ◆.</p>
     </div>
-    <div class="scroll-x compare-table-wrap">
-      <table class="data compare-table" id="season-table"></table>
+    <div class="scroll-x compare-table-wrap" tabindex="0" role="region" aria-label="Player comparison season matrix">
+      <table class="data compare-table" id="season-table">
+        <caption class="sr-only">Season-by-season comparison matrix</caption>
+      </table>
     </div>
   </section>
 </main>
@@ -378,17 +380,18 @@ function renderSummary(){
     const vals = selected.map(n => m.value(n));
     const best = bestFor(m, vals);
     const cells = selected.map((n, i) => summaryCell(m, n, vals[i], vals, i, best != null && vals[i] === best && best > 0)).join('');
-    return `<tr><th>${esc(m.label)}</th>${cells}</tr>`;
+    return `<tr><th scope="row">${esc(m.label)}</th>${cells}</tr>`;
   }).join('');
-  summary.innerHTML = `<div class="scroll-x compare-summary-wrap"><table class="data compare-summary" style="--players:${selected.length}">
-    <thead><tr><th>Metric</th>${selected.map(n => `<th><a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a></th>`).join('')}</tr></thead>
+  summary.innerHTML = `<div ${scrollRegionAttrs('Player comparison summary table', 'compare-summary-wrap')}><table class="data compare-summary" style="--players:${selected.length}">
+    ${tableCaption('Player comparison metric summary')}
+    <thead><tr><th scope="col">Metric</th>${selected.map(n => `<th scope="col"><a href="player.html?p=${encodeURIComponent(n)}">${esc(n)}</a></th>`).join('')}</tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
 }
 
 function renderTable(){
   const games = D.meta.seasonOrder.filter(g => selected.some(n => seasonValue(n, g).entered > 0 || seasonFor(n, g)));
-  const head = `<thead><tr><th>Season</th>${selected.map(n => `<th>${esc(n)}</th>`).join('')}</tr></thead>`;
+  const head = `<thead><tr><th scope="col">Season</th>${selected.map(n => `<th scope="col">${esc(n)}</th>`).join('')}</tr></thead>`;
   const rows = games.map(g => {
     const vals = selected.map(n => seasonValue(n, g));
     const bestShare = Math.max(...vals.map(v => v.share));
@@ -398,12 +401,12 @@ function renderTable(){
       return `<td class="${v.entered ? 'season-heat' : 'empty'}" style="--cmp-color:${color};--heat:${Math.round(8 + v.share * 34)}%">${seasonCell(n, g, bestShare, i)}</td>`;
     }).join('');
     return `<tr>
-      <td>${gameLink(g)} ${seasonTag(g)}</td>
+      <th scope="row">${gameLink(g)} ${seasonTag(g)}</th>
       ${cells}
     </tr>`;
   }).join('');
   seasonTable.style.setProperty('--players', selected.length);
-  seasonTable.innerHTML = `${head}<tbody>${rows || '<tr><td class="small faint">No participation data for this comparison.</td></tr>'}</tbody>`;
+  seasonTable.innerHTML = `${tableCaption('Season-by-season comparison matrix')}${head}<tbody>${rows || '<tr><td colspan="'+(selected.length+1)+'" class="small faint">No participation data for this comparison.</td></tr>'}</tbody>`;
 }
 
 function renderSuggestions(){

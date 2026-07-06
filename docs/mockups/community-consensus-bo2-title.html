@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Black Ops 2 Community Consensus Mockup</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<style>
+.bo2-wrap{max-width:1340px}
+.topline{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-5);margin-bottom:var(--space-4)}
+.status-row{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-3)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:var(--space-4);align-items:start}
+.consensus-table th,.consensus-table td{vertical-align:middle}
+.player-cell strong{display:block}
+.sub{display:block;color:var(--faint);font-size:var(--text-xs);font-weight:400}
+.score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
+.contribution{font-family:var(--mono);font-weight:800;font-size:var(--text-lg);white-space:nowrap}
+.weight-breakdown{margin-top:var(--space-2);color:var(--muted);font-size:var(--text-xs)}
+.calc-total{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);border:1px solid var(--accent-line);background:var(--accent-soft);color:var(--accent-ink);border-radius:var(--radius-md);padding:var(--space-3);margin-top:var(--space-3)}
+.calc-total strong{font-family:var(--mono);font-size:var(--text-xl)}
+.mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-2);margin:var(--space-3) 0}
+.mini{border:1px solid var(--line);border-radius:var(--radius-sm);background:#fbfcfe;padding:var(--space-2)}
+.mini .k{font-size:var(--text-xs);font-weight:700;color:var(--faint);letter-spacing:.04em;text-transform:uppercase}
+.mini .v{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
+.sections{display:grid;gap:var(--space-4);margin-top:var(--space-4)}
+.method-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-3)}
+.step{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;padding:var(--space-3)}
+.step .k{display:block;font-size:var(--text-xs);font-weight:700;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;margin-bottom:var(--space-1)}
+.source-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3)}
+.source-meta{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-2)}
+.caveat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3)}
+.caveat{border-left:3px solid var(--line);padding-left:var(--space-3)}
+@media(max-width:900px){
+  .topline,.layout{display:block}
+  .panel-shell{margin-bottom:var(--space-4)}
+  .consensus-table{min-width:680px}
+  .mini-grid,.method-steps,.caveat-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="inner">
+  <a class="brand" href="../../site/index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
+  <nav class="nav"><a href="../../site/index.html">Leaderboard</a><a href="../../site/games.html">Seasons</a><a class="active" href="community-consensus-bo2-title.html">Community Consensus</a><a href="../../site/methodology.html">Methodology</a></nav>
+</div></header>
+
+<main class="wrap wide bo2-wrap" id="root" tabindex="-1">
+  <div class="topline">
+    <div>
+      <h1>Black Ops 2 Community Consensus</h1>
+      <p class="lede">A source-weighted compilation of available community rankings for Black Ops 2. This is not an author ranking.</p>
+      <div class="status-row">
+        <span class="pill tag">Inventory: expanded v1</span>
+        <span class="pill warn">No large end-of-title aggregate survey found</span>
+        <span class="pill flat">5 scored sources</span>
+        <span class="pill flat">7 reviewed not scored</span>
+      </div>
+    </div>
+    <div class="controls" style="margin:0">
+      <button type="button" class="sharebtn">Share BO2 view</button>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Interpret carefully:</strong> BO2 is currently thread-driven. The source inventory has several ranked community threads, but not a clean, large, contemporaneous end-of-title survey. Missing evidence should not be read as zero community support.</div>
+
+  <div class="layout">
+    <section class="panel-shell">
+      <div class="panel-head">
+        <div><h2>Consensus Ranking</h2><p class="small muted">Event wins are shown as a sanity check only. They do not affect the consensus score.</p></div>
+        <span class="pill tag">Top 15 retained</span>
+      </div>
+      <div class="panel-body scroll-x">
+        <p class="scrollhint small muted">Scroll sideways to see confidence, source count, and event wins.</p>
+        <table class="data consensus-table">
+          <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Community score</th><th>Conf.</th><th class="n">Sources</th><th class="context-band n">Event wins</th></tr></thead>
+          <tbody>
+            <tr class="selected"><td class="n">1</td><td class="player-cell"><strong>Karma</strong><span class="sub">selected trace · close race with #2</span></td><td class="n score">5.421</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">4 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">2</td><td class="player-cell"><strong>Crimsix</strong><span class="sub">close race with #1</span></td><td class="n score">5.276</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">7 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">3</td><td class="player-cell"><strong>Clayster</strong></td><td class="n score">3.720</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">6 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">4</td><td class="player-cell"><strong>ACHES</strong><span class="sub">close race with #5</span></td><td class="n score">2.944</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">7 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">5</td><td class="player-cell"><strong>Parasite</strong><span class="sub">close race with #4</span></td><td class="n score">2.913</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">5 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">6</td><td><strong>MiRx</strong></td><td class="n score">1.188</td><td><span class="pill up">high</span></td><td class="n">5</td><td class="context-band n">4 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">7</td><td><strong>TeeP</strong></td><td class="n score">1.100</td><td><span class="pill flat">medium</span></td><td class="n">3</td><td class="context-band n">7 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">8</td><td><strong>Scump</strong></td><td class="n score">0.921</td><td><span class="pill flat">medium</span></td><td class="n">4</td><td class="context-band n">1 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">9</td><td><strong>KiLLa</strong></td><td class="n score">0.691</td><td><span class="pill flat">medium</span></td><td class="n">3</td><td class="context-band n">4 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">10</td><td><strong>JKap</strong></td><td class="n score">0.469</td><td><span class="pill flat">medium</span></td><td class="n">3</td><td class="context-band n">0 <span class="sub">not scored</span></td></tr>
+            <tr><td class="n">11</td><td><strong>ProoFy</strong></td><td class="n score">0.409</td><td><span class="pill flat">medium</span></td><td class="n">3</td><td class="context-band n">0 <span class="sub">not scored</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="panel-shell">
+      <div class="panel-head">
+        <div><h2>Karma Trace</h2><p class="small muted">How the selected player's BO2 score is built.</p></div>
+        <span class="pill tag">Rank #1</span>
+      </div>
+      <div class="panel-body">
+        <div class="mini-grid">
+          <div class="mini"><div class="k">Score</div><div class="v">5.421</div></div>
+          <div class="mini"><div class="k">Sources</div><div class="v">5</div></div>
+          <div class="mini"><div class="k">Gap to #2</div><div class="v">0.145</div></div>
+          <div class="mini"><div class="k">Wins</div><div class="v">4 <span class="sub">not scored</span></div></div>
+        </div>
+        <p class="small muted">Each contribution is the player's comment-weighted average rank-points from that source multiplied by the source's final weight.</p>
+        <span class="formula">contribution = weighted_avg_rank_points × final_source_weight</span>
+        <p class="small muted" style="margin-top:var(--space-2)">For thread clusters, ballot comment scores only reweight ballots inside the source. <span class="formula">final_source_weight = sample_weight × reddit_score_multiplier × timing_multiplier</span>.</p>
+        <div class="calc-list">
+          <div class="calc-row">
+            <div class="calc-row-head"><a class="calc-title" href="community-consensus-bo2-source-detail.html">Top 10 Players in BO2</a><span class="contribution">1.363</span></div>
+            <span class="sub">thread cluster · 8 ballots · retrospective</span>
+            <div class="calc-math"><span class="math-chip"><span class="k">Weighted avg pts</span><span class="v">0.918</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Final weight</span><span class="v">1.485</span></span><span class="math-op">=</span><span class="math-chip"><span class="k">Contribution</span><span class="v">1.363</span></span></div>
+            <div class="weight-breakdown">Weight: sample sqrt(8)/2 = 1.414 × Reddit score 7 = 1.05 × retrospective timing = 1.00. Comment score snapshots redistribute the 8 ballots inside the source.</div>
+            <p class="small" style="margin-top:var(--space-2)"><a href="community-consensus-bo2-source-detail.html">Open exact calculation with all 8 ballots →</a></p>
+          </div>
+          <div class="calc-row">
+            <div class="calc-row-head"><a class="calc-title" href="https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/">Top 5 Pros from each CoD</a><span class="contribution">0.953</span></div>
+            <span class="sub">thread cluster · 3 ballots · retrospective</span>
+            <div class="calc-math"><span class="math-chip"><span class="k">Avg pts</span><span class="v">1.000</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Final weight</span><span class="v">0.953</span></span><span class="math-op">=</span><span class="math-chip"><span class="k">Contribution</span><span class="v">0.953</span></span></div>
+            <div class="weight-breakdown">Weight: sample sqrt(3)/2 = 0.866 × Reddit score 15 = 1.10 × retrospective timing = 1.00.</div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-row-head"><a class="calc-title" href="https://www.reddit.com/r/CoDCompetitive/comments/y6esqm/curious_for_those_who_watched_back_then_who_were/">Watched back then top 10</a><span class="contribution">1.298</span></div>
+            <span class="sub">thread cluster · 6 ballots · retrospective</span>
+            <div class="calc-math"><span class="math-chip"><span class="k">Avg pts</span><span class="v">0.883</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Final weight</span><span class="v">1.470</span></span><span class="math-op">=</span><span class="math-chip"><span class="k">Contribution</span><span class="v">1.298</span></span></div>
+            <div class="weight-breakdown">Weight: sample sqrt(6)/2 = 1.225 × Reddit score 28 = 1.20 × retrospective timing = 1.00.</div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-row-head"><a class="calc-title" href="https://www.reddit.com/r/CoDCompetitive/comments/299gyj/pro_vote_for_best_players_in_black_ops_ii/">Pro Vote request thread</a><span class="contribution">1.257</span></div>
+            <span class="sub">thread cluster · 6 ballots · near-contemporaneous</span>
+            <div class="calc-math"><span class="math-chip"><span class="k">Avg pts</span><span class="v">0.850</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Final weight</span><span class="v">1.479</span></span><span class="math-op">=</span><span class="math-chip"><span class="k">Contribution</span><span class="v">1.257</span></span></div>
+            <div class="weight-breakdown">Weight: sample sqrt(6)/2 = 1.225 × Reddit score 5 = 1.05 × near-contemporaneous timing = 1.15.</div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-row-head"><a class="calc-title" href="https://www.reddit.com/r/CoDCompetitive/comments/hswjc1/detailed_top_bo2_players_with_the_addition_of/">Detailed Top BO2 Players</a><span class="contribution">0.550</span></div>
+            <span class="sub">single community ballot · retrospective</span>
+            <div class="calc-math"><span class="math-chip"><span class="k">Avg pts</span><span class="v">1.000</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Final weight</span><span class="v">0.550</span></span><span class="math-op">=</span><span class="math-chip"><span class="k">Contribution</span><span class="v">0.550</span></span></div>
+            <div class="weight-breakdown">Weight: single-ballot base = 0.500 × Reddit score 11 = 1.10 × retrospective timing = 1.00.</div>
+          </div>
+        </div>
+        <div class="calc-total"><span>Karma community score</span><strong>5.421</strong></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="sections">
+    <section class="panel-shell">
+      <div class="panel-head"><div><h2>Computation, Compact Version</h2><p class="small muted">Keep the full methodology elsewhere; this page needs just enough math to audit the BO2 table.</p></div></div>
+      <div class="panel-body">
+        <div class="method-steps">
+          <div class="step"><span class="k">1. Ballot rank</span><p>Convert each ranked ballot to normalized points.</p><span class="formula">(size + 1 - rank) / size</span></div>
+          <div class="step"><span class="k">2. Thread average</span><p>Average ballots inside one thread before weighting.</p></div>
+          <div class="step"><span class="k">3. Source weight</span><p>Apply source kind, ballot count, Reddit score, and timing.</p></div>
+          <div class="step"><span class="k">4. Player total</span><p>Sum each player's source contributions and rank by total.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-shell">
+      <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted">All scored BO2 sources and reviewed-but-not-scored leads should be visible here.</p></div></div>
+      <div class="panel-body">
+        <div class="surface-list">
+          <div class="surface-row"><div class="source-top"><strong><a href="https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/">Top 10 Players in BO2</a></strong><span class="pill up">scored</span></div><div class="source-meta"><span class="pill flat">thread cluster</span><span class="pill flat">8 ballots</span><span class="pill flat">retrospective</span><span class="pill flat">weight 1.485</span></div></div>
+          <div class="surface-row"><div class="source-top"><strong><a href="https://www.reddit.com/r/CoDCompetitive/comments/y6esqm/curious_for_those_who_watched_back_then_who_were/">Curious for those who watched back then...</a></strong><span class="pill up">scored</span></div><div class="source-meta"><span class="pill flat">thread cluster</span><span class="pill flat">6 ballots</span><span class="pill flat">retrospective</span><span class="pill flat">weight 1.470</span></div></div>
+          <div class="surface-row"><div class="source-top"><strong><a href="https://www.reddit.com/r/CoDCompetitive/comments/299gyj/pro_vote_for_best_players_in_black_ops_ii/">Pro Vote for Best Players in Black Ops II?</a></strong><span class="pill up">scored</span></div><div class="source-meta"><span class="pill flat">thread cluster</span><span class="pill flat">6 ballots</span><span class="pill flat">near-contemporaneous</span><span class="pill flat">weight 1.479</span></div></div>
+          <div class="surface-row"><div class="source-top"><strong>Crimsix vs Karma, Clayster threads, Best Player each CoD threads</strong><span class="pill warn">reviewed not scored</span></div><p class="small muted">Relevant debate threads without clean extractable ranked ballots. Keep them in the ledger so users know they were checked.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-shell">
+      <div class="panel-head"><div><h2>Coverage Caveats</h2><p class="small muted">This section prevents the table from looking more certain than the sources justify.</p></div></div>
+      <div class="panel-body caveat-grid">
+        <div class="caveat"><strong>No aggregate survey found</strong><p class="small muted">Unlike later titles, BO2 does not currently have a large annual Top 30-style survey in the inventory.</p></div>
+        <div class="caveat"><strong>Retrospective-heavy</strong><p class="small muted">Most scored sources were posted years later. One near-contemporaneous thread contributes but was not the missing pro vote result.</p></div>
+        <div class="caveat"><strong>Blanks are unknowns</strong><p class="small muted">A low or missing score does not mean no support existed; it means the current ranked-source inventory did not capture it.</p></div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

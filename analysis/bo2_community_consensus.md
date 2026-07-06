@@ -37,8 +37,25 @@ cluster handling below.
    #1 on a top-5 list earns 1.0, #5 earns 0.2.
 5. Ties receive the average rank. Example: `Parasite/Aches` listed at 4/5 gives
    each player rank 4.5.
-6. Average all ballot scores inside a thread to create that thread's base score.
-7. Apply a diminishing sample-size multiplier to the thread:
+6. When comment-level Reddit scores are available, use them as bounded
+   within-thread reception weights:
+
+   ```text
+   comment_reception_raw =
+     1.00 if comment_score is missing or 0
+     1 + 0.25 * log1p(score) / log1p(max_positive_score_in_thread) if score > 0
+     1 - 0.25 * log1p(abs(score)) / log1p(max_abs_negative_score_in_thread) if score < 0
+
+   comment_reception_weight =
+     comment_reception_raw / average(comment_reception_raw inside the thread)
+   ```
+
+   These weights are clamped to 0.75-1.25 before normalization. They redistribute
+   influence among ballots inside the same thread, but they do not increase the
+   thread's overall source weight.
+7. Average all ballot scores inside a thread, using comment reception weights
+   where available, to create that thread's base score.
+8. Apply a diminishing sample-size multiplier to the thread:
 
    ```text
    sample_multiplier = min(1.5, sqrt(ballot_count) / 2)
@@ -47,7 +64,7 @@ cluster handling below.
    This gives larger threads more weight without letting one large Reddit thread
    dominate the whole model. One ballot is worth 0.5x, four ballots are worth
    1.0x, nine ballots are worth 1.5x, and the multiplier is capped at 1.5x.
-8. Apply a weak Reddit-score multiplier from the thread/post score:
+9. Apply a weak Reddit-score multiplier from the thread/post score:
 
    | Reddit score | Multiplier |
    |---:|---:|
@@ -58,20 +75,20 @@ cluster handling below.
    | 50+ | 1.30 |
 
    Upvotes are intentionally weak. They can reflect agreement, but also timing,
-   visibility, humor, and thread dynamics. Comment-level scores should be used
-   in a future fully automated extractor when they are available for every
-   scored ballot; this manual pass uses the thread/post score consistently
-   because it is available for every scored source cluster.
-9. Sum weighted thread scores across sources.
+   visibility, humor, and thread dynamics.
+10. Apply the timing multiplier from
+   `analysis/community_consensus_methodology.md`. Near-contemporaneous sources
+   receive a modest 1.15x multiplier.
+11. Sum weighted thread scores across sources.
 
 ## Sources Scored
 
 | Source id | Source | Context | Ballots scored | Reddit score | Sample mult. | Upvote mult. | Final source mult. | Notes |
 |---|---|---:|---:|---:|---:|---:|---:|---|
-| `2016_top10_thread` | [Top 10 Players in BO2](https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/) | retrospective community thread | 8 | 7 | 1.414 | 1.05 | 1.485 | Main top-10 discussion with multiple explicit ranked lists. |
+| `2016_top10_thread` | [Top 10 Players in BO2](https://www.reddit.com/r/CoDCompetitive/comments/4wv0pk/top_10_players_in_bo2/) | retrospective community thread | 8 | 7 | 1.414 | 1.05 | 1.485 | Main top-10 discussion with multiple explicit ranked lists. Comment score snapshots were captured from old Reddit on 2026-07-06 and used only to reweight ballots inside this source. |
 | `2020_top5_thread` | [Who are Top 5 Pros players from each CoD since 2013](https://www.reddit.com/r/CoDCompetitive/comments/ix1uff/who_are_top_5_pros_players_from_each_cod_since/) | retrospective community thread | 3 | 15 | 0.866 | 1.10 | 0.953 | Multi-title top-5 thread; only BO2 entries used. |
 | `2022_top10_thread` | [Curious for those who watched back then, who were the top 10 players in BO2?](https://www.reddit.com/r/CoDCompetitive/comments/y6esqm/curious_for_those_who_watched_back_then_who_were/) | retrospective community thread | 6 | 28 | 1.225 | 1.20 | 1.470 | Includes ranked and one tiered/ordered approximation from the post body. |
-| `2014_pro_vote_thread` | [Pro Vote for Best Players in Black Ops II?](https://www.reddit.com/r/CoDCompetitive/comments/299gyj/pro_vote_for_best_players_in_black_ops_ii/) | near-contemporaneous community thread | 6 | 5 | 1.225 | 1.05 | 1.286 | The requested pro vote was not found; explicit fan top-5 comments were scored. |
+| `2014_pro_vote_thread` | [Pro Vote for Best Players in Black Ops II?](https://www.reddit.com/r/CoDCompetitive/comments/299gyj/pro_vote_for_best_players_in_black_ops_ii/) | near-contemporaneous community thread | 6 | 5 | 1.225 | 1.05 | 1.479 | The requested pro vote was not found; explicit fan top-5 comments were scored. Final multiplier includes 1.15x timing weight. |
 | `2020_detailed_top10_post` | [Detailed Top Bo2 Players](https://www.reddit.com/r/CoDCompetitive/comments/hswjc1/detailed_top_bo2_players_with_the_addition_of/) | retrospective community post | 1 | 11 | 0.500 | 1.10 | 0.550 | Single detailed top-10 post with explicit ranking. |
 
 ## Sources Reviewed But Not Scored
@@ -90,32 +107,32 @@ cluster handling below.
 
 | Player | 2016 thread | 2020 thread | 2022 thread | 2014 thread | Detailed post | Total |
 |---|---:|---:|---:|---:|---:|---:|
-| Karma | 1.374 | 0.953 | 1.298 | 1.093 | 0.550 | 5.267 |
-| Crimsix | 1.383 | 0.762 | 1.326 | 1.136 | 0.495 | 5.101 |
-| Clayster | 1.123 | 0.317 | 1.011 | 0.772 | 0.385 | 3.608 |
-| ACHES | 1.011 | 0.381 | 1.064 | 0.129 | 0.330 | 2.915 |
-| Parasite | 0.788 | 0.381 | 0.763 | 0.472 | 0.440 | 2.844 |
-| MiRx | 0.428 | 0.064 | 0.426 | 0.043 | 0.220 | 1.180 |
-| TeeP | 0.576 | 0.000 | 0.301 | 0.171 | 0.000 | 1.048 |
-| Scump | 0.241 | 0.000 | 0.619 | 0.043 | 0.055 | 0.957 |
-| KiLLa | 0.260 | 0.000 | 0.147 | 0.000 | 0.275 | 0.682 |
-| JKap | 0.242 | 0.000 | 0.073 | 0.000 | 0.165 | 0.481 |
-| ProoFy | 0.186 | 0.000 | 0.098 | 0.000 | 0.110 | 0.394 |
+| Karma | 1.363 | 0.953 | 1.298 | 1.257 | 0.550 | 5.421 |
+| Crimsix | 1.386 | 0.762 | 1.326 | 1.306 | 0.495 | 5.276 |
+| Clayster | 1.120 | 0.317 | 1.011 | 0.887 | 0.385 | 3.720 |
+| ACHES | 1.021 | 0.381 | 1.064 | 0.148 | 0.330 | 2.944 |
+| Parasite | 0.786 | 0.381 | 0.763 | 0.543 | 0.440 | 2.913 |
+| MiRx | 0.429 | 0.064 | 0.426 | 0.049 | 0.220 | 1.188 |
+| TeeP | 0.602 | 0.000 | 0.301 | 0.197 | 0.000 | 1.100 |
+| Scump | 0.197 | 0.000 | 0.619 | 0.049 | 0.055 | 0.921 |
+| KiLLa | 0.269 | 0.000 | 0.147 | 0.000 | 0.275 | 0.691 |
+| JKap | 0.231 | 0.000 | 0.073 | 0.000 | 0.165 | 0.469 |
+| ProoFy | 0.201 | 0.000 | 0.098 | 0.000 | 0.110 | 0.409 |
 
 ## Result
 
 | Rank | Player | Score | Interpretation |
 |---:|---|---:|---|
-| 1 | Karma | 5.267 | Most first-place support and the highest aggregate weighted score. |
-| 2 | Crimsix | 5.101 | Very close to Karma; best or second-best in nearly every scored source. |
-| 3 | Clayster | 3.608 | Clear third; consistently included near the top. |
-| 4 | ACHES | 2.915 | Very close with Parasite; stronger in the larger top-10 threads. |
-| 5 | Parasite | 2.844 | Very close with ACHES; stronger in several top-5-only lists. |
-| 6 | MiRx | 1.180 | Frequent back-half top-10 support. |
-| 7 | TeeP | 1.048 | Regularly present in the next tier after the consensus top five. |
-| 8 | Scump | 0.957 | Clear top-10 community support, but divisive and outside the top-five consensus. |
-| 9 | KiLLa | 0.682 | Back-end top-10 support. |
-| 10 | JKap | 0.481 | Narrowly ahead of ProoFy for the last slot. |
+| 1 | Karma | 5.421 | Most first-place support and the highest aggregate weighted score. |
+| 2 | Crimsix | 5.276 | Very close to Karma; best or second-best in nearly every scored source. |
+| 3 | Clayster | 3.720 | Clear third; consistently included near the top. |
+| 4 | ACHES | 2.944 | Very close with Parasite; stronger in the larger top-10 threads. |
+| 5 | Parasite | 2.913 | Very close with ACHES; stronger in several top-5-only lists. |
+| 6 | MiRx | 1.188 | Frequent back-half top-10 support. |
+| 7 | TeeP | 1.100 | Regularly present in the next tier after the consensus top five. |
+| 8 | Scump | 0.921 | Clear top-10 community support, but divisive and outside the top-five consensus. |
+| 9 | KiLLa | 0.691 | Back-end top-10 support. |
+| 10 | JKap | 0.469 | Narrowly ahead of ProoFy for the last slot. |
 
 ## Takeaways
 

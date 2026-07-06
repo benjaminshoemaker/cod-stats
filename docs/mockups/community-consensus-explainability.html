@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus Page Mockup</title>
+<link rel="stylesheet" href="../../site/assets/style.css">
+<style>
+.mock-wrap{max-width:1280px}
+.mock-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-5);margin-bottom:var(--space-4)}
+.mock-view{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--panel-2)}
+.mock-view button{min-height:36px;border:0;border-radius:var(--radius-sm);background:transparent;color:var(--muted);padding:0 var(--space-3);font:inherit;font-weight:700;cursor:pointer}
+.mock-view button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+.scope-note{border:1px solid var(--accent-soft);background:#eef5ff;color:#173b75;border-radius:var(--radius-md);padding:var(--space-3);margin:var(--space-3) 0}
+.scope-note strong{color:#102a56}
+.consensus-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:var(--space-4);align-items:start}
+.mock-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.mock-card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);padding:var(--space-4);border-bottom:1px solid var(--line)}
+.mock-card-b{padding:var(--space-4)}
+.stat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-3);margin:var(--space-4) 0}
+.stat-tile{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;padding:var(--space-3)}
+.stat-tile .k{font-size:var(--text-xs);font-weight:700;color:var(--faint);letter-spacing:.05em;text-transform:uppercase}
+.stat-tile .v{font-size:var(--text-2xl);font-weight:800;line-height:1.1}
+.mock-table{width:100%;border-collapse:collapse}
+.mock-table th,.mock-table td{padding:var(--space-2);border-bottom:1px solid var(--line);vertical-align:middle;text-align:left}
+.mock-table th{font-size:var(--text-xs);color:var(--faint);letter-spacing:.04em;text-transform:uppercase;background:#fbfcfe}
+.mock-table .n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.mock-table tr.selected td{background:#f8fbff}
+.player-cell{display:flex;align-items:center;gap:var(--space-2);min-width:150px}
+.avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#1f2937;color:#fff;font-size:var(--text-xs);font-weight:800;flex:0 0 auto}
+.sub{display:block;color:var(--faint);font-size:var(--text-xs)}
+.trace-btn{font:inherit;font-size:var(--text-sm);font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid #cfe0ff;border-radius:var(--radius-sm);padding:var(--space-1) var(--space-2);cursor:pointer}
+.source-row{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:var(--space-3);align-items:center;border-bottom:1px solid var(--line);padding:var(--space-2) 0}
+.source-row:last-child{border-bottom:0}
+.formula{font-family:var(--mono);font-size:var(--text-sm);background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-2);display:inline-block}
+.calc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-2);margin-top:var(--space-3)}
+.calc-cell{border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-2);background:#fbfcfe}
+.calc-cell .label{font-size:var(--text-xs);font-weight:700;color:var(--faint);letter-spacing:.05em;text-transform:uppercase}
+.calc-cell .value{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
+.page-links{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-3)}
+.mock-tabs{display:flex;gap:var(--space-2);flex-wrap:wrap;margin:var(--space-3) 0;border-bottom:1px solid var(--line)}
+.mock-tabs a{padding:var(--space-2) var(--space-3);color:var(--muted);font-weight:700;border-radius:var(--radius-sm) var(--radius-sm) 0 0}
+.mock-tabs a.active{color:var(--ink);background:#fff;border:1px solid var(--line);border-bottom-color:#fff;margin-bottom:-1px}
+@media(max-width:860px){
+  .mock-top,.consensus-grid{display:block}
+  .mock-view{margin-top:var(--space-3);max-width:100%;overflow:auto}
+  .stat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mock-scroll{overflow-x:auto}
+  .mock-table{min-width:900px}
+}
+</style>
+</head>
+<body>
+<header class="site-head"><div class="inner">
+  <a class="brand" href="#">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
+  <nav class="nav">
+    <a href="#">Leaderboard</a><a href="#">Compare</a>
+    <div class="navdrop active"><button class="navdrop-btn" type="button">Insights <span>▾</span></button></div>
+    <a href="#">Seasons</a><a href="methodology-hub.html">Methodology</a>
+  </nav>
+</div></header>
+
+<main class="wrap wide mock-wrap" id="root" tabindex="-1">
+  <div class="mock-top">
+    <div>
+      <h1>Community Consensus</h1>
+      <p class="lede">A source-linked compilation of how the Call of Duty community ranked players within each title. These are not site-authored player rankings.</p>
+      <div class="page-links">
+        <a class="pill flat" href="community-consensus-methodology.html">Community consensus methodology</a>
+        <a class="pill flat" href="methodology-hub.html">Methodology hub</a>
+      </div>
+    </div>
+    <div class="mock-view" aria-label="Score view">
+      <button class="active">Career total</button>
+      <button>Per played title</button>
+      <button>Peak rate</button>
+    </div>
+  </div>
+
+  <div class="scope-note"><strong>What this page is:</strong> community consensus evidence. Wins, rings, stats, and official awards remain separate lanes.</div>
+
+  <div class="controls">
+    <input class="search" type="text" placeholder="Search player..." aria-label="Search players">
+    <div class="colmenu eramenu" id="mock-eramenu">
+      <button type="button" class="colmenu-btn" aria-haspopup="true" aria-expanded="false">Eras: All <span aria-hidden="true">▾</span></button>
+      <div class="colmenu-panel eramenu-panel" hidden>
+        <div class="era-presets">
+          <button type="button" class="era-preset">Post-BO2</button>
+          <button type="button" class="era-preset">Pre-BO2</button>
+          <button type="button" class="era-preset">MLG–CWL</button>
+          <button type="button" class="era-preset">CDL</button>
+          <button type="button" class="era-preset era-clear">Reset</button>
+        </div>
+        <div class="era-groups">
+          <div class="era-group"><div class="era-group-h">Pre-BO2 (open era)</div>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Modern Warfare 3</label>
+          </div>
+          <div class="era-group"><div class="era-group-h">MLG–CWL (BO2–BO4)</div>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops 2</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Ghosts</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Advanced Warfare</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops 3</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Infinite Warfare</label>
+            <label class="colmenu-item"><input type="checkbox" checked> World War II</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops 4</label>
+          </div>
+          <div class="era-group"><div class="era-group-h">CDL era</div>
+            <label class="colmenu-item"><input type="checkbox" checked> Modern Warfare</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops Cold War</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Vanguard</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Modern Warfare II</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Modern Warfare III</label>
+            <label class="colmenu-item"><input type="checkbox" checked> Black Ops 6</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="sharebtn">Share view</button>
+  </div>
+
+  <p class="small muted">Showing <strong>all seasons</strong>. Consensus scores, top-1/top-3/top-5/top-10 counts, event wins, and trace panels recompute for the selected titles.</p>
+
+  <div class="stat-strip">
+    <div class="stat-tile"><div class="k">Scoring unit</div><div class="v">Title rank</div><div class="small muted">not kills or awards</div></div>
+    <div class="stat-tile"><div class="k">Primary score</div><div class="v">Power curve</div><div class="small muted">top-heavy title points</div></div>
+    <div class="stat-tile"><div class="k">Sources</div><div class="v">Linked</div><div class="small muted">traceable row by row</div></div>
+    <div class="stat-tile"><div class="k">Sanity check</div><div class="v">Wins shown</div><div class="small muted">not scored here</div></div>
+  </div>
+
+  <div class="mock-tabs">
+    <a class="active" href="#">Career rollup</a>
+    <a href="#">Per-title rankings</a>
+    <a href="#">Source ledger</a>
+  </div>
+
+  <div class="consensus-grid">
+    <section class="mock-card">
+      <div class="mock-card-h">
+        <div><h2>Career Community Consensus</h2><p class="small muted">Click a row to inspect the source-linked score trace.</p></div>
+        <span class="pill tag">All titles</span>
+      </div>
+      <div class="mock-card-b mock-scroll">
+        <table class="mock-table">
+          <thead><tr><th class="n">Rank</th><th>Player</th><th class="n">Score</th><th class="n">/ played</th><th class="n">Wins</th><th class="n">Top 1</th><th class="n">Top 3</th><th class="n">Top 5</th><th class="n">Top 10</th><th>Evidence</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="n"><strong>1</strong></td><td><div class="player-cell"><span class="avatar">SC</span><span><strong>Scump</strong><span class="sub">13 ranked titles</span></span></div></td><td class="n">7.636</td><td class="n">0.587</td><td class="n">28</td><td class="n">3</td><td class="n">5</td><td class="n">6</td><td class="n">9</td><td><span class="pill up">13 title rows</span></td><td><button class="trace-btn">Trace</button></td></tr>
+            <tr><td class="n"><strong>2</strong></td><td><div class="player-cell"><span class="avatar">SI</span><span><strong>Simp</strong><span class="sub">7 ranked titles</span></span></div></td><td class="n">5.438</td><td class="n">0.777</td><td class="n">13</td><td class="n">3</td><td class="n">4</td><td class="n">5</td><td class="n">7</td><td><span class="pill up">7 title rows</span></td><td><button class="trace-btn">Trace</button></td></tr>
+            <tr><td class="n"><strong>3</strong></td><td><div class="player-cell"><span class="avatar">DA</span><span><strong>Dashy</strong><span class="sub">7 ranked titles</span></span></div></td><td class="n">4.632</td><td class="n">0.515</td><td class="n">6</td><td class="n">1</td><td class="n">2</td><td class="n">4</td><td class="n">6</td><td><span class="pill up">7 title rows</span></td><td><button class="trace-btn">Trace</button></td></tr>
+            <tr class="selected"><td class="n"><strong>5</strong></td><td><div class="player-cell"><span class="avatar">AB</span><span><strong>aBeZy</strong><span class="sub">selected example</span></span></div></td><td class="n">4.524</td><td class="n">0.565</td><td class="n">13</td><td class="n">0</td><td class="n">2</td><td class="n">4</td><td class="n">6</td><td><span class="pill up">7 source-linked rows</span></td><td><button class="trace-btn">Open</button></td></tr>
+            <tr><td class="n"><strong>7</strong></td><td><div class="player-cell"><span class="avatar">CR</span><span><strong>Crimsix</strong><span class="sub">9 ranked titles</span></span></div></td><td class="n">4.305</td><td class="n">0.430</td><td class="n">38</td><td class="n">1</td><td class="n">2</td><td class="n">2</td><td class="n">6</td><td><span class="pill warn">mixed evidence</span></td><td><button class="trace-btn">Trace</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="mock-card">
+      <div class="mock-card-h">
+        <div><h2>aBeZy Trace</h2><p class="small muted">Score from included title ranks.</p></div>
+        <span class="pill tag">4.524</span>
+      </div>
+      <div class="mock-card-b">
+        <span class="formula">max(0, (31 - rank) / 30) ^ 2.5</span>
+        <div class="calc-grid">
+          <div class="calc-cell"><div class="label">Rank 2</div><div class="value">0.919</div></div>
+          <div class="calc-cell"><div class="label">Rank 4</div><div class="value">0.768</div></div>
+          <div class="calc-cell"><div class="label">Rank 10</div><div class="value">0.410</div></div>
+          <div class="calc-cell"><div class="label">Rank 13</div><div class="value">0.279</div></div>
+        </div>
+        <div style="margin-top:var(--space-3)">
+          <div class="source-row"><span class="num">BO4 #4</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/cv8yev/the_top_10_players_in_black_ops_4_according_to/">BO4 r/CoDCompetitive survey</a><strong class="num">0.768</strong></div>
+          <div class="source-row"><span class="num">MW #4</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/im3gkx/the_top_30_players_in_modern_warfare_according_to/">MW top 30 survey</a><strong class="num">0.768</strong></div>
+          <div class="source-row"><span class="num">BOCW #2</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/po7hvz/reddits_top_30_black_ops_cold_war_players/">BOCW top 30 survey</a><strong class="num">0.919</strong></div>
+          <div class="source-row"><span class="num">VG #10</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/woivlt/reddits_top_30_call_of_duty_vanguard_players/">Vanguard top 30 survey</a><strong class="num">0.410</strong></div>
+          <div class="source-row"><span class="num">MWII #2</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/151cutn/reddits_top_30_modern_warfare_ii_players/">MWII top 30 survey</a><strong class="num">0.919</strong></div>
+          <div class="source-row"><span class="num">MWIII #9</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/1f6ler9/reddits_top_30_modern_warfare_iii_players/">MWIII top 30 survey</a><strong class="num">0.461</strong></div>
+          <div class="source-row"><span class="num">BO6 #13</span><a href="https://www.reddit.com/r/CoDCompetitive/comments/1n1ujv2/rcodcompetitives_top_30_black_ops_6_players/">BO6 top 30 survey</a><strong class="num">0.279</strong></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+const menu=document.getElementById('mock-eramenu');
+const btn=menu.querySelector('.colmenu-btn');
+const panel=menu.querySelector('.colmenu-panel');
+btn.addEventListener('click',e=>{
+  e.stopPropagation();
+  panel.hidden=!panel.hidden;
+  btn.setAttribute('aria-expanded', String(!panel.hidden));
+});
+document.addEventListener('click',()=>{panel.hidden=true;btn.setAttribute('aria-expanded','false');});
+panel.addEventListener('click',e=>e.stopPropagation());
+</script>
+</body>
+</html>

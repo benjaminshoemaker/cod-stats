@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Consensus UX · Black Ops 2</title>
+<style>
+:root{
+  --bg:#f6f7f9;
+  --panel:#fff;
+  --ink:#18202b;
+  --muted:#667085;
+  --faint:#98a2b3;
+  --line:#d7dce3;
+  --accent:#0f766e;
+  --accent-2:#2563eb;
+  --warn:#b45309;
+  --good:#157347;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 12px 24px rgba(16,24,40,.06);
+  --radius:8px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;
+}
+a{color:var(--accent-2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 48px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.crumb{color:var(--muted);font-size:13px;margin:0 0 8px}
+h1{font-size:30px;line-height:1.1;margin:0}
+h2{font-size:18px;margin:0 0 12px}
+h3{font-size:15px;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+.small{font-size:12px}
+.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.9fr);gap:18px}
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.panel-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.panel-body{padding:16px 18px}
+.tabs{display:flex;gap:4px;background:#eef1f5;border:1px solid var(--line);border-radius:8px;padding:3px}
+.tabs button{
+  border:0;background:transparent;color:var(--muted);border-radius:6px;padding:7px 10px;
+  font:inherit;font-weight:650;cursor:default;
+}
+.tabs button.active{background:#fff;color:var(--ink);box-shadow:0 1px 1px rgba(16,24,40,.08)}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--line);background:#f8fafc;color:#344054;
+  border-radius:999px;padding:3px 8px;font-size:12px;font-weight:650;white-space:nowrap;
+}
+.pill.good{border-color:#b7dfc5;background:#ecfdf3;color:var(--good)}
+.pill.warn{border-color:#fed7aa;background:#fff7ed;color:var(--warn)}
+.pill.info{border-color:#bfdbfe;background:#eff6ff;color:#1d4ed8}
+.stat-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px}
+.stat .k{font-size:12px;color:var(--muted);font-weight:700}
+.stat .v{font-size:24px;font-weight:800;line-height:1.1;margin-top:4px}
+.data{width:100%;border-collapse:collapse}
+.data th,.data td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.data th{font-size:12px;color:var(--muted);font-weight:800;background:#fafbfc}
+.data tr:last-child td{border-bottom:0}
+.n{text-align:right!important;font-variant-numeric:tabular-nums}
+.rank{font-weight:800;font-variant-numeric:tabular-nums}
+.scorebar{display:flex;align-items:center;gap:10px;min-width:180px}
+.track{height:8px;background:#eef1f5;border-radius:999px;overflow:hidden;flex:1}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent),#14b8a6)}
+.player{font-weight:800}
+.source-grid{display:grid;gap:10px}
+.source{
+  border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff;
+}
+.source-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.source-title{font-weight:800}
+.audit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.audit div{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fafbfc}
+.callout{border-left:4px solid var(--accent);background:#f0fdfa;padding:12px 14px;border-radius:8px;margin-bottom:14px}
+.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.player-card{border:1px solid var(--line);border-radius:8px;padding:12px;background:#fff}
+.player-card .line{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+.list{display:grid;gap:7px;margin-top:10px}
+.list-row{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #eef1f5;padding-bottom:7px}
+.list-row:last-child{border-bottom:0;padding-bottom:0}
+.note{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px;color:#7c2d12}
+.mobile-only{display:none}
+@media (max-width:850px){
+  .wrap{padding:18px 12px 32px}
+  .layout,.subgrid{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .topbar{align-items:flex-start;flex-direction:column}
+  .data th:nth-child(4),.data td:nth-child(4){display:none}
+  .scorebar{min-width:120px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <div>
+      <p class="crumb">Prototype / Issue #15 / Community Consensus</p>
+      <h1>Black Ops 2 Community Consensus</h1>
+      <p class="muted" style="margin-top:8px">A UX sketch for fan/community title rankings. This is context, not the era-adjusted wins formula.</p>
+    </div>
+    <div class="tabs" aria-label="Prototype views">
+      <button class="active">Season</button>
+      <button>Player</button>
+      <button>Sources</button>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="k">Inventory</div><div class="v">v1</div><div class="small faint">exhaustive attempt</div></div>
+    <div class="stat"><div class="k">Scored sources</div><div class="v">5</div><div class="small faint">4 threads · 1 ballot</div></div>
+    <div class="stat"><div class="k">Aggregate surveys</div><div class="v">0</div><div class="small faint">none found for BO2</div></div>
+    <div class="stat"><div class="k">Ranked players</div><div class="v">15</div><div class="small faint">top 10 shown by default</div></div>
+  </div>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Season Consensus Table</h2>
+          <p class="small muted">Default season-page module. Full ranked source data is retained, even when UI defaults to top 10.</p>
+        </div>
+        <span class="pill info">Community evidence</span>
+      </div>
+      <div class="panel-body">
+        <div class="callout">
+          <strong>Read this as consensus, not objective proof.</strong>
+          Karma and Crimsix are flagged as a close race; ACHES and Parasite are also within the close-race threshold.
+        </div>
+        <table class="data" aria-label="Black Ops 2 community consensus">
+          <thead>
+            <tr><th>Rank</th><th>Player</th><th class="n">Score</th><th>Signal</th><th>Sources</th></tr>
+          </thead>
+          <tbody id="rankRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="source-grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Method Card</h2>
+            <p class="small muted">Small explanatory block beside the table or behind an info popover.</p>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="list">
+            <div class="list-row"><span>Ranked ballots</span><strong>normalized Borda</strong></div>
+            <div class="list-row"><span>Thread handling</span><strong>average then weight</strong></div>
+            <div class="list-row"><span>More comments</span><strong>capped boost</strong></div>
+            <div class="list-row"><span>Reddit score</span><strong>weak boost</strong></div>
+            <div class="list-row"><span>Survey posts</span><strong>special source type</strong></div>
+          </div>
+          <p class="small muted" style="margin-top:12px">For BO2, no large aggregate survey was found, so this title uses thread clusters and one single-ballot post.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Coverage Warning</h2>
+          <span class="pill warn">Moderate</span>
+        </div>
+        <div class="panel-body">
+          <p class="note small">A missing player does not mean community consensus was that they were bad. It means they were not ranked by the current source set or fell below the source’s published range.</p>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="panel-head">
+      <div>
+        <h2>Player Page Rollup Slice</h2>
+        <p class="small muted">This is how the same data can show up on player pages once multiple titles exist.</p>
+      </div>
+      <span class="pill good">Computed from per-title ranks</span>
+    </div>
+    <div class="panel-body">
+      <div class="subgrid">
+        <article class="player-card">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+            <div>
+              <h3>Karma</h3>
+              <p class="small muted">Consensus titles use actual per-title ranks. Rollups are not hand-entered.</p>
+            </div>
+            <span class="pill good">BO2 #1</span>
+          </div>
+          <div class="line"><span>Black Ops 2</span><strong>#1 · 5.267</strong></div>
+          <div class="line"><span>Close race</span><strong>Crimsix within 5%</strong></div>
+          <div class="line"><span>Source mix</span><strong>4 threads · 1 ballot</strong></div>
+        </article>
+        <article class="player-card">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start">
+            <div>
+              <h3>Crimsix</h3>
+              <p class="small muted">A player page can expose the title row and cite the source cluster details.</p>
+            </div>
+            <span class="pill good">BO2 #2</span>
+          </div>
+          <div class="line"><span>Black Ops 2</span><strong>#2 · 5.102</strong></div>
+          <div class="line"><span>Close race</span><strong>Karma within 5%</strong></div>
+          <div class="line"><span>Rank bucket</span><strong>Top 3</strong></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="panel-head">
+      <div>
+        <h2>Source Audit</h2>
+        <p class="small muted">Expandable audit section for methodology pages, source drawers, or title pages.</p>
+      </div>
+      <span class="pill">Reproducible</span>
+    </div>
+    <div class="panel-body">
+      <div class="source-grid" id="sources"></div>
+    </div>
+  </section>
+</main>
+<script>
+const rows = [
+  {rank:1, player:'Karma', score:5.267, close:true, confidence:'high', sources:'5'},
+  {rank:2, player:'Crimsix', score:5.102, close:true, confidence:'high', sources:'5'},
+  {rank:3, player:'Clayster', score:3.608, close:false, confidence:'high', sources:'5'},
+  {rank:4, player:'ACHES', score:2.915, close:true, confidence:'high', sources:'5'},
+  {rank:5, player:'Parasite', score:2.844, close:true, confidence:'high', sources:'5'},
+  {rank:6, player:'MiRx', score:1.180, close:false, confidence:'high', sources:'4'},
+  {rank:7, player:'TeeP', score:1.048, close:false, confidence:'medium', sources:'3'},
+  {rank:8, player:'Scump', score:0.959, close:false, confidence:'medium', sources:'3'},
+  {rank:9, player:'KiLLa', score:0.682, close:false, confidence:'medium', sources:'2'},
+  {rank:10, player:'JKap', score:0.480, close:false, confidence:'medium', sources:'2'},
+  {rank:11, player:'ProoFy', score:0.394, close:false, confidence:'medium', sources:'2'},
+  {rank:12, player:'Jurd', score:0.147, close:false, confidence:'low', sources:'1'}
+];
+const maxScore = rows[0].score;
+document.getElementById('rankRows').innerHTML = rows.map(r => `
+  <tr>
+    <td class="rank">${r.rank}</td>
+    <td><span class="player">${r.player}</span>${r.rank > 10 ? '<div class="small faint">retained outside top 10</div>' : ''}</td>
+    <td class="n">
+      <div class="scorebar">
+        <div class="track"><div class="fill" style="width:${Math.max(4, r.score / maxScore * 100).toFixed(1)}%"></div></div>
+        <strong>${r.score.toFixed(3)}</strong>
+      </div>
+    </td>
+    <td>${r.close ? '<span class="pill warn">close race</span>' : `<span class="pill ${r.confidence === 'high' ? 'good' : ''}">${r.confidence}</span>`}</td>
+    <td><span class="small muted">${r.sources} scored source${r.sources === '1' ? '' : 's'}</span></td>
+  </tr>
+`).join('');
+
+const sources = [
+  ['2016 top-10 thread', '8 ballots', '1.485x', 'Thread cluster'],
+  ['2020 top-five by CoD thread', '3 ballots', '0.953x', 'Thread cluster'],
+  ['2022 watched-back-then thread', '6 ballots', '1.470x', 'Thread cluster'],
+  ['2014 pro-vote request thread', '6 ballots', '1.286x', 'Thread cluster'],
+  ['2020 detailed top-10 post', '1 ballot', '0.550x', 'Single ballot']
+];
+document.getElementById('sources').innerHTML = sources.map(s => `
+  <article class="source">
+    <div class="source-top">
+      <div>
+        <div class="source-title">${s[0]}</div>
+        <div class="small muted">${s[3]}</div>
+      </div>
+      <span class="pill">${s[2]}</span>
+    </div>
+    <div class="audit">
+      <div><span class="small muted">Input</span><br><strong>${s[1]}</strong></div>
+      <div><span class="small muted">Scoring</span><br><strong>Borda</strong></div>
+      <div><span class="small muted">Status</span><br><strong>Scored</strong></div>
+    </div>
+  </article>
+`).join('');
+</script>
+</body>
+</html>

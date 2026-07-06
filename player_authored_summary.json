@@ -1,0 +1,676 @@
+{
+  "schema_version": 1,
+  "meta": {
+    "retrieved_date": "2026-07-06",
+    "source_count": 8,
+    "seeded_source_count": 4,
+    "verification_lead_count": 4,
+    "ranking_source_count": 3,
+    "claim_count": 1,
+    "verdict": "Authored rankings and claims are evidence, not a scored consensus model."
+  },
+  "ranking_lists": {
+    "nerd_street_2022_top10_all_time": {
+      "source_id": "nerd_street_2022_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "title": "Top 10 greatest Call of Duty players of all time",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Crimsix",
+          "claim_tags": [
+            "goat",
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Karma",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Clayster",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Scump",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "FormaL",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "JKap",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Simp",
+          "claim_tags": [
+            "greatest",
+            "future_goat_candidate"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "Arcitys",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "aBeZy",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "ACHES",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        }
+      ]
+    },
+    "dexerto_2022_top10_all_time": {
+      "source_id": "dexerto_2022_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "title": "Top 10 best Call of Duty players of all time",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Crimsix",
+          "claim_tags": [
+            "goat",
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Scump",
+          "claim_tags": [
+            "greatest",
+            "most_talented",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Clayster",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted",
+            "best_ar"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "Karma",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "Simp",
+          "claim_tags": [
+            "greatest",
+            "best_player",
+            "most_talented",
+            "future_goat_candidate"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "FormaL",
+          "claim_tags": [
+            "greatest",
+            "best_ar",
+            "highest_peak"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "Arcitys",
+          "claim_tags": [
+            "greatest",
+            "best_ar",
+            "leadership"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "aBeZy",
+          "claim_tags": [
+            "greatest",
+            "best_entry",
+            "best_smg"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "ACHES",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "SlasheR",
+          "claim_tags": [
+            "greatest",
+            "best_ar",
+            "leadership"
+          ]
+        }
+      ]
+    },
+    "tacticalrab_2018_codwiki_top10_all_time": {
+      "source_id": "tacticalrab_2018_codwiki_top10_all_time",
+      "family": "authored_all_time_ranking",
+      "title": "Top 10 BEST Players of All Time",
+      "entries": [
+        {
+          "rank": 1,
+          "player": "Crimsix",
+          "claim_tags": [
+            "goat",
+            "greatest",
+            "resume_weighted",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 2,
+          "player": "Scump",
+          "claim_tags": [
+            "greatest",
+            "best_smg",
+            "most_talented"
+          ]
+        },
+        {
+          "rank": 3,
+          "player": "Karma",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 4,
+          "player": "JKap",
+          "claim_tags": [
+            "greatest",
+            "leadership",
+            "legacy_weighted"
+          ]
+        },
+        {
+          "rank": 5,
+          "player": "ACHES",
+          "claim_tags": [
+            "greatest",
+            "resume_weighted"
+          ]
+        },
+        {
+          "rank": 6,
+          "player": "Clayster",
+          "claim_tags": [
+            "greatest",
+            "best_ar",
+            "skill_weighted"
+          ]
+        },
+        {
+          "rank": 7,
+          "player": "FormaL",
+          "claim_tags": [
+            "greatest",
+            "best_ar",
+            "highest_peak"
+          ]
+        },
+        {
+          "rank": 8,
+          "player": "TeeP",
+          "claim_tags": [
+            "greatest",
+            "leadership",
+            "legacy_weighted"
+          ]
+        },
+        {
+          "rank": 9,
+          "player": "SlasheR",
+          "claim_tags": [
+            "greatest",
+            "best_ar"
+          ]
+        },
+        {
+          "rank": 10,
+          "player": "John",
+          "claim_tags": [
+            "greatest",
+            "skill_weighted"
+          ]
+        }
+      ]
+    }
+  },
+  "claims": [
+    {
+      "source_id": "dexerto_2023_nadeshot_scump_goat",
+      "claimant": "Nadeshot",
+      "claimant_type": "player_owner",
+      "player": "Scump",
+      "claim_tags": [
+        "goat",
+        "most_talented",
+        "map_impact",
+        "hardest_to_kill",
+        "context_adjusted"
+      ],
+      "rationale_summary": "Nadeshot frames Scump's GOAT case around talent, map impact, difficulty to kill, and roster/context disadvantages rather than only trophies.",
+      "quote": "best and most talented player of all time",
+      "quote_location": "Dexerto article body quoting 100 Thieves Cast"
+    }
+  ],
+  "players": [
+    {
+      "player": "Crimsix",
+      "source_count": 3,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 1,
+      "median_all_time_rank": 1,
+      "title_ranks": [],
+      "claim_tags": [
+        "goat",
+        "greatest",
+        "resume_weighted",
+        "skill_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Karma",
+      "source_count": 3,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 2,
+      "median_all_time_rank": 3,
+      "title_ranks": [],
+      "claim_tags": [
+        "greatest",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Scump",
+      "source_count": 4,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "dexerto_2023_nadeshot_scump_goat",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking",
+        "reported_player_claim"
+      ],
+      "ranking_count": 3,
+      "claim_count": 1,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 2,
+      "median_all_time_rank": 2,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_smg",
+        "context_adjusted",
+        "goat",
+        "greatest",
+        "hardest_to_kill",
+        "map_impact",
+        "most_talented",
+        "resume_weighted",
+        "skill_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Clayster",
+      "source_count": 3,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 3,
+      "median_all_time_rank": 3,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_ar",
+        "greatest",
+        "resume_weighted",
+        "skill_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "ACHES",
+      "source_count": 3,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 5,
+      "median_all_time_rank": 9,
+      "title_ranks": [],
+      "claim_tags": [
+        "greatest",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "FormaL",
+      "source_count": 3,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 3,
+      "claim_count": 0,
+      "all_time_list_count": 3,
+      "best_all_time_rank": 5,
+      "median_all_time_rank": 6,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_ar",
+        "greatest",
+        "highest_peak",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "JKap",
+      "source_count": 2,
+      "source_ids": [
+        "nerd_street_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 2,
+      "best_all_time_rank": 4,
+      "median_all_time_rank": 5.0,
+      "title_ranks": [],
+      "claim_tags": [
+        "greatest",
+        "leadership",
+        "legacy_weighted",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Simp",
+      "source_count": 2,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 2,
+      "best_all_time_rank": 5,
+      "median_all_time_rank": 6.0,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_player",
+        "future_goat_candidate",
+        "greatest",
+        "most_talented"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "Arcitys",
+      "source_count": 2,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 2,
+      "best_all_time_rank": 7,
+      "median_all_time_rank": 7.5,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_ar",
+        "greatest",
+        "leadership",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "aBeZy",
+      "source_count": 2,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "nerd_street_2022_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 2,
+      "best_all_time_rank": 8,
+      "median_all_time_rank": 8.5,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_entry",
+        "best_smg",
+        "greatest",
+        "resume_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "SlasheR",
+      "source_count": 2,
+      "source_ids": [
+        "dexerto_2022_top10_all_time",
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 2,
+      "claim_count": 0,
+      "all_time_list_count": 2,
+      "best_all_time_rank": 9,
+      "median_all_time_rank": 9.5,
+      "title_ranks": [],
+      "claim_tags": [
+        "best_ar",
+        "greatest",
+        "leadership"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "TeeP",
+      "source_count": 1,
+      "source_ids": [
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 1,
+      "best_all_time_rank": 8,
+      "median_all_time_rank": 8,
+      "title_ranks": [],
+      "claim_tags": [
+        "greatest",
+        "leadership",
+        "legacy_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    },
+    {
+      "player": "John",
+      "source_count": 1,
+      "source_ids": [
+        "tacticalrab_2018_codwiki_top10_all_time"
+      ],
+      "families": [
+        "authored_all_time_ranking"
+      ],
+      "ranking_count": 1,
+      "claim_count": 0,
+      "all_time_list_count": 1,
+      "best_all_time_rank": 10,
+      "median_all_time_rank": 10,
+      "title_ranks": [],
+      "claim_tags": [
+        "greatest",
+        "skill_weighted"
+      ],
+      "caveat": "Authored evidence preserves source identity and should not be read as objective truth."
+    }
+  ],
+  "verification_leads": [
+    {
+      "source_id": "breaking_point_2024_mw3_top20_series",
+      "family": "authored_title_ranking",
+      "title": "Top 20 Players of MW3 article series",
+      "url": "https://breakingpoint.gg/posts/top-20-players-of-mw3-1-simp",
+      "author": "EasyMac",
+      "author_type": "media_stats",
+      "caveats": [
+        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "breaking_point_2025_bo6_top20_series",
+      "family": "authored_title_ranking",
+      "title": "Top 20 Players of Black Ops 6 article series",
+      "url": "https://breakingpoint.gg/posts/1-scrap-top-20-players-of-black-ops-6",
+      "author": "EasyMac",
+      "author_type": "media_stats",
+      "caveats": [
+        "Seed only after all 20 ranks are extracted from stable article URLs.",
+        "Do not mix title-season ranks with all-time greatness lists."
+      ]
+    },
+    {
+      "source_id": "tacticalrab_video_goat_debate_leads",
+      "family": "creator_video_claim",
+      "title": "TacticalRab GOAT/player debate videos",
+      "url": "https://www.youtube.com/@TacticalRab",
+      "author": "TacticalRab",
+      "author_type": "creator_media",
+      "caveats": [
+        "Needs specific video URLs, timestamps, and transcript or hand-verified quote before scoring or display."
+      ]
+    },
+    {
+      "source_id": "the_flank_reverse_sweep_player_claim_leads",
+      "family": "creator_video_claim",
+      "title": "The Flank, Reverse Sweep, and player-podcast ranking claims",
+      "url": null,
+      "author": null,
+      "author_type": "creator_player_caster",
+      "caveats": [
+        "Needs stable episode URL, timestamp, speaker identity, and transcript or hand-verified quote.",
+        "Discussion segments should be labeled as discussion rather than formal ranking unless the source presents a ranked list."
+      ]
+    }
+  ]
+}

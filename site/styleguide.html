@@ -51,9 +51,11 @@
     <a href="#panels">Panels &amp; grid</a>
     <a href="#stats">Stat tiles</a>
     <a href="#tables">Tables</a>
+    <a href="#data-surfaces">Data surfaces</a>
     <a href="#pills">Pills &amp; deltas</a>
     <a href="#bars">Bars</a>
     <a href="#controls">Controls</a>
+    <a href="#kor-widget">KOR widget</a>
     <a href="#anchors">Anchor nav</a>
     <a href="#misc">Notes &amp; legend</a>
   </nav>
@@ -131,7 +133,22 @@
       <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:var(--space-2) 0 0">Used for cards, tiles, and menus.</p></div>
       <div class="panel"><strong>.panel</strong><p class="muted small" style="margin:var(--space-2) 0 0"><span class="num">.grid.cols-3</span> collapses to 1 col under 760px.</p></div>
     </div>
-    <p class="sg-code">.grid.cols-2 · .grid.cols-3 · .wrap / .wrap.narrow / .wrap.wide</p>
+    <div class="panel-shell" style="margin:var(--space-4) 0">
+      <div class="panel-head">
+        <div><h3>Panel shell</h3><p class="small muted">Use for structured report sections with a header and body.</p></div>
+        <span class="pill tag">.panel-shell</span>
+      </div>
+      <div class="panel-body">
+        <div class="callout warn"><strong>Context callout:</strong> warning and caveat colors come from shared tokens.</div>
+        <div class="calc-list">
+          <div class="calc-row">
+            <div class="calc-row-head"><span class="calc-title">Calculation row</span><span class="num">1.363</span></div>
+            <div class="calc-math"><span class="math-chip"><span class="k">Points</span><span class="v">0.918</span></span><span class="math-op">×</span><span class="math-chip"><span class="k">Weight</span><span class="v">1.485</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sg-code">.grid.cols-2 · .grid.cols-3 · .wrap / .wrap.narrow / .wrap.wide · .panel-shell › .panel-head + .panel-body · .callout(.warn) · .calc-list/.calc-row</p>
   </section>
 
   <!-- ============ STAT TILES ============ -->
@@ -150,17 +167,44 @@
   <section class="sg-sec" id="tables">
     <h2>Tables</h2>
     <p class="sg-note"><span class="num">table.data</span> is the plain-table style; the leaderboard
-    uses the themed Tabulator (rendered below).</p>
+    uses the themed Tabulator (rendered below). Wide data tables should sit inside a labeled
+    <span class="num">.scroll-x</span> region, include a screen-reader caption, and use scoped headers.</p>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="Styleguide plain data table">
     <table class="data" style="margin:var(--space-4) 0">
-      <thead><tr><th>Player</th><th class="n">Adjusted</th><th class="n">Raw</th><th class="n">Δ</th></tr></thead>
+      <caption class="sr-only">Example plain data table</caption>
+      <thead><tr><th scope="col">Player</th><th scope="col" class="n">Adjusted</th><th scope="col" class="n">Raw</th><th scope="col" class="n">Δ</th></tr></thead>
       <tbody>
         <tr class="subhead"><td colspan="4">CDL era</td></tr>
         <tr><td>Player A</td><td class="n">42.7</td><td class="n">31</td><td class="n">+11.7</td></tr>
         <tr><td>Player B</td><td class="n">38.1</td><td class="n">29</td><td class="n">+9.1</td></tr>
       </tbody>
     </table>
+    </div>
     <div id="demo-table" style="margin:var(--space-4) 0"></div>
-    <p class="sg-code">table.data (th / td.n / tr.subhead) · .tabulator theme (see #demo-table)</p>
+    <p class="sg-code">.scroll-x[role="region"][tabindex="0"] › table.data + caption.sr-only + th[scope] · .tabulator theme (see #demo-table)</p>
+  </section>
+
+  <!-- ============ DATA SURFACES ============ -->
+  <section class="sg-sec" id="data-surfaces">
+    <h2>Data surfaces</h2>
+    <p class="sg-note">Generated pages should use shared helpers for repeated table chrome:
+    <span class="num">scrollRegionAttrs(label)</span> for the focusable horizontal-scroll wrapper and
+    <span class="num">tableCaption(label)</span> for the invisible caption. This keeps KOR, player,
+    season, compare, and chart table alternatives aligned.</p>
+    <div class="sg-render">
+      <p class="scrollhint small faint">Swipe the table sideways to see sample and context →</p>
+      <div class="scroll-x" tabindex="0" role="region" aria-label="Example analytical table">
+        <table class="data">
+          <caption class="sr-only">Example analytical table with sample context</caption>
+          <thead><tr><th scope="col">Metric</th><th scope="col" class="n">Value</th><th scope="col">Context</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">KOR/map</th><td class="n">+2.41</td><td><span class="pill tag">title split</span></td></tr>
+            <tr><th scope="row">Maps</th><td class="n">102</td><td><span class="pill flat">qualified</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sg-code">scrollRegionAttrs(label[, extraClass]) · tableCaption(label) · .scrollhint on mobile-only overflow cues</p>
   </section>
 
   <!-- ============ PILLS & DELTAS ============ -->
@@ -183,6 +227,14 @@
       <span class="delta flat">0.0</span>
     </div>
     <p class="sg-code">.delta.up / .down / .flat (inline mono, no background)</p>
+    <div class="sg-render" style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center">
+      <span class="pill role role-ar">AR</span>
+      <span class="pill role role-smg">SMG</span>
+      <span class="pill role role-flex">Flex</span>
+      <span class="pill role role-mixed">Mixed</span>
+      <span class="pill role role-unknown">Unknown</span>
+    </div>
+    <p class="sg-code">.pill.role + .role-ar/.role-smg/.role-flex/.role-mixed/.role-unknown, backed by --role-* tokens</p>
   </section>
 
   <!-- ============ BARS ============ -->
@@ -215,7 +267,44 @@
         <button type="button" aria-pressed="false">Solo</button>
       </div>
     </div>
-    <p class="sg-code">.seg › button[aria-pressed] (segmented toggle, used in similar-players)</p>
+    <p class="sg-code">.seg › button[aria-pressed] (44px minimum target; used in similar players, player stats, and KOR)</p>
+  </section>
+
+  <!-- ============ KOR WIDGET ============ -->
+  <section class="sg-sec" id="kor-widget">
+    <h2>KOR widget</h2>
+    <p class="sg-note">Kills Over Replacement uses the standard control and data-surface primitives:
+    field labels, segmented split controls, stat tiles, compact ranking bars, contextual notes, and the
+    accessible <span class="num">table.data</span> contract.</p>
+    <div class="kor-controls" style="margin-top:var(--space-4)">
+      <label class="field-label">Title
+        <select class="select" aria-label="Demo KOR title">
+          <option>All titles</option>
+          <option>Advanced Warfare</option>
+        </select>
+      </label>
+      <div class="seg" role="group" aria-label="Demo KOR split">
+        <button type="button" aria-pressed="true">Respawn</button>
+        <button type="button" aria-pressed="false">S&amp;D</button>
+      </div>
+    </div>
+    <div class="kor-summary">
+      <div class="stat"><div class="k">Leader</div><div class="v sm">HyDra</div><div class="small faint">MWIII · +3.15 KOR/map</div></div>
+      <div class="stat"><div class="k">Qualified rows</div><div class="v">214</div><div class="small faint">Respawn · all titles</div></div>
+      <div class="stat"><div class="k">Replacement</div><div class="v sm">per title</div><div class="small faint">25th percentile qualified player</div></div>
+    </div>
+    <div class="kor-grid">
+      <div class="kor-panel">
+        <h2>Top 10</h2>
+        <div class="kor-bar-row"><div class="rank">1</div><div class="bar-name">HyDra <span>Modern Warfare III</span></div><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><div class="bar-value">+3.15</div></div>
+        <div class="kor-bar-row"><div class="rank">2</div><div class="bar-name">Scump <span>Advanced Warfare</span></div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-value">+2.68</div></div>
+      </div>
+      <div class="kor-panel">
+        <h2>Read this as</h2>
+        <p class="small muted">KOR is a kill-production rate. It needs sample and opponent context beside the score, not hidden behind a tooltip.</p>
+      </div>
+    </div>
+    <p class="sg-code">.kor-controls · .field-label + .select · .kor-summary · .kor-grid · .kor-panel · .kor-bar-row · .kor-table</p>
   </section>
 
   <!-- ============ ANCHOR NAVIGATION ============ -->
@@ -263,8 +352,12 @@ const TOKENS = [
   '--bg','--panel','--panel-2','--ink','--muted','--faint',
   '--line','--line-2','--accent','--accent-soft',
   '--pos','--pos-soft','--pos-ink','--neg','--neg-soft','--neg-ink',
-  '--warn','--warn-soft','--amber','--amber-ink',
+  '--warn','--warn-soft','--warn-line','--warn-panel','--amber','--amber-ink',
   '--gold','--gold-soft','--gold-ink','--gold-line',
+  '--role-ar-soft','--role-ar-ink','--role-ar-line',
+  '--role-smg-soft','--role-smg-ink','--role-smg-line',
+  '--role-flex-soft','--role-flex-ink','--role-flex-line',
+  '--role-mixed-soft','--role-mixed-ink','--role-mixed-line',
 ];
 const cs = getComputedStyle(document.documentElement);
 document.getElementById('sw-grid').innerHTML = TOKENS.map(t=>{

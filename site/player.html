@@ -73,8 +73,9 @@ if(!p || !lb){
   const honorsSection = `<section class="honors-block" id="honors">
       <h2>Honors ${anchorLink('honors','Honors')}</h2>
       <p class="small muted">MVP, All-Star, All-Pro and Rookie/Player of the Year recognition from the CoD Esports Wiki awards table. This is profile context only, not part of the era-adjusted score. Early-era award coverage is incomplete and non-standardized, so a blank list means no row in the current source set, not necessarily zero career honors.</p>
-      ${honors.length ? `<div class="scroll-x"><table class="data honors-table">
-        <thead><tr><th>Award</th><th>Event or season</th><th class="n">Year</th><th>Source</th></tr></thead>
+      ${honors.length ? `<div ${scrollRegionAttrs(`${p.name} honors table`)}><table class="data honors-table">
+        ${tableCaption(`${p.name} formal honors`)}
+        <thead><tr><th scope="col">Award</th><th scope="col">Event or season</th><th scope="col" class="n">Year</th><th scope="col">Source</th></tr></thead>
         <tbody>${honorsRows}</tbody>
       </table></div>` : '<p class="small faint">No honors found in the current source set.</p>'}
     </section>`;
@@ -199,7 +200,7 @@ if(!p || !lb){
           <button id="seg-all" aria-pressed="false">All entered (${lb.eventsPlaced})</button>
         </div>
       </div>
-      <div class="scroll-x"><table class="data"><tbody id="winlist"></tbody></table></div>
+      <div ${scrollRegionAttrs(`${p.name} major list table`)}><table class="data">${tableCaption(`${p.name} major wins and entries`)}<tbody id="winlist"></tbody></table></div>
       <p class="small faint" id="ml-note" style="margin-top:var(--space-2)"></p>
     </section>
 
@@ -208,8 +209,9 @@ if(!p || !lb){
     <section id="roles">
       <h2>Primary role by season ${anchorLink('roles','Roles')}</h2>
       <p class="small muted">Roles are curated as AR, Flex, or SMG. Unknown or disputed seasons can be challenged with evidence.</p>
-      <div class="scroll-x"><table class="data role-table">
-        <thead><tr><th>Season</th><th>Role</th><th class="n">Year</th></tr></thead>
+      <div ${scrollRegionAttrs(`${p.name} role-by-season table`)}><table class="data role-table">
+        ${tableCaption(`${p.name} primary role by season`)}
+        <thead><tr><th scope="col">Season</th><th scope="col">Role</th><th scope="col" class="n">Year</th></tr></thead>
         <tbody>${roleTable || '<tr><td colspan="3" class="small faint">No role rows available.</td></tr>'}</tbody>
       </table></div>
     </section>
@@ -233,8 +235,9 @@ if(!p || !lb){
       </tr>`).join('');
     const winsShown = shown.reduce((a,s)=>a+s.wins,0);
     document.getElementById('buildup').innerHTML = `
-      <div class="scroll-x"><table class="data">
-        <thead><tr><th>Season</th><th class="n">Wins</th><th class="n">Majors</th><th class="n">Per win</th><th class="n">Share</th><th>&nbsp;</th></tr></thead>
+      <div ${scrollRegionAttrs(`${p.name} season-share buildup table`)}><table class="data">
+        ${tableCaption(`${p.name} adjusted-wins season-share buildup`)}
+        <thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Majors</th><th scope="col" class="n">Per win</th><th scope="col" class="n">Share</th><th scope="col">&nbsp;</th></tr></thead>
         <tbody>${rows}
           <tr style="border-top:2px solid var(--line-2)"><td><strong>Total</strong></td>
             <td class="n"><strong>${winsShown}</strong></td><td class="n faint">–</td><td class="n faint">–</td>
@@ -370,8 +373,9 @@ if(!p || !lb){
         <div class="skill-season-detail">
           <div class="skill-summary-pills" aria-label="${esc(season.game)} mode split summary">${['overall','respawn','snd'].map(m=>splitSummary(season, m)).join('')}</div>
           <p class="small faint skill-scroll-hint">Scroll horizontally for all tournament columns.</p>
-        <div class="scroll-x"><table class="data skill-event-table">
-          <thead><tr><th class="n">Year</th><th>Tournament</th><th>Team</th><th class="n">Maps</th><th class="n">K/D</th><th class="n">Kills</th><th class="n">Deaths</th><th class="n">Kills + deaths</th></tr></thead>
+        <div ${scrollRegionAttrs(`${p.name} ${season.game} tournament stats table`)}><table class="data skill-event-table">
+          ${tableCaption(`${p.name} ${season.game} tournament stats by selected mode`)}
+          <thead><tr><th scope="col" class="n">Year</th><th scope="col">Tournament</th><th scope="col">Team</th><th scope="col" class="n">Maps</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Kills</th><th scope="col" class="n">Deaths</th><th scope="col" class="n">Kills + deaths</th></tr></thead>
           <tbody>${body || `<tr><td colspan="8" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`}</tbody>
         </table></div></div>
       </details>`;

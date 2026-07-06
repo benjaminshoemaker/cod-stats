@@ -107,6 +107,12 @@ function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(na
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 function fmtInt(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toLocaleString();}
 function fmtKd(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toFixed(3);}
+function scrollRegionAttrs(label, extraClass=''){
+  return `class="scroll-x${extraClass ? ' '+esc(extraClass) : ''}" tabindex="0" role="region" aria-label="${esc(label)}"`;
+}
+function tableCaption(label){
+  return `<caption class="sr-only">${esc(label)}</caption>`;
+}
 function skillBucket(stats, split='overall'){
   if(!stats) return null;
   return split === 'overall' ? stats.overall : (stats.splits && stats.splits[split]) || null;

@@ -472,16 +472,35 @@ test.describe('pages', () => {
   test('seasons and methodology pages load', async ({ page }) => {
     await page.goto('/games.html');
     await expect(page.getByRole('heading', { name: /Seasons/ })).toBeVisible();
+    await expect(page.locator('.scroll-x[role="region"][tabindex="0"][aria-label="Season major-count table"]')).toBeVisible();
+    await expect(page.locator('table.data caption')).toContainText('Major count by Call of Duty season');
+    await expect(page.locator('table.data th[scope="col"]')).toHaveCount(6);
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
     await expect(page.getByText('how adjusted wins convert raw major wins into season-share value')).toBeVisible();
   });
 
+  test('styleguide documents KOR and data-surface patterns', async ({ page }) => {
+    await page.goto('/styleguide.html');
+    await expect(page.getByRole('heading', { name: 'Design System' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Data surfaces' })).toHaveAttribute('href', '#data-surfaces');
+    await expect(page.getByRole('link', { name: 'KOR widget' })).toHaveAttribute('href', '#kor-widget');
+    await expect(page.locator('#data-surfaces .scroll-x[role="region"][tabindex="0"]')).toHaveAttribute('aria-label', 'Example analytical table');
+    await expect(page.locator('#data-surfaces table.data caption')).toContainText('Example analytical table with sample context');
+    await expect(page.locator('#pills .pill.role-smg')).toHaveText('SMG');
+    await expect(page.locator('#kor-widget .kor-bar-row')).toHaveCount(2);
+  });
+
   test('reference pages expose stable section anchors and direct hash links', async ({ page }) => {
     await page.goto('/methodology.html');
     const methodToc = page.getByRole('navigation', { name: 'On this page' });
+    await expect(methodToc.getByRole('link', { name: 'Kills Over Replacement' })).toHaveAttribute('href', '#kills-over-replacement');
     await expect(methodToc.getByRole('link', { name: 'Tournament rules' })).toHaveAttribute('href', '#tournaments');
+    await expect(page.locator('#kills-over-replacement .anchor-link')).toHaveAttribute('href', '#kills-over-replacement');
     await expect(page.locator('#tournaments .anchor-link')).toHaveAttribute('href', '#tournaments');
+
+    await page.goto('/methodology.html#kills-over-replacement');
+    await expect(page.locator('#kills-over-replacement')).toBeInViewport();
 
     await page.goto('/methodology.html#tournaments');
     await expect(page.locator('#tournaments')).toBeInViewport();
@@ -525,7 +544,35 @@ test.describe('pages', () => {
     await page.goto('/index.html');
     await page.click('.navdrop-btn');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
+    expect(links).toEqual(['kor.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
+  });
+
+  test('Kills Over Replacement page renders all-time and title splits', async ({ page }) => {
+    await page.goto('/kor.html');
+    await expect(page.getByRole('heading', { name: 'Kills Over Replacement' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'All-time Respawn KOR/map' })).toBeVisible();
+    await expect(page.locator('.kor-method a')).toHaveAttribute('href', 'methodology.html#kills-over-replacement');
+    await expect(page.locator('.kor-table thead')).toContainText('Role');
+    await expect(page.locator('.kor-table thead')).toContainText('Median opp place');
+    await expect(page.locator('.kor-table caption')).toContainText('All-time Respawn KOR/map leaderboard');
+    await expect(page.locator('.kor-table th[scope="col"]')).toHaveCount(11);
+    await expect(page.locator('.scroll-x[aria-label="All-time Respawn KOR/map leaderboard table"] .kor-table')).toBeVisible();
+    await expect(page.getByText('Swipe the table sideways to see role, sample, and opponent context')).toBeAttached();
+    await expect(page.locator('.kor-table tbody tr').first()).toContainText('HyDra');
+    await expect(page.locator('.kor-table tbody tr').first()).toContainText('Modern Warfare III');
+    const splitMinHeight = await page.locator('#kor-split button').first().evaluate(el => Number.parseFloat(getComputedStyle(el).minHeight));
+    expect(splitMinHeight).toBeGreaterThanOrEqual(44);
+
+    await page.locator('#kor-game').selectOption('Advanced Warfare');
+    await expect(page).toHaveURL(/g=Advanced(\+|%20)Warfare/);
+    await expect(page.getByRole('heading', { name: 'Advanced Warfare Respawn KOR/map' })).toBeVisible();
+    await expect(page.locator('.kor-baseline-row')).toContainText('Replacement baseline');
+    await expect(page.locator('.kor-table tbody tr').first()).toContainText('Scump');
+    await expect(page.locator('.kor-table tbody tr').first().locator('.pill.role-smg')).toHaveText('SMG');
+
+    await page.locator('#kor-split button[data-split="snd"]').click();
+    await expect(page).toHaveURL(/split=snd/);
+    await expect(page.getByRole('heading', { name: 'Advanced Warfare S&D KOR/map' })).toBeVisible();
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
