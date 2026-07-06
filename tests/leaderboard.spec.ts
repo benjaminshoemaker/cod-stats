@@ -703,6 +703,16 @@ test.describe('pages', () => {
     expect(overallLayout.tableUsesMostWidth).toBe(true);
     expect(overallLayout.pageOverflow).toBe(false);
 
+    await page.goto('/community.html?view=overall&p=Crimsix');
+    await expect(page.getByRole('heading', { name: 'Crimsix Overall Trace' })).toBeVisible();
+    await page.waitForFunction(() => document.activeElement?.id === 'cc-overall-trace-card');
+    const crimsixTraceVisible = await page.evaluate(() => {
+      const trace = document.querySelector('#cc-overall-trace-card') as HTMLElement;
+      const rect = trace.getBoundingClientRect();
+      return rect.top >= 0 && rect.top < window.innerHeight;
+    });
+    expect(crimsixTraceVisible).toBe(true);
+
     await page.locator('#cc-eramenu .colmenu-btn').click();
     await page.locator('#cc-eramenu .era-preset[data-preset="cdl"]').click();
     await expect(page).toHaveURL(/eras=cdl/);
