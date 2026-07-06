@@ -87,12 +87,19 @@ function setUrl(game, player){
   if(player) url.searchParams.set('p', player);
   history.replaceState(null, '', url);
 }
+function lookupPlayerKeyed(obj, player){
+  if(!obj || !player) return undefined;
+  if(Object.prototype.hasOwnProperty.call(obj, player)) return obj[player];
+  const playerKey = clean(player).toLowerCase();
+  const match = Object.keys(obj).find(k => clean(k).toLowerCase() === playerKey);
+  return match ? obj[match] : undefined;
+}
 function rawWins(game, player){
   const byGame = CC.resumeWins && CC.resumeWins[game] || {};
-  return byGame[player] ?? byGame[clean(player)] ?? 0;
+  return lookupPlayerKeyed(byGame, player) ?? 0;
 }
 function winningEvents(game, player){
-  const pl = D.players[player];
+  const pl = lookupPlayerKeyed(D.players, player);
   const season = pl && (pl.seasons || []).find(s => s.game === game);
   if(season && season.events) return season.events.map(e => e.event).join(', ');
   const wins = rawWins(game, player);
@@ -106,7 +113,7 @@ function gameSources(game){
 }
 function gameContributions(game, player){
   return Object.entries(CC.consensus.source_contributions || {})
-    .map(([id, c]) => ({id, ...c, source: sourceById[id], contribution: c.scores && c.scores[player] || 0}))
+    .map(([id, c]) => ({id, ...c, source: sourceById[id], contribution: lookupPlayerKeyed(c.scores, player) || 0}))
     .filter(c => c.game === game && c.contribution > 0)
     .sort((a, b) => b.contribution - a.contribution);
 }

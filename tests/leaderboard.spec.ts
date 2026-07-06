@@ -604,6 +604,15 @@ test.describe('pages', () => {
     await page.goto('/community.html?g=Ghosts&p=Scump');
     await expect(page.getByRole('heading', { name: 'Scump Trace' })).toBeVisible();
     await expect(page.locator('.community-table tr.selected')).toContainText('Scump');
+
+    await page.goto('/community.html?g=Modern+Warfare&p=aBeZy');
+    await expect(page.getByRole('heading', { name: 'aBeZy Trace' })).toBeVisible();
+    await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('2');
+    await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('not scored');
+    await expect(page.locator('.community-table tr.selected').locator('.context-band')).toHaveAttribute(
+      'title',
+      /Call of Duty League 2020 Week 3 - Atlanta/
+    );
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
