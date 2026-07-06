@@ -23,6 +23,13 @@ def test_every_player_reconstructs_to_published_total(data):
         assert recon == pub, f"{name}: reconstructed {recon} != published {pub}"
 
 
+def test_disambiguated_player_keys_require_explicit_aliases():
+    assert build_data.mkey("Methodz (Anthony Zinni)") == build_data.mkey("Methodz")
+    assert build_data.mkey("Jake (Jake Dalton)") == build_data.mkey("Jake")
+    assert build_data.mkey("MethodZ (Jorge Bancells)") != build_data.mkey("Methodz")
+    assert build_data.mkey("Jake (Jake Wellstead)") != build_data.mkey("Jake")
+
+
 def test_leaderboard_competition_ranks(data):
     # Ranks are competition-style: rank = 1 + (number of strictly better players),
     # so exact ties share the minimum rank instead of getting arbitrary order.
@@ -398,6 +405,11 @@ def test_kills_over_replacement_is_title_and_mode_specific(data):
     assert bo6["qualified"] == 36
     assert bo6["playersWithMaps"] == 77
     assert bo6["minMaps"] == 28
+
+    wwii_snd = kor["games"]["World War II"]["splits"]["snd"]["rows"]
+    assert any(r["player"] == "Methodz" for r in wwii_snd)
+    assert any(r["player"] == "MethodZ (Jorge Bancells)" for r in wwii_snd)
+    assert not any(r["player"] == "Methodz (Anthony Zinni)" for r in wwii_snd)
 
 
 def test_kills_over_replacement_excludes_non_major_stat_rows():

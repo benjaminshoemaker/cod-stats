@@ -250,7 +250,7 @@ document.querySelectorAll('.segbtn[data-preset]').forEach(b=>b.addEventListener(
   const k=b.dataset.preset; selected = k==='clear' ? new Set() : new Set(PRESETS[k]()); rerender();
 }));
 const search=document.getElementById('search');
-search.addEventListener('change',()=>{ const v=search.value.trim(); if(lbByName[v]){ selected.add(v); search.value=''; rerender(); } });
+search.addEventListener('change',()=>{ const v=canonicalPlayerName(search.value); if(v && lbByName[v]){ selected.add(v); search.value=''; rerender(); } });
 document.getElementById('chips').addEventListener('click',e=>{ const n=e.target.dataset?.rm; if(n){ selected.delete(n); rerender(); } });
 // draw() serializes every line into innerHTML, so coalesce resize to one frame
 // and skip entirely when the clamped chart width didn't actually change

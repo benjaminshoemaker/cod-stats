@@ -102,7 +102,6 @@ const resetBtn = document.getElementById('reset-compare');
 const rowMenu = document.getElementById('rowmenu');
 
 const NAMES = D.leaderboard.map(r => r.name);
-const NAME_KEY = Object.fromEntries(NAMES.map(n => [n.toLowerCase(), n]));
 const LB = Object.fromEntries(D.leaderboard.map(r => [r.name, r]));
 const GAMES = Object.fromEntries(D.games.map(g => [g.game, g]));
 const DEFAULT_PLAYERS = ['Shotzzy', 'HyDra'];
@@ -119,7 +118,7 @@ options.innerHTML = NAMES.map(n => `<option value="${esc(n)}"></option>`).join('
 function readPlayers(){
   const params = new URLSearchParams(location.search);
   const raw = params.getAll('p').flatMap(v => v.split(',')).map(v => v.trim()).filter(Boolean);
-  const names = raw.map(v => NAME_KEY[v.toLowerCase()] || v).filter(n => D.players[n]);
+  const names = raw.map(v => canonicalPlayerName(v)).filter(Boolean);
   const unique = [...new Set(names)].slice(0, MAX_PLAYERS);
   return unique.length ? unique : DEFAULT_PLAYERS.slice();
 }
@@ -438,7 +437,7 @@ function render(){
 }
 
 function addPlayer(raw){
-  const name = NAME_KEY[String(raw || '').trim().toLowerCase()];
+  const name = canonicalPlayerName(raw);
   if(!name){ setStatus('No player matched that name.', 'error'); return; }
   if(selected.includes(name)){ setStatus(`${name} is already in the comparison.`); return; }
   if(selected.length >= MAX_PLAYERS){ setStatus(`Compare up to ${MAX_PLAYERS} players at once.`, 'error'); return; }

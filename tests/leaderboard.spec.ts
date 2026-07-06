@@ -479,6 +479,15 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: /Every major win \(14\)/ })).toBeVisible(); // raw wins reconstructed
   });
 
+  test('player profile URLs resolve source casing variants', async ({ page }) => {
+    await page.goto('/player.html?p=ABeZy');
+    await expect(page.getByRole('heading', { name: 'aBeZy', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Every major win \(14\)/ })).toBeVisible();
+
+    await page.goto('/player.html?p=ILLeY');
+    await expect(page.getByRole('heading', { name: 'iLLeY', exact: true })).toBeVisible();
+  });
+
   test('seasons and methodology pages load', async ({ page }) => {
     await page.goto('/games.html');
     await expect(page.getByRole('heading', { name: /Seasons/ })).toBeVisible();
@@ -597,6 +606,15 @@ test.describe('pages', () => {
     await page.locator('#kor-split button[data-split="snd"]').click();
     await expect(page).toHaveURL(/split=snd/);
     await expect(page.getByRole('heading', { name: 'Advanced Warfare S&D KOR/map' })).toBeVisible();
+
+    await page.goto('/kor.html?g=Black+Ops+7&split=respawn');
+    const abezy = page.locator('.kor-table tbody tr').filter({ hasText: 'aBeZy' }).first();
+    await expect(abezy.getByRole('link', { name: 'aBeZy' })).toHaveAttribute('href', 'player.html?p=aBeZy');
+
+    await page.goto('/kor.html?g=World+War+II&split=snd');
+    const methodzDisambiguated = page.locator('.kor-table tbody tr').filter({ hasText: 'MethodZ (Jorge Bancells)' }).first();
+    await expect(methodzDisambiguated).toContainText('MethodZ (Jorge Bancells)');
+    await expect(methodzDisambiguated.getByRole('link', { name: /Methodz/i })).toHaveCount(0);
   });
 
   test('Community Consensus page renders title rankings and source traces', async ({ page }) => {
@@ -622,7 +640,7 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Scump Trace' })).toBeVisible();
     await expect(page.locator('.community-table tr.selected')).toContainText('Scump');
 
-    await page.goto('/community.html?g=Modern+Warfare&p=aBeZy');
+    await page.goto('/community.html?g=Modern+Warfare&p=ABeZy');
     await expect(page.getByRole('heading', { name: 'aBeZy Trace' })).toBeVisible();
     await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('2');
     await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('not scored');
@@ -778,6 +796,11 @@ test.describe('pages', () => {
     await expect(page.locator('svg.tj g.line.sel')).toHaveCount(8);
     // every highlighted player keeps a removable chip
     expect(await page.locator('#chips .chip').count()).toBe(8);
+
+    await page.click('.segbtn[data-preset="clear"]');
+    await page.locator('#search').fill('ABeZy');
+    await page.locator('#search').dispatchEvent('change');
+    await expect(page.locator('#chips')).toContainText('aBeZy');
   });
 
   test('BO7 season page shows in-progress weighting (1/6)', async ({ page }) => {
@@ -804,6 +827,18 @@ test.describe('pages', () => {
 });
 
 test.describe('compare page', () => {
+  test('URL and picker player names resolve source casing variants', async ({ page }) => {
+    await page.goto('/compare.html?p=ABeZy&p=ILLeY');
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'aBeZy', 'iLLeY']);
+    await expect(page).toHaveURL(/p=aBeZy/);
+    await expect(page).toHaveURL(/p=iLLeY/);
+
+    await page.locator('#player-pick').fill('cellium');
+    await page.getByRole('button', { name: 'Add player' }).click();
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'aBeZy', 'iLLeY', 'Cellium']);
+    await expect(page).toHaveURL(/p=Cellium/);
+  });
+
   test('URL players render dense comparison with participation denominators', async ({ page }) => {
     await page.goto('/compare.html?p=Shotzzy&p=HyDra');
     await expect(page.getByRole('heading', { name: 'Player Compare', exact: true })).toBeVisible();
@@ -918,5 +953,50 @@ test.describe('compare page', () => {
       return { sw: h.scrollWidth, cw: h.clientWidth };
     });
     expect(sw).toBeGreaterThan(cw);
+  });
+});
+
+test.describe('GOAT Builder', () => {
+  test('loads with real community consensus skill values', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto('/goat-builder.html');
+
+    await expect(page.getByRole('heading', { name: 'GOAT Ranking Builder' })).toBeVisible();
+    await expect(page.locator('#skillCoverage')).toHaveText('15');
+    await expect(page.locator('#laneCount')).toHaveText('4');
+    await expect(page.locator('#activeShare')).toHaveText('100 pts');
+    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+
+    const skills = await page.locator('#rankRows > tr:not(.gb-detail-row)').evaluateAll(rows =>
+      rows.slice(0, 8).map(row => row.children[4].textContent?.trim()));
+    expect(new Set(skills)).not.toEqual(new Set(['50']));
+    expect(skills).toContain('100');
+    expect(errors).toEqual([]);
+  });
+
+  test('primary criteria can be removed and round-trip through the URL', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await page.locator('[data-enabled="skill"]').uncheck();
+
+    await expect(page.locator('#laneCount')).toHaveText('3');
+    await expect(page.locator('#activeShare')).toHaveText('75 pts');
+    await expect(page.locator('#budgetStatus')).toHaveText('Remaining: 25');
+    await expect(page.locator('#scoreNote')).toContainText('Resume 33% / Longevity 33% / Peak 33%');
+    await expect(page).toHaveURL(/criteria=resume%2Clongevity%2Cpeak|criteria=resume,longevity,peak/);
+
+    const url = page.url();
+    await page.goto(url);
+    await expect(page.locator('[data-enabled="skill"]')).not.toBeChecked();
+    await expect(page.locator('[data-weight="skill"]')).toBeDisabled();
+    await expect(page.locator('#laneCount')).toHaveText('3');
+  });
+
+  test('is available directly but not linked from global navigation', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('.site-head .nav').getByRole('link', { name: /GOAT/i })).toHaveCount(0);
+
+    await page.goto('/index.html');
+    await expect(page.locator('.site-head .nav').getByRole('link', { name: /GOAT/i })).toHaveCount(0);
   });
 });

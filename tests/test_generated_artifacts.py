@@ -18,6 +18,8 @@ import os
 
 import pytest
 
+import build_data
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -87,6 +89,23 @@ def test_community_consensus_json_is_generated_for_static_site():
     assert any(b["ballot_id"] == "bo2_2016_top10_002" and "/comment/d6a5d59/" in b["url"]
                for b in payload["ballots"])
     assert payload["resumeWins"]["Black Ops 4"]["Dashy"] == 1
+
+    canonical = {build_data.mkey(name): name for name, _ in build_data.PUBLISHED}
+    seen = []
+    for rows in payload["consensus"]["games"].values():
+        seen.extend(row["player"] for row in rows)
+    for contribution in payload["consensus"]["source_contributions"].values():
+        seen.extend((contribution.get("scores") or {}).keys())
+    for source in payload["sources"]:
+        seen.extend(row["player"] for row in source.get("ranked_players") or [])
+    for ballot in payload["ballots"]:
+        seen.extend(row["player"] for row in ballot.get("entries") or [])
+    mismatches = {
+        player: canonical[build_data.mkey(player)]
+        for player in seen
+        if build_data.mkey(player) in canonical and player != canonical[build_data.mkey(player)]
+    }
+    assert mismatches == {}
 
 
 def test_clusters_covers_every_leaderboard_player(clusters, lb):

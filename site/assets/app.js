@@ -43,6 +43,39 @@ if (!D) {
 function qs(name){return new URLSearchParams(location.search).get(name);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function yr(date){return date?String(date).slice(0,4):'';}
+function playerLookupKey(name){
+  return String(name || '').replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();
+}
+function uniquePlayerIndex(names, keyFn){
+  const out = new Map(), collisions = new Set();
+  names.forEach(name => {
+    const key = keyFn(name);
+    if(!key || collisions.has(key)) return;
+    if(out.has(key) && out.get(key) !== name){
+      out.delete(key);
+      collisions.add(key);
+    }else{
+      out.set(key, name);
+    }
+  });
+  return out;
+}
+const PLAYER_NAMES = Object.keys(D.players || {});
+const PLAYER_BY_LOWER = uniquePlayerIndex(PLAYER_NAMES, name => String(name).trim().toLowerCase());
+const PLAYER_BY_LOOKUP = uniquePlayerIndex(PLAYER_NAMES, playerLookupKey);
+function canonicalPlayerName(name){
+  const raw = String(name || '').trim();
+  if(!raw) return null;
+  if(Object.prototype.hasOwnProperty.call(D.players || {}, raw)) return raw;
+  const lowerMatch = PLAYER_BY_LOWER.get(raw.toLowerCase());
+  if(lowerMatch) return lowerMatch;
+  if(/\([^)]*\)/.test(raw)) return null;
+  return PLAYER_BY_LOOKUP.get(playerLookupKey(raw)) || null;
+}
+function playerRecord(name){
+  const canonical = canonicalPlayerName(name);
+  return canonical ? D.players[canonical] : null;
+}
 
 /* localStorage can throw (private browsing, storage disabled); degrade to defaults */
 function getPref(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -103,7 +136,12 @@ function roleDisputeUrl(player, game, currentRole){
 function roleDisputeLink(player, game, currentRole){
   return `<a class="role-dispute small" href="${roleDisputeUrl(player, game, currentRole)}" target="_blank" rel="noopener">Dispute</a>`;
 }
-function playerLink(name){return `<a href="player.html?p=${encodeURIComponent(name)}">${esc(name)}</a>`;}
+function playerLink(name){
+  const raw = String(name || '').trim();
+  const canonical = canonicalPlayerName(raw);
+  if(!canonical) return esc(raw);
+  return `<a href="player.html?p=${encodeURIComponent(canonical)}">${esc(canonical)}</a>`;
+}
 function gameLink(game){return `<a href="game.html?g=${encodeURIComponent(game)}">${esc(game)}</a>`;}
 function fmtInt(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toLocaleString();}
 function fmtKd(v){return v==null||!Number.isFinite(+v)?'<span class="faint">–</span>':Number(v).toFixed(3);}

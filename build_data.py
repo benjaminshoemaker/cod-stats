@@ -91,10 +91,19 @@ PLAYER_NOTES = {
 PLAYER_ALIASES = {
     # The wiki awards table uses C6 for Crimsix's 2020 Champs Grand Finals MVP.
     'c6': 'crimsix',
+    # Disambiguated wiki names must be explicit: stripping every parenthetical
+    # would merge different players who share a display base.
+    'jake (jake dalton)': 'jake',
+    'methodz (anthony zinni)': 'methodz',
 }
 
 def norm(n): return re.sub(r'\s*\(.*?\)\s*', '', n).strip()   # strip disambiguation parenthetical
 def mkey(n):                                                   # case-insensitive join key (ABeZy vs aBeZy)
+    raw = (n or '').strip().lower()
+    if raw in PLAYER_ALIASES:
+        return PLAYER_ALIASES[raw]
+    if '(' in raw and ')' in raw:
+        return raw
     k = norm(n).lower()
     return PLAYER_ALIASES.get(k, k)
 def compact_key(n): return re.sub(r'[^a-z0-9]+', '', norm(n or '').lower())
@@ -321,9 +330,12 @@ def index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins):
     champs_by = defaultdict(list)
     for r in champs_rows:
         t = r['title']
-        # GUARD: the champs join is by normalized name, so a wiki disambiguation like
-        # "Scump (someone else)" would silently merge into the listed player's count.
-        if mkey(t['Player']) in top50_mkeys and norm(t['Player']) != t['Player'].strip():
+        raw_player = (t['Player'] or '').strip()
+        raw_key = raw_player.lower()
+        base_key = PLAYER_ALIASES.get(norm(raw_player).lower(), norm(raw_player).lower())
+        # GUARD: unknown disambiguated champs names whose base matches a listed
+        # player must be reviewed instead of silently merging into that player.
+        if raw_key not in PLAYER_ALIASES and base_key in top50_mkeys and norm(raw_player) != raw_player:
             raise RuntimeError(f"ambiguous champs name needs review: {t['Player']!r}")
         champs_by[mkey(t['Player'])].append({'event': t['Event'], 'year': (t.get('Date') or '')[:4]})
     for k in champs_by:
@@ -690,7 +702,7 @@ def kor_role_for_game(player, game, S, role_stints):
     return matches[0]['role'] if matches else 'Unknown'
 
 
-def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_stints=None):
+def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_stints=None, disp_by_mkey=None):
     """Build title/mode Kills Over Replacement tables from major-event stats.
 
     KOR is deliberately title/mode-only: no role adjustment, no overall split.
@@ -706,6 +718,8 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_
         player = r.get('Player') or r.get('PlayerLink') or r.get('PlayerName')
         if not player:
             continue
+        if disp_by_mkey:
+            player = disp_by_mkey.get(mkey(player), player)
         kills, deaths = _stat_int(r.get('Kills')), _stat_int(r.get('Deaths'))
         if kills is None or deaths is None:
             continue
@@ -1094,6 +1108,25 @@ def load_community_consensus_payload():
     consensus = json.load(open(paths['consensus']))
     sources = json.load(open(paths['sources']))
     ballots = json.load(open(paths['ballots']))
+    disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
+    def canon_player(player):
+        return disp_by_mkey.get(mkey(player or ''), player)
+    def canon_scores(scores):
+        out = defaultdict(float)
+        for player, score in (scores or {}).items():
+            out[canon_player(player)] += score
+        return dict(out)
+    for rows in (consensus.get('games') or {}).values():
+        for row in rows:
+            row['player'] = canon_player(row.get('player'))
+    for contribution in (consensus.get('source_contributions') or {}).values():
+        contribution['scores'] = canon_scores(contribution.get('scores'))
+    for source in sources.get('sources', []):
+        for row in source.get('ranked_players') or []:
+            row['player'] = canon_player(row.get('player'))
+    for ballot in ballots.get('ballots', []):
+        for row in ballot.get('entries') or []:
+            row['player'] = canon_player(row.get('player'))
     return {
         'schema_version': 1,
         'consensus': consensus,
@@ -1113,11 +1146,13 @@ def build_community_resume_wins():
     path = _p('player_event_wins.json')
     if not os.path.exists(path):
         return {}
+    disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
     wins = defaultdict(Counter)
     for r in json.load(open(path)):
         if not _keep(r) or not _played(r.get('Date')):
             continue
-        player = norm(r.get('Player') or '')
+        raw_player = r.get('Player') or ''
+        player = disp_by_mkey.get(mkey(raw_player), raw_player.strip())
         game = r.get('Game') or ''
         if player and game:
             wins[game][player] += 1
@@ -1168,6 +1203,7 @@ def build():
                 event_registry,
                 {event_id_for(e, event_registry) for e in events},
                 idx.role_stints,
+                disp_by_mkey,
             )}
 
 

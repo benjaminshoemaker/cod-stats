@@ -28,7 +28,8 @@
 <script src="assets/app.js?v=team-logos"></script>
 <script>
 mountNav('index.html');
-const name = qs('p');
+const requestedName = qs('p');
+const name = canonicalPlayerName(requestedName) || requestedName;
 const lb = D.leaderboard.find(r=>r.name===name);
 const p = D.players[name];
 const root = document.getElementById('root');
