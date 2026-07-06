@@ -848,13 +848,31 @@ function renderGoatTable(rankedRows, active, baseRanks){
   const selectedRow = selectedPlayerName ? rankedRows.find(row => row.player.name === selectedPlayerName) : null;
   if(selectedPlayerName && !selectedRow) selectedPlayerName = null;
   if(!goatTable){
-    goatTable = new Tabulator('#goatTable', {
+    goatTable = TableSurface.mountTabulator('#goatTable', {
+      label:'GOAT Builder ranking table',
       data,
       layout:'fitColumns',
       placeholder:'No players match this criteria set.',
       initialSort:[{column:state.sort.key, dir:state.sort.dir}],
       columns:buildGoatColumns(tableMedia.matches),
       rowFormatter:formatExpandedRow,
+      onDataSorted:() => {
+        const sorter = goatTable.getSorters()[0];
+        if(sorter){
+          state.sort = {key:sorter.field, dir:sorter.dir};
+          updateUrlState();
+        }
+        applyHeaderTooltips();
+        markTableSelection();
+      },
+      onBuilt:() => {
+        applyHeaderTooltips();
+        markTableSelection();
+      },
+      onRenderComplete:() => {
+        applyHeaderTooltips();
+        markTableSelection();
+      },
     });
     goatTable.on('rowClick', (e, row) => {
       if(e.target.closest('.gb-row-detail')) return;
@@ -863,23 +881,6 @@ function renderGoatTable(rankedRows, active, baseRanks){
       if(selectedPlayerName){
         requestAnimationFrame(() => row.getElement().scrollIntoView({block:'nearest', behavior:'smooth'}));
       }
-    });
-    goatTable.on('dataSorted', () => {
-      const sorter = goatTable.getSorters()[0];
-      if(sorter){
-        state.sort = {key:sorter.field, dir:sorter.dir};
-        updateUrlState();
-      }
-      applyHeaderTooltips();
-      markTableSelection();
-    });
-    goatTable.on('tableBuilt', () => {
-      applyHeaderTooltips();
-      markTableSelection();
-    });
-    goatTable.on('renderComplete', () => {
-      applyHeaderTooltips();
-      markTableSelection();
     });
   }else{
     goatTable.setData(data);

@@ -487,7 +487,8 @@ function mountOverallTable(rows, selected, mode){
     selected: selected && r.player === selected.player,
   }));
   const M = window.matchMedia('(max-width: 760px)').matches;
-  overallTable = new Tabulator('#cc-overall-table', {
+  overallTable = TableSurface.mountTabulator('#cc-overall-table', {
+    label: 'Overall community consensus table',
     data,
     layout: 'fitColumns',
     placeholder: 'No players match this era selection.',

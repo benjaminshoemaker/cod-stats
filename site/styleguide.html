@@ -388,7 +388,8 @@ document.getElementById('type-ramp').innerHTML = TEXT.map(t=>{
 }).join('');
 
 // ---- A tiny Tabulator so the themed table style is on the page too. ----
-new Tabulator('#demo-table', {
+TableSurface.mountTabulator('#demo-table', {
+  label:'Styleguide Tabulator demo table',
   layout:'fitColumns',
   data:[
     {rank:1, name:'Player A', adjusted:42.7, raw:31},

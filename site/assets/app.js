@@ -165,10 +165,11 @@ function tableCaption(label){
 function scrollHint(text='Scroll sideways to see all columns.'){
   return `<p class="scrollhint small muted">${esc(text)}</p>`;
 }
-function dataTableSurface({label, caption, className='', tableClass='data', tableAttrs={}, wrapperClass='', hint=false, head='', body='', rows='', foot='' }={}){
+function dataTableSurface({label, caption, className='', tableClass='data', tableAttrs={}, wrapperClass='', hint=false, head='', body='', rows='', foot='', html=null }={}){
   const content = body || rows || '';
-  const table = `<table ${attrString({class: tableClass, ...tableAttrs})}>${tableCaption(caption || label)}${head}<tbody>${content}</tbody>${foot}</table>`;
-  return `<div ${scrollRegionAttrs(label, wrapperClass)}>${hint ? scrollHint(typeof hint === 'string' ? hint : undefined) : ''}${table}</div>`;
+  const inner = html == null ? `${head}<tbody>${content}</tbody>${foot}` : html;
+  const table = `<table ${attrString({class: tableClass, ...tableAttrs})}>${tableCaption(caption || label)}${inner}</table>`;
+  return `<div ${scrollRegionAttrs(label, wrapperClass || className)}>${hint ? scrollHint(typeof hint === 'string' ? hint : undefined) : ''}${table}</div>`;
 }
 const SCROLL_REGION_SELECTOR = '.scroll-x, [data-scroll-region], .tabulator-tableholder';
 const scrollRegionState = new WeakMap();
