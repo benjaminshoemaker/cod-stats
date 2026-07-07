@@ -620,20 +620,34 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   padding:var(--space-3) var(--space-4);font-size:var(--text-sm)}
 .kor-detail-head{margin-bottom:var(--space-2);color:var(--muted)}
 .kor-detail-head .small{display:block;margin-top:2px}
-.kor-event-row{display:grid;grid-template-columns:minmax(11rem,1.8fr) 4.5rem 3.5rem minmax(4rem,1fr) 3.5rem;
+.kor-event-row{display:grid;grid-template-columns:minmax(11rem,1.8fr) 4rem 4.5rem 3.5rem minmax(3.5rem,1fr) 3.5rem;
   gap:var(--space-2);align-items:center;padding:var(--space-1) 0;border-top:1px solid var(--line)}
 .kor-event-row .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
 .kor-event-row .strong{font-weight:700}
 .kor-event-name{min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kor-event-toggle{border:0;background:transparent;color:var(--accent);cursor:pointer;font:inherit;font-weight:700;
+  padding:0 var(--space-1);min-width:1.3em;border-radius:var(--radius-sm)}
+.kor-event-toggle:hover{background:var(--accent-soft)}
 .kor-event-bar .bar-track{height:6px;border-radius:var(--radius-sm);background:var(--panel-2);overflow:hidden}
 .kor-event-bar .bar-fill{height:100%;border-radius:var(--radius-sm);background:var(--accent)}
 .kor-event-bar .bar-fill.neg{background:var(--neg)}
+/* match-level maps nested under an expanded event */
+.kor-event-maps{margin:0 0 var(--space-2) var(--space-2);padding:var(--space-1) 0 var(--space-1) var(--space-3);
+  border-left:2px solid var(--accent-line)}
+.kor-series-head{font-weight:700;margin-top:var(--space-1)}
+.kor-map-row{display:grid;grid-template-columns:minmax(8rem,1fr) 4.5rem 3rem;gap:var(--space-2);
+  padding:2px 0;font-size:var(--text-sm)}
+.kor-map-row .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.kor-map-row.off-split{opacity:.55}
+.kor-map-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kor-detail-foot{margin:var(--space-2) 0 0}
 @media(max-width:560px){
-  .kor-event-row{grid-template-columns:minmax(0,1fr) 4rem 3.2rem 3.2rem}
+  .kor-event-row{grid-template-columns:4rem 4.5rem 1fr 3.5rem}
+  .kor-event-name{grid-column:1/-1}
   .kor-event-bar{display:none}
   /* full event names beat ellipses on phones — CDL-era names share a long prefix */
   .kor-event-name{white-space:normal}
+  .kor-map-name{white-space:normal}
 }
 @media(max-width:760px){
   .select{width:100%;min-width:0}

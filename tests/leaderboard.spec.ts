@@ -672,7 +672,28 @@ test.describe('pages', () => {
     await expect(detail).toContainText('event by event vs the');
     expect(await detail.locator('.kor-event-row').count()).toBeGreaterThan(1);
     await expect(detail.locator('.kor-event-row .strong').first()).toHaveText(/^[+-]\d/);
+    // real kills–deaths shown per event alongside the derived KOR
+    await expect(detail.locator('.kor-event-row').first()).toContainText(/\d+–\d+/);
     await expect(scumpRow).toHaveAttribute('aria-expanded', 'true');
+
+    // an event expands further into match-level maps (lazy per-title shard)
+    const eventToggle = detail.locator('.kor-event-toggle').first();
+    await eventToggle.click();
+    const maps = detail.locator('.kor-event-maps');
+    await expect(maps).toBeVisible();
+    await expect(maps.locator('.kor-series-head').first()).toContainText('vs ');
+    expect(await maps.locator('.kor-map-row').count()).toBeGreaterThan(0);
+    await expect(maps.locator('.kor-map-row .n').first()).toHaveText(/\d+–\d+/);
+    // other-mode maps of the same series are shown dimmed with an explanation
+    await expect(maps.locator('.kor-map-row.off-split').first()).toBeVisible();
+    await expect(maps).toContainText(/count on that split's board/);
+    // collapse restores the compact trace; on desktop the toggle keeps focus
+    // (touch taps don't focus buttons, so the focus check is desktop-only)
+    await detail.locator('.kor-event-toggle').first().click();
+    await expect(detail.locator('.kor-event-maps')).toHaveCount(0);
+    if (test.info().project.name === 'desktop') {
+      await expect(detail.locator('.kor-event-toggle').first()).toBeFocused();
+    }
     // the trace stays inside the viewport even though the table can scroll sideways
     const dbox = (await detail.boundingBox())!;
     const vp = page.viewportSize()!;

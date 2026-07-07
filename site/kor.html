@@ -59,7 +59,11 @@ let korTable = null;
 let showAllRows = false;
 let expandedKey = null;          // `${player}|${game}` of the row whose event trace is open
 let korDetail = null;            // kor-detail.json players map, lazy-loaded on first expand
+let korDetailMeta = null;        // its meta (per-title map shard filenames)
 let korDetailPromise = null;
+const expandedEvents = new Set();   // `${player}|${game}|${eventId}` with the map list open
+const mapShardPromises = {};        // game -> fetch promise for its kor-maps shard
+const mapShards = {};               // game -> resolved shard data
 let currentView = {game: 'all', split: 'respawn'};
 const KOR_ALL_ROW_LIMIT = 100;
 const SMALL_POOL_LIMIT = 20;   // below this many qualified players, the percentile baseline itself is fragile
@@ -195,10 +199,21 @@ function loadKorDetail(){
   if(!korDetailPromise){
     korDetailPromise = fetch('kor-detail.json')
       .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
-      .then(data => { korDetail = data.players || {}; })
+      .then(data => { korDetail = data.players || {}; korDetailMeta = data.meta || {}; })
       .catch(err => { console.error(err); korDetailPromise = null; throw err; });
   }
   return korDetailPromise;
+}
+function loadMapShard(game){
+  if(!mapShardPromises[game]){
+    const file = korDetailMeta?.mapFiles?.[game];
+    if(!file) return Promise.reject(new Error(`no map shard for ${game}`));
+    mapShardPromises[game] = fetch(file)
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+      .then(data => { mapShards[game] = data; })
+      .catch(err => { console.error(err); delete mapShardPromises[game]; throw err; });
+  }
+  return mapShardPromises[game];
 }
 
 const ordPlace = p => {
@@ -206,6 +221,34 @@ const ordPlace = p => {
   if(Number.isInteger(p)) return p === 1 ? '<span class="pill champ">Won ◆</span>' : `<span class="faint">${ord(p)}</span>`;
   return `<span class="faint">${ord(Math.floor(p))}–${ord(Math.ceil(p))}</span>`;
 };
+
+function eventMapsHtml(d, e){
+  const rows = mapShards[d.game]?.players?.[d.player]?.[e.id];
+  if(!rows || !rows.length) return '<div class="kor-event-maps"><p class="small muted">No map-level rows for this event.</p></div>';
+  const series = [];
+  rows.forEach(m => {
+    const last = series[series.length - 1];
+    if(last && last.ser === (m.ser || '') && last.vs === m.vs) last.maps.push(m);
+    else series.push({ser: m.ser || '', vs: m.vs, maps: [m]});
+  });
+  const wantSnd = currentView.split === 'snd';
+  const hasOffSplit = rows.some(m => m.snd !== wantSnd);
+  const kd = m => m.d ? (m.k / m.d).toFixed(2) : (m.k ? '∞' : '–');
+  return `<div class="kor-event-maps">
+    ${series.map(s => `<div class="kor-series">
+      <div class="kor-series-head">vs ${esc(s.vs || 'unknown')} <span class="faint">${s.maps.length} map${s.maps.length === 1 ? '' : 's'}</span></div>
+      ${s.maps.map(m => {
+        const off = m.snd !== wantSnd;
+        return `<div class="kor-map-row${off ? ' off-split' : ''}">
+          <div class="kor-map-name">${esc(m.map || '—')} <span class="faint">${esc(m.mode || '')}</span></div>
+          <div class="n">${m.k}–${m.d}</div>
+          <div class="n faint">${kd(m)}</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('')}
+    ${hasOffSplit ? `<p class="small faint">Dimmed maps are ${wantSnd ? 'respawn' : 'S&amp;D'} — they count on that split's board, not in this row.</p>` : ''}
+  </div>`;
+}
 
 function detailHtml(d){
   const events = korDetail?.[d.player]?.[d.game]?.[currentView.split];
@@ -219,26 +262,66 @@ function detailHtml(d){
   const rows = enriched.map(e => {
     const year = yr(e.date);
     const yearNote = year && !String(e.event).includes(year) ? ` <span class="faint">${year}</span>` : '';
+    const open = expandedEvents.has(`${d.player}|${d.game}|${e.id}`);
     return `<div class="kor-event-row">
-      <div class="kor-event-name">${esc(e.event)}${yearNote} ${ordPlace(e.place)}</div>
+      <div class="kor-event-name">
+        <button type="button" class="kor-event-toggle" data-event-id="${esc(e.id)}" aria-expanded="${open}"
+          aria-label="${open ? 'Hide' : 'Show'} the match-level maps for ${esc(e.event)}">${open ? '▾' : '▸'}</button>
+        ${esc(e.event)}${yearNote} ${ordPlace(e.place)}</div>
       <div class="n faint">${e.maps} map${e.maps === 1 ? '' : 's'}</div>
+      <div class="n">${e.kills}–${e.deaths}</div>
       <div class="n">${num(e.kpm)}</div>
       <div class="kor-event-bar"><div class="bar-track"><div class="bar-fill${(e.kor ?? 0) < 0 ? ' neg' : ''}"
         style="width:${(Math.abs(e.kor ?? 0) / max * 100).toFixed(1)}%"></div></div></div>
       <div class="n strong">${signedNum(e.kor)}</div>
-    </div>`;
+    </div>${open ? eventMapsHtml(d, e) : ''}`;
   }).join('');
   return `<div class="kor-detail-head"><strong>${esc(d.player)}</strong> · ${esc(d.game)} ${splitLabel(currentView.split)},
       event by event vs the ${num(repl)} K/map baseline
-      <span class="small faint">maps · K/map · KOR/map</span></div>
+      <span class="small faint">maps · kills–deaths · K/map · KOR/map — ▸ expands an event's maps</span></div>
     ${rows}
     <p class="small faint kor-detail-foot">Single-event mode samples are small — read event-level rates loosely.</p>`;
+}
+
+/* Toggles the maps block in place (no trace re-render), so the clicked button
+   keeps keyboard focus. detailHtml still renders open state on full redraws. */
+function toggleKorEvent(row, d, btn){
+  const eventId = btn.dataset.eventId;
+  const key = `${d.player}|${d.game}|${eventId}`;
+  const evRow = btn.closest('.kor-event-row');
+  const setOpen = open => {
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? '▾' : '▸';
+    btn.setAttribute('aria-label', btn.getAttribute('aria-label').replace(open ? /^Show/ : /^Hide/, open ? 'Hide' : 'Show'));
+    row.normalizeHeight?.();
+    // normalizeHeight can make Tabulator rebuild the row (fresh detail, fresh
+    // buttons); once that settles, put focus back on this event's toggle
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.querySelector(`.kor-row-detail[data-detail="${CSS.escape(d.player)}"] .kor-event-toggle[data-event-id="${CSS.escape(eventId)}"]`)?.focus();
+    }));
+  };
+  if(expandedEvents.has(key)){
+    expandedEvents.delete(key);
+    if(evRow.nextElementSibling?.classList.contains('kor-event-maps')) evRow.nextElementSibling.remove();
+    setOpen(false);
+    return;
+  }
+  loadMapShard(d.game).then(() => {
+    expandedEvents.add(key);
+    evRow.insertAdjacentHTML('afterend', eventMapsHtml(d, {id: eventId}));
+    setOpen(true);
+  }).catch(() => {});
 }
 
 function formatKorRow(row){
   markBaselineRow(row);
   const d = row.getData();
   const el = row.getElement();
+  // a redraw can rebuild this detail while an event toggle holds focus (e.g.
+  // normalizeHeight after a click); carry focus over to the equivalent button
+  const active = document.activeElement;
+  const refocusId = active?.classList?.contains('kor-event-toggle') && el.contains(active)
+    ? active.dataset.eventId : null;
   el.querySelector('.kor-row-detail')?.remove();
   if(d.baseline) return;
   const expanded = expandedKey === `${d.player}|${d.game}`;
@@ -261,7 +344,17 @@ function formatKorRow(row){
   detail.className = 'kor-row-detail';
   detail.setAttribute('data-detail', d.player);
   detail.innerHTML = detailHtml(d);
+  detail.addEventListener('click', e => {
+    // the row's own click handler must never see clicks inside the trace: a
+    // synchronous re-render detaches e.target, breaking its closest() guard
+    e.stopPropagation();
+    const btn = e.target.closest('.kor-event-toggle');
+    if(btn) toggleKorEvent(row, d, btn);
+  });
   el.appendChild(detail);
+  if(refocusId != null){
+    detail.querySelector(`.kor-event-toggle[data-event-id="${CSS.escape(refocusId)}"]`)?.focus();
+  }
   row.normalizeHeight?.();
 }
 
@@ -313,6 +406,7 @@ function render(game, split){
   korTable = null;
   currentView = {game, split};
   expandedKey = null;
+  expandedEvents.clear();
   if(!rows.length){
     host.innerHTML = '<p class="note">No qualified KOR rows for this selection.</p>';
     return;
