@@ -18,7 +18,7 @@ import json, sys, os, time, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from build_data import DROP_EVENTS, DROP_GAMES, PUBLISHED, mkey
 
-UA = "Mozilla/5.0 (compatible; cod-stats-source-check/1.0; +https://cod-stats-one.vercel.app)"
+UA = "Mozilla/5.0 (compatible; cod-stats-source-check/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
 
 

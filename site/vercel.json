@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "cod-stats-one.vercel.app"
+        }
+      ],
+      "destination": "https://mapfive.app/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/r",

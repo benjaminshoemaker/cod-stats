@@ -20,7 +20,7 @@ function mountNav(active){
   document.body.insertAdjacentHTML('afterbegin',
     `<a class="skip" href="#root">Skip to content</a>`+
     `<header class="site-head"><div class="inner">
-      <a class="brand" href="index.html">CoD Major Wins <span class="dot">◆</span> Era-Adjusted</a>
+      <a class="brand" href="index.html">Map Five</a>
       <nav class="nav">${nav}</nav>
     </div></header>`);
   // dropdown open/close (click to toggle, click-away + Esc to close)

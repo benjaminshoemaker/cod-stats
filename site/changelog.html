@@ -3,19 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Changelog · CoD Era-Adjusted</title>
+<title>Changelog · Map Five</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://mapfive.app/changelog.html">
 <meta name="description" content="What's changed in the era-adjusted Call of Duty major-wins site, including methodology changes that move the rankings, with their rationale.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
-<meta property="og:title" content="Changelog · CoD Era-Adjusted">
+<meta property="og:site_name" content="Map Five">
+<meta property="og:title" content="Changelog · Map Five">
 <meta property="og:description" content="What's changed, including methodology updates that move the rankings, logged with their rationale and impact.">
-<meta property="og:url" content="https://cod-stats-one.vercel.app/changelog.html">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:url" content="https://mapfive.app/changelog.html">
+<meta property="og:image" content="https://mapfive.app/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://mapfive.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -41,6 +42,10 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-07', tag:'Changed', title:'Site renamed to Map Five',
+   body:`The site now uses the <strong>Map Five</strong> name and the canonical domain
+   <a href="https://mapfive.app/">mapfive.app</a>. Page metadata, share images, canonical URLs, the sitemap, and the
+   old Vercel hostname redirect now point at the new domain. Rankings, methodology, and source data are unchanged.`},
   {date:'2026-07-07', tag:'Methodology', title:'Black Ops 4 denominator corrected to six majors',
    body:`CWL Pro League 2019 was removed from the Black Ops 4 major list because the source row is the Pro League
    match-bonus/league page, not a tournament with a champion. The BO4 season now counts six majors: Vegas, Fort Worth,

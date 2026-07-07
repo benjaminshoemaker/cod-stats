@@ -2,7 +2,7 @@
    The Sentry bundle is loaded synchronously from each page's <head>, so init runs
    before page render code below. Everything is still gated to the deployed site
    so local dev sessions and Playwright runs don't send events or burn quota. */
-const DEPLOYED = /\.vercel\.app$/.test(location.hostname);
+const DEPLOYED = location.hostname === 'mapfive.app' || /\.vercel\.app$/.test(location.hostname);
 if (DEPLOYED && window.Sentry) {
   Sentry.init({
     dsn: "https://31fc37624c1589dbbe233db42c843560@o4511651597975552.ingest.us.sentry.io/4511651631398912",
@@ -21,7 +21,7 @@ if (DEPLOYED && window.Sentry) {
       }),
     ],
     tracesSampleRate: 0,             // no performance tracing, conserve free quota
-    allowUrls: [/\.vercel\.app/],
+    allowUrls: [/mapfive\.app/, /\.vercel\.app/],
   });
 }
 if (DEPLOYED) {
@@ -41,6 +41,15 @@ if (!D && Array.from(document.scripts).some(s => /(^|\/)data\.js(\?|$)/.test(s.g
 }
 function qs(name){return new URLSearchParams(location.search).get(name);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setCanonical(url){
+  let link = document.querySelector('link[rel="canonical"]');
+  if(!link){
+    link = document.createElement('link');
+    link.rel = 'canonical';
+    document.head.appendChild(link);
+  }
+  link.href = url;
+}
 function yr(date){return date?String(date).slice(0,4):'';}
 function playerLookupKey(name){
   return String(name || '').replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();

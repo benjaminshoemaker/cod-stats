@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 import build_data
 
-UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://cod-stats-one.vercel.app)"
+UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
 BATCH = 40
 PAUSE = 3

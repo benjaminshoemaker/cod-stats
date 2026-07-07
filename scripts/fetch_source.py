@@ -40,7 +40,7 @@ import json, os, sys, time, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://cod-stats-one.vercel.app)"
+UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
 PAGE = 500          # cargo API row cap per request
 PAUSE = 5           # courtesy sleep between successful requests (seconds)

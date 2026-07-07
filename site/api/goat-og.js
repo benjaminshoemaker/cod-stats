@@ -34,7 +34,7 @@ export default function handler(req){
     h('div', { style: { position: 'absolute', top: 0, left: 0, right: 0, height: 8, background: ACCENT, display: 'flex' } }),
     h('div', { style: flex({ justifyContent: 'space-between', alignItems: 'center' }) },
       h('div', { style: flex({ alignItems: 'center', fontSize: 26, fontWeight: 700, color: INK }) },
-        'CoD Major Wins', h('div', { style: flex({ margin: '0 10px' }) }, diamond(16, ACCENT)), 'GOAT Builder'),
+        'Map Five', h('div', { style: flex({ margin: '0 10px' }) }, diamond(16, ACCENT)), 'GOAT Builder'),
       h('div', { style: flex({ fontSize: 22, fontWeight: 600, color: '#1e40af', background: '#eef4ff', border: '1px solid #d7e3ff', borderRadius: 999, padding: '10px 22px' }) }, badge)),
     h('div', { style: flex({ fontSize: 52, fontWeight: 800, color: INK, margin: '26px 0 8px' }) },
       isDefault ? 'The site-default GOAT list' : 'My GOAT list'),
@@ -43,7 +43,7 @@ export default function handler(req){
       : h('div', { style: flex({ flex: 1, alignItems: 'center', fontSize: 34, color: MUTED }) }, 'No players match these settings.'),
     h('div', { style: flex({ justifyContent: 'space-between', color: MUTED, fontSize: 22, marginTop: 14 }) },
       h('div', { style: flex({}) }, `Weighted by ${weightsText}`),
-      h('div', { style: flex({ color: ACCENT, fontWeight: 700 }) }, 'cod-stats-one.vercel.app')),
+      h('div', { style: flex({ color: ACCENT, fontWeight: 700 }) }, 'mapfive.app')),
   );
 
   return new ImageResponse(card, { width: 1200, height: 630 });

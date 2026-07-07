@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Player · CoD Era-Adjusted</title>
+<title>Player · Map Five</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty player's major tournament wins, era-adjusted season by season, with their world championship count.">
 <meta property="og:type" content="profile">
-<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
+<meta property="og:site_name" content="Map Five">
 <meta property="og:title" content="Era-Adjusted Major Wins · Player">
 <meta property="og:description" content="Every major win broken down by season, each weighted by how many majors that season had.">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:url" content="https://mapfive.app/player.html">
+<meta property="og:image" content="https://mapfive.app/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://mapfive.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css?v=skill-stats">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -39,7 +40,8 @@ if(!p || !lb){
     <h1>Player not found</h1><p class="muted">No leaderboard data for "${esc(name||'')}".</p>`;
   mountFoot();
 }else{
-  document.title = `${p.name} · CoD Era-Adjusted`;
+  document.title = `${p.name} · Map Five`;
+  setCanonical(`https://mapfive.app/player.html?p=${encodeURIComponent(p.name)}`);
   const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
   const avgPlace = p.avg_place == null ? '–' : p.avg_place.toFixed(1);
   const ratePct = v => v == null ? '–' : `${Math.round(v * 100)}%`;

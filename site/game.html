@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Season · CoD Era-Adjusted</title>
+<title>Season · Map Five</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <meta name="description" content="A Call of Duty season's major tournaments, their winners, and how each win contributes to adjusted wins.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
-<meta property="og:title" content="Season majors & adjusted wins · CoD Era-Adjusted">
+<meta property="og:site_name" content="Map Five">
+<meta property="og:title" content="Season majors & adjusted wins · Map Five">
 <meta property="og:description" content="Every major in the season, its winner, and the per-win season share used in the era adjustment.">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:url" content="https://mapfive.app/game.html">
+<meta property="og:image" content="https://mapfive.app/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta name="twitter:image" content="https://mapfive.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -35,7 +36,8 @@ const avg=D.meta.mbarAll;
 if(!g){
   root.innerHTML=`<p class="crumb"><a href="games.html">← Seasons</a></p><h1>Season not found</h1>`;
 }else{
-  document.title = `${g.game} · CoD Era-Adjusted`;
+  document.title = `${g.game} · Map Five`;
+  setCanonical(`https://mapfive.app/game.html?g=${encodeURIComponent(g.game)}`);
   const evRows=g.events.map(e=>`<tr>
     <td class="faint num small">${esc(e.date||'')}</td>
     <td>${esc(e.event)}</td>

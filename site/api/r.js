@@ -20,7 +20,7 @@ export default function handler(req){
   const top = computeRows(D, selected, ring).sort((a, b) => a.adjRank - b.adjRank).slice(0, 3).map(r => r.name).join(', ');
 
   const badge = (LABEL[tok] || `${[...selected].length} titles`) + (ring > 1 ? ` · rings ×${ring}` : '');
-  const title = `Era-Adjusted CoD Major Wins · ${badge}`;
+  const title = `Map Five · ${badge}`;
   const desc = (top ? `Top: ${top}. ` : '') + 'Every season weighted equally · a win counts as its share of that season’s majors.';
   const qs = url.search;                                  // carries eras/rings/hide/sort/q
   const ogImg = esc(`${url.origin}/api/og${qs}`);
