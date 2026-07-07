@@ -270,10 +270,11 @@ def median(values):
 
 
 def rate_from_counts(numer, denom):
-    """Round a positive rate to 3 decimals using the site's JS-compatible rule."""
+    """Unrounded rate — displays round exactly once, so the shown percent always
+    matches the numerator/denominator rendered beside it (no double rounding)."""
     if not denom:
         return None
-    return ((numer * 1000 * 2 + denom) // (2 * denom)) / 1000
+    return numer / denom
 
 
 def index_participation(ppart, top50_mkeys, event_registry):

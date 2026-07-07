@@ -243,9 +243,11 @@ def test_average_placement_uses_same_rows_as_player_page(data):
         assert pl["placement_wins"] == wins
         assert pl["finals"] == finals
         assert pl["deep_runs"] == deep_runs
-        assert pl["win_conversion"] == build_data.rate_from_counts(wins, len(part))
-        assert pl["finals_rate"] == build_data.rate_from_counts(finals, len(part))
-        assert pl["deep_run_rate"] == build_data.rate_from_counts(deep_runs, len(part))
+        # exact fractions, not just rate_from_counts: any stored rounding would
+        # double-round on display and contradict the num/denom shown beside it
+        assert pl["win_conversion"] == (wins / len(part) if part else None)
+        assert pl["finals_rate"] == (finals / len(part) if part else None)
+        assert pl["deep_run_rate"] == (deep_runs / len(part) if part else None)
 
         by_game = {}
         for m in part:

@@ -8,7 +8,7 @@
 function gcd(a, b){ a = a < 0n ? -a : a; b = b < 0n ? -b : b; while(b){ const t = a % b; a = b; b = t; } return a; }
 function lcm(a, b){ return a / gcd(a, b) * b; }
 function avgPlaceFromX2(sum, events){ return events ? Math.floor((sum * 100 + events) / (2 * events)) / 100 : null; }
-function rate(numer, denom){ return denom ? Math.round(numer / denom * 1000) / 1000 : null; }
+function rate(numer, denom){ return denom ? numer / denom : null; }
 function roleSummaryForGames(player, selected){
   const roles = new Set(((player && player.role_by_game) || [])
     .filter(r => selected.has(r.game) && r.role && r.role !== 'Unknown')
