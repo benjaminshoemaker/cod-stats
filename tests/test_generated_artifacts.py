@@ -79,6 +79,36 @@ def test_kor_json_is_generated_with_mode_specific_rows():
     assert bo6["respawn"]["rows"][0]["top8OpponentPct"] is not None
 
 
+def test_kor_detail_json_is_generated_and_reconciles():
+    # write() splits the event-by-event traces into kor-detail.json; kor.json's
+    # shape (the page's fetch contract) must stay unchanged, and the traces must
+    # cover exactly the qualified rows.
+    kor = json.load(open(os.path.join(ROOT, "site", "kor.json")))
+    assert "_detail" not in kor
+    players = json.load(open(os.path.join(ROOT, "site", "kor-detail.json")))["players"]
+    row_keys = {(r["player"], g, s) for g, gd in kor["games"].items()
+                for s, sc in gd["splits"].items() for r in sc["rows"]}
+    detail_keys = {(p, g, s) for p, games in players.items()
+                   for g, splits in games.items() for s in splits}
+    assert detail_keys == row_keys
+    scump = players["Scump"]["Black Ops 2"]["respawn"]
+    row = next(r for r in kor["games"]["Black Ops 2"]["splits"]["respawn"]["rows"]
+               if r["player"] == "Scump")
+    assert sum(e["maps"] for e in scump) == row["maps"]
+    assert len(scump) == row["events"]
+
+    # per-title map shards exist where kor-detail points and reconcile to traces
+    detail = json.load(open(os.path.join(ROOT, "site", "kor-detail.json")))
+    shard_path = detail["meta"]["mapFiles"]["Black Ops 2"]
+    shard = json.load(open(os.path.join(ROOT, "site", shard_path)))
+    assert shard["game"] == "Black Ops 2"
+    for e in scump:
+        rows = [m for m in shard["players"]["Scump"][e["id"]] if not m["snd"]]
+        assert len(rows) == e["maps"]
+        assert sum(m["k"] for m in rows) == e["kills"]
+        assert sum(m["d"] for m in rows) == e["deaths"]
+
+
 def test_community_consensus_json_is_generated_for_static_site():
     payload = json.load(open(os.path.join(ROOT, "site", "community-consensus.json")))
     assert payload["schema_version"] == 1

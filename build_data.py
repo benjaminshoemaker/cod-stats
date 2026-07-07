@@ -629,7 +629,8 @@ KOR_REPLACEMENT_PERCENTILE = Fraction(1, 4)
 
 
 def _kor_empty_bucket():
-    return {'kills': 0, 'deaths': 0, 'maps': 0, 'events': set(), 'opponentPlaces': [], 'top8Maps': 0, 'opponentMaps': 0}
+    return {'kills': 0, 'deaths': 0, 'maps': 0, 'events': set(), 'opponentPlaces': [], 'top8Maps': 0, 'opponentMaps': 0,
+            'perEvent': {}}
 
 
 def _kor_percentile(values, pct):
@@ -647,13 +648,24 @@ def _kor_percentile(values, pct):
     return values[lo] + (values[hi] - values[lo]) * weight
 
 
-def _kor_add(bucket, row, kills, deaths, opponent_place):
+def _kor_add(bucket, row, kills, deaths, opponent_place, own_place=None, event_name=None):
     bucket['kills'] += kills
     bucket['deaths'] += deaths
     bucket['maps'] += 1
     event_id = row.get('EventId') or row.get('Event')
     if event_id:
         bucket['events'].add(event_id)
+        ev = bucket['perEvent'].setdefault(event_id, {
+            'event': str(event_name or row.get('Event') or event_id), 'id': str(event_id),
+            'date': None, 'kills': 0, 'deaths': 0, 'maps': 0, 'place': None})
+        ev['kills'] += kills
+        ev['deaths'] += deaths
+        ev['maps'] += 1
+        date = str(row.get('Date') or '')
+        if date and (ev['date'] is None or date < ev['date']):
+            ev['date'] = date
+        if own_place is not None:
+            ev['place'] = own_place
     if opponent_place is not None:
         bucket['opponentPlaces'].append(opponent_place)
         bucket['opponentMaps'] += 1
@@ -709,6 +721,7 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_
     """
     opponent_places = index_opponent_places(tpart, event_registry, major_event_ids)
     by_game_player = defaultdict(lambda: defaultdict(lambda: {split: _kor_empty_bucket() for split in KOR_SPLITS}))
+    map_rows_by_game = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
     for r in player_stat_rows:
         if not _keep(r) or not _played(r.get('Date')):
             continue
@@ -728,13 +741,25 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_
         if event_id not in major_event_ids:
             continue
         opponent_place = opponent_places.get((event_id, compact_key(r.get('TeamVs') or '')))
-        _kor_add(by_game_player[game][player][split], r, kills, deaths, opponent_place)
+        own_place = opponent_places.get((event_id, compact_key(r.get('Team') or '')))
+        _kor_add(by_game_player[game][player][split], r, kills, deaths, opponent_place, own_place,
+                 event_name_for(r, event_registry))
+        map_rows_by_game[game][player][str(event_id)].append({
+            '_sort': (str(r.get('Date') or ''), str(r.get('SeriesId') or '')),
+            'ser': str(r.get('SeriesId') or '') or None,
+            'map': str(r.get('Map') or '') or None,
+            'mode': str(r.get('Mode') or r.get('Gamemode') or '') or None,
+            'snd': split == 'snd',
+            'vs': str(r.get('TeamVs') or '') or None,
+            'k': kills, 'd': deaths,
+        })
 
     out = {'meta': {
         'replacementPercentile': float(KOR_REPLACEMENT_PERCENTILE),
         'splits': KOR_SPLITS,
         'description': 'Major-event kills per map above the 25th-percentile qualified player in the same title/mode split.',
     }, 'games': {}}
+    detail_players = {}
     for game in S.order:
         if game not in by_game_player:
             continue
@@ -747,11 +772,18 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_
                 if b['maps']:
                     players_with_maps += 1
                 if b['maps'] >= cfg['minMaps'] and b['kpm'] is not None:
-                    finished.append((player, b))
-            replacement = _kor_percentile([b['kpm'] for _, b in finished], KOR_REPLACEMENT_PERCENTILE)
+                    finished.append((player, b, splits[split]))
+            replacement = _kor_percentile([b['kpm'] for _, b, _ in finished], KOR_REPLACEMENT_PERCENTILE)
             rows = []
             if replacement is not None:
-                for player, b in finished:
+                for player, b, raw in finished:
+                    events = sorted(raw['perEvent'].values(), key=lambda e: (e['date'] or '', e['event']))
+                    detail_players.setdefault(player, {}).setdefault(game, {})[split] = [
+                        {'event': e['event'], 'id': e['id'], 'date': e['date'],
+                         'kills': e['kills'], 'deaths': e['deaths'], 'maps': e['maps'],
+                         **({'place': int(e['place']) if e['place'] == int(e['place']) else e['place']}
+                            if e['place'] is not None else {})}
+                        for e in events]
                     kor = b['kpm'] - replacement
                     rows.append({
                         'player': player,
@@ -778,6 +810,27 @@ def build_kor(player_stat_rows, tpart, S, event_registry, major_event_ids, role_
                 'rows': rows,
             }
         out['games'][game] = game_out
+    # map-level shards ship one file per title and only for qualified rows, so a
+    # tournament expand downloads that title's maps once instead of 77k rows
+    maps_by_game, map_files = {}, {}
+    for player, games in detail_players.items():
+        for game in games:
+            rows_by_event = map_rows_by_game[game][player]
+            game_maps = maps_by_game.setdefault(game, {})
+            game_maps[player] = {
+                event_id: [{k: v for k, v in m.items() if k != '_sort'}
+                           for m in sorted(rows, key=lambda m: m['_sort'])]
+                for event_id, rows in rows_by_event.items()}
+    for game in maps_by_game:
+        slug = re.sub(r'[^a-z0-9]+', '-', game.lower()).strip('-')
+        map_files[game] = f'kor-maps-{slug}.json'
+    out['_detail'] = {
+        'meta': {'description': 'Per-event kills/deaths/maps for each qualified KOR row (major events only). '
+                                'K/map and KOR per event derive from these against kor.json baselines.',
+                 'mapFiles': map_files},
+        'players': detail_players,
+        'mapsByGame': maps_by_game,
+    }
     return out
 
 
@@ -1216,6 +1269,16 @@ def write(data, path=None):
     with open(_p('site', 'participation.json'), 'w') as f:
         json.dump(participation, f)
     kor = data.pop('_kor', {})
+    # event-by-event traces are only needed when a row is expanded, so they ship
+    # as a separate lazy-loaded file instead of inflating every kor.html visit;
+    # map-level rows split further into one shard per title (see build_kor)
+    kor_detail = kor.pop('_detail', {})
+    maps_by_game = kor_detail.pop('mapsByGame', {})
+    for game, players in maps_by_game.items():
+        with open(_p('site', kor_detail['meta']['mapFiles'][game]), 'w') as f:
+            json.dump({'game': game, 'players': players}, f)
+    with open(_p('site', 'kor-detail.json'), 'w') as f:
+        json.dump(kor_detail, f)
     with open(_p('site', 'kor.json'), 'w') as f:
         json.dump(kor, f)
     with open(_p('site', 'community-consensus.json'), 'w') as f:

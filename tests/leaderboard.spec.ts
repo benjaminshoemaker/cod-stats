@@ -664,6 +664,26 @@ test.describe('pages', () => {
     await expect(baseline).toContainText('Replacement baseline');
     await expect(baseline).toHaveAttribute('title', /25th percentile K\/map of \d+ qualified players/);
 
+    // clicking a row lazy-loads and expands its event-by-event trace
+    const scumpRow = page.locator('#kor-table .tabulator-row').first();
+    await scumpRow.click();
+    const detail = page.locator('#kor-table .kor-row-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('event by event vs the');
+    expect(await detail.locator('.kor-event-row').count()).toBeGreaterThan(1);
+    await expect(detail.locator('.kor-event-row .strong').first()).toHaveText(/^[+-]\d/);
+    await expect(scumpRow).toHaveAttribute('aria-expanded', 'true');
+    // the trace stays inside the viewport even though the table can scroll sideways
+    const dbox = (await detail.boundingBox())!;
+    const vp = page.viewportSize()!;
+    expect(dbox.x).toBeGreaterThanOrEqual(0);
+    expect(dbox.x + dbox.width).toBeLessThanOrEqual(vp.width + 1);
+    // Enter on the focused row collapses it again; the baseline row never expands
+    await scumpRow.press('Enter');
+    await expect(page.locator('#kor-table .kor-row-detail')).toHaveCount(0);
+    await baseline.click();
+    await expect(page.locator('#kor-table .kor-row-detail')).toHaveCount(0);
+
     // a tiny qualified pool is flagged, not silent (BO2 respawn qualifies only 13 players)
     await page.locator('#kor-game').selectOption('Black Ops 2');
     await expect(page.locator('.kor-pool-note')).toContainText(/Only \d+ players qualify/);

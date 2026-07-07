@@ -57,6 +57,10 @@ const host = document.getElementById('kor-root');
 let KOR = null;
 let korTable = null;
 let showAllRows = false;
+let expandedKey = null;          // `${player}|${game}` of the row whose event trace is open
+let korDetail = null;            // kor-detail.json players map, lazy-loaded on first expand
+let korDetailPromise = null;
+let currentView = {game: 'all', split: 'respawn'};
 const KOR_ALL_ROW_LIMIT = 100;
 const SMALL_POOL_LIMIT = 20;   // below this many qualified players, the percentile baseline itself is fragile
 const mq = window.matchMedia('(max-width:760px)');
@@ -187,6 +191,91 @@ function markBaselineRow(row){
   }
 }
 
+function loadKorDetail(){
+  if(!korDetailPromise){
+    korDetailPromise = fetch('kor-detail.json')
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+      .then(data => { korDetail = data.players || {}; })
+      .catch(err => { console.error(err); korDetailPromise = null; throw err; });
+  }
+  return korDetailPromise;
+}
+
+const ordPlace = p => {
+  if(p == null) return '';
+  if(Number.isInteger(p)) return p === 1 ? '<span class="pill champ">Won ◆</span>' : `<span class="faint">${ord(p)}</span>`;
+  return `<span class="faint">${ord(Math.floor(p))}–${ord(Math.ceil(p))}</span>`;
+};
+
+function detailHtml(d){
+  const events = korDetail?.[d.player]?.[d.game]?.[currentView.split];
+  if(!events || !events.length) return '<p class="small muted">No event-level rows available for this season.</p>';
+  const repl = d.replacementKpm;
+  const enriched = events.map(e => {
+    const kpm = e.kills / e.maps;
+    return {...e, kpm, kor: repl == null ? null : kpm - repl};
+  });
+  const max = Math.max(...enriched.map(e => Math.abs(e.kor ?? 0)), 0.5);
+  const rows = enriched.map(e => {
+    const year = yr(e.date);
+    const yearNote = year && !String(e.event).includes(year) ? ` <span class="faint">${year}</span>` : '';
+    return `<div class="kor-event-row">
+      <div class="kor-event-name">${esc(e.event)}${yearNote} ${ordPlace(e.place)}</div>
+      <div class="n faint">${e.maps} map${e.maps === 1 ? '' : 's'}</div>
+      <div class="n">${num(e.kpm)}</div>
+      <div class="kor-event-bar"><div class="bar-track"><div class="bar-fill${(e.kor ?? 0) < 0 ? ' neg' : ''}"
+        style="width:${(Math.abs(e.kor ?? 0) / max * 100).toFixed(1)}%"></div></div></div>
+      <div class="n strong">${signedNum(e.kor)}</div>
+    </div>`;
+  }).join('');
+  return `<div class="kor-detail-head"><strong>${esc(d.player)}</strong> · ${esc(d.game)} ${splitLabel(currentView.split)},
+      event by event vs the ${num(repl)} K/map baseline
+      <span class="small faint">maps · K/map · KOR/map</span></div>
+    ${rows}
+    <p class="small faint kor-detail-foot">Single-event mode samples are small — read event-level rates loosely.</p>`;
+}
+
+function formatKorRow(row){
+  markBaselineRow(row);
+  const d = row.getData();
+  const el = row.getElement();
+  el.querySelector('.kor-row-detail')?.remove();
+  if(d.baseline) return;
+  const expanded = expandedKey === `${d.player}|${d.game}`;
+  if(el.tabIndex < 0) el.tabIndex = 0;
+  el.setAttribute('aria-expanded', String(expanded));
+  el.setAttribute('aria-label', `${d.player}, ${d.game} ${splitLabel(currentView.split)}. Press Enter to ${expanded ? 'collapse' : 'show'} the event-by-event trace.`);
+  el.classList.toggle('kor-expanded-row', expanded);
+  if(!el.dataset.korRowKeydown){
+    el.dataset.korRowKeydown = 'true';
+    el.addEventListener('keydown', e => {
+      if(e.target !== el || (e.key !== 'Enter' && e.key !== ' ')) return;
+      const activeRow = korTable?.getRows().find(candidate => candidate.getElement() === el);
+      if(!activeRow) return;
+      e.preventDefault();
+      toggleKorRow(activeRow);
+    });
+  }
+  if(!expanded) return;
+  const detail = document.createElement('div');
+  detail.className = 'kor-row-detail';
+  detail.setAttribute('data-detail', d.player);
+  detail.innerHTML = detailHtml(d);
+  el.appendChild(detail);
+  row.normalizeHeight?.();
+}
+
+function toggleKorRow(row){
+  const d = row.getData();
+  if(d.baseline) return;
+  const key = `${d.player}|${d.game}`;
+  const next = expandedKey === key ? null : key;
+  loadKorDetail().then(() => {
+    expandedKey = next;
+    korTable.redraw(true);
+  }).catch(() => {});
+}
+
 function tableData(rows, score, game){
   const visible = game === 'all' && !showAllRows ? rows.slice(0, KOR_ALL_ROW_LIMIT) : rows.slice();
   if(game !== 'all' && score && score.replacementKpm != null) visible.push(baselineRow(score));
@@ -222,6 +311,8 @@ function render(game, split){
   syncControls(game, split);
   setUrl(game, split);
   korTable = null;
+  currentView = {game, split};
+  expandedKey = null;
   if(!rows.length){
     host.innerHTML = '<p class="note">No qualified KOR rows for this selection.</p>';
     return;
@@ -246,7 +337,7 @@ function render(game, split){
       </div>
       <div class="kor-panel">
         <h2>Read this as</h2>
-        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; “low sample” marks players under ${lowSampleLimit('respawn')} respawn or ${lowSampleLimit('snd')} S&amp;D maps — real but fragile. Click a column header to re-sort. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
+        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; “low sample” marks players under ${lowSampleLimit('respawn')} respawn or ${lowSampleLimit('snd')} S&amp;D maps — real but fragile. Click a column header to re-sort, and click a row for its event-by-event trace. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
       </div>
     </section>
     <section>
@@ -261,7 +352,11 @@ function render(game, split){
     layout: 'fitColumns',
     initialSort: [{column:'korPerMap', dir:'desc'}],
     columns: buildColumns(mq.matches, game, split),
-    rowFormatter: markBaselineRow
+    rowFormatter: formatKorRow
+  });
+  korTable.on('rowClick', (e, row) => {
+    if(e.target.closest('a, .kor-row-detail')) return;   // player/title links still navigate
+    toggleKorRow(row);
   });
   wireRowToggle(rows, score, game);
 }

@@ -612,6 +612,29 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .kor-coverage{margin:calc(-1 * var(--space-2)) 0 var(--space-2)}
 .kor-pool-note{margin:calc(-1 * var(--space-3)) 0 var(--space-4)}
 .kor-row-limit{margin:var(--space-2) 0 0}
+/* event-by-event trace expanded under a row; sticky-left keeps it in view while
+   the table itself scrolls sideways (same trick as the GOAT builder detail) */
+.tabulator .tabulator-row.kor-expanded-row{background:var(--accent-soft)}
+.kor-row-detail{clear:both;display:block;position:sticky;left:0;cursor:default;
+  max-width:min(640px,calc(100vw - 2.5rem));background:var(--panel);border-top:1px solid var(--line);
+  padding:var(--space-3) var(--space-4);font-size:var(--text-sm)}
+.kor-detail-head{margin-bottom:var(--space-2);color:var(--muted)}
+.kor-detail-head .small{display:block;margin-top:2px}
+.kor-event-row{display:grid;grid-template-columns:minmax(11rem,1.8fr) 4.5rem 3.5rem minmax(4rem,1fr) 3.5rem;
+  gap:var(--space-2);align-items:center;padding:var(--space-1) 0;border-top:1px solid var(--line)}
+.kor-event-row .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.kor-event-row .strong{font-weight:700}
+.kor-event-name{min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kor-event-bar .bar-track{height:6px;border-radius:var(--radius-sm);background:var(--panel-2);overflow:hidden}
+.kor-event-bar .bar-fill{height:100%;border-radius:var(--radius-sm);background:var(--accent)}
+.kor-event-bar .bar-fill.neg{background:var(--neg)}
+.kor-detail-foot{margin:var(--space-2) 0 0}
+@media(max-width:560px){
+  .kor-event-row{grid-template-columns:minmax(0,1fr) 4rem 3.2rem 3.2rem}
+  .kor-event-bar{display:none}
+  /* full event names beat ellipses on phones — CDL-era names share a long prefix */
+  .kor-event-name{white-space:normal}
+}
 @media(max-width:760px){
   .select{width:100%;min-width:0}
   .kor-controls{align-items:stretch}
