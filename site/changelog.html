@@ -41,12 +41,35 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-07', tag:'Improved', title:'Community Consensus readability and mobile pass',
+   body:`The <a href="community.html">Community Consensus</a> page now explains its own vocabulary: confidence pills,
+   "close race" flags, and ledger statuses carry plain-language definitions, backed by a new
+   <a href="methodology.html#community-confidence">confidence section</a> in the methodology. Traces lead with what each
+   source actually said ("Ranked #3 of 30") before the weighting math, and the source ledger shows survey ballot counts
+   and season coverage. Ranking tables show scores to 2 decimals (traces keep exact values), the repeated "not scored"
+   cell labels were consolidated into one header note, per-title rows are clickable like overall rows, and on phones the
+   trace opens at its heading with a back-to-ranking link plus a sideways-scroll hint on the overall table. Shared links
+   now always include the selected player. Underlying scores and rankings are unchanged.`},
+  {date:'2026-07-07', tag:'Improved', title:'Kills Over Replacement page usability',
+   body:`The <a href="kor.html">Kills Over Replacement</a> board now uses the same sortable table as the leaderboard:
+   click any column header to re-sort, with rank and player staying pinned while the table scrolls sideways on phones.
+   The replacement baseline appears as a highlighted in-table row that keeps its place under any sort. Single-title views
+   drop the repeated Role, Title, and Replacement columns (Role remains in the all-titles view). New on-page notes state
+   the coverage start (no per-map kill data before Black Ops 2; Modern Warfare 3 qualifies no one and was removed from
+   the title menu), a plain-English reading of the KOR number, the low-sample thresholds, and a warning where a title's
+   qualified pool is too small to trust the baseline tightly. The leaderboard and player pages now link to the board.
+   Scores, baselines, and rankings are unchanged.`},
+  {date:'2026-07-06', tag:'Fixed', title:'GOAT Builder table fits the default view',
+   body:`The <a href="goat-builder.html">GOAT Builder</a> ranking table now keeps the default view focused on rank,
+   player, final score, and the enabled criteria, with adjusted-win and ring details remaining in the expanded score
+   explanation. Disabled criteria no longer remain as visible ranking columns. The controls stack earlier on medium-width
+   screens, and expanded player details no longer clip their explanation columns. Scores and rankings are unchanged.`},
   {date:'2026-07-06', tag:'Improved', title:'Community overall trace matches per-title layout',
    body:`The <a href="community.html">Community Consensus</a> overall view now uses the same table-plus-trace layout as
    the per-title view: selecting a player updates a side trace instead of expanding the table row. The trace lists every
    retained title chronologically, links each title to its per-title evidence, and keeps event wins marked as non-scoring
-   context. The confusing overall ranking mode dropdown was removed; the overall page now shows the single career-total
-   community score.`},
+   context. The overall table now includes played title count beside average rank. The confusing overall ranking mode
+   dropdown was removed; the overall page now shows the single career-total community score.`},
   {date:'2026-07-06', tag:'Improved', title:'Reusable horizontal table scrolling',
    body:`Wide tables now share one horizontal-scroll handler for focusable regions, keyboard scrolling, shift-wheel
    scrolling, and edge-state cues. The leaderboard's Tabulator table uses the same handler as plain data tables, so

@@ -207,7 +207,7 @@ title_points = max(0, (31 - consensus_rank) / 30) ** 2.5
 This keeps the score continuous while making elite title ranks matter far more
 than lower top-30 placements. Played-but-unranked titles add zero points.
 
-Career rollups should show:
+Analysis-report career rollups should show:
 
 - total score;
 - score per played title;
@@ -217,43 +217,62 @@ Career rollups should show:
 - ranked titles;
 - top-1, top-3, top-5, and top-10 title counts.
 
+The site's overall table intentionally shows a narrower set: rank, player,
+total score, average rank (played-but-unranked titles counted as rank 31),
+title count (played titles), event wins (context only), top-1/3/5/10 counts,
+and a trace link. Score-per-played-title and score-per-ranked-title remain
+analysis-only views; they were removed from the page to keep one headline
+score per player.
+
 ## Confidence
+
+Confidence is a source-depth tag, implemented in
+`scripts/build_community_consensus.py`:
 
 High confidence:
 
-- One strong aggregate survey with 100+ valid ballots, or
-- Five or more scored source clusters with no single source contributing more
-  than half the player's score.
+- The player-title row is backed by at least one aggregate survey source, or
+- Five or more scored sources.
 
 Medium confidence:
 
-- Three or more scored source clusters, or
-- One aggregate source with unknown sample size but clear methodology/ranking.
+- Three or four scored sources.
 
 Low confidence:
 
-- One or two ordinary thread clusters, or
-- Single-ballot sources only.
+- One or two scored sources; treat the resulting order as provisional.
 
-Flag as `close_race` when adjacent ranks are within 5% of each other.
+(An earlier draft gated "high" on 100+ valid ballots and on no single source
+contributing more than half the score. The shipped rule is intentionally the
+simpler source-count/aggregate-presence version above; ballot counts and
+per-source dominance stay visible in the trace so readers can judge depth
+themselves.)
+
+Flag as `close_race` when adjacent ranks are within 5% of each other. The site
+surfaces this as a "close race" sub-label with the 5% definition in the tooltip
+and in the methodology page's community-confidence section.
 
 ## Title Report Output
 
 Every serial title report should show event wins in the headline consensus table
-by default. The minimum table columns are:
+by default. The minimum table columns on the site's per-title view are:
 
 - consensus rank;
 - player;
-- consensus score;
+- consensus score (displayed to 2 decimals; traces keep exact values);
 - confidence;
-- title wins;
-- title events played;
-- winning events.
+- scored source count;
+- title event wins (context only, never a scoring input — the winning events
+  themselves are surfaced via the event-wins cell tooltip rather than a
+  dedicated column, to keep the table scannable).
 
-Keep the fuller resume sanity-check table as needed for top-two/top-three/top-four
-placements and average placement, but do not make the user cross-reference a
-second table just to see whether the consensus order passes the wins sanity
-check.
+A separate "title events played" column is intentionally not shown: played-title
+context lives in the overall rollup's Title count column, and per-title
+participation detail belongs to the player pages. Analysis reports in this
+directory may keep the fuller resume sanity-check tables (top-two/three/four
+placements, average placement, events played); the site view deliberately stays
+narrower. Do not make the user cross-reference a second table just to see
+whether the consensus order passes the wins sanity check.
 
 ## Inventory Rules
 

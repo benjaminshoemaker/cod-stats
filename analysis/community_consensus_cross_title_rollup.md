@@ -6,6 +6,12 @@ Method: each title rank becomes `((31 - rank) / 30) ** 2.5`. Every title has the
 
 Title weights: every included title = 1.00.
 
+Site note: the `Score/title played` and `Score/ranked title` columns are
+analysis-only views. The community page's overall table intentionally shows one
+headline score per player (total score) with average rank, title count, event
+wins (context only), and top-N counts; the per-title normalizations stay in
+this report.
+
 ## Overall Total Score
 
 | Overall | Player | Total score | Score/title played | Score/ranked title | Event wins | Played titles | Ranked titles | Top 1 | Top 3 | Top 5 | Top 10 | Avg rank | Top-10 title placements |

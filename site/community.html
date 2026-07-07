@@ -42,7 +42,8 @@
     </label>
     <button type="button" class="sharebtn" id="cc-share">Share view</button>
   </div>
-  <div id="cc-root" aria-live="polite"><p class="note">Loading community consensus data...</p></div>
+  <p id="cc-status" class="sr-only" role="status" aria-live="polite"></p>
+  <div id="cc-root"><p class="note">Loading community consensus data...</p></div>
 </main>
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>
@@ -66,16 +67,50 @@ let overallTable = null;
 const OVERALL_LABEL = 'Overall Ranking';
 
 const sourceLabel = s => String(s || '').replaceAll('_', ' ');
+const STATUS_TITLES = {
+  scored: 'Scored: counted toward the consensus ranking',
+  reviewed_not_scored: 'Reviewed, not scored: relevant, but no cleanly extractable ranked list',
+  excluded: 'Excluded: out of scope for community consensus (media, official, or stat lists)',
+};
 const sourceStatusPill = status => {
-  if(status === 'scored') return '<span class="pill up">scored</span>';
-  if(status === 'reviewed_not_scored') return '<span class="pill warn">reviewed not scored</span>';
-  return '<span class="pill flat">excluded</span>';
+  const t = esc(STATUS_TITLES[status] || STATUS_TITLES.excluded);
+  if(status === 'scored') return `<span class="pill up" title="${t}">scored</span>`;
+  if(status === 'reviewed_not_scored') return `<span class="pill warn" title="${t}">reviewed not scored</span>`;
+  return `<span class="pill flat" title="${t}">excluded</span>`;
+};
+const CONF_TITLES = {
+  high: 'High confidence: backed by an aggregate community survey or 5+ scored sources',
+  medium: 'Medium confidence: 3–4 scored sources',
+  low: 'Low confidence: only 1–2 scored sources — treat the order as provisional',
 };
 const confidencePill = conf => {
-  if(conf === 'high') return '<span class="pill up">high</span>';
-  if(conf === 'medium') return '<span class="pill flat">medium</span>';
-  return '<span class="pill warn">low</span>';
+  const t = esc(CONF_TITLES[conf] || CONF_TITLES.low);
+  if(conf === 'high') return `<span class="pill up" title="${t}">high</span>`;
+  if(conf === 'medium') return `<span class="pill flat" title="${t}">medium</span>`;
+  return `<span class="pill warn" title="${t}">low</span>`;
 };
+const statusEl = document.getElementById('cc-status');
+const announce = msg => { if(statusEl) statusEl.textContent = msg; };
+async function copyText(text){
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch(e) {}
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  } catch(e) {
+    return false;
+  }
+}
 const playerCell = name => canonicalPlayerName(name) ? playerLink(name) : esc(name);
 const selectedUrl = (game, player) => {
   const url = new URL(location.href);
@@ -154,31 +189,31 @@ function readState(){
   const game = games.includes(params.get('g')) ? params.get('g') : (games.includes('Black Ops 2') ? 'Black Ops 2' : games[0]);
   const rows = CC.consensus.games[game] || [];
   const selected = matchingConsensusRow(rows, params.get('p'));
-  const player = selected ? selected.player : (rows[0] && rows[0].player);
+  const player = selected ? selected.player : null;
   return {view, game, player, overallPlayer: params.get('p'), eras: parseEraSelection(params.get('eras'))};
 }
 function defaultConsensusGame(){
   return CONSENSUS_GAMES.includes('Black Ops 2') ? 'Black Ops 2' : CONSENSUS_GAMES[0];
 }
-function setTitleUrl(game, player){
+function setTitleUrl(game, player, explicit){
   const url = new URL(location.href);
   url.searchParams.set('view', 'title');
   if(game === defaultConsensusGame()) url.searchParams.delete('g');
   else url.searchParams.set('g', game);
   const defaultPlayer = (CC.consensus.games[game] || []).filter(r => r.ranked)[0]?.player;
-  if(player && player !== defaultPlayer) url.searchParams.set('p', player);
+  if(player && (explicit || player !== defaultPlayer)) url.searchParams.set('p', player);
   else url.searchParams.delete('p');
   url.searchParams.delete('mode');
   url.searchParams.delete('eras');
   history.replaceState(null, '', url);
 }
-function setOverallUrl(player){
+function setOverallUrl(player, explicit){
   const url = new URL(location.href);
   url.searchParams.delete('view');
   url.searchParams.delete('mode');
   const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
   const defaultPlayer = overallRows(selectedGames)[0]?.player;
-  if(player && player !== defaultPlayer) url.searchParams.set('p', player);
+  if(player && (explicit || player !== defaultPlayer)) url.searchParams.set('p', player);
   else url.searchParams.delete('p');
   const token = selectionToken(currentEraSelection);
   if(token !== 'all') url.searchParams.set('eras', token);
@@ -188,7 +223,9 @@ function setOverallUrl(player){
 }
 function setActiveView(view){
   document.querySelectorAll('[data-cc-view]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.ccView === view);
+    const active = btn.dataset.ccView === view;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
   eraField.hidden = view !== 'overall';
   titleField.hidden = view !== 'title';
@@ -427,11 +464,11 @@ function renderOverallSummary(rows, selectedGames){
 function renderOverallTable(rows, selected){
   return `<section class="panel-shell">
     <div class="panel-head">
-      <div><h2>${OVERALL_LABEL}</h2><p class="small muted">Rewards accumulated title-level community consensus across a full career. Event wins are shown only for resume context.</p></div>
-      <span class="pill tag">GOAT accumulation</span>
+      <div><h2>${OVERALL_LABEL}</h2><p class="small muted">Who does the community rate highest across a whole career? Each title rank earns points; the points add up. Recent titles often rest on one large poll, older titles on smaller preserved threads — click a player row or Trace to inspect the evidence behind their score.</p></div>
+      <span class="pill tag">As of ${esc(D.meta.asOf)}</span>
     </div>
     <div class="panel-body">
-      <p class="small muted">Click a player row or Trace to inspect the title-by-title score. Event wins are context only and do not affect the score.</p>
+      <p class="scrollhint small muted">Scroll the table sideways for event wins, top finishes, and trace links.</p>
       <div id="cc-overall-table" class="community-overall-table" role="region" aria-label="Overall community consensus table"></div>
     </div>
   </section>`;
@@ -459,15 +496,18 @@ function mountOverallTable(rows, selected){
       {title:'Rank', field:'rank', width:M?58:64, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Player', field:'player', minWidth:M?130:160, widthGrow:1.2, formatter:c=>`<strong>${playerCell(c.getValue())}</strong>`},
       {title:'Overall score', field:'activeScore', minWidth:M?112:136, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum score',
-        formatter:c=>`${Number(c.getValue()).toFixed(3)}<span class="bar-mini"><span style="width:${c.getData().activeWidth}%"></span></span>`},
+        headerTooltip:'Sum of rank points across titles. Shown to 2 decimals; the trace shows exact values.',
+        formatter:c=>`${Number(c.getValue()).toFixed(2)}<span class="bar-mini"><span style="width:${c.getData().activeWidth}%"></span></span>`},
       {title:'Average rank', field:'averageRank', minWidth:116, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
         headerTooltip:'Average across played titles; played-but-unranked titles count as rank 31.',
         formatter:c=>c.getValue() == null ? '<span class="faint">-</span>' : Number(c.getValue()).toFixed(1)},
+      {title:'Title count', field:'playedTitles', minWidth:96, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        headerTooltip:'Played titles included in the average-rank denominator.'},
       {title:'Event wins', field:'eventWins', minWidth:108, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum context-band',
-        formatter:c=>`${c.getValue()}<span class="sub">not scored</span>`},
+        headerTooltip:'Context only — event wins never affect the community score.'},
       {title:'Top 1', field:'top1', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
-      {title:'Top 5', field:'top5', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Top 5', field:'top5', minWidth:84, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum top-count'},
       {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Trace', field:'player', minWidth:86, formatter:c=>{
         const player = c.getValue();
@@ -484,7 +524,7 @@ function mountOverallTable(rows, selected){
 function renderOverallDetail(playerRow){
   const calcRows = playerRow.placements.map(p => `<div class="calc-row">
     <div class="calc-row-head"><span class="calc-title">${titlePlacementChip(playerRow.player, p)}</span><span class="contribution">${p.points.toFixed(3)}</span></div>
-    <span class="sub">Rank #${p.rank} · ${p.wins} event win${p.wins === 1 ? '' : 's'} · event wins not scored</span>
+    <span class="sub">Rank #${p.rank} · ${p.wins} event win${p.wins === 1 ? '' : 's'}</span>
     <div class="calc-math">
       <span class="math-chip"><span class="k">Rank</span><span class="v">#${p.rank}</span></span>
       <span class="math-op">→</span>
@@ -497,11 +537,12 @@ function renderOverallDetail(playerRow){
       <span class="pill tag">Overall #${playerRow.rank}</span>
     </div>
     <div class="panel-body" id="cc-overall-trace-card" tabindex="-1">
+      <a class="cc-backlink" href="#cc-overall-table" data-cc-back>← Back to ranking</a>
       <div class="mini-grid community-mini-grid">
         <div class="mini"><div class="k">Score</div><div class="v">${playerRow.total.toFixed(3)}</div></div>
         <div class="mini"><div class="k">Avg rank</div><div class="v">${playerRow.averageRank == null ? '-' : playerRow.averageRank.toFixed(1)}</div></div>
         <div class="mini"><div class="k">Titles</div><div class="v">${playerRow.rankedTitles}<span class="sub">ranked</span></div></div>
-        <div class="mini"><div class="k">Wins</div><div class="v">${playerRow.eventWins}<span class="sub">not scored</span></div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${playerRow.eventWins}<span class="sub">context</span></div></div>
       </div>
       <p class="small muted">Overall points are the sum of title ranks converted with
         <a href="methodology.html#community-rank-points">the rank-points curve</a>:
@@ -513,21 +554,31 @@ function renderOverallDetail(playerRow){
     </div>
   </aside>`;
 }
-function focusOverallTrace(){
-  const card = document.getElementById('cc-overall-trace-card');
+function focusTraceCard(card){
   if(!card) return;
-  card.scrollIntoView({block: 'nearest', behavior: 'auto'});
+  const panel = card.closest('.panel-shell') || card;
+  panel.scrollIntoView({block: 'start', behavior: 'auto'});
   card.focus({preventScroll: true});
 }
+function focusOverallTrace(){
+  focusTraceCard(document.getElementById('cc-overall-trace-card'));
+}
+function returnToTable(){
+  const table = host.querySelector('.community-layout .panel-shell');
+  if(!table) return;
+  table.scrollIntoView({block: 'start', behavior: 'auto'});
+  const region = table.querySelector('.tabulator-tableholder, .scroll-region, .scroll-x');
+  if(region && region.tabIndex >= 0) region.focus({preventScroll: true});
+}
 function renderOverall(player, opts={}){
+  const explicit = player != null;
   const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
   const rows = overallRows(selectedGames);
   const selected = matchingOverallRow(rows, player);
   setActiveView('overall');
-  setOverallUrl(selected && selected.player);
+  setOverallUrl(selected && selected.player, explicit);
   host.innerHTML = `
     ${renderOverallSummary(rows, selectedGames)}
-    <div class="note community-method-note">Recent titles may be driven by a single large community poll; older titles are often reconstructed from smaller preserved threads and lists. Use the title links to inspect the underlying evidence.</div>
     <div class="community-layout">
       ${renderOverallTable(rows, selected)}
       ${renderOverallDetail(selected)}
@@ -535,12 +586,19 @@ function renderOverall(player, opts={}){
   `;
   mountOverallTable(rows, selected);
   bindOverallLinks();
+  announce(selected ? `Overall ranking shown. Trace for ${selected.player}.` : 'Overall ranking shown.');
   if(opts.focusTrace){
     requestAnimationFrame(() => setTimeout(focusOverallTrace, 0));
   }
 }
 function bindOverallLinks(){
   host.onclick = e => {
+    const back = e.target.closest('[data-cc-back]');
+    if(back){
+      e.preventDefault();
+      returnToTable();
+      return;
+    }
     const overall = e.target.closest('[data-overall-player]');
     if(overall){
       e.preventDefault();
@@ -550,7 +608,7 @@ function bindOverallLinks(){
     const title = e.target.closest('[data-title-link]');
     if(title){
       e.preventDefault();
-      renderTitle(title.dataset.titleLink, title.dataset.titlePlayer);
+      renderTitle(title.dataset.titleLink, title.dataset.titlePlayer, {focusTrace: true});
     }
   };
 }
@@ -571,19 +629,19 @@ function renderTable(game, rows, selectedPlayer){
     const selected = r.player === selectedPlayer ? ' class="selected"' : '';
     const wins = rawWins(game, r.player);
     const events = winningEvents(game, r.player);
-    return `<tr${selected}>
+    return `<tr${selected} data-row-player="${esc(r.player)}">
       <td class="n">${r.consensus_rank}</td>
-      <td><strong>${playerCell(r.player)}</strong>${r.close_race ? '<span class="sub">close race</span>' : ''}</td>
-      <td class="n score">${Number(r.consensus_score).toFixed(3)}</td>
+      <td><strong>${playerCell(r.player)}</strong>${r.close_race ? '<span class="sub" title="Consensus score within 5% of the adjacent rank — treat the order as effectively tied">close race</span>' : ''}</td>
+      <td class="n score">${Number(r.consensus_score).toFixed(2)}</td>
       <td>${confidencePill(r.confidence)}</td>
       <td class="n">${r.source_count}</td>
-      <td class="context-band n" title="${esc(events)}">${wins}<span class="sub">not scored</span></td>
+      <td class="context-band n" title="${esc(events)}">${wins}</td>
       <td><a class="evidence-link" href="${esc(selectedUrl(game, r.player))}" data-select-player="${esc(r.player)}">Trace</a></td>
     </tr>`;
   }).join('');
   return `<section class="panel-shell">
     <div class="panel-head">
-      <div><h2>${esc(game)} Ranking</h2><p class="small muted">Community score is source-weighted. Event wins are shown only for context.</p></div>
+      <div><h2>${esc(game)} Ranking</h2><p class="small muted">Community score is source-weighted; shown to 2 decimals (traces keep exact values). Click a row or Trace for the evidence. Event wins are context only.</p></div>
       <span class="pill tag">Top ${rows.length} retained</span>
     </div>
     ${TableSurface.dataTable({
@@ -592,10 +650,30 @@ function renderTable(game, rows, selectedPlayer){
       wrapperClass: 'panel-body',
       tableClass: 'data community-table',
       hint: 'Scroll sideways to see source count, event wins, and trace links.',
-      head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n">Event wins</th><th scope="col">Trace</th></tr></thead>',
+      head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n" title="Context only — never affects the community score">Event wins</th><th scope="col">Trace</th></tr></thead>',
       rows: body
     })}
+    <p class="small muted cc-legend">Confidence — <strong>high</strong>: aggregate survey or 5+ scored sources · <strong>medium</strong>: 3–4 · <strong>low</strong>: 1–2, treat as provisional. <strong>Close race</strong>: within 5% of the next rank, effectively tied. <a href="methodology.html#community-confidence">How confidence works →</a></p>
   </section>`;
+}
+function sourceEvidence(sourceId, player){
+  const key = playerLookupKey(player);
+  const src = sourceById[sourceId];
+  if(src && Array.isArray(src.ranked_players)){
+    const hit = src.ranked_players.find(rp => playerLookupKey(rp.player) === key);
+    if(hit) return `Ranked #${hit.rank} of ${src.ranking_size || src.ranked_players.length}`;
+  }
+  const ballots = ballotsBySource[sourceId] || [];
+  const ranks = [];
+  ballots.forEach(b => (b.entries || []).forEach(en => {
+    if(playerLookupKey(en.player) === key) ranks.push(Number(en.rank));
+  }));
+  if(ranks.length){
+    const lo = Math.min(...ranks), hi = Math.max(...ranks);
+    const where = ballots.length === 1 ? 'in this ballot' : `across ${ranks.length} of ${ballots.length} ballots`;
+    return lo === hi ? `Ranked #${lo} ${where}` : `Ranked #${lo}–#${hi} ${where}`;
+  }
+  return '';
 }
 function renderTrace(game, player){
   const rows = gameContributions(game, player);
@@ -604,8 +682,10 @@ function renderTrace(game, player){
   const items = rows.map(c => {
     const avg = c.weight ? c.contribution / c.weight : 0;
     const ballots = c.ballot_count || sourceBallotCount(c.id);
+    const evidence = sourceEvidence(c.id, player);
     return `<div class="calc-row">
       <div class="calc-row-head"><span class="calc-title">${sourceUrl(c.source)}</span><span class="contribution">${c.contribution.toFixed(3)}</span></div>
+      ${evidence ? `<span class="sub cc-evidence"><strong>${esc(evidence)}</strong></span>` : ''}
       <span class="sub">${sourceLabel(c.source_kind)} · ${ballots} ballot${ballots === 1 ? '' : 's'} · ${sourceLabel(c.source && c.source.coverage)}</span>
       <div class="calc-math">
         <span class="math-chip"><span class="k">Avg points</span><span class="v">${avg.toFixed(3)}</span></span>
@@ -618,15 +698,16 @@ function renderTrace(game, player){
   }).join('') || '<p class="small muted">No positive source contribution for this selected player.</p>';
   return `<aside class="panel-shell">
     <div class="panel-head">
-      <div><h2>${esc(player)} Trace</h2><p class="small muted">${esc(game)} source contributions for the selected player.</p></div>
+      <div><h2>${esc(player)} Trace</h2><p class="small muted">What each community source said about ${esc(player)} in ${esc(game)}, and how much it counts.</p></div>
       <span class="pill tag">Rank #${rank.consensus_rank}</span>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" id="cc-title-trace-card" tabindex="-1">
+      <a class="cc-backlink" href="#" data-cc-back>← Back to ranking</a>
       <div class="mini-grid community-mini-grid">
         <div class="mini"><div class="k">Score</div><div class="v">${Number(rank.consensus_score).toFixed(3)}</div></div>
         <div class="mini"><div class="k">Sources</div><div class="v">${rank.source_count}</div></div>
         <div class="mini"><div class="k">Confidence</div><div class="v sm">${esc(rank.confidence)}</div></div>
-        <div class="mini"><div class="k">Wins</div><div class="v">${rawWins(game, player)}<span class="sub">not scored</span></div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${rawWins(game, player)}<span class="sub">context</span></div></div>
       </div>
       <p class="small muted">Contribution = the player's average rank-points inside a source multiplied by that source's final weight.</p>
       <span class="formula">contribution = avg_rank_points × final_source_weight</span>
@@ -644,31 +725,36 @@ function renderSourceLedger(game, sources){
       <td>${sourceStatusPill(s.status)}</td>
       <td>${sourceLabel(s.source_kind)}</td>
       <td>${sourceLabel(s.coverage)}</td>
-      <td class="n">${count || s.ballot_count || '—'}</td>
+      <td>${sourceLabel(s.season_coverage || 'unknown')}</td>
+      <td class="n">${count || s.valid_ballots || '—'}</td>
       <td class="n">${weight}</td>
     </tr>`;
   }).join('');
   return `<section class="panel-shell source-ledger">
-    <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted">Scored, reviewed, and excluded sources for this title.</p></div></div>
+    <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted"><strong>Scored</strong> sources count toward the ranking. <strong>Reviewed not scored</strong> sources were found but had no cleanly extractable ranked list. <strong>Excluded</strong> sources belong to other evidence lanes (media, official awards, or stat lists).</p></div></div>
     ${TableSurface.dataTable({
       label: `${game} source ledger`,
       caption: `${game} community consensus source ledger`,
       wrapperClass: 'panel-body',
-      hint: 'Scroll sideways to see source type, timing, ballot count, and weight.',
-      head: '<thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Timing</th><th scope="col" class="n">Ballots</th><th scope="col" class="n">Weight</th></tr></thead>',
+      hint: 'Scroll sideways to see source type, timing, coverage, ballot count, and weight.',
+      head: '<thead><tr><th scope="col">Source</th><th scope="col">Status</th><th scope="col">Type</th><th scope="col">Timing</th><th scope="col">Coverage</th><th scope="col" class="n">Ballots</th><th scope="col" class="n">Weight</th></tr></thead>',
       rows
     })}
   </section>`;
 }
-function renderTitle(game, player){
+function focusTitleTrace(){
+  focusTraceCard(document.getElementById('cc-title-trace-card'));
+}
+function renderTitle(game, player, opts={}){
   host.onclick = null;
+  const explicit = player != null;
   if(!CC.consensus.games[game]) game = defaultConsensusGame();
   const rows = (CC.consensus.games[game] || []).filter(r => r.ranked);
   const sources = gameSources(game);
   const selectedRow = matchingConsensusRow(rows, player);
   const selected = selectedRow ? selectedRow.player : (rows[0] && rows[0].player);
   setActiveView('title');
-  setTitleUrl(game, selected);
+  setTitleUrl(game, selected, explicit);
   gameSel.value = game;
   host.innerHTML = `
     ${renderSummary(game, rows, sources)}
@@ -681,9 +767,25 @@ function renderTitle(game, player){
   host.querySelectorAll('[data-select-player]').forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
-      renderTitle(game, a.dataset.selectPlayer);
+      renderTitle(game, a.dataset.selectPlayer, {focusTrace: true});
     });
   });
+  host.querySelectorAll('.community-table tbody tr[data-row-player]').forEach(tr => {
+    tr.addEventListener('click', e => {
+      if(e.target.closest('a,button,input,label,select,textarea')) return;
+      renderTitle(game, tr.dataset.rowPlayer, {focusTrace: true});
+    });
+  });
+  host.querySelectorAll('[data-cc-back]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      returnToTable();
+    });
+  });
+  announce(selected ? `${game} ranking shown. Trace for ${selected}.` : `${game} ranking shown.`);
+  if(opts.focusTrace){
+    requestAnimationFrame(() => setTimeout(focusTitleTrace, 0));
+  }
 }
 
 fetch('community-consensus.json')
@@ -704,7 +806,7 @@ fetch('community-consensus.json')
       renderOverall(new URLSearchParams(location.search).get('p'));
     });
     gameSel.value = state.game;
-    if(state.view === 'title') renderTitle(state.game, state.player);
+    if(state.view === 'title') renderTitle(state.game, state.player, {focusTrace: !!state.player});
     else renderOverall(state.overallPlayer, {focusTrace: !!state.overallPlayer});
     document.querySelectorAll('[data-cc-view]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -714,11 +816,10 @@ fetch('community-consensus.json')
     });
     gameSel.addEventListener('change', () => renderTitle(gameSel.value, null));
     shareBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        shareBtn.textContent = 'Copied';
-        setTimeout(() => shareBtn.textContent = 'Share view', 1200);
-      } catch(e) {}
+      const ok = await copyText(location.href);
+      shareBtn.textContent = ok ? 'Copied' : 'Copy failed';
+      announce(ok ? 'Link copied to clipboard.' : 'Copy failed — copy the address bar URL instead.');
+      setTimeout(() => shareBtn.textContent = 'Share view', 1800);
     });
   })
   .catch(err => {

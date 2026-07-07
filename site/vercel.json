@@ -1,10 +1,29 @@
 {
   "rewrites": [
-    { "source": "/r", "destination": "/api/r" }
+    { "source": "/r", "destination": "/api/r" },
+    { "source": "/g", "destination": "/api/g" }
   ],
   "headers": [
     {
       "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/goat-builder.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/goat.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/community-consensus.json",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]

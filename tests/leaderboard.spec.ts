@@ -347,7 +347,7 @@ test.describe('column selector', () => {
     const metrics = await page.evaluate(() => {
       const table = document.querySelector('#table .tabulator-table') as HTMLElement;
       const holder = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
-      return { tableWidth: table.offsetWidth, holderWidth: holder.clientWidth, scrollWidth: holder.scrollWidth };
+      return { tableWidth: table.offsetWidth, holderWidth: holder.offsetWidth, scrollWidth: holder.scrollWidth };
     });
     expect(metrics.tableWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
     expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.holderWidth + 2);
@@ -361,7 +361,7 @@ test.describe('desktop layout', () => {
     const { inner, holder } = await page.evaluate(() => {
       const t = document.querySelector('#table .tabulator-table') as HTMLElement;
       const h = document.querySelector('#table .tabulator-tableholder') as HTMLElement;
-      return { inner: t.offsetWidth, holder: h.clientWidth };
+      return { inner: t.offsetWidth, holder: h.offsetWidth };
     });
     expect(inner).toBeLessThanOrEqual(holder + 2);
     expect(inner).toBeGreaterThanOrEqual(holder - 2);
@@ -428,7 +428,7 @@ test.describe('desktop layout', () => {
         .filter(col => col.left < hRect.left - 1 || col.right > hRect.right + 1);
       return {
         tableWidth: table.offsetWidth,
-        holderWidth: holder.clientWidth,
+        holderWidth: holder.offsetWidth,
         scrollWidth: holder.scrollWidth,
         offscreen,
       };
@@ -511,6 +511,8 @@ test.describe('pages', () => {
     await expect(page.getByText('rank 31')).toBeVisible();
     await expect(page.getByText('2.5, is an intentional top-heavy curve')).toBeVisible();
     await expect(page.locator('#community-rank-points .anchor-link')).toHaveAttribute('href', '#community-rank-points');
+    await expect(page.locator('#community-confidence .anchor-link')).toHaveAttribute('href', '#community-confidence');
+    await expect(page.getByText('read those as effectively tied')).toBeVisible();
     await expect(page.getByText('rank 24 is')).toBeVisible();
     await expect(page.getByText('about 0.026 points')).toBeVisible();
     await page.goto('/community.html');
@@ -599,43 +601,90 @@ test.describe('pages', () => {
   test('Kills Over Replacement page renders all-time and title splits', async ({ page }) => {
     await page.goto('/kor.html');
     await expect(page.getByRole('heading', { name: 'Kills Over Replacement' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'All-time Respawn KOR/map' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Top 10 · All-time Respawn KOR\/map/ })).toBeVisible();
     await expect(page).toHaveURL(/\/kor\.html$/);
     await expect(page.locator('.kor-method a')).toHaveAttribute('href', 'methodology.html#kills-over-replacement');
-    await expect(page.locator('.kor-table thead')).toContainText('Role');
-    await expect(page.locator('.kor-table thead')).toContainText('Median opp place');
-    await expect(page.locator('.kor-table caption')).toContainText('All-time Respawn KOR/map leaderboard');
-    await expect(page.locator('.kor-table th[scope="col"]')).toHaveCount(11);
-    await expect(page.locator('.scroll-x[aria-label="All-time Respawn KOR/map leaderboard table"] .kor-table')).toBeVisible();
-    await expect(page.getByText('Swipe the table sideways to see role, sample, and opponent context')).toBeAttached();
-    await expect(page.locator('.kor-table tbody tr').first()).toContainText('HyDra');
-    await expect(page.locator('.kor-table tbody tr').first()).toContainText('Modern Warfare III');
-    await expect(page.locator('.kor-table tbody tr')).toHaveCount(100);
+    await expect(page.locator('.kor-method')).toContainText('Read it as');
+    await expect(page.locator('.kor-coverage')).toContainText('no per-map kill data');
+    // Modern Warfare 3 qualifies no one; it must not be a dead dropdown option
+    await expect(page.locator('#kor-game option[value="Modern Warfare 3"]')).toHaveCount(0);
+    await expect(page.locator('#kor-game option[value="Black Ops 2"]')).toHaveCount(1);
+
+    const rows = page.locator('#kor-table .tabulator-row');
+    await expect(page.locator('#kor-table .tabulator-col:visible').filter({ hasText: 'Role' })).toBeVisible();
+    await expect(page.locator('#kor-table .tabulator-col:visible')).toHaveCount(11);
+    await expect(page.locator('#kor-table .tabulator-tableholder')).toHaveAttribute('aria-label', 'All-time Respawn KOR/map leaderboard table');
+    await expect(rows.first()).toContainText('HyDra');
+    await expect(rows.first()).toContainText('Modern Warfare III');
+    await expect(rows).toHaveCount(100);
+
+    // rank and player are frozen so they stay pinned when the table scrolls sideways (phone regression guard)
+    await expect(rows.first().locator('.tabulator-cell.tabulator-frozen')).toHaveCount(2);
+    const holder = page.locator('#kor-table .tabulator-tableholder');
+    const overflow = await holder.evaluate(el => el.scrollWidth - el.clientWidth);
+    if (overflow > 0) {
+      await holder.evaluate(el => { el.scrollLeft = el.scrollWidth; });
+      const playerCell = rows.first().locator('.tabulator-cell.tabulator-frozen').nth(1);
+      await expect(playerCell).toBeVisible();
+      await expect(playerCell).toContainText('HyDra');
+      const box = await playerCell.boundingBox();
+      expect(box!.x).toBeLessThan(200);
+      await holder.evaluate(el => { el.scrollLeft = 0; });
+    }
+
+    // headers sort and expose aria-sort
+    const kpmHeader = page.locator('#kor-table .tabulator-col[tabulator-field="kpm"]');
+    await kpmHeader.click();
+    await expect(kpmHeader).toHaveAttribute('aria-sort', 'ascending');
+    await kpmHeader.click();
+    await expect(kpmHeader).toHaveAttribute('aria-sort', 'descending');
+    await page.locator('#kor-table .tabulator-col[tabulator-field="korPerMap"]').click();
+
+    // show-all toggle keeps focus and can collapse back
     await expect(page.locator('.kor-row-limit')).toContainText(/Showing top 100 of \d+/);
     await page.getByRole('button', { name: 'Show all rows' }).click();
-    expect(await page.locator('.kor-table tbody tr').count()).toBeGreaterThan(100);
+    expect(await rows.count()).toBeGreaterThan(100);
+    await expect(page.locator('.kor-row-limit')).toContainText(/Showing all \d+ rows/);
+    await expect(page.locator('#kor-row-toggle')).toBeFocused();
+    await page.getByRole('button', { name: 'Show top 100' }).click();
+    await expect(rows).toHaveCount(100);
+
     const splitMinHeight = await page.locator('#kor-split button').first().evaluate(el => Number.parseFloat(getComputedStyle(el).minHeight));
     expect(splitMinHeight).toBeGreaterThanOrEqual(44);
 
     await page.locator('#kor-game').selectOption('Advanced Warfare');
     await expect(page).toHaveURL(/g=Advanced(\+|%20)Warfare/);
-    await expect(page.getByRole('heading', { name: 'Advanced Warfare Respawn KOR/map' })).toBeVisible();
-    await expect(page.locator('.kor-baseline-row')).toContainText('Replacement baseline');
-    await expect(page.locator('.kor-table tbody tr').first()).toContainText('Scump');
-    await expect(page.locator('.kor-table tbody tr').first().locator('.pill.role-smg')).toHaveText('SMG');
+    await expect(page.getByRole('heading', { name: 'Advanced Warfare Respawn KOR/map', exact: true })).toBeVisible();
+    await expect(page.locator('#kor-table .tabulator-row').first()).toContainText('Scump');
+    // single-title views drop the constant Role/Title/Replacement columns
+    await expect(page.locator('#kor-table .tabulator-col:visible')).toHaveCount(8);
+    await expect(page.locator('#kor-table .pill.role-smg:visible')).toHaveCount(0);
+    // the baseline sorts in as a real row at KOR/map 0
+    const baseline = page.locator('#kor-table .kor-baseline-row');
+    await expect(baseline).toContainText('Replacement baseline');
+    await expect(baseline).toHaveAttribute('title', /25th percentile K\/map of \d+ qualified players/);
+
+    // a tiny qualified pool is flagged, not silent (BO2 respawn qualifies only 13 players)
+    await page.locator('#kor-game').selectOption('Black Ops 2');
+    await expect(page.locator('.kor-pool-note')).toContainText(/Only \d+ players qualify/);
+    await expect(page.locator('.kor-summary')).toContainText('small pool');
 
     await page.locator('#kor-split button[data-split="snd"]').click();
     await expect(page).toHaveURL(/split=snd/);
-    await expect(page.getByRole('heading', { name: 'Advanced Warfare S&D KOR/map' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Black Ops 2 S&D KOR/map', exact: true })).toBeVisible();
 
     await page.goto('/kor.html?g=Black+Ops+7&split=respawn');
-    const abezy = page.locator('.kor-table tbody tr').filter({ hasText: 'aBeZy' }).first();
+    const abezy = page.locator('#kor-table .tabulator-row').filter({ hasText: 'aBeZy' }).first();
     await expect(abezy.getByRole('link', { name: 'aBeZy' })).toHaveAttribute('href', 'player.html?p=aBeZy');
 
     await page.goto('/kor.html?g=World+War+II&split=snd');
-    const methodzDisambiguated = page.locator('.kor-table tbody tr').filter({ hasText: 'MethodZ (Jorge Bancells)' }).first();
+    const methodzDisambiguated = page.locator('#kor-table .tabulator-row').filter({ hasText: 'MethodZ (Jorge Bancells)' }).first();
     await expect(methodzDisambiguated).toContainText('MethodZ (Jorge Bancells)');
     await expect(methodzDisambiguated.getByRole('link', { name: /Methodz/i })).toHaveCount(0);
+
+    // an unavailable title in the URL falls back to the all-titles view
+    await page.goto('/kor.html?g=Modern+Warfare+3');
+    await expect(page.getByRole('heading', { name: /All-time Respawn KOR\/map/ }).first()).toBeVisible();
   });
 
   test('Community Consensus page renders title rankings and source traces', async ({ page }) => {
@@ -651,16 +700,23 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Overall Ranking' })).toBeVisible();
     await expect(page.locator('.community-stats .stat')).toHaveCount(0);
     const overallHeaders = await page.locator('#cc-overall-table .tabulator-col-title').allTextContents();
-    expect(overallHeaders).toEqual(['Rank', 'Player', 'Overall score', 'Average rank', 'Event wins', 'Top 1', 'Top 3', 'Top 5', 'Top 10', 'Trace']);
+    expect(overallHeaders).toEqual(['Rank', 'Player', 'Overall score', 'Average rank', 'Title count', 'Event wins', 'Top 1', 'Top 3', 'Top 5', 'Top 10', 'Trace']);
+    await expect(page.locator('#cc-view-overall')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#cc-view-title')).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('#cc-root')).not.toHaveAttribute('aria-live', 'polite');
+    await expect(page.locator('#cc-status')).toBeAttached();
+    await expect(page.locator('.community-layout .scrollhint').first()).toBeAttached();
     const firstOverallRow = page.locator('#cc-overall-table .tabulator-row').first();
     await expect(firstOverallRow).toContainText('Scump');
     await expect(firstOverallRow.locator('.context-band')).toContainText('28');
-    await expect(firstOverallRow).toContainText('not scored');
+    await expect(firstOverallRow).not.toContainText('not scored');
+    await expect(firstOverallRow.locator('.tabulator-cell.score')).toContainText('7.64');
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="averageRank"]')).toContainText('Average rank');
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="total"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perPlayed"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perRanked"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="placements"]')).toHaveCount(0);
+    await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="playedTitles"]')).toContainText('Title count');
     await expect(page.getByRole('heading', { name: 'Scump Overall Trace' })).toBeVisible();
     await expect(firstOverallRow).toHaveClass(/community-selected-row/);
 
@@ -668,6 +724,7 @@ test.describe('pages', () => {
     await expect(page).toHaveURL(/p=Simp/);
     await expect(page.getByRole('heading', { name: 'Simp Overall Trace' })).toBeVisible();
     await page.waitForFunction(() => document.activeElement?.id === 'cc-overall-trace-card');
+    await expect(page.locator('#cc-overall-trace-card [data-cc-back]')).toBeAttached();
     await expect(page.locator('.calc-summary')).toContainText('Total:');
     await expect(page.locator('.overall-calc-list')).toContainText('Rank points');
     await expect(page.locator('.overall-calc-list')).not.toContainText('Title score');
@@ -723,11 +780,23 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Black Ops 2 Ranking' })).toBeVisible();
     await expect(page.locator('.community-table tbody tr').first()).toContainText('Karma');
     await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).toContainText('4');
-    await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).toContainText('not scored');
+    await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).not.toContainText('not scored');
+    await expect(page.locator('.community-table thead th.context-band')).toHaveAttribute('title', /never affects the community score/);
     await expect(page.getByRole('heading', { name: 'Karma Trace' })).toBeVisible();
     await expect(page.locator('.calc-list')).toContainText('Top 10 Players in BO2');
+    await expect(page.locator('.calc-list .cc-evidence').first()).toContainText('Ranked #');
+    await expect(page.locator('.community-table .pill[title*="confidence"]').first()).toBeAttached();
+    await expect(page.locator('.cc-legend')).toContainText('How confidence works');
     await expect(page.locator('.source-ledger')).toContainText('reviewed not scored');
     await expect(page.locator('.source-ledger table caption')).toContainText('Black Ops 2 community consensus source ledger');
+    await expect(page.locator('.source-ledger thead')).toContainText('Coverage');
+
+    // per-title rows are clickable like overall rows, and explicit selections round-trip in the URL
+    await page.locator('.community-table tbody tr').filter({ hasText: 'Crimsix' }).first().click();
+    await expect(page.getByRole('heading', { name: 'Crimsix Trace' })).toBeVisible();
+    await expect(page).toHaveURL(/p=Crimsix/);
+    await page.waitForFunction(() => document.activeElement?.id === 'cc-title-trace-card');
+    await expect(page.locator('#cc-title-trace-card [data-cc-back]')).toBeAttached();
 
     await page.locator('#cc-game').selectOption('Ghosts');
     await expect(page).toHaveURL(/g=Ghosts/);
@@ -741,11 +810,13 @@ test.describe('pages', () => {
     await page.goto('/community.html?g=Modern+Warfare&p=ABeZy');
     await expect(page.getByRole('heading', { name: 'aBeZy Trace' })).toBeVisible();
     await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('2');
-    await expect(page.locator('.community-table tr.selected').locator('.context-band')).toContainText('not scored');
+    await expect(page.locator('.community-table tr.selected').locator('.context-band')).not.toContainText('not scored');
     await expect(page.locator('.community-table tr.selected').locator('.context-band')).toHaveAttribute(
       'title',
       /Call of Duty League 2020 Week 3 - Atlanta/
     );
+    // aggregate-survey ballot counts surface in the ledger (valid_ballots, not just extracted thread ballots)
+    await expect(page.locator('.source-ledger')).toContainText('345');
   });
 
   test('viz pages render their SVG without JS errors', async ({ page }) => {
@@ -1102,6 +1173,8 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#activeShare')).toHaveText('75 pts');
     await expect(page.locator('#budgetStatus')).toHaveText('Remaining: 25');
     await expect(page.locator('#scoreNote')).toContainText('Resume 33% / Longevity 33% / Peak 33%');
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="skill"]')).toHaveCount(0);
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="resume"]')).toBeVisible();
     await expect(page).toHaveURL(/criteria=resume%2Clongevity%2Cpeak|criteria=resume,longevity,peak/);
 
     const url = page.url();
@@ -1109,6 +1182,25 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('[data-enabled="skill"]')).not.toBeChecked();
     await expect(page.locator('[data-weight="skill"]')).toBeDisabled();
     await expect(page.locator('#laneCount')).toHaveText('3');
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="skill"]')).toHaveCount(0);
+  });
+
+  test('unchecked criteria are removed from ranking columns', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill&weights=resume%3A70%2Cskill%3A30%2Clongevity%3A25%2Cpeak%3A25&sort=peak&dir=desc');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+
+    await expect(page.locator('[data-enabled="longevity"]')).not.toBeChecked();
+    await expect(page.locator('[data-enabled="peak"]')).not.toBeChecked();
+    await expect(page.locator('#laneCount')).toHaveText('2');
+
+    const fields = await page.$$eval(
+      '#goatTable .tabulator-header .tabulator-col[tabulator-field]',
+      els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
+    );
+    expect(fields).toEqual(['rank', 'player', 'score', 'resume', 'skill']);
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="longevity"]')).toHaveCount(0);
+    await expect(page.locator('#goatTable .tabulator-col[tabulator-field="peak"]')).toHaveCount(0);
+    await expect(page).not.toHaveURL(/sort=peak/);
   });
 
   test('criterion scoring preserves raw input magnitude', async ({ page }) => {
@@ -1178,22 +1270,48 @@ test.describe('GOAT Builder', () => {
     await expect(firstPlayerSort.locator('.gb-name')).toHaveText('aBeZy');
   });
 
-  test('ranking table scrolls inside the table container', async ({ page }) => {
-    await page.goto('/goat-builder.html');
-    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+  test('ranking table contains columns and expanded details at default widths', async ({ page }) => {
+    for (const viewport of [
+      { width: 1018, height: 768 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.goto('/goat-builder.html');
+      await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+      await page.locator('#goatTable .tabulator-row').first().click();
+      await expect(page.locator('#goatTable .gb-row-detail').first()).toBeVisible();
 
-    const metrics = await page.evaluate(() => {
-      const holder = document.querySelector('#goatTable .tabulator-tableholder') as HTMLElement;
-      return {
-        pageScrollWidth: document.documentElement.scrollWidth,
-        viewportWidth: window.innerWidth,
-        tableClientWidth: holder.clientWidth,
-        tableScrollWidth: holder.scrollWidth,
-      };
-    });
+      const metrics = await page.evaluate(() => {
+        const holder = document.querySelector('#goatTable .tabulator-tableholder') as HTMLElement;
+        const detail = document.querySelector('#goatTable .gb-row-detail') as HTMLElement;
+        const explain = document.querySelector('#goatTable .gb-explain-table') as HTMLElement;
+        const rect = (el: HTMLElement) => el.getBoundingClientRect();
+        return {
+          headers: Array.from(document.querySelectorAll('#goatTable .tabulator-col[tabulator-field]'))
+            .filter(el => (el as HTMLElement).offsetWidth > 0)
+            .map(el => (el.textContent || '').trim()),
+          pageScrollWidth: document.documentElement.scrollWidth,
+          viewportWidth: window.innerWidth,
+          tableClientWidth: holder.clientWidth,
+          tableScrollWidth: holder.scrollWidth,
+          detailRight: rect(detail).right,
+          explainRight: rect(explain).right,
+          holderRight: rect(holder).right,
+        };
+      });
 
-    expect(metrics.pageScrollWidth).toBeLessThanOrEqual(metrics.viewportWidth);
-    expect(metrics.tableScrollWidth).toBeGreaterThan(metrics.tableClientWidth);
+      expect(metrics.headers).toEqual(viewport.width <= 560
+        ? ['#', 'Player', 'Score', 'Res', 'Skill', 'Long', 'Peak']
+        : ['Rank', 'Player', 'Score', 'Resume', 'Skill', 'Longevity', 'Peak']);
+      expect(metrics.pageScrollWidth).toBeLessThanOrEqual(metrics.viewportWidth);
+      expect(metrics.explainRight).toBeLessThanOrEqual(metrics.detailRight + 1);
+
+      if (viewport.width <= 560) {
+        expect(metrics.tableScrollWidth).toBeGreaterThan(metrics.tableClientWidth);
+      } else {
+        expect(metrics.detailRight).toBeLessThanOrEqual(metrics.holderRight + 1);
+      }
+    }
   });
 
   test('expanded player row explains peak and consensus inputs without fact-card clutter', async ({ page }) => {

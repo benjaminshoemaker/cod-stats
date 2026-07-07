@@ -276,7 +276,9 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
   font-size:var(--text-base);cursor:pointer;user-select:none;white-space:nowrap}
 .colmenu-item:hover{background:var(--panel-2)}
 .colmenu-item input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
-.eramenu-panel{min-width:min(96vw,560px);max-height:min(80vh,560px);overflow:auto}
+.eramenu-panel{min-width:min(96vw,640px);max-height:min(80vh,560px);overflow:auto}
+/* era titles must stay readable — wrap instead of clipping "Modern Warfare III" to "Modern Warfare" */
+.eramenu-panel .colmenu-item{white-space:normal}
 .era-presets{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-1);padding:var(--space-1) var(--space-1) var(--space-2);
   border-bottom:1px solid var(--line);margin-bottom:var(--space-2)}
 .era-preset{font:inherit;font-size:var(--text-sm);cursor:pointer;color:var(--ink);background:var(--panel);
@@ -285,7 +287,7 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .era-clear{margin-left:auto;color:var(--muted)}
 .era-clear:hover{background:var(--panel-2);border-color:var(--line-2)}
 /* three era columns side by side so every group is visible without scrolling */
-.era-groups{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:var(--space-1) var(--space-2)}
+.era-groups{display:grid;grid-template-columns:repeat(3,minmax(185px,1fr));gap:var(--space-1) var(--space-2)}
 .era-group{min-width:0}
 .era-group-h{font-size:var(--text-xs);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
   color:var(--faint);padding:var(--space-1) var(--space-2)}
@@ -366,15 +368,17 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
     min-height:44px;display:inline-flex;align-items:center}
   .colmenu-item{min-height:44px}
   .ringw input[type=range]{height:28px}
-  .nav a{padding:var(--space-2) var(--space-3)}
-  .site-head .inner{gap:var(--space-3)}
+  /* compact nav items so the wrapped nav takes ~2 lines, not 3 (tap targets stay 44px tall) */
+  .nav a{padding:var(--space-2) var(--space-2);font-size:var(--text-sm)}
+  .navdrop-btn{font-size:var(--text-sm)}
+  .site-head .inner{gap:var(--space-2) var(--space-3)}
   /* release the header on phones: sticky brand + wrapped nav pinned ~140px of the viewport */
   .site-head{position:static}
   .tabulator .tabulator-header{top:0}
   /* 16px floor stops iOS Safari's focus auto-zoom; full-width search shortens the controls stack */
   .search{font-size:16px;flex-basis:100%;max-width:none}
   /* comfortable tap targets on the small controls */
-  .navdrop-btn{padding:var(--space-2) var(--space-3)}
+  .navdrop-btn{padding:var(--space-2) var(--space-2)}
   .era-preset{padding:var(--space-2) var(--space-3)}
   .controls{gap:var(--space-2)}
   html{scroll-padding-top:var(--space-4)}
@@ -594,12 +598,19 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .kor-bar-row .bar-track{height:8px;border-radius:var(--radius-sm);background:var(--panel-2);overflow:hidden}
 .kor-bar-row .bar-fill{height:100%;border-radius:var(--radius-sm);background:var(--accent)}
 .kor-bar-row .bar-value{font-family:var(--mono);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
-.kor-table th,.kor-table td{white-space:nowrap}
-.kor-table th:first-child,.kor-table td:first-child{position:sticky;left:0;z-index:2;background:#fff;box-shadow:1px 0 0 var(--line)}
-.kor-table thead th:first-child{z-index:3;background:var(--panel)}
-.kor-table td.strong{font-weight:700}
-.kor-baseline-row td{background:var(--accent-soft);color:var(--muted);font-size:var(--text-sm);text-align:center}
-.kor-baseline-row span{font-weight:700;color:var(--accent)}
+/* reserve space while the table builds so the note below doesn't jump (CLS) */
+#kor-table:empty{min-height:40vh}
+/* soften Tabulator's default frozen-column divider to match the table chrome */
+.tabulator .tabulator-cell.tabulator-frozen.tabulator-frozen-left,
+.tabulator .tabulator-header .tabulator-col.tabulator-frozen.tabulator-frozen-left{border-right:1px solid var(--line-2)}
+/* the replacement baseline participates in sorting as a real row; keep it visually distinct */
+.tabulator .tabulator-row.kor-baseline-row,
+.tabulator .tabulator-row.kor-baseline-row.tabulator-row-even,
+.tabulator .tabulator-row.kor-baseline-row:hover{background:var(--accent-soft)}
+.kor-baseline-row .tabulator-cell{color:var(--muted)}
+.kor-baseline-name{font-weight:700;color:var(--accent);white-space:nowrap}
+.kor-coverage{margin:calc(-1 * var(--space-2)) 0 var(--space-2)}
+.kor-pool-note{margin:calc(-1 * var(--space-3)) 0 var(--space-4)}
 .kor-row-limit{margin:var(--space-2) 0 0}
 @media(max-width:760px){
   .select{width:100%;min-width:0}
@@ -618,12 +629,14 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .cc-segmented button{min-height:34px;border:0;background:transparent;color:var(--muted);border-radius:var(--radius-sm);
   padding:0 var(--space-3);font:inherit;font-weight:700;cursor:pointer}
 .cc-segmented button.active{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.08)}
-.community-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(22rem,.48fr);gap:var(--space-4);align-items:start}
+.community-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(16rem,.28fr);gap:var(--space-4);align-items:start}
 .community-table{min-width:760px}
 .community-overall-table:empty{min-height:420px}
 .community-overall-table .tabulator-row{cursor:pointer}
 .community-overall-table .tabulator-row.community-selected-row{background:var(--accent-soft)}
 .community-overall-table .tabulator-cell.score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
+.community-overall-table .tabulator-cell.top-count,
+.community-overall-table .tabulator-col.top-count .tabulator-col-content{padding-right:var(--space-4)}
 .community-table th,.community-table td{vertical-align:middle}
 .community-table .score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
 .bar-mini{display:block;height:6px;margin-top:4px;border-radius:999px;background:var(--panel-2);overflow:hidden}
@@ -643,7 +656,16 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .cc-calc-table-wrap{margin-top:var(--space-3)}
 .cc-calc-table{min-width:820px}
 .cc-calc-table .formula{margin:0;white-space:nowrap}
-#cc-eramenu .eramenu-panel{right:0;left:auto;max-width:min(96vw,560px)}
+#cc-eramenu .eramenu-panel{right:0;left:auto;max-width:min(96vw,640px)}
+/* back-to-ranking link inside trace panels; only needed where the trace stacks below the table */
+.cc-backlink{display:none}
+@media(max-width:960px){
+  .cc-backlink{display:inline-flex;align-items:center;min-height:44px;font-weight:700;margin-bottom:var(--space-2)}
+}
+.cc-legend{padding:0 var(--space-4) var(--space-4);margin:0}
+.community-table tbody tr{cursor:pointer}
+.cc-evidence{display:block}
+@media(max-width:760px){.title-pill{min-height:44px}}
 .source-ledger{margin-top:var(--space-4)}
 .source-ledger table{min-width:860px}
 .community-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}

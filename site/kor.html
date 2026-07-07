@@ -12,6 +12,7 @@
 <meta property="og:description" content="Major-event kill production above title-specific replacement baselines.">
 <meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
@@ -25,8 +26,11 @@
   <p class="lede">Major-event kills per map above a title-and-mode replacement baseline. Respawn and S&amp;D are separate because their kill environments are different.</p>
 
   <div class="note kor-method">
-    <strong>Formula.</strong> KOR/map = player K/map − replacement K/map. Replacement is the 25th percentile K/map among qualified players in the same title and mode split. Opponent placement columns are context only, not part of the score. <a href="methodology.html#kills-over-replacement">Methodology →</a>
+    <strong>Formula.</strong> KOR/map = player K/map − replacement K/map. Replacement is the 25th percentile K/map among qualified players in the same title and mode split.
+    <strong>Read it as:</strong> +2.00 means about two more kills per map than a fringe qualified pro in that title and mode; 0 is replacement level, and the best all-time respawn rates sit around +5 to +6.
+    Opponent placement columns are context only, not part of the score. <a href="methodology.html#kills-over-replacement">Methodology →</a>
   </div>
+  <p class="small muted kor-coverage">Boards start at Black Ops 2. The wiki has no per-map kill data for earlier titles (CoD4, MW2, Black Ops), and Modern Warfare 3's on-record sample is too thin to qualify anyone.</p>
 
   <div class="kor-controls">
     <label class="field-label">Title
@@ -43,6 +47,7 @@
   <div id="kor-root" aria-live="polite"><p class="note">Loading KOR data...</p></div>
 </main>
 <script src="data.js"></script>
+<script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
 <script>
 mountNav('kor.html');
@@ -50,8 +55,11 @@ const gameSel = document.getElementById('kor-game');
 const splitBtns = [...document.querySelectorAll('#kor-split button')];
 const host = document.getElementById('kor-root');
 let KOR = null;
+let korTable = null;
 let showAllRows = false;
 const KOR_ALL_ROW_LIMIT = 100;
+const SMALL_POOL_LIMIT = 20;   // below this many qualified players, the percentile baseline itself is fragile
+const mq = window.matchMedia('(max-width:760px)');
 
 const pct = v => v == null ? '<span class="faint">–</span>' : `${Math.round(v * 100)}%`;
 const num = (v, d=2) => v == null ? '<span class="faint">–</span>' : Number(v).toFixed(d);
@@ -66,6 +74,15 @@ const ord = n => {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
 
+/* Titles that can actually show a board: at least one split with qualified rows.
+   (Modern Warfare 3 is in kor.json but qualifies no one — see the coverage note.) */
+function availableGames(){
+  return D.meta.seasonOrder.filter(g => {
+    const splits = KOR.games[g]?.splits;
+    return splits && Object.values(splits).some(s => s.rows && s.rows.length);
+  });
+}
+
 function allRows(split, game){
   const rows = [];
   Object.entries(KOR.games).forEach(([g, gameData]) => {
@@ -74,13 +91,15 @@ function allRows(split, game){
     if(!score || !score.rows) return;
     score.rows.forEach(row => rows.push({...row, game: g, replacementKpm: score.replacementKpm, qualified: score.qualified}));
   });
-  return rows.sort((a, b) => b.korPerMap - a.korPerMap || b.maps - a.maps || a.player.localeCompare(b.player));
+  rows.sort((a, b) => b.korPerMap - a.korPerMap || b.maps - a.maps || a.player.localeCompare(b.player));
+  // rank is fixed by KOR/map order so re-sorting the table by other columns keeps it stable
+  rows.forEach((r, i) => { r.rank = i + 1; });
+  return rows;
 }
 
 function readState(){
   const params = new URLSearchParams(location.search);
-  const games = Object.keys(KOR.games);
-  const game = games.includes(params.get('g')) ? params.get('g') : 'all';
+  const game = availableGames().includes(params.get('g')) ? params.get('g') : 'all';
   const split = params.get('split') === 'snd' ? 'snd' : 'respawn';
   return {game, split};
 }
@@ -94,104 +113,169 @@ function syncControls(game, split){
   gameSel.value = game;
   splitBtns.forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.split === split ? 'true' : 'false'));
 }
-function replacementMarker(score){
-  if(!score || score.replacementKpm == null || !score.rows?.length) return '';
-  const idx = score.rows.findIndex(r => r.kpm < score.replacementKpm);
-  const insertAt = idx < 0 ? score.rows.length : idx;
-  const above = score.rows[insertAt - 1];
-  const below = score.rows[insertAt];
-  const names = above && below
-    ? `between ${esc(above.player)} and ${esc(below.player)}`
-    : above
-    ? `below ${esc(above.player)}`
-    : below
-    ? `above ${esc(below.player)}`
-    : '';
-  return {insertAt, html: `<tr class="kor-baseline-row">
-    <td colspan="11"><span>Replacement baseline</span> ${num(score.replacementKpm)} K/map · 25th percentile of ${score.qualified} qualified players${names ? ` · ${names}` : ''}</td>
-  </tr>`};
+
+/* The replacement baseline joins the table as a real row: KOR/map 0 and K/map equal
+   to the baseline, so any numeric sort drops it exactly where the baseline falls. */
+function baselineRow(score){
+  return {
+    baseline: true,
+    rank: null, player: 'Replacement baseline', role: null, game: null,
+    korPerMap: 0, kpm: score.replacementKpm, maps: null, events: null,
+    replacementKpm: score.replacementKpm, qualified: score.qualified,
+    medianOpponentPlace: null, top8OpponentPct: null
+  };
 }
-function tableRows(rows, split, marker){
-  const out = [];
-  rows.forEach((r, i) => {
-    if(marker && marker.insertAt === i) out.push(marker.html);
-    out.push(`<tr>
-      <td class="n">${i + 1}</td>
-      <td>${playerLink(r.player)}</td>
-      <td>${rolePill(r.role || 'Unknown')}</td>
-      <td>${gameLink(r.game)}</td>
-      <td class="n strong">${signedNum(r.korPerMap)}</td>
-      <td class="n">${num(r.kpm)}</td>
-      <td class="n">${r.maps} ${samplePill(r.maps, split)}</td>
-      <td class="n">${r.events}</td>
-      <td class="n">${num(r.replacementKpm)}</td>
-      <td class="n">${ord(r.medianOpponentPlace)}</td>
-      <td class="n">${pct(r.top8OpponentPct)}</td>
-    </tr>`);
-  });
-  if(marker && marker.insertAt === rows.length) out.push(marker.html);
-  return out.join('');
+
+const colSize = (M, mobileW, desktopW, grow=1) => M ? {width:mobileW, minWidth:mobileW} : {minWidth:desktopW, widthGrow:grow};
+function buildColumns(M, game, split){
+  const all = game === 'all';
+  const numCol = {hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number',
+    sorterParams:{alignEmptyValues:'bottom'}};
+  return [
+    {title:M?'#':'Rank', field:'rank', ...colSize(M,44,72,.6), ...numCol, frozen:true,
+      headerTooltip:'Rank by KOR/map within this view',
+      formatter:c => c.getRow().getData().baseline ? '' : c.getValue()},
+    {title:'Player', field:'player', ...colSize(M,116,132,1.6), sorter:'string', frozen:true,
+      formatter:c => {
+        const d = c.getRow().getData();
+        if(d.baseline) return `<span class="kor-baseline-name">Replacement baseline</span>`;
+        return playerLink(d.player);
+      }},
+    {title:'KOR/map', field:'korPerMap', ...colSize(M,84,96,1), ...numCol,
+      headerTooltip:'Kills per map above the replacement baseline for that title and mode',
+      formatter:c => {
+        const d = c.getRow().getData();
+        return d.baseline ? '<span class="faint">0.00</span>' : `<strong>${signedNum(c.getValue())}</strong>`;
+      }},
+    {title:'K/map', field:'kpm', ...colSize(M,72,84,.9), ...numCol,
+      headerTooltip:'Kills per map', formatter:c => num(c.getValue())},
+    {title:'Title', field:'game', ...colSize(M,104,120,1.2), sorter:'string', visible:all,
+      formatter:c => c.getRow().getData().baseline ? '' : gameLink(c.getValue())},
+    {title:'Role', field:'role', ...colSize(M,84,84,.8), sorter:'string', visible:all,
+      headerTooltip:'Curated primary role in that title. Unknown = no curated role data for this player/title yet.',
+      formatter:c => c.getRow().getData().baseline ? '' : rolePill(c.getValue() || 'Unknown')},
+    {title:'Maps', field:'maps', ...colSize(M,102,104,1), ...numCol,
+      headerTooltip:`Major-event maps in this split. “low sample” = under ${lowSampleLimit(split)} maps.`,
+      formatter:c => {
+        const d = c.getRow().getData();
+        if(d.baseline) return '';
+        return `${d.maps} ${samplePill(d.maps, split)}`;
+      }},
+    {title:'Events', field:'events', ...colSize(M,68,80,.8), ...numCol,
+      headerTooltip:'Majors with stat rows in this split'},
+    {title:M?'Repl':'Replacement', field:'replacementKpm', ...colSize(M,64,108,1), ...numCol, visible:all,
+      headerTooltip:'25th percentile K/map among qualified players in the same title and mode',
+      formatter:c => num(c.getValue())},
+    {title:M?'Med opp':'Median opp place', field:'medianOpponentPlace', ...colSize(M,80,128,1.1), ...numCol,
+      headerTooltip:'Median event finish of the teams faced across these maps. Context only — not part of the score.',
+      formatter:c => c.getRow().getData().baseline ? '' : ord(c.getValue())},
+    {title:M?'Top-8 opp':'Top-8 opp maps', field:'top8OpponentPct', ...colSize(M,84,120,1.1), ...numCol,
+      headerTooltip:'Share of maps against teams that placed top 8 at that event. Context only — not part of the score.',
+      formatter:c => c.getRow().getData().baseline ? '' : pct(c.getValue())}
+  ];
 }
-function barRows(rows){
+
+function markBaselineRow(row){
+  const d = row.getData();
+  const el = row.getElement();
+  el.classList.toggle('kor-baseline-row', !!d.baseline);
+  if(d.baseline){
+    const fragile = d.qualified < SMALL_POOL_LIMIT ? ' — a small pool, so the baseline itself is fragile' : '';
+    el.title = `25th percentile K/map of ${d.qualified} qualified players${fragile}`;
+  }else{
+    el.removeAttribute('title');
+  }
+}
+
+function tableData(rows, score, game){
+  const visible = game === 'all' && !showAllRows ? rows.slice(0, KOR_ALL_ROW_LIMIT) : rows.slice();
+  if(game !== 'all' && score && score.replacementKpm != null) visible.push(baselineRow(score));
+  return visible;
+}
+
+function rowLimitNote(rows, game){
+  if(game !== 'all' || rows.length <= KOR_ALL_ROW_LIMIT) return '';
+  return showAllRows
+    ? `<p class="small muted kor-row-limit">Showing all ${rows.length} rows. <button type="button" class="link-button" id="kor-row-toggle">Show top ${KOR_ALL_ROW_LIMIT}</button></p>`
+    : `<p class="small muted kor-row-limit">Showing top ${KOR_ALL_ROW_LIMIT} of ${rows.length} by KOR/map. <button type="button" class="link-button" id="kor-row-toggle">Show all rows</button></p>`;
+}
+
+function barRows(rows, game){
   const top = rows.slice(0, 10);
   const max = Math.max(...top.map(r => Math.abs(r.korPerMap)), 1);
   return top.map((r, i) => {
+    const context = game === 'all' ? esc(r.game) : `${r.maps} maps`;
     const width = 12 + Math.abs(r.korPerMap) / max * 80;
     return `<div class="kor-bar-row">
       <div class="rank">${i + 1}</div>
-      <div class="bar-name">${playerLink(r.player)} <span>${esc(r.game)}</span></div>
+      <div class="bar-name">${playerLink(r.player)} <span>${context}</span></div>
       <div class="bar-track"><div class="bar-fill" style="width:${width.toFixed(1)}%"></div></div>
       <div class="bar-value">${signedNum(r.korPerMap)}</div>
     </div>`;
   }).join('');
 }
+
 function render(game, split){
   const rows = allRows(split, game);
   const score = game === 'all' ? null : KOR.games[game]?.splits?.[split];
   const leader = rows[0];
   syncControls(game, split);
   setUrl(game, split);
+  korTable = null;
   if(!rows.length){
     host.innerHTML = '<p class="note">No qualified KOR rows for this selection.</p>';
     return;
   }
-  const marker = game === 'all' ? null : replacementMarker(score);
   const title = game === 'all' ? `All-time ${splitLabel(split)} KOR/map` : `${esc(game)} ${splitLabel(split)} KOR/map`;
-  const visibleRows = game === 'all' && !showAllRows ? rows.slice(0, KOR_ALL_ROW_LIMIT) : rows;
-  const rowLimitNote = game === 'all' && rows.length > visibleRows.length
-    ? `<p class="small muted kor-row-limit">Showing top ${visibleRows.length} of ${rows.length}. <button type="button" class="link-button" id="kor-show-all">Show all rows</button></p>`
-    : '';
+  const smallPool = score && score.qualified < SMALL_POOL_LIMIT;
+  const replTile = game === 'all'
+    ? `<div class="stat"><div class="k">Replacement</div><div class="v sm">per title</div><div class="small faint">each row vs its own title/mode baseline</div></div>`
+    : `<div class="stat"><div class="k">Replacement</div><div class="v sm">${num(score.replacementKpm)} K/map</div>
+        <div class="small faint">25th percentile of ${score.qualified} qualified ${smallPool ? '<span class="pill warn">small pool</span>' : ''}</div></div>`;
   host.innerHTML = `
     <section class="kor-summary">
       <div class="stat"><div class="k">Leader</div><div class="v sm">${esc(leader.player)}</div><div class="small faint">${esc(leader.game)} · ${signedNum(leader.korPerMap)} KOR/map</div></div>
-      <div class="stat"><div class="k">Qualified rows</div><div class="v">${rows.length}</div><div class="small faint">${splitLabel(split)} · ${game === 'all' ? 'all titles' : `${score.minMaps}+ maps`}</div></div>
-      <div class="stat"><div class="k">Replacement</div><div class="v sm">${game === 'all' ? 'per title' : `${num(score.replacementKpm)} K/map`}</div><div class="small faint">25th percentile qualified player</div></div>
+      <div class="stat"><div class="k">Qualified players</div><div class="v">${rows.length}</div><div class="small faint">${game === 'all' ? `one row per title · ${splitLabel(split)}` : `${score.minMaps}+ ${splitLabel(split)} maps in ${esc(game)}`}</div></div>
+      ${replTile}
     </section>
+    ${smallPool ? `<p class="small muted kor-pool-note">Only ${score.qualified} players qualify in this split, so the replacement baseline itself is a small-sample estimate — read the gaps loosely.</p>` : ''}
     <section class="kor-grid">
       <div class="kor-panel">
-        <h2>Top 10</h2>
-        ${barRows(rows)}
+        <h2>Top 10 · ${title}</h2>
+        ${barRows(rows, game)}
       </div>
       <div class="kor-panel">
         <h2>Read this as</h2>
-        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; low-sample rows can be real but fragile. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
+        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; “low sample” marks players under ${lowSampleLimit('respawn')} respawn or ${lowSampleLimit('snd')} S&amp;D maps — real but fragile. Click a column header to re-sort. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
       </div>
     </section>
     <section>
       <h2>${title}</h2>
-      ${TableSurface.dataTable({
-        label: `${title} leaderboard table`,
-        caption: `${title} leaderboard with role, sample, replacement, and opponent context`,
-        tableClass: 'data kor-table',
-        hint: 'Swipe the table sideways to see role, sample, and opponent context.',
-        head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col">Role</th><th scope="col">Title</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">K/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col" class="n">Replacement</th><th scope="col" class="n">Median opp place</th><th scope="col" class="n">Top-8 opp maps</th></tr></thead>',
-        rows: tableRows(visibleRows, split, marker)
-      })}
-      ${rowLimitNote}
+      <p class="scrollhint small faint">Swipe the table sideways — rank and player stay pinned →</p>
+      <div id="kor-table" aria-label="${title} leaderboard table"></div>
+      ${rowLimitNote(rows, game)}
     </section>`;
-  host.querySelector('#kor-show-all')?.addEventListener('click', () => {
-    showAllRows = true;
-    render(game, split);
+  korTable = TableSurface.mountTabulator('#kor-table', {
+    label: `${title} leaderboard table`,
+    data: tableData(rows, score, game),
+    layout: 'fitColumns',
+    initialSort: [{column:'korPerMap', dir:'desc'}],
+    columns: buildColumns(mq.matches, game, split),
+    rowFormatter: markBaselineRow
+  });
+  wireRowToggle(rows, score, game);
+}
+
+function wireRowToggle(rows, score, game){
+  const btn = host.querySelector('#kor-row-toggle');
+  if(!btn) return;
+  btn.addEventListener('click', () => {
+    showAllRows = !showAllRows;
+    korTable.setData(tableData(rows, score, game));
+    const note = host.querySelector('.kor-row-limit');
+    if(note) note.outerHTML = rowLimitNote(rows, game);
+    wireRowToggle(rows, score, game);
+    host.querySelector('#kor-row-toggle')?.focus();
   });
 }
 
@@ -199,8 +283,7 @@ fetch('kor.json')
   .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
   .then(data => {
     KOR = data;
-    const games = D.meta.seasonOrder.filter(g => KOR.games[g]?.splits?.respawn || KOR.games[g]?.splits?.snd);
-    gameSel.innerHTML += games.map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
+    gameSel.innerHTML += availableGames().map(g => `<option value="${esc(g)}">${esc(g)}</option>`).join('');
     const state = readState();
     render(state.game, state.split);
     gameSel.addEventListener('change', () => {
@@ -211,6 +294,13 @@ fetch('kor.json')
       showAllRows = false;
       render(gameSel.value, btn.dataset.split);
     }));
+    // crossing the phone breakpoint swaps column widths/labels in place
+    mq.addEventListener('change', () => {
+      if(!korTable) return;
+      const split = splitBtns.find(b => b.getAttribute('aria-pressed') === 'true').dataset.split;
+      korTable.setColumns(buildColumns(mq.matches, gameSel.value, split));
+      TableSurface.enhanceTabulator(korTable, document.getElementById('kor-table'));
+    });
   })
   .catch(err => {
     console.error(err);

@@ -10,8 +10,9 @@
 <meta property="og:site_name" content="CoD Major Wins · Era-Adjusted">
 <meta property="og:title" content="GOAT Ranking Builder">
 <meta property="og:description" content="Choose criteria and weights, filter by era, and generate a custom Call of Duty GOAT ranking from current site data.">
-<meta property="og:image" content="https://cod-stats-one.vercel.app/assets/og.png">
+<meta property="og:image" content="https://cod-stats-one.vercel.app/api/goat-og">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cod-stats-one.vercel.app/api/goat-og">
 <link rel="stylesheet" href="vendor/tabulator.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
@@ -24,7 +25,7 @@
   --gb-panel-2:#f1f4f8;
   --gb-ink:#171b24;
   --gb-muted:#5f6877;
-  --gb-faint:#828b99;
+  --gb-faint:#5d6675;
   --gb-line:#d9dee8;
   --gb-blue:#2563eb;
   --gb-blue-soft:#edf4ff;
@@ -147,7 +148,11 @@ button,input{font:inherit}
 .gb-detail-head p{margin:3px 0 0;color:var(--gb-muted);font-size:12px}
 .gb-detail-score{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;font-size:22px;font-weight:850}
 .gb-detail-body{padding:12px 14px}
-.gb-explain-table{min-width:680px}
+.gb-explain-table{min-width:0;width:100%;table-layout:fixed}
+.gb-explain-table th:nth-child(1){width:18%}
+.gb-explain-table th:nth-child(2){width:52%}
+.gb-explain-table th:nth-child(3){width:17%}
+.gb-explain-table th:nth-child(4){width:13%}
 .gb-explain-table tbody th{color:var(--gb-ink)}
 .gb-explain-table .note{display:block;margin-top:2px;color:var(--gb-faint);font-size:11px;line-height:1.3;white-space:normal}
 .gb-explain-table .lane-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
@@ -181,7 +186,7 @@ button,input{font:inherit}
 .gb-break-row span:first-child{color:var(--gb-muted);font-weight:700}
 .gb-foot{margin-top:14px;border-top:1px solid var(--gb-line);padding-top:12px;color:var(--gb-muted);font-size:12px}
 .gb-empty{padding:22px;color:var(--gb-muted)}
-@media(max-width:980px){
+@media(max-width:1120px){
   .gb-shell{padding:16px 12px 36px}
   .gb-top{display:block}
   .gb-toolbar{margin-top:12px}
@@ -194,6 +199,48 @@ button,input{font:inherit}
   .gb-panel-head{display:block}
   .gb-pill{margin-top:8px}
 }
+.gb-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1px solid #bfd2ff;background:var(--gb-blue-soft);border-radius:8px;padding:10px 12px;margin:0 0 14px;color:#1d4ed8}
+.gb-banner strong{font-size:13px}
+.gb-banner small{display:block;color:#3b5bab;margin-top:2px;font-weight:600}
+.gb-banner button{border:1px solid #bfd2ff;background:#fff;color:var(--gb-blue);border-radius:7px;min-height:30px;padding:0 10px;font-size:12px;font-weight:800;cursor:pointer}
+.gb-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.gb-presets button{border:1px solid var(--gb-line);background:#fff;color:var(--gb-muted);border-radius:999px;min-height:30px;padding:0 11px;font-size:12px;font-weight:750;cursor:pointer}
+.gb-presets button.active{border-color:#bfd2ff;background:var(--gb-blue-soft);color:var(--gb-blue)}
+.gb-favors{display:block;color:var(--gb-faint);font-size:11px;margin-top:4px}
+.gb-note{margin:0 0 12px;border:1px solid #f5d68a;background:var(--gb-gold-soft);border-radius:8px;padding:9px 11px;color:var(--gb-gold);font-size:12px;font-weight:700}
+.gb-empty-note{margin:0 0 12px;padding:18px;border:1px dashed var(--gb-line);border-radius:8px;color:var(--gb-muted)}
+.gb-delta{margin-left:6px;font-size:11px;font-weight:850;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+.gb-delta.up{color:var(--gb-teal)}
+.gb-delta.down{color:var(--gb-red)}
+.gb-delta.same{color:var(--gb-faint)}
+.gb-sub{overflow:hidden;text-overflow:ellipsis}
+.gb-player-cell>span:last-child{min-width:0}
+.gb-row-detail{position:sticky;left:0}
+.gb-map-quad{fill:var(--gb-faint);font-size:11px;font-weight:800;text-transform:uppercase}
+.gb-map-dot.fade::before{opacity:.35}
+.gb-mini{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#fff;border-top:1px solid var(--gb-line);box-shadow:0 -6px 18px rgba(17,24,39,.1);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+.gb-mini[hidden]{display:none!important}
+.gb-mini-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1320px;margin:0 auto}
+.gb-mini-top{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:750}
+.gb-mini-top .r{color:var(--gb-faint);font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}
+.gb-mini-actions{display:flex;gap:6px;flex-shrink:0}
+.gb-mini-actions button{border:1px solid var(--gb-line);background:#fff;color:var(--gb-muted);border-radius:8px;min-height:38px;padding:0 12px;font-size:12px;font-weight:800;cursor:pointer}
+.gb-mini-actions #miniShare{border-color:#bfd2ff;background:var(--gb-blue-soft);color:var(--gb-blue)}
+@media(max-width:1120px){
+  .gb-mini{display:block}
+  .gb-shell{padding-bottom:92px}
+}
+@media(max-width:760px){
+  .gb-step{height:44px}
+  .gb-points-input{height:44px}
+  .gb-era-presets button{min-height:36px;padding:0 12px}
+  .gb-explain-table thead{display:none}
+  .gb-explain-table th:nth-child(1),.gb-explain-table th:nth-child(2),.gb-explain-table th:nth-child(3),.gb-explain-table th:nth-child(4){width:auto}
+  .gb-explain-table tbody tr{display:block;border-top:1px solid var(--gb-line);padding:7px 0}
+  .gb-explain-table tbody tr:first-child{border-top:0}
+  .gb-explain-table tbody th,.gb-explain-table tbody td{display:block;width:100%;text-align:left;padding:2px 0;border:0}
+  .gb-explain-table td.n::before{content:attr(data-label) ": ";color:var(--gb-faint);font-weight:750}
+}
 </style>
 </head>
 <body>
@@ -202,10 +249,18 @@ button,input{font:inherit}
 <main class="gb-shell" id="root" tabindex="-1">
   <div class="gb-top">
     <div>
-      <p class="gb-kicker">Direct URL / Real Data</p>
+      <p class="gb-kicker">Build Your Own List</p>
       <h1>GOAT Ranking Builder</h1>
       <p class="gb-lede">Choose the criteria that matter for your all-time list, set the weights, tune how much a Champs ring is worth, and the ranking recalculates from the current site data.</p>
     </div>
+  </div>
+
+  <div class="gb-banner" id="customBanner" hidden>
+    <div>
+      <strong>Custom list from a shared link — not the site default.</strong>
+      <small id="customSummary"></small>
+    </div>
+    <button type="button" id="resetCustom">Reset to site default</button>
   </div>
 
   <div class="gb-layout">
@@ -218,6 +273,8 @@ button,input{font:inherit}
         <span class="gb-pill blue" id="activeShare">100 pts</span>
       </div>
       <div class="gb-panel-body">
+        <div class="gb-group-title" style="margin-top:0">Quick starts</div>
+        <div class="gb-presets" id="presetChips" aria-label="Weight presets"></div>
         <div class="gb-era">
           <div class="gb-era-head">
             <div>
@@ -259,7 +316,7 @@ button,input{font:inherit}
             <input class="gb-slider" id="ringWeight" type="range" min="1" max="6" step="0.5" value="2">
             <span class="gb-weight">◆</span>
           </div>
-          <small>Champs is already counted once in adjusted wins. At 2x, each ring adds one extra major-win unit inside Resume.</small>
+          <small>Site default: 2x — how much a ring matters is your call, not a measurement. Champs is already counted once in adjusted wins; at 2x each ring adds one extra major-win unit inside Resume. There is no pure rings-only list — Resume always counts every major win.</small>
         </div>
       </div>
     </aside>
@@ -271,6 +328,7 @@ button,input{font:inherit}
           <p id="scoreNote">Equal 25-point allocation across all criteria.</p>
         </div>
         <div class="gb-toolbar">
+          <button class="gb-button" type="button" id="shareList" aria-live="polite">Share list</button>
           <div class="gb-view-toggle" aria-label="Result view">
             <button class="active" type="button" data-view="rank">Ranking</button>
             <button type="button" data-view="map">Map</button>
@@ -279,14 +337,16 @@ button,input{font:inherit}
         </div>
       </div>
       <div class="gb-panel-body">
+        <p class="gb-note" id="dataNote" role="status" hidden></p>
         <div class="gb-summary-grid">
-          <div class="gb-stat"><div class="k">Leader</div><div class="v" id="leaderName">-</div></div>
+          <div class="gb-stat"><div class="k">Your GOAT</div><div class="v" id="leaderName">-</div></div>
           <div class="gb-stat"><div class="k">Ring weight</div><div class="v" id="ringStat">2x</div></div>
           <div class="gb-stat"><div class="k">Skill datasets</div><div class="v" id="skillCoverage">-</div><div class="sub">selected title rankings</div></div>
           <div class="gb-stat"><div class="k">Active criteria</div><div class="v" id="laneCount">4</div><div class="sub">included in score</div></div>
         </div>
 
         <div class="gb-split gb-rank-view" id="rankView">
+          <p class="gb-empty-note" id="emptyNote" hidden></p>
           <p class="scrollhint small muted">Swipe the table sideways to see all columns. Column headers sort and explain each value.</p>
           <div id="goatTable" aria-label="GOAT ranking result table"></div>
         </div>
@@ -294,7 +354,7 @@ button,input{font:inherit}
           <div class="gb-map-head">
             <div>
               <h3>Resume vs Skill Map</h3>
-              <p>Secondary view of the same ranking pool.</p>
+              <p>Same ranking pool. No fan ranking in the selected titles = centered at Skill 50; faded dots span fewer titles.</p>
             </div>
             <div class="gb-map-legend">
               <span class="gb-map-dot">Resume x Skill</span>
@@ -313,11 +373,21 @@ button,input{font:inherit}
               <div class="gb-formula-item"><strong>Longevity</strong><span>Titles with a recorded major placing, scaled to the selected-era leader.</span></div>
               <div class="gb-formula-item"><strong>Peak</strong><span>Best single-title 50/50 blend of title resume peak and same-title consensus score.</span></div>
             </div>
-            <p class="gb-foot">Missing community-consensus rows are treated as neutral for the Skill lane, not zero.</p>
+            <p class="gb-foot">Missing community-consensus rows are treated as neutral for the Skill lane, not zero. Full details on the inputs: <a href="methodology.html">methodology</a> · <a href="community.html">community consensus</a>.</p>
           </div>
         </details>
 	      </div>
 	    </section>
+  </div>
+
+  <div class="gb-mini" id="miniBar" hidden>
+    <div class="gb-mini-inner">
+      <span class="gb-mini-top" id="miniTop"></span>
+      <span class="gb-mini-actions">
+        <button type="button" id="miniJump">See list</button>
+        <button type="button" id="miniShare" aria-live="polite">Share</button>
+      </span>
+    </div>
   </div>
 </main>
 
@@ -328,20 +398,19 @@ button,input{font:inherit}
 const CRITERIA = [
   {key:'resume', label:'Resume', group:'Primary criteria', help:'Team success: adjusted wins plus explicit Champs ring bonus.'},
   {key:'skill', label:'Individual Skill', group:'Primary criteria', help:'Additive community-consensus score across selected titles.'},
-  {key:'longevity', label:'Longevity', group:'Primary criteria', help:'Titles with at least one recorded major placing in the selected era.'},
+  {key:'longevity', label:'Longevity', group:'Primary criteria', help:'Titles with at least one recorded major entry in the selected era.'},
   {key:'peak', label:'Peak', group:'Primary criteria', help:'Best single-title blend of winning peak and same-title consensus.'},
 ];
-const SORT_FIELDS = new Set(['rank','player','score','resume','skill','longevity','peak','adj','rings']);
+const SORT_FIELDS = new Set(['rank','player','score','resume','skill','longevity','peak']);
+const FIXED_SORT_FIELDS = new Set(['rank','player','score']);
 const GOAT_HEADER_TIPS = {
   rank:'GOAT rank by final weighted score.',
   player:'Player name. Click a row to inspect the score calculation.',
   score:'Final weighted GOAT Builder score.',
   resume:'0-100 score from ring-weighted adjusted wins.',
   skill:'0-100 score from additive community-consensus points.',
-  longevity:'0-100 score from titles with at least one recorded major placing.',
+  longevity:'0-100 score from titles with at least one recorded major entry.',
   peak:'Best single-title 50/50 blend of title resume peak and title consensus peak.',
-  adj:'Era-adjusted wins before the extra Champs ring bonus is applied.',
-  rings:'Champs wins in the selected era.',
 };
 const DEFAULT_WEIGHTS = {resume:25, skill:25, longevity:25, peak:25};
 const DEFAULT_ENABLED = {resume:true, skill:true, longevity:true, peak:true};
@@ -441,6 +510,7 @@ function isDefaultWeights(){
   return CRITERIA.every(c => state.weights[c.key] === DEFAULT_WEIGHTS[c.key]);
 }
 function updateUrlState(){
+  ensureVisibleSort();
   const url = new URL(location.href);
   url.search = '';
   const active = CRITERIA.filter(c => state.enabled[c.key]).map(c => c.key).join(',');
@@ -458,6 +528,14 @@ function updateUrlState(){
     url.searchParams.set('dir', state.sort.dir);
   }
   history.replaceState(null, '', url);
+}
+function visibleSortFields(){
+  return new Set([...FIXED_SORT_FIELDS, ...CRITERIA.filter(c => state.enabled[c.key]).map(c => c.key)]);
+}
+function ensureVisibleSort(){
+  if(!visibleSortFields().has(state.sort.key)){
+    state.sort = {key:'rank', dir:'asc'};
+  }
 }
 function num(v, digits=1){ return Number.isFinite(v) ? v.toFixed(digits) : '-'; }
 function pct(v){ return Number.isFinite(v) ? Math.round(v).toString() : '-'; }
@@ -733,10 +811,10 @@ function explanationRows(row, active){
     const label = detail.href
       ? `<a href="${escapeAttr(detail.href)}">${escapeHtml(part.label)}</a>`
       : escapeHtml(part.label);
+    const leaderNote = detail.leader && detail.leader !== '-' ? ` Leader: ${detail.leader}.` : '';
     return `<tr>
       <th scope="row"><span class="lane-dot ${part.key}"></span>${label}</th>
-      <td>${detail.input}<span class="note">${escapeHtml(detail.note)}</span></td>
-      <td class="n">${detail.leader}</td>
+      <td>${detail.input}<span class="note">${escapeHtml(`${detail.note}${leaderNote}`)}</span></td>
       <td class="n">${num(part.laneScore)} x ${Math.round(part.share * 100)}%</td>
       <td class="n"><strong>${num(part.contribution)}</strong></td>
     </tr>`;
@@ -756,7 +834,7 @@ function detailHtml(row, active){
       <div class="gb-detail-table">
         <table class="data gb-explain-table">
           ${tableCaption(`${row.player.name} GOAT Builder score explanation`)}
-          <thead><tr><th scope="col">Criterion</th><th scope="col">Input</th><th scope="col" class="n">Leader</th><th scope="col" class="n">Lane x weight</th><th scope="col" class="n">Pts</th></tr></thead>
+          <thead><tr><th scope="col">Criterion</th><th scope="col">Input</th><th scope="col" class="n">Lane x weight</th><th scope="col" class="n">Pts</th></tr></thead>
           <tbody>${explanationRows(row, active)}</tbody>
         </table>
       </div>
@@ -777,8 +855,6 @@ function rowData(row, active, baseRanks){
     skill:row.lane.skill,
     longevity:row.lane.longevity,
     peak:row.lane.peak,
-    adj:s.adj,
-    rings:s.champs || 0,
     stack:contributionStack(row, active),
     detailHtml:detailHtml(row, active),
   };
@@ -801,18 +877,33 @@ function intFormatter(cell){ return String(Number(cell.getValue()) || 0); }
 function colSize(M, mobileW, desktopW, grow=1){
   return M ? {width:mobileW, minWidth:mobileW} : {minWidth:desktopW, widthGrow:grow};
 }
+function criterionColumn(c, M){
+  const options = {
+    resume:{title:M ? 'Res' : 'Resume', mobileW:70, desktopW:86, grow:.8},
+    skill:{title:'Skill', mobileW:70, desktopW:78, grow:.75},
+    longevity:{title:M ? 'Long' : 'Longevity', mobileW:78, desktopW:100, grow:.95},
+    peak:{title:'Peak', mobileW:70, desktopW:78, grow:.75},
+  }[c.key];
+  return {
+    title:options.title,
+    field:c.key,
+    ...colSize(M, options.mobileW, options.desktopW, options.grow),
+    hozAlign:'right',
+    headerHozAlign:'right',
+    cssClass:'tabnum',
+    sorter:'number',
+    formatter:pctFormatter,
+    headerSortStartingDir:'desc',
+    headerTooltip:GOAT_HEADER_TIPS[c.key],
+  };
+}
 function buildGoatColumns(M){
-  return [
-    {title:M ? '#' : 'Rank', field:'rank', ...colSize(M,58,78,.7), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:rankFormatter, headerSortStartingDir:'asc', headerTooltip:GOAT_HEADER_TIPS.rank},
-    {title:'Player', field:'player', ...colSize(M,150,190,1.7), sorter:'string', formatter:playerFormatter, headerSortStartingDir:'asc', headerTooltip:GOAT_HEADER_TIPS.player},
-    {title:'Score', field:'score', ...colSize(M,150,190,1.4), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:scoreFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.score},
-    {title:M ? 'Res' : 'Resume', field:'resume', ...colSize(M,76,96,.9), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:pctFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.resume},
-    {title:'Skill', field:'skill', ...colSize(M,76,92,.9), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:pctFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.skill},
-    {title:M ? 'Long' : 'Longevity', field:'longevity', ...colSize(M,82,108,1), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:pctFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.longevity},
-    {title:'Peak', field:'peak', ...colSize(M,76,86,.85), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:pctFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.peak},
-    {title:M ? 'Adj' : 'Adj wins', field:'adj', ...colSize(M,80,96,.9), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:numFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.adj},
-    {title:'Rings', field:'rings', ...colSize(M,82,82,.75), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:intFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.rings},
+  const columns = [
+    {title:M ? '#' : 'Rank', field:'rank', ...colSize(M,50,62,.55), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:rankFormatter, headerSortStartingDir:'asc', headerTooltip:GOAT_HEADER_TIPS.rank},
+    {title:'Player', field:'player', ...colSize(M,142,178,1.6), sorter:'string', formatter:playerFormatter, headerSortStartingDir:'asc', headerTooltip:GOAT_HEADER_TIPS.player},
+    {title:'Score', field:'score', ...colSize(M,126,142,1.2), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:scoreFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.score},
   ];
+  return columns.concat(CRITERIA.filter(c => state.enabled[c.key]).map(c => criterionColumn(c, M)));
 }
 function applyHeaderTooltips(){
   document.querySelectorAll('#goatTable .tabulator-col[tabulator-field]').forEach(col => {
@@ -869,6 +960,7 @@ function formatExpandedRow(row){
 }
 function syncTableSortFromState(){
   if(!goatTable) return;
+  ensureVisibleSort();
   const sorter = goatTable.getSorters()[0];
   if(!sorter || sorter.field !== state.sort.key || sorter.dir !== state.sort.dir){
     goatTable.setSort(state.sort.key, state.sort.dir);
@@ -910,8 +1002,10 @@ function renderGoatTable(rankedRows, active, baseRanks){
       toggleSelectedRow(row, true);
     });
   }else{
+    goatTable.setColumns(buildGoatColumns(tableMedia.matches));
     goatTable.setData(data);
     syncTableSortFromState();
+    applyHeaderTooltips();
   }
   markTableSelection();
 }

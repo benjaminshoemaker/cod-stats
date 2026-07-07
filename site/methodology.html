@@ -266,6 +266,17 @@ root.innerHTML=`
   <p>Each title is scored from explicit ranked community evidence: aggregate survey results where available, thread clusters with extractable ranked ballots, and rare single community ballots when they are the only usable source. A player's ballot points are normalized by list size, source contributions are weighted by source type, sample size, timing, season coverage, and bounded Reddit-score signals, then summed within that title.</p>
   <p>Source density is not uniform across eras. For recent titles, the strongest usable evidence is often a single large community poll with thousands of votes, so that poll may carry the title by itself. Older titles generally do not have comparable aggregate polls preserved, so their rankings are reconstructed from smaller Reddit threads, archived discussions, and other extractable community lists. The goal is not to pretend every title has identical source depth; it is to create a consistent, auditable community-ranking lane across all titles using the best available evidence for each era.</p>
   <p>Thread comments from the same discussion are averaged into one source before source weighting, because they are not fully independent publications. When individual comment scores are captured, they only redistribute influence <em>inside that source</em>; they do not make the whole thread count as more independent evidence. Reviewed-but-not-scored sources remain visible in the ledger so missing or rejected evidence does not disappear.</p>
+  <h3 id="community-confidence">Confidence, close races, and ledger statuses ${anchorLink('community-confidence','Community confidence')}</h3>
+  <p>Each ranked row carries a <strong>confidence</strong> tag driven by source depth: <strong>high</strong> means the title has an
+  aggregate community survey behind it or five or more scored sources; <strong>medium</strong> means three or four scored sources;
+  <strong>low</strong> means one or two, and the order should be treated as provisional. <strong>Close race</strong> flags rows whose
+  consensus score is within 5% of an adjacent rank — read those as effectively tied rather than settled.</p>
+  <p>In the source ledger, <strong>scored</strong> sources count toward the ranking; <strong>reviewed not scored</strong> sources were
+  found and logged but had no cleanly extractable ranked list; <strong>excluded</strong> sources belong to other evidence lanes
+  (media, official awards, or stat lists). Keeping non-scored sources visible is deliberate: it records what was searched, so
+  "not found yet" is never silently confused with "not searched."</p>
+  <p>Ranking tables display community scores rounded to two decimals to avoid implying more precision than reconstructed community
+  evidence supports; the per-player traces keep the exact three-decimal contributions so the math stays fully auditable.</p>
   <h3 id="community-rank-points">Rank-points curve ${anchorLink('community-rank-points','Rank-points curve')}</h3>
   <p>The cross-title rollup converts each title rank to a top-heavy score with <span class="formula">((31 - rank) / 30) ** 2.5</span>.
   This is a site methodology choice, not an external standard. The constants come from the retained ranking window: rank 1
