@@ -553,8 +553,7 @@ function renderOverallDetail(playerRow){
       <p class="small muted">Overall points are the sum of title ranks converted with
         <a href="methodology.html#community-rank-points">the rank-points curve</a>:
         <span class="formula">((31 - rank) / 30) ** 2.5</span> — a deliberately top-heavy curve (rank 1 = 1.000, rank 30 ≈ 0),
-        so elite finishes count far more than list tails. The overall order barely leans on that choice: the #1 and #2 spots
-        are unchanged for any exponent from 0.5 to 8. Use the title links for the source-level trace behind each title rank.</p>
+        so elite finishes count far more than list tails. Use the title links for the source-level trace behind each title rank.</p>
       <div class="calc-summary small muted">
         <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}
       </div>

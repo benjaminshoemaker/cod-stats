@@ -41,6 +41,11 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-07', tag:'Methodology', title:'GOAT Builder now opens on the Balanced recipe',
+   body:`The <a href="goat-builder.html">GOAT Builder</a> default weights changed from an even 25% per lane to the
+   Balanced preset: 50% Resume, 30% Individual Skill, 10% Longevity, 10% Peak. This moves the default ranking below
+   the top spots; shared links with explicit weights are unaffected. The default and the Balanced preset are now the
+   same definition in code, so they cannot drift apart.`},
   {date:'2026-07-07', tag:'Improved', title:'Every number explains itself',
    body:`Following a reader comprehension test, the main pages now show their work in place. On the
    <a href="index.html">leaderboard</a>, clicking any Adjusted value expands that player's season-by-season math
@@ -49,8 +54,7 @@ const ENTRIES = [
    states its qualification bar and that the replacement percentile covers everyone who qualifies (low-sample players
    included), shows opponent-strength medians in one consistent format, and counts "qualified seasons" honestly on the
    all-time board. <a href="community.html">Community Consensus</a> explains that the overall score is a career total
-   while average rank compares per-title peaks, defines the Top 1/3/5/10 columns, and notes that the #1 and #2 overall
-   spots are unchanged for any rank-points exponent from 0.5 to 8. Scores and rankings are unchanged.`},
+   while average rank compares per-title peaks, and defines the Top 1/3/5/10 columns. Scores and rankings are unchanged.`},
   {date:'2026-07-07', tag:'New', title:'KOR event-by-event traces with map-level drilldown',
    body:`Every row on the <a href="kor.html">Kills Over Replacement</a> board now expands (click, or Enter on a
    focused row) into an event-by-event trace of that season: each major's maps, real kills–deaths, K/map, KOR vs the

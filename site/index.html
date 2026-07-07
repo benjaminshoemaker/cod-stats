@@ -237,8 +237,12 @@ function adjMathHtml(d){
   const seasons = (D.players[d.name]?.seasons||[]).filter(s=>selected.has(s.game)&&s.wins>0);
   const share = seasons.reduce((a,s)=>a+s.wins/s.majors,0);
   const body = seasons.map(s=>`<tr><th scope="row">${esc(s.game)}</th><td class="n">won ${s.wins} of ${s.majors} majors</td><td class="n">${(s.wins/s.majors).toFixed(3)}</td></tr>`).join('');
+  // the total and the ring equation must come from the row's engine values, not a
+  // local recompute — an independent float sum can round to a different 1-dp value
+  // than the cell it explains (SlasheR 9.0 vs 9.1). At 2 dp the ring equation is
+  // exact: adjWeighted = adjusted + champs × (ring − 1) with adjusted stored at 2 dp.
   const ringLine = ringN>1
-    ? `<p class="small muted">Ring weighting: ${d.adjusted.toFixed(1)} + ${d.champs} ring${d.champs===1?'':'s'} &times; ${ringN-1} extra = <strong>${d.adjWeighted.toFixed(1)}</strong> (Adj +◆).</p>`
+    ? `<p class="small muted">Ring weighting: ${d.adjusted.toFixed(2)} + ${d.champs} ring${d.champs===1?'':'s'} &times; ${ringN-1} extra = <strong>${d.adjWeighted.toFixed(2)}</strong> (shown as ${d.adjWeighted.toFixed(1)} in Adj +◆).</p>`
     : '';
   return `<p class="small"><strong>${esc(d.name)} — adjusted wins, season by season.</strong> Each win counts as its share of that season's majors; seasons without a win add 0.</p>
     <table class="data adjmath-table">
@@ -246,7 +250,7 @@ function adjMathHtml(d){
       <thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Season-share</th></tr></thead>
       <tbody>${body}</tbody>
     </table>
-    <p class="small"><strong>Total ${share.toFixed(3)} season-share &times; ${mbar.toFixed(2)} avg majors/season = ${(share*mbar).toFixed(1)} adjusted wins.</strong></p>
+    <p class="small"><strong>Total ${share.toFixed(3)} season-share &times; ${mbar.toFixed(2)} avg majors/season = ${d.adjusted.toFixed(1)} adjusted wins.</strong></p>
     ${ringLine}`;
 }
 

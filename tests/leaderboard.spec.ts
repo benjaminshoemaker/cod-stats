@@ -1561,6 +1561,15 @@ test.describe('comprehension fixes', () => {
     await expect(page.locator('#table .adjmath-detail')).toHaveCount(0);
     await expect(page.locator('.colkey')).toContainText('Peak = best season');
     await expect(page.locator('.legend')).toContainText('preference, not a measurement');
+
+    // boundary case: SlasheR's exact adjusted value (9.05) rounds to a different
+    // 1-dp string than a float recompute would — the detail total must always
+    // repeat the cell it explains, whatever the data says
+    await page.goto('/index.html?q=SlasheR');
+    const slasher = page.locator('#table .tabulator-row', { hasText: 'SlasheR' }).first();
+    const cellValue = (await slasher.locator('.adjmath').innerText()).trim();
+    await slasher.locator('.adjmath').click();
+    await expect(page.locator('#table .adjmath-detail')).toContainText(`= ${cellValue} adjusted wins`);
   });
 
   test('KOR states its qualification bar and uses one opponent-place format', async ({ page }) => {
@@ -1575,14 +1584,13 @@ test.describe('comprehension fixes', () => {
     for (const c of cells.slice(0, 30)) expect(c).toMatch(/^\d+\.\d$/);
   });
 
-  test('community overall explains career-total vs average rank with a stable-exponent note', async ({ page }) => {
+  test('community overall explains career-total vs average rank', async ({ page }) => {
     await page.goto('/community.html?view=overall&p=Scump');
     await expect(page.locator('h2', { hasText: 'Overall Ranking' }).locator('..')).toContainText('career total');
     const trace = page.locator('#cc-overall-trace-card');
     await expect(trace).toBeVisible();
     await expect(trace).toContainText('7.64');          // trace tile matches the table's 2-decimal display
     await expect(trace.locator('.mini', { hasText: 'Wins' })).toContainText('not scored');
-    await expect(trace).toContainText('unchanged for any exponent from 0.5 to 8');
   });
 
   test('GOAT explain rows name the era leader for every lane', async ({ page }) => {

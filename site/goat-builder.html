@@ -410,7 +410,7 @@ const CRITERIA_HELP = {
 };
 const CRITERIA = CRITERIA_CORE.map(c => ({...c, group:'Primary criteria', help:CRITERIA_HELP[c.key]}));
 const WEIGHT_PRESETS = [
-  {key:'balanced', label:'Balanced', weights:{resume:50, skill:30, longevity:10, peak:10}, ring:2},
+  {key:'balanced', label:'Balanced', weights:{...DEFAULT_WEIGHTS}, ring:DEFAULT_RING},
   {key:'rings', label:'Rings matter', weights:{resume:70, skill:10, longevity:10, peak:10}, ring:5},
   {key:'skill', label:'Skill over rings', weights:{resume:10, skill:55, longevity:10, peak:25}, ring:1},
   {key:'longevity', label:'Longevity list', weights:{resume:20, skill:15, longevity:50, peak:15}, ring:2},
@@ -592,12 +592,16 @@ function criterionInputDetail(row, key){
   const leaders = renderScales.leaders || {};
   const profileUrl = `player.html?p=${encodeURIComponent(row.player.name)}`;
   if(key === 'resume'){
-    const raw = s.adj + s.champs * extraRing;
+    // display adjusted wins at the leaderboard's stored 2-dp precision before the
+    // 1-dp format — the raw float can round to a different 1-dp value than the
+    // leaderboard cell for the same player (e.g. 9.0 here vs 9.1 there)
+    const adj2 = Math.round(s.adj * 100) / 100;
+    const raw = adj2 + s.champs * extraRing;
     return {
       href:`${profileUrl}#adjusted-wins`,
       input:`${num(raw)} ring-weighted wins`,
       leader:`Era leader: ${leaders.resume || '-'} (${num(renderScales.maxes?.resume)})`,
-      note:`${num(s.adj)} adjusted wins (event wins, every season weighted equally) + ${s.champs || 0} Champs ring${s.champs === 1 ? '' : 's'} at ${formatRing(state.ring)}x ring weight (each ring adds ${num(extraRing)} extra win${extraRing === 1 ? '' : 's'} on top).`,
+      note:`${num(adj2)} adjusted wins (event wins, every season weighted equally) + ${s.champs || 0} Champs ring${s.champs === 1 ? '' : 's'} at ${formatRing(state.ring)}x ring weight (each ring adds ${num(extraRing)} extra win${extraRing === 1 ? '' : 's'} on top).`,
     };
   }
   if(key === 'skill'){
