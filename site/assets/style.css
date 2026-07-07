@@ -616,29 +616,37 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
    the table itself scrolls sideways (same trick as the GOAT builder detail) */
 .tabulator .tabulator-row.kor-expanded-row{background:var(--accent-soft)}
 .kor-row-detail{clear:both;display:block;position:sticky;left:0;cursor:default;
-  max-width:min(640px,calc(100vw - 2.5rem));background:var(--panel);border-top:1px solid var(--line);
-  padding:var(--space-3) var(--space-4);font-size:var(--text-sm)}
-.kor-detail-head{margin-bottom:var(--space-2);color:var(--muted)}
+  max-width:min(720px,calc(100vw - 2.5rem));background:var(--panel);border-top:1px solid var(--line);
+  padding:var(--space-4);font-size:var(--text-sm)}
+.kor-detail-head{margin-bottom:var(--space-3);color:var(--muted)}
 .kor-detail-head .small{display:block;margin-top:2px}
 .kor-event-row{display:grid;grid-template-columns:minmax(11rem,1.8fr) 4rem 4.5rem 3.5rem minmax(3.5rem,1fr) 3.5rem;
-  gap:var(--space-2);align-items:center;padding:var(--space-1) 0;border-top:1px solid var(--line)}
+  gap:var(--space-2);align-items:center;padding:var(--space-2) var(--space-1);border-top:1px solid var(--line);
+  cursor:pointer;border-radius:var(--radius-sm)}
+.kor-event-row:hover{background:var(--accent-soft)}
 .kor-event-row .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
 .kor-event-row .strong{font-weight:700}
 .kor-event-name{min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kor-event-toggle{border:0;background:transparent;color:var(--accent);cursor:pointer;font:inherit;font-weight:700;
-  padding:0 var(--space-1);min-width:1.3em;border-radius:var(--radius-sm)}
-.kor-event-toggle:hover{background:var(--accent-soft)}
+.kor-event-toggle{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;
+  width:1.9rem;height:1.9rem;margin-right:var(--space-2);border:1px solid var(--line-2);background:#fff;
+  color:var(--accent);cursor:pointer;font:inherit;font-size:var(--text-base);font-weight:700;border-radius:var(--radius-sm)}
+.kor-event-toggle:hover{background:var(--accent-soft);border-color:var(--accent-line)}
 .kor-event-bar .bar-track{height:6px;border-radius:var(--radius-sm);background:var(--panel-2);overflow:hidden}
 .kor-event-bar .bar-fill{height:100%;border-radius:var(--radius-sm);background:var(--accent)}
 .kor-event-bar .bar-fill.neg{background:var(--neg)}
 /* match-level maps nested under an expanded event */
-.kor-event-maps{margin:0 0 var(--space-2) var(--space-2);padding:var(--space-1) 0 var(--space-1) var(--space-3);
-  border-left:2px solid var(--accent-line)}
-.kor-series-head{font-weight:700;margin-top:var(--space-1)}
-.kor-map-row{display:grid;grid-template-columns:minmax(8rem,1fr) 4.5rem 3rem;gap:var(--space-2);
-  padding:2px 0;font-size:var(--text-sm)}
+.kor-event-maps{margin:var(--space-1) 0 var(--space-3) var(--space-2);
+  padding:var(--space-2) 0 var(--space-2) var(--space-4);border-left:2px solid var(--accent-line)}
+.kor-maps-head{font-weight:700;display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)}
+.kor-maps-legend{margin:0 0 var(--space-2)}
+.kor-series-head{font-weight:700;margin-top:var(--space-2)}
+.kor-map-row{display:grid;grid-template-columns:minmax(7rem,1fr) auto 4.5rem 3rem;gap:var(--space-2);
+  align-items:center;padding:var(--space-1) var(--space-2);font-size:var(--text-sm);border-radius:var(--radius-sm)}
 .kor-map-row .n{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
-.kor-map-row.off-split{opacity:.55}
+/* maps from the other mode: grey surface + grey pill, clearly out of this board */
+.kor-map-row.off-split{background:var(--panel-2)}
+.kor-map-row.off-split .kor-map-name,.kor-map-row.off-split .n{color:var(--faint)}
+.kor-mode{white-space:nowrap;justify-self:start}
 .kor-map-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kor-detail-foot{margin:var(--space-2) 0 0}
 @media(max-width:560px){
@@ -648,6 +656,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   /* full event names beat ellipses on phones — CDL-era names share a long prefix */
   .kor-event-name{white-space:normal}
   .kor-map-name{white-space:normal}
+  .kor-map-row{grid-template-columns:minmax(0,1fr) auto 4rem 3rem}
 }
 @media(max-width:760px){
   .select{width:100%;min-width:0}

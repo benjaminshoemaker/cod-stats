@@ -74,6 +74,14 @@ const num = (v, d=2) => v == null ? '<span class="faint">–</span>' : Number(v)
 const signedNum = (v, d=2) => v == null ? '<span class="faint">–</span>' : `${v >= 0 ? '+' : ''}${Number(v).toFixed(d)}`;
 const splitLabel = split => split === 'snd' ? 'S&D' : 'Respawn';
 const lowSampleLimit = split => split === 'respawn' ? 40 : 15;
+// qualification bar comes from the build (kor.json carries it per split)
+const minMapsFor = split => {
+  for(const g of Object.values(KOR.games)){
+    const v = g.splits?.[split]?.minMaps;
+    if(v != null) return v;
+  }
+  return null;
+};
 const samplePill = (maps, split) => maps < lowSampleLimit(split) ? '<span class="pill warn">low sample</span>' : '';
 const ord = n => {
   if(n == null) return '<span class="faint">–</span>';
@@ -175,8 +183,11 @@ function buildColumns(M, game, split){
       headerTooltip:'25th percentile K/map among qualified players in the same title and mode',
       formatter:c => num(c.getValue())},
     {title:M?'Med opp':'Median opp place', field:'medianOpponentPlace', ...colSize(M,80,128,1.1), ...numCol,
-      headerTooltip:'Median event finish of the teams faced across these maps. Context only — not part of the score.',
-      formatter:c => c.getRow().getData().baseline ? '' : ord(c.getValue())},
+      headerTooltip:'Median event finish of the teams faced across these maps (4.0 = typically facing teams that placed 4th). Context only — not part of the score.',
+      formatter:c => {
+        const v = c.getValue();
+        return c.getRow().getData().baseline ? '' : (v == null ? '<span class="faint">–</span>' : Number(v).toFixed(1));
+      }},
     {title:M?'Top-8 opp':'Top-8 opp maps', field:'top8OpponentPct', ...colSize(M,84,120,1.1), ...numCol,
       headerTooltip:'Share of maps against teams that placed top 8 at that event. Context only — not part of the score.',
       formatter:c => c.getRow().getData().baseline ? '' : pct(c.getValue())}
@@ -222,6 +233,9 @@ const ordPlace = p => {
   return `<span class="faint">${ord(Math.floor(p))}–${ord(Math.ceil(p))}</span>`;
 };
 
+const MODE_SHORT = {'Search and Destroy': 'S&D', 'Search & Destroy': 'S&D', 'Capture the Flag': 'CTF'};
+const modeShort = mode => MODE_SHORT[mode] || mode || '—';
+
 function eventMapsHtml(d, e){
   const rows = mapShards[d.game]?.players?.[d.player]?.[e.id];
   if(!rows || !rows.length) return '<div class="kor-event-maps"><p class="small muted">No map-level rows for this event.</p></div>';
@@ -233,20 +247,23 @@ function eventMapsHtml(d, e){
   });
   const wantSnd = currentView.split === 'snd';
   const hasOffSplit = rows.some(m => m.snd !== wantSnd);
+  const other = wantSnd ? 'respawn' : 'S&amp;D';
   const kd = m => m.d ? (m.k / m.d).toFixed(2) : (m.k ? '∞' : '–');
   return `<div class="kor-event-maps">
+    <div class="kor-maps-head">Maps at this event <span class="pill tag">${splitLabel(currentView.split)} counted</span></div>
+    ${hasOffSplit ? `<p class="small muted kor-maps-legend">Greyed ${other} maps count on the ${other} board — shown here for match context only.</p>` : ''}
     ${series.map(s => `<div class="kor-series">
       <div class="kor-series-head">vs ${esc(s.vs || 'unknown')} <span class="faint">${s.maps.length} map${s.maps.length === 1 ? '' : 's'}</span></div>
       ${s.maps.map(m => {
         const off = m.snd !== wantSnd;
         return `<div class="kor-map-row${off ? ' off-split' : ''}">
-          <div class="kor-map-name">${esc(m.map || '—')} <span class="faint">${esc(m.mode || '')}</span></div>
+          <div class="kor-map-name">${esc(m.map || '—')}</div>
+          <span class="pill ${off ? 'flat' : 'tag'} kor-mode">${esc(modeShort(m.mode))}</span>
           <div class="n">${m.k}–${m.d}</div>
           <div class="n faint">${kd(m)}</div>
         </div>`;
       }).join('')}
     </div>`).join('')}
-    ${hasOffSplit ? `<p class="small faint">Dimmed maps are ${wantSnd ? 'respawn' : 'S&amp;D'} — they count on that split's board, not in this row.</p>` : ''}
   </div>`;
 }
 
@@ -278,7 +295,7 @@ function detailHtml(d){
   }).join('');
   return `<div class="kor-detail-head"><strong>${esc(d.player)}</strong> · ${esc(d.game)} ${splitLabel(currentView.split)},
       event by event vs the ${num(repl)} K/map baseline
-      <span class="small faint">maps · kills–deaths · K/map · KOR/map — ▸ expands an event's maps</span></div>
+      <span class="small faint">maps · kills–deaths · K/map · KOR/map — click an event for its match-level maps</span></div>
     ${rows}
     <p class="small faint kor-detail-foot">Single-event mode samples are small — read event-level rates loosely.</p>`;
 }
@@ -348,7 +365,11 @@ function formatKorRow(row){
     // the row's own click handler must never see clicks inside the trace: a
     // synchronous re-render detaches e.target, breaking its closest() guard
     e.stopPropagation();
-    const btn = e.target.closest('.kor-event-toggle');
+    if(e.target.closest('a')) return;
+    // the whole event line is a click target; the chevron button stays the
+    // semantic control for keyboard and AT users
+    const evRow = e.target.closest('.kor-event-row');
+    const btn = e.target.closest('.kor-event-toggle') || evRow?.querySelector('.kor-event-toggle');
     if(btn) toggleKorEvent(row, d, btn);
   });
   el.appendChild(detail);
@@ -420,7 +441,7 @@ function render(game, split){
   host.innerHTML = `
     <section class="kor-summary">
       <div class="stat"><div class="k">Leader</div><div class="v sm">${esc(leader.player)}</div><div class="small faint">${esc(leader.game)} · ${signedNum(leader.korPerMap)} KOR/map</div></div>
-      <div class="stat"><div class="k">Qualified players</div><div class="v">${rows.length}</div><div class="small faint">${game === 'all' ? `one row per title · ${splitLabel(split)}` : `${score.minMaps}+ ${splitLabel(split)} maps in ${esc(game)}`}</div></div>
+      <div class="stat"><div class="k">${game === 'all' ? 'Qualified seasons' : 'Qualified players'}</div><div class="v">${rows.length}</div><div class="small faint">${game === 'all' ? `one row per player per title · ${splitLabel(split)} · ${minMapsFor(split)}+ maps to qualify` : `${score.minMaps}+ ${splitLabel(split)} maps in ${esc(game)}`}</div></div>
       ${replTile}
     </section>
     ${smallPool ? `<p class="small muted kor-pool-note">Only ${score.qualified} players qualify in this split, so the replacement baseline itself is a small-sample estimate — read the gaps loosely.</p>` : ''}
@@ -431,7 +452,7 @@ function render(game, split){
       </div>
       <div class="kor-panel">
         <h2>Read this as</h2>
-        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Maps and events are part of the interpretation; “low sample” marks players under ${lowSampleLimit('respawn')} respawn or ${lowSampleLimit('snd')} S&amp;D maps — real but fragile. Click a column header to re-sort, and click a row for its event-by-event trace. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
+        <p class="small muted">KOR is a kill-production rate. It does not include damage, OBJ work, trading, comms, role, or team system. Qualifying for a board takes ${minMapsFor('respawn')}+ respawn or ${minMapsFor('snd')}+ S&amp;D maps in a title, and the 25th-percentile baseline is taken over everyone who qualifies — low-sample players included. “Low sample” marks players under ${lowSampleLimit('respawn')} respawn or ${lowSampleLimit('snd')} S&amp;D maps — real but fragile. KOR subtracts each title's own baseline; it does not equalize the spread between titles, so read cross-title gaps as approximate. Click a column header to re-sort, and click a row for its event-by-event trace. <a href="methodology.html#kills-over-replacement">Full method</a>.</p>
       </div>
     </section>
     <section>
