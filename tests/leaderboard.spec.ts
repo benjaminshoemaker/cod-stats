@@ -1090,11 +1090,16 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Finals rate' })).toContainText('43%');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Deep-run rate' })).toContainText('75%');
     await expect(page.locator('.compare-summary .summary-meter')).toHaveCount(22);
+    // bars are proportional to the row's best value: the leader gets 100%, the
+    // runner-up gets their actual share of it (not the 0% of min-max scaling)
     const adjustedScores = await page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('td').evaluateAll(
-      els => els.map(el => getComputedStyle(el).getPropertyValue('--summary-score').trim()),
+      els => els.map(el => parseInt(getComputedStyle(el).getPropertyValue('--summary-score'), 10)),
     );
-    expect(adjustedScores).toEqual(['100%', '0%']);
+    expect(Math.max(...adjustedScores)).toBe(100);
+    expect(Math.min(...adjustedScores)).toBeGreaterThan(0);
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('.best-badge')).toHaveText(/Best/);
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' }).locator('a.metric-info'))
+      .toHaveAttribute('href', 'methodology.html#era-adjustment');
 
     const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
     await expect(bo7).toContainText('in progress');
@@ -1168,6 +1173,35 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Simp']);
   });
 
+  test('verdict strip names the adjusted-wins leader with a methodology link', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await expect(page.locator('#verdict .verdict-card')).toHaveCount(2);
+    await expect(page.locator('#verdict .verdict-head h2')).toHaveText(/leads on adjusted wins|Dead even on adjusted wins/);
+    await expect(page.locator('#verdict').getByRole('link', { name: "How it's computed →" }))
+      .toHaveAttribute('href', 'methodology.html#era-adjustment');
+    await expect(page.locator('#copy-link')).toBeVisible();
+  });
+
+  test('reset restores default players and default rows', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra&rows=adjusted,raw');
+    await expect(page.locator('.compare-summary tbody tr')).toHaveCount(2);
+    await expect(page.locator('#reset-compare')).toBeVisible();
+    await page.locator('#reset-compare').click();
+    await expect(page.locator('.compare-summary tbody tr')).toHaveCount(12);
+    await expect(page).not.toHaveURL(/rows=/);
+    await expect(page.locator('#reset-compare')).toBeHidden();
+  });
+
+  test('row presets swap the visible metric set', async ({ page }) => {
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    await page.locator('#rowmenu .colmenu-btn').click();
+    await page.locator('#rowmenu [data-preset="skill"]').click();
+    await expect(page.locator('.compare-summary tbody th').first()).toContainText('K/D');
+    await expect(page.locator('.compare-summary tbody th', { hasText: 'Adjusted wins' })).toHaveCount(0);
+    await expect(page).toHaveURL(/rows=skillKd/);
+    await expect(page.locator('#rowmenu .colmenu-btn')).toContainText('Metrics (8)');
+  });
+
   test('season matrix remains horizontally scrollable on mobile', async ({ page }) => {
     test.skip(test.info().project.name !== 'mobile', 'mobile only');
     await page.goto('/compare.html?p=Shotzzy&p=HyDra&p=Simp&p=aBeZy');
@@ -1176,6 +1210,35 @@ test.describe('compare page', () => {
       return { sw: h.scrollWidth, cw: h.clientWidth };
     });
     expect(sw).toBeGreaterThan(cw);
+    await expect(page.locator('.compare-table-wrap .scrollhint')).toBeVisible();
+  });
+
+  test('mobile: page never scrolls sideways and two players fit the summary', async ({ page }) => {
+    test.skip(test.info().project.name !== 'mobile', 'mobile only');
+    await page.goto('/compare.html?p=Shotzzy&p=HyDra');
+    const m = await page.evaluate(() => {
+      const wrap = document.querySelector('.compare-summary-wrap') as HTMLElement;
+      return {
+        docScrollWidth: document.documentElement.scrollWidth,
+        viewport: window.innerWidth,
+        summaryScroll: wrap.scrollWidth,
+        summaryClient: wrap.clientWidth,
+      };
+    });
+    // the whole-page wobble bug: overflowing season cells used to leak past the
+    // .scroll-x wrapper and make the document itself horizontally scrollable
+    expect(m.docScrollWidth).toBeLessThanOrEqual(m.viewport);
+    // the core side-by-side moment: a 2-player summary needs no horizontal scroll
+    expect(m.summaryScroll).toBeLessThanOrEqual(m.summaryClient + 1);
+
+    // long-career comparison: sr-only spans in far-right Best badges used to
+    // escape the scroll wrapper's clip and stretch the document
+    await page.goto('/compare.html?p=Karma,Crimsix,Clayster');
+    const wide = await page.evaluate(() => ({
+      docScrollWidth: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+    }));
+    expect(wide.docScrollWidth).toBeLessThanOrEqual(wide.viewport);
   });
 });
 

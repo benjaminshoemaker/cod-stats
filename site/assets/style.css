@@ -386,8 +386,12 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   .page-toc a{min-height:44px;display:inline-flex;align-items:center}
   .anchor-link{opacity:1}
 }
-/* horizontal-scroll wrapper/handler for wide data surfaces */
-.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* horizontal-scroll wrapper/handler for wide data surfaces.
+   position:relative makes the wrapper the containing block for absolutely
+   positioned descendants (.sr-only badges/captions inside cells) — without it
+   they escape the overflow clip at their static x-position deep in the scrolled
+   table and stretch the document sideways on phones */
+.scroll-x{position:relative;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .scroll-region{overscroll-behavior-x:contain;scrollbar-gutter:stable}
 .scroll-region[data-overflow-x="true"]{scroll-snap-type:none}
 .scroll-region[data-overflow-x="true"][data-at-start="false"][data-at-end="false"]{
@@ -439,11 +443,29 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .compare-add-row .search{min-width:0;max-width:none;width:100%;height:44px}
 .compare-add-row .sharebtn,.compare-add-row .clearfilters{min-height:44px}
 .compare-error{color:var(--neg-ink)}
-.compare-roster{display:grid;grid-template-columns:minmax(0,.38fr) minmax(0,.62fr);gap:var(--space-5);align-items:start;margin-bottom:var(--space-4)}
+.compare-roster{display:grid;grid-template-columns:minmax(0,.38fr) minmax(0,.62fr);gap:var(--space-5);align-items:start;margin:var(--space-5) 0 var(--space-4)}
+/* verdict strip: the crop-safe, screenshot-first answer block */
+.compare-verdict{border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;padding:var(--space-4);margin-bottom:var(--space-4)}
+.verdict-head{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap}
+.verdict-head h2{margin:0;font-size:var(--text-lg)}
+.verdict-cards{display:grid;grid-template-columns:repeat(var(--players,2),minmax(0,1fr));gap:var(--space-3);margin:var(--space-3) 0}
+.verdict-card{border:1px solid var(--line);border-top:3px solid var(--cmp-color,var(--accent));border-radius:var(--radius-md);
+  padding:var(--space-3);display:grid;gap:2px;min-width:0}
+.verdict-card.lead{background:color-mix(in srgb,var(--cmp-color,var(--accent)) 7%,#fff)}
+.verdict-card a{font-weight:700;color:var(--ink)}
+.verdict-card .num{font-family:var(--mono);font-size:var(--text-2xl);font-weight:800;font-variant-numeric:tabular-nums}
+.verdict-foot{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);flex-wrap:wrap}
+.verdict-foot p{margin:0;max-width:52ch}
+.verdict-actions{display:flex;align-items:center;gap:var(--space-3);margin-left:auto}
+@media(max-width:560px){.verdict-cards{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}}
+/* per-metric "how is this computed" link on summary row headers */
+.metric-info{display:inline-flex;align-items:center;justify-content:center;width:1.5em;height:1.5em;margin-left:var(--space-1);
+  border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--faint);font-size:var(--text-xs);font-weight:700;vertical-align:.1em}
+.metric-info:hover,.metric-info:focus-visible{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft);text-decoration:none}
 .chips,.compare-suggestions{display:flex;flex-wrap:wrap;gap:var(--space-2);min-height:2rem}
 .chip{display:inline-flex;align-items:center;gap:var(--space-1);min-height:44px;font-size:var(--text-sm);padding:0 var(--space-1) 0 var(--space-3);
   border-radius:var(--radius-md);border:1px solid var(--line-2);background:#fff;color:var(--ink)}
-.chip button{border:0;background:transparent;color:var(--muted);border-radius:var(--radius-sm);width:36px;height:36px;line-height:1;cursor:pointer;padding:0}
+.chip button{border:0;background:transparent;color:var(--muted);border-radius:var(--radius-sm);width:44px;height:44px;line-height:1;cursor:pointer;padding:0}
 .chip button:hover{background:var(--panel-2);color:var(--ink)}
 .compare-chip a{font-weight:700;color:var(--ink)}
 .suggestion-group{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
@@ -502,15 +524,34 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .season-teams{display:flex!important;gap:var(--space-1);flex-wrap:wrap;margin-top:var(--space-2)!important}
 .season-teams .team-badge{max-width:9.5rem;overflow:hidden}
 .season-teams .team-badge span{display:inline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:0}
-.event-list{max-width:16rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* width:0 + min-width:100% zeroes the nowrap text's intrinsic width so it can't
+   inflate its table column: an event list wider than the column leaks scrollable
+   overflow past the .scroll-x wrapper, and on phones that document-level overflow
+   makes Chrome abandon the device-width viewport and lay the page out at 1280px */
+.event-list{width:0;min-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compare-summary-wrap .scrollhint,.compare-table-wrap .scrollhint{margin:var(--space-2) var(--space-3) 0}
 @media(max-width:760px){
   .compare-page{padding-top:var(--space-4)}
   .compare-hero,.compare-roster{grid-template-columns:1fr;gap:var(--space-3)}
   .compare-hero{align-items:start}
+  /* the lede is desktop copy; on phones it costs fold space the verdict needs */
+  .compare-title .lede{display:none}
   .compare-add-row{grid-template-columns:minmax(0,1fr) auto}
   .compare-add-row .clearfilters{grid-column:1 / -1}
   .suggestion-group{align-items:flex-start}
   .suggestion-group>span{flex-basis:100%}
+}
+/* two players must fit side by side on a phone — the core screenshot moment.
+   9.4rem columns overshoot a 375px viewport by ~54px; tighten to fit. */
+@media(max-width:430px){
+  .compare-summary{min-width:calc(5.4rem + (var(--players,2) * 6.3rem))}
+  .compare-summary th,.compare-summary td{padding:var(--space-2) var(--space-2)}
+  .compare-summary th:first-child{min-width:5.4rem}
+  .compare-summary th:not(:first-child),.compare-summary td:not(:first-child){min-width:6.3rem}
+  .compare-summary td strong{font-size:var(--text-md)}
+  .compare-table{min-width:calc(7rem + (var(--players,2) * 9rem))}
+  .compare-table th:first-child,.compare-table td:first-child{min-width:7rem}
+  .compare-table th:not(:first-child),.compare-table td:not(:first-child){min-width:9rem}
 }
 
 /* ---- Similar players block (player.html) ---- */

@@ -18,6 +18,9 @@
 <meta name="twitter:image" content="https://cod-stats-one.vercel.app/assets/og.png">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="preload" href="assets/nav.js" as="script">
+<link rel="preload" href="data.js" as="script">
+<link rel="preload" href="similarity.js" as="script">
+<link rel="preload" href="participation.json" as="fetch" crossorigin>
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 </head>
@@ -42,15 +45,8 @@
     </form>
   </div>
 
-  <section class="compare-roster" aria-label="Selected players and suggestions">
-    <div>
-      <div class="section-label">Selected</div>
-      <div class="chips" id="selected-players" aria-label="Compared players"></div>
-    </div>
-    <div>
-      <div class="section-label">Similar suggestions</div>
-      <div class="compare-suggestions" id="similar-suggestions"></div>
-    </div>
+  <section class="compare-verdict" id="verdict" aria-label="Comparison verdict">
+    <p class="small faint">Loading comparison…</p>
   </section>
 
   <section class="compare-block" aria-labelledby="summary-title">
@@ -60,11 +56,23 @@
         <h2 id="summary-title">Summary</h2>
       </div>
       <div class="compare-summary-tools">
-        <p class="small muted">Best value in each row is highlighted.</p>
+        <p class="small muted">Best value per row is highlighted · bars are proportional to the best · ◆ = won Champs.</p>
         <div class="colmenu rowmenu" id="rowmenu"></div>
       </div>
     </div>
-    <section id="summary"></section>
+    <section id="summary"><p class="small faint">Loading comparison…</p></section>
+  </section>
+
+  <section class="compare-roster" aria-label="Selected players and suggestions">
+    <div>
+      <div class="section-label">Selected</div>
+      <div class="chips" id="selected-players" aria-label="Compared players"></div>
+    </div>
+    <div>
+      <div class="section-label">Similar suggestions</div>
+      <p class="small faint">Résumé similarity, 0–100 — closeness across adjusted wins, peak, placements, skill, longevity, career path, and role. Full breakdown on each player page.</p>
+      <div class="compare-suggestions" id="similar-suggestions"></div>
+    </div>
   </section>
 
   <section class="compare-block" aria-labelledby="season-title">
@@ -73,13 +81,9 @@
         <p class="section-label">Entered events</p>
         <h2 id="season-title">Season-by-season</h2>
       </div>
-      <p class="small muted">Wins divided by majors entered in that title. Champs wins carry ◆.</p>
+      <p class="small muted" id="season-note"></p>
     </div>
-    <div class="scroll-x compare-table-wrap" tabindex="0" role="region" aria-label="Player comparison season matrix">
-      <table class="data compare-table" id="season-table">
-        <caption class="sr-only">Season-by-season comparison matrix</caption>
-      </table>
-    </div>
+    <div id="season-table-host"><p class="small faint">Loading comparison…</p></div>
   </section>
 </main>
 
@@ -97,7 +101,9 @@ const chips = document.getElementById('selected-players');
 const suggestions = document.getElementById('similar-suggestions');
 const statusEl = document.getElementById('compare-status');
 const summary = document.getElementById('summary');
-const seasonTable = document.getElementById('season-table');
+const seasonHost = document.getElementById('season-table-host');
+const seasonNote = document.getElementById('season-note');
+const verdict = document.getElementById('verdict');
 const resetBtn = document.getElementById('reset-compare');
 const rowMenu = document.getElementById('rowmenu');
 
@@ -109,9 +115,15 @@ const MAX_PLAYERS = 4;
 const PLAYER_COLORS = ['#2563eb', '#059669', '#d97706', '#7c3aed'];
 const DEFAULT_ROWS = ['adjusted', 'role', 'honors', 'winConversion', 'finalsRate', 'deepRunRate', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace'];
 const ROW_IDS = new Set(['adjusted', 'role', 'honors', 'winConversion', 'finalsRate', 'deepRunRate', 'raw', 'post', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace', 'skillKd', 'skillKills', 'skillDeaths', 'skillInteractions', 'skillMaps', 'skillEvents', 'skillRespawnKd', 'skillSndKd']);
+const ROW_PRESETS = [
+  {key: 'default', label: 'Default', rows: DEFAULT_ROWS},
+  {key: 'resume', label: 'Resume', rows: ['adjusted', 'raw', 'post', 'honors', 'winConversion', 'finalsRate', 'deepRunRate', 'champs', 'peak', 'eras', 'career', 'events', 'avgPlace']},
+  {key: 'skill', label: 'Skill stats', rows: ['skillKd', 'skillRespawnKd', 'skillSndKd', 'skillKills', 'skillDeaths', 'skillInteractions', 'skillMaps', 'skillEvents']},
+];
 let selected = readPlayers();
 let visibleRows = readRows();
 let PART = null;
+let partFailed = false;
 
 options.innerHTML = NAMES.map(n => `<option value="${esc(n)}"></option>`).join('');
 
@@ -134,13 +146,17 @@ function sameList(a, b){
   return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
+function isDefaultState(){
+  return sameList(selected, DEFAULT_PLAYERS) && sameList(visibleRows, DEFAULT_ROWS);
+}
+
 function syncURL(){
   const p = new URLSearchParams();
   selected.forEach(n => p.append('p', n));
   if(!sameList(visibleRows, DEFAULT_ROWS)) p.set('rows', visibleRows.join(','));
   const qs = p.toString();
   history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
-  resetBtn.hidden = selected.length === DEFAULT_PLAYERS.length && selected.every((n, i) => n === DEFAULT_PLAYERS[i]);
+  resetBtn.hidden = isDefaultState();
 }
 
 function setStatus(msg, tone){
@@ -162,6 +178,10 @@ function fmtPct(v){
 
 function span(first, last){
   return first && last ? (first === last ? String(first) : `${first}-${last}`) : '-';
+}
+
+function methodLink(anchor, label){
+  return `<a class="metric-info" href="methodology.html#${esc(anchor)}" title="How ${esc(label)} is computed" aria-label="How ${esc(label)} is computed">?</a>`;
 }
 
 function peakText(p){
@@ -201,43 +221,43 @@ function skillEventText(p){
 
 function metricRows(){
   return [
-    {id:'adjusted', label:'Adjusted wins', value:n=>D.players[n].adj_all, html:n=>`<strong>${fmtNum(D.players[n].adj_all, 1)}</strong><span class="small faint">#${LB[n].adjRank}</span>`},
+    {id:'adjusted', label:'Adjusted wins', info:'era-adjustment', value:n=>D.players[n].adj_all, html:n=>`<strong>${fmtNum(D.players[n].adj_all, 1)}</strong><span class="small faint">#${LB[n].adjRank}</span>`},
     {id:'role', label:'Role', noBest:true, value:n=>null, html:n=>{
       const role = roleSummary(D.players[n]);
       return `${rolePill(role)}<span class="small faint">${role === 'Mixed' ? 'varies by season' : 'curated'}</span>`;
     }},
-    {id:'honors', label:'Honors', value:n=>(D.players[n].honors || []).length, html:n=>honorsText(D.players[n])},
-    {id:'winConversion', label:'Win conversion', value:n=>D.players[n].win_conversion ?? 0, html:n=>{
+    {id:'honors', label:'Honors', info:'formal-accolades', value:n=>(D.players[n].honors || []).length, html:n=>honorsText(D.players[n])},
+    {id:'winConversion', label:'Win conversion', info:'placement', value:n=>D.players[n].win_conversion ?? 0, html:n=>{
       const p = D.players[n];
       return `<strong>${fmtPct(p.win_conversion)}</strong><span class="small faint">${p.placement_wins || 0}/${p.events_placed} majors entered</span>`;
     }},
-    {id:'finalsRate', label:'Finals rate', value:n=>D.players[n].finals_rate ?? 0, html:n=>{
+    {id:'finalsRate', label:'Finals rate', info:'placement', value:n=>D.players[n].finals_rate ?? 0, html:n=>{
       const p = D.players[n];
       return `<strong>${fmtPct(p.finals_rate)}</strong><span class="small faint">${p.finals || 0}/${p.events_placed} top-2 finishes</span>`;
     }},
-    {id:'deepRunRate', label:'Deep-run rate', value:n=>D.players[n].deep_run_rate ?? 0, html:n=>{
+    {id:'deepRunRate', label:'Deep-run rate', info:'placement', value:n=>D.players[n].deep_run_rate ?? 0, html:n=>{
       const p = D.players[n];
       return `<strong>${fmtPct(p.deep_run_rate)}</strong><span class="small faint">${p.deep_runs || 0}/${p.events_placed} top-4 finishes</span>`;
     }},
-    {id:'raw', label:'Raw wins', value:n=>D.players[n].raw, html:n=>`<strong>${D.players[n].raw}</strong><span class="small faint">wiki #${LB[n].rawRank}</span>`},
-    {id:'post', label:'Post-BO2 adjusted', value:n=>D.players[n].adj_post, html:n=>`<strong>${fmtNum(D.players[n].adj_post, 1)}</strong><span class="small faint">#${LB[n].postRank}</span>`},
+    {id:'raw', label:'Raw wins', info:'tournaments', value:n=>D.players[n].raw, html:n=>`<strong>${D.players[n].raw}</strong><span class="small faint">wiki #${LB[n].rawRank}</span>`},
+    {id:'post', label:'Post-BO2 adjusted', info:'era-adjustment', value:n=>D.players[n].adj_post, html:n=>`<strong>${fmtNum(D.players[n].adj_post, 1)}</strong><span class="small faint">#${LB[n].postRank}</span>`},
     {id:'champs', label:'Champs', value:n=>D.players[n].champs, html:n=>champText(D.players[n])},
-    {id:'peak', label:'Peak', value:n=>D.players[n].peak_all.majors ? D.players[n].peak_all.wins / D.players[n].peak_all.majors : 0, html:n=>peakText(D.players[n])},
-    {id:'eras', label:'Eras', value:n=>D.players[n].titles_all, html:n=>`<strong>${D.players[n].titles_all}</strong><span class="small faint">${D.players[n].span_all ? `${D.players[n].span_all}-yr win span` : '-'}</span>`},
-    {id:'career', label:'Career', value:n=>D.players[n].majors_played, html:n=>`<strong>${span(D.players[n].first_played, D.players[n].last_played)}</strong><span class="small faint">${D.players[n].majors_played} majors entered</span>`},
-    {id:'events', label:'Events', value:n=>D.players[n].events_placed, html:n=>`<strong>${D.players[n].events_placed}</strong><span class="small faint">counted finishes</span>`},
-    {id:'avgPlace', label:'Average place', better:'min', value:n=>D.players[n].avg_place == null ? Infinity : D.players[n].avg_place, html:n=>{
+    {id:'peak', label:'Peak', info:'era-adjustment', value:n=>D.players[n].peak_all.majors ? D.players[n].peak_all.wins / D.players[n].peak_all.majors : 0, html:n=>peakText(D.players[n])},
+    {id:'eras', label:'Eras', info:'era-adjustment', value:n=>D.players[n].titles_all, html:n=>`<strong>${D.players[n].titles_all}</strong><span class="small faint">${D.players[n].span_all ? `${D.players[n].span_all}-yr win span` : '-'}</span>`},
+    {id:'career', label:'Career', info:'placement', value:n=>D.players[n].majors_played, html:n=>`<strong>${span(D.players[n].first_played, D.players[n].last_played)}</strong><span class="small faint">${D.players[n].majors_played} majors entered</span>`},
+    {id:'events', label:'Events', info:'placement', value:n=>D.players[n].events_placed, html:n=>`<strong>${D.players[n].events_placed}</strong><span class="small faint">counted finishes</span>`},
+    {id:'avgPlace', label:'Average place', info:'placement', better:'min', value:n=>D.players[n].avg_place == null ? Infinity : D.players[n].avg_place, html:n=>{
       const v = D.players[n].avg_place;
       return `<strong>${v == null ? '<span class="faint">-</span>' : v.toFixed(1)}</strong><span class="small faint">lower is better</span>`;
     }},
-    {id:'skillKd', label:'K/D', value:n=>skillValue(D.players[n], 'kd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'overall', 'kd')},
-    {id:'skillKills', label:'Kills', noBest:true, value:n=>skillValue(D.players[n], 'kills') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kills')},
-    {id:'skillDeaths', label:'Deaths', noBest:true, value:n=>skillValue(D.players[n], 'deaths') ?? -Infinity, html:n=>skillStatText(D.players[n], 'deaths')},
-    {id:'skillInteractions', label:'Interactions', noBest:true, value:n=>skillValue(D.players[n], 'interactions') ?? -Infinity, html:n=>skillStatText(D.players[n], 'interactions')},
-    {id:'skillMaps', label:'Maps', noBest:true, value:n=>skillValue(D.players[n], 'maps') ?? -Infinity, html:n=>skillStatText(D.players[n], 'maps')},
-    {id:'skillEvents', label:'Events w/ stats', noBest:true, value:n=>D.players[n].skillStats?.coverage?.events ?? -Infinity, html:n=>skillEventText(D.players[n])},
-    {id:'skillRespawnKd', label:'Respawn K/D', value:n=>skillValue(D.players[n], 'kd', 'respawn') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'respawn', 'kd')},
-    {id:'skillSndKd', label:'S&D K/D', value:n=>skillValue(D.players[n], 'kd', 'snd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'snd', 'kd')},
+    {id:'skillKd', label:'K/D', info:'on-record-stats', value:n=>skillValue(D.players[n], 'kd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'overall', 'kd')},
+    {id:'skillKills', label:'Kills', info:'on-record-stats', noBest:true, value:n=>skillValue(D.players[n], 'kills') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kills')},
+    {id:'skillDeaths', label:'Deaths', info:'on-record-stats', noBest:true, value:n=>skillValue(D.players[n], 'deaths') ?? -Infinity, html:n=>skillStatText(D.players[n], 'deaths')},
+    {id:'skillInteractions', label:'Interactions', info:'on-record-stats', noBest:true, value:n=>skillValue(D.players[n], 'interactions') ?? -Infinity, html:n=>skillStatText(D.players[n], 'interactions')},
+    {id:'skillMaps', label:'Maps', info:'on-record-stats', noBest:true, value:n=>skillValue(D.players[n], 'maps') ?? -Infinity, html:n=>skillStatText(D.players[n], 'maps')},
+    {id:'skillEvents', label:'Events w/ stats', info:'on-record-stats', noBest:true, value:n=>D.players[n].skillStats?.coverage?.events ?? -Infinity, html:n=>skillEventText(D.players[n])},
+    {id:'skillRespawnKd', label:'Respawn K/D', info:'on-record-stats', value:n=>skillValue(D.players[n], 'kd', 'respawn') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'respawn', 'kd')},
+    {id:'skillSndKd', label:'S&D K/D', info:'on-record-stats', value:n=>skillValue(D.players[n], 'kd', 'snd') ?? -Infinity, html:n=>skillStatText(D.players[n], 'kd', 'snd', 'kd')},
   ];
 }
 
@@ -248,15 +268,21 @@ function bestFor(row, vals){
   return row.better === 'min' ? Math.min(...nums) : Math.max(...nums);
 }
 
+/* Bars are proportional to the best value in the row (best = full bar), so a close
+   race reads as a close bar. Min-max scaling would render a 12.2 vs 11.2 row as a
+   100% vs 0% blowout — exactly the kind of exaggeration a screenshot debate punishes. */
 function summaryBarScore(row, val, vals){
   if(!Number.isFinite(val)) return 0;
   const nums = vals.filter(Number.isFinite);
   if(!nums.length) return 0;
-  const min = Math.min(...nums);
+  if(row.better === 'min'){
+    const best = Math.min(...nums);
+    if(val <= 0 || best <= 0) return val <= best ? 100 : 0;
+    return Math.round(best / val * 100);
+  }
   const max = Math.max(...nums);
-  if(max === min) return val > 0 ? 100 : 0;
-  if(row.better === 'min') return Math.round(((max - val) / (max - min)) * 100);
-  return Math.round(((val - min) / (max - min)) * 100);
+  if(max <= 0) return 0;
+  return Math.round(Math.max(0, val) / max * 100);
 }
 
 function summaryCell(row, name, val, vals, index, isBest){
@@ -276,13 +302,24 @@ function mountRowMenu(){
   const btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'colmenu-btn';
   btn.setAttribute('aria-haspopup', 'true'); btn.setAttribute('aria-expanded', 'false');
-  btn.innerHTML = 'Rows <span aria-hidden="true">▾</span>';
+  btn.setAttribute('aria-controls', 'rowmenu-panel');
   const panel = document.createElement('div');
-  panel.className = 'colmenu-panel'; panel.hidden = true;
-  panel.innerHTML = rows.map(r =>
-    `<label class="colmenu-item"><input type="checkbox" data-row="${esc(r.id)}"${visibleRows.includes(r.id) ? ' checked' : ''}> ${esc(r.label)}</label>`
-  ).join('');
+  panel.className = 'colmenu-panel'; panel.hidden = true; panel.id = 'rowmenu-panel';
+  panel.innerHTML = `<div class="era-presets">${ROW_PRESETS.map(p =>
+    `<button type="button" class="era-preset" data-preset="${esc(p.key)}">${esc(p.label)}</button>`).join('')}</div>` +
+    rows.map(r =>
+      `<label class="colmenu-item"><input type="checkbox" data-row="${esc(r.id)}"${visibleRows.includes(r.id) ? ' checked' : ''}> ${esc(r.label)}</label>`
+    ).join('');
   rowMenu.append(btn, panel);
+
+  const syncMenu = () => {
+    btn.innerHTML = `Metrics (${visibleRows.length}) <span aria-hidden="true">▾</span>`;
+    panel.querySelectorAll('[data-row]').forEach(input => {
+      input.checked = visibleRows.includes(input.dataset.row);
+    });
+  };
+  rowMenu.syncMenu = syncMenu;
+  syncMenu();
 
   const close = refocus => {
     if(panel.hidden) return;
@@ -295,7 +332,15 @@ function mountRowMenu(){
     btn.setAttribute('aria-expanded', 'true');
   };
   btn.addEventListener('click', e => { e.stopPropagation(); panel.hidden ? open() : close(); });
-  panel.addEventListener('click', e => e.stopPropagation());
+  panel.addEventListener('click', e => {
+    e.stopPropagation();
+    const preset = e.target.dataset && e.target.dataset.preset;
+    if(!preset) return;
+    visibleRows = ROW_PRESETS.find(p => p.key === preset).rows.slice();
+    syncMenu();
+    renderSummary();
+    syncURL();
+  });
   panel.addEventListener('change', e => {
     if(!e.target.dataset.row) return;
     visibleRows = rows.map(r => r.id).filter(id => panel.querySelector(`[data-row="${id}"]`).checked);
@@ -303,6 +348,7 @@ function mountRowMenu(){
       e.target.checked = true;
       visibleRows = [e.target.dataset.row];
     }
+    syncMenu();
     renderSummary();
     syncURL();
   });
@@ -344,7 +390,7 @@ function seasonValue(name, game){
 
 function seasonCell(name, game, bestShare, index){
   const v = seasonValue(name, game);
-  if(!v.entered) return `<span class="faint">-</span>`;
+  if(!v.entered) return `<span class="faint" title="No majors entered this season">—</span><span class="sr-only">No majors entered</span>`;
   const events = v.season ? v.season.events.map(e => esc(e.event)).join(', ') : '';
   const teams = teamsFor(name, game);
   const role = roleForGame(D.players[name], game);
@@ -364,7 +410,7 @@ function seasonCell(name, game, bestShare, index){
 
 function seasonTag(g){
   const game = GAMES[g];
-  if(game.preBo2) return '<span class="pill warn small">pre-BO2</span>';
+  if(game.preBo2) return '<span class="pill warn small" title="Sparse 2010–12 circuit — as few as 3 tracked majors a season">pre-BO2</span>';
   if(game.denom < game.majors) return `<span class="pill tag small">${game.denom} of ${game.majors} per team</span>`;
   if(game.denom > game.majors) return `<span class="pill tag small">in progress · ${game.majors} of ${game.denom} played</span>`;
   return '';
@@ -377,12 +423,48 @@ function renderChips(){
   </span>`).join('');
 }
 
+function renderVerdict(){
+  const stats = selected.map(n => ({
+    name: n,
+    adj: D.players[n].adj_all,
+    rank: LB[n].adjRank,
+    raw: D.players[n].raw,
+    champs: D.players[n].champs,
+  }));
+  const sorted = [...stats].sort((a, b) => b.adj - a.adj);
+  const leader = sorted[0];
+  const runner = sorted[1] || null;
+  const decisive = runner && leader.adj - runner.adj >= 0.05;
+  const headline = !runner
+    ? `${esc(leader.name)}'s era-adjusted resume`
+    : decisive ? `${esc(leader.name)} leads on adjusted wins` : 'Dead even on adjusted wins';
+  const margin = decisive ? `<span class="pill tag verdict-margin">+${(leader.adj - runner.adj).toFixed(1)} over ${esc(runner.name)}</span>` : '';
+  const cards = stats.map((s, i) => `<div class="verdict-card${runner && s.name === leader.name && decisive ? ' lead' : ''}" style="--cmp-color:${PLAYER_COLORS[i % PLAYER_COLORS.length]}">
+    <a href="player.html?p=${encodeURIComponent(s.name)}">${esc(s.name)}</a>
+    <strong class="num">${fmtNum(s.adj, 1)}</strong>
+    <span class="small muted">adjusted wins · #${s.rank} all-time</span>
+    <span class="small faint">${s.raw} raw · ${s.champs ? `${s.champs} ◆` : 'no Champs'}</span>
+  </div>`).join('');
+  verdict.innerHTML = `<div class="verdict-head">
+      <h2>${headline}</h2>${margin}
+    </div>
+    <div class="verdict-cards" style="--players:${selected.length}">${cards}</div>
+    <div class="verdict-foot">
+      <p class="small muted">Adjusted wins scale each win by how many majors existed that season, so every era counts equally.
+        <a href="methodology.html#era-adjustment">How it's computed →</a></p>
+      <div class="verdict-actions">
+        <button type="button" class="clearfilters" id="copy-link">Copy link</button>
+        <span class="small faint">cod-stats-one.vercel.app</span>
+      </div>
+    </div>`;
+}
+
 function renderSummary(){
   const rows = metricRows().filter(m => visibleRows.includes(m.id)).map(m => {
     const vals = selected.map(n => m.value(n));
     const best = bestFor(m, vals);
     const cells = selected.map((n, i) => summaryCell(m, n, vals[i], vals, i, best != null && vals[i] === best && best > 0)).join('');
-    return `<tr><th scope="row">${esc(m.label)}</th>${cells}</tr>`;
+    return `<tr><th scope="row">${esc(m.label)}${m.info ? methodLink(m.info, m.label) : ''}</th>${cells}</tr>`;
   }).join('');
   summary.innerHTML = TableSurface.dataTable({
     label: 'Player comparison summary table',
@@ -411,8 +493,20 @@ function renderTable(){
       ${cells}
     </tr>`;
   }).join('');
-  seasonTable.style.setProperty('--players', selected.length);
-  seasonTable.innerHTML = `${tableCaption('Season-by-season comparison matrix')}${head}<tbody>${rows || '<tr><td colspan="'+(selected.length+1)+'" class="small faint">No participation data for this comparison.</td></tr>'}</tbody>`;
+  seasonHost.innerHTML = TableSurface.dataTable({
+    label: 'Player comparison season matrix',
+    caption: 'Season-by-season comparison matrix',
+    wrapperClass: 'compare-table-wrap',
+    tableClass: 'data compare-table',
+    tableAttrs: {id: 'season-table', style: `--players:${selected.length}`},
+    head,
+    rows: rows || '<tr><td colspan="' + (selected.length + 1) + '" class="small faint">No participation data for this comparison.</td></tr>'
+  });
+  const denom = PART
+    ? 'majors entered that season'
+    : partFailed ? "each season's full schedule (participation data unavailable)" : 'scheduled majors while participation data loads';
+  const hasPreBo2 = games.some(g => GAMES[g].preBo2);
+  seasonNote.textContent = `Wins ÷ ${denom} · ◆ = won Champs` + (hasPreBo2 ? ' · pre-BO2 = sparse 2010–12 circuit' : '');
 }
 
 function renderSuggestions(){
@@ -428,7 +522,7 @@ function renderSuggestions(){
       .slice(0, 3);
     if(!items.length) return '';
     return `<div class="suggestion-group"><span>Similar to ${esc(base)}</span>
-      ${items.map(x => `<button type="button" class="suggestion-btn" data-add="${esc(x.name)}">${esc(x.name)} <span>${x.score}</span></button>`).join('')}
+      ${items.map(x => `<button type="button" class="suggestion-btn" data-add="${esc(x.name)}" aria-label="Add ${esc(x.name)} (similarity ${x.score} of 100)">${esc(x.name)} <span title="Similarity, 0–100">${x.score}</span></button>`).join('')}
     </div>`;
   }).join('');
 }
@@ -437,6 +531,7 @@ function render(){
   if(selected.length < 1) selected = DEFAULT_PLAYERS.slice();
   if(selected.length === 1 && !statusEl.textContent) setStatus('Add another player to compare side by side.');
   renderChips();
+  renderVerdict();
   renderSuggestions();
   renderSummary();
   renderTable();
@@ -450,7 +545,7 @@ function addPlayer(raw){
   if(selected.length >= MAX_PLAYERS){ setStatus(`Compare up to ${MAX_PLAYERS} players at once.`, 'error'); return; }
   selected.push(name);
   pick.value = '';
-  setStatus('');
+  setStatus(`Added ${name} to the comparison.`);
   render();
 }
 
@@ -465,7 +560,7 @@ chips.addEventListener('click', e => {
   selected = selected.filter(n => n !== name);
   if(selected.length < 1) setStatus('Comparison needs at least one player; restored the default pair.');
   else if(selected.length < 2) setStatus('Add another player to compare side by side.');
-  else setStatus('');
+  else setStatus(`Removed ${name} from the comparison.`);
   render();
 });
 
@@ -476,17 +571,38 @@ suggestions.addEventListener('click', e => {
   addPlayer(name);
 });
 
+verdict.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('#copy-link');
+  if(!btn) return;
+  // deployed shares go through the /c wrapper so the link unfurls with a
+  // matchup-specific og card; locally there is no edge runtime, share the page URL
+  const url = /\.vercel\.app$/.test(location.hostname)
+    ? `${location.origin}/c${location.search}`
+    : location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    btn.textContent = 'Copied ✓';
+    setStatus('Comparison link copied.');
+    setTimeout(() => { btn.textContent = 'Copy link'; }, 1600);
+  }).catch(() => setStatus('Copy failed — grab the URL from the address bar.', 'error'));
+});
+
 resetBtn.addEventListener('click', () => {
   selected = DEFAULT_PLAYERS.slice();
+  visibleRows = DEFAULT_ROWS.slice();
+  if(rowMenu.syncMenu) rowMenu.syncMenu();
   pick.value = '';
-  setStatus('');
+  setStatus('Restored the default comparison.');
   render();
 });
 
 render();
 mountRowMenu();
 fetch('participation.json').then(r => r.json()).then(all => { PART = all; render(); })
-  .catch(() => setStatus('Participation data failed to load; showing scoring denominators instead.', 'error'));
+  .catch(() => {
+    partFailed = true;
+    setStatus('Participation data failed to load; season shares divide by scheduled majors instead.', 'error');
+    render();
+  });
 mountFoot();
 </script>
 </body>
