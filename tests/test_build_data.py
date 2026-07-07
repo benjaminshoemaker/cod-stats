@@ -106,6 +106,17 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
         assert s["share"] == round(s["wins"] / 6, 4)
 
 
+def test_black_ops_4_excludes_pro_league_match_bonus_page(data):
+    # The BO4 Pro League page is a league/match-bonus listing, not a tournament
+    # champion. Only the Miami Pro League Playoffs count as a BO4 major.
+    g = next(g for g in data["games"] if g["game"] == "Black Ops 4")
+    events = [e["event"] for e in g["events"]]
+    assert g["majors"] == 6
+    assert g["denom"] == 6
+    assert "CWL Pro League 2019" not in events
+    assert "CWL Pro League 2019 Playoffs" in events
+
+
 def test_dropped_events_excluded_everywhere(data):
     # DROP_EVENTS (mis-tiered non-majors) must not appear as a scheduled major, an
     # event row, or anyone's win — otherwise the season denominator re-inflates.

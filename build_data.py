@@ -23,7 +23,11 @@ DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 #  * "Call of Duty Challengers Finals 2026" — a Challengers (amateur) event, not a pro
 #    major. It inflated the Black Ops 7 denominator to 7; BO7 has 6 real majors (4 CDL
 #    Majors + Champs + EWC). Flagged by u/BcDownes on r/CoDCompetitive, 2026-07.
-DROP_EVENTS = {'Call of Duty Challengers Finals 2026'}
+#  * "CWL Pro League 2019" — the league/match-bonus page, not a tournament with a
+#    champion. BO4 has 6 top-level pro majors: Vegas, Fort Worth, London, Anaheim,
+#    Pro League Playoffs, and Champs. The source row had a blank winner but still
+#    inflated BO4's season denominator to 7.
+DROP_EVENTS = {'Call of Duty Challengers Finals 2026', 'CWL Pro League 2019'}
 VALID_PRIMARY_ROLES = {'AR', 'Flex', 'SMG', 'Unknown'}
 FORMAL_ACCOLADE_TYPES = {
     'Event MVP',
