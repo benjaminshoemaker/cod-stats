@@ -646,11 +646,12 @@ test.describe('pages', () => {
     await expect(page.locator('#cc-view-overall')).toHaveClass(/active/);
     await expect(page.locator('#cc-title-field')).toBeHidden();
     await expect(page.locator('#cc-era-field')).toBeVisible();
+    await expect(page.locator('#cc-mode')).toHaveCount(0);
     await expect(page.locator('#cc-eramenu .colmenu-btn')).toContainText('Eras: All');
-    await expect(page.getByRole('heading', { name: 'Career Total Ranking' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Overall Ranking' })).toBeVisible();
     await expect(page.locator('.community-stats .stat')).toHaveCount(0);
     const overallHeaders = await page.locator('#cc-overall-table .tabulator-col-title').allTextContents();
-    expect(overallHeaders).toEqual(['Rank', 'Player', 'Active score', 'Average rank', 'Event wins', 'Top 1', 'Top 3', 'Top 5', 'Top 10']);
+    expect(overallHeaders).toEqual(['Rank', 'Player', 'Overall score', 'Average rank', 'Event wins', 'Top 1', 'Top 3', 'Top 5', 'Top 10', 'Trace']);
     const firstOverallRow = page.locator('#cc-overall-table .tabulator-row').first();
     await expect(firstOverallRow).toContainText('Scump');
     await expect(firstOverallRow.locator('.context-band')).toContainText('28');
@@ -660,19 +661,20 @@ test.describe('pages', () => {
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perPlayed"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="perRanked"]')).toHaveCount(0);
     await expect(page.locator('#cc-overall-table .tabulator-col[tabulator-field="placements"]')).toHaveCount(0);
-    await expect(page.locator('#cc-overall-trace-card')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: 'Scump Overall Trace' })).toBeVisible();
+    await expect(firstOverallRow).toHaveClass(/community-selected-row/);
 
     await page.locator('#cc-overall-table .tabulator-row').filter({ hasText: 'Simp' }).click();
     await expect(page).toHaveURL(/p=Simp/);
     await expect(page.getByRole('heading', { name: 'Simp Overall Trace' })).toBeVisible();
     await page.waitForFunction(() => document.activeElement?.id === 'cc-overall-trace-card');
     await expect(page.locator('.calc-summary')).toContainText('Total:');
-    await expect(page.locator('.cc-calc-table')).toContainText('Rank points');
-    await expect(page.locator('.cc-calc-table')).not.toContainText('Title score');
-    await expect(page.locator('.cc-calc-table')).not.toContainText('Sources');
-    await expect(page.locator('.cc-calc-table')).not.toContainText('Rank-points formula');
-    await expect(page.locator('.cc-calc-table').getByRole('link').first()).toHaveAttribute('href', /view=title/);
-    await expect(page.locator('.cc-calc-table').getByRole('link')).toHaveText([
+    await expect(page.locator('.overall-calc-list')).toContainText('Rank points');
+    await expect(page.locator('.overall-calc-list')).not.toContainText('Title score');
+    await expect(page.locator('.overall-calc-list')).not.toContainText('Sources');
+    await expect(page.locator('.overall-calc-list')).not.toContainText('Rank-points formula');
+    await expect(page.locator('.overall-calc-list').getByRole('link').first()).toHaveAttribute('href', /view=title/);
+    await expect(page.locator('.overall-calc-list').getByRole('link')).toHaveText([
       'BO4 #2',
       'MW #1',
       'BOCW #1',
@@ -690,39 +692,31 @@ test.describe('pages', () => {
       const tableBox = table.getBoundingClientRect();
       const traceBox = trace.getBoundingClientRect();
       const selectedRowBox = document.querySelector('#cc-overall-table .tabulator-row.community-selected-row')?.getBoundingClientRect();
+      const isMobile = window.matchMedia('(max-width: 960px)').matches;
       return {
-        traceInsideTable: traceBox.top > tableBox.top && traceBox.top < tableBox.bottom,
-        traceInsideSelectedRow: !!selectedRowBox && traceBox.top >= selectedRowBox.top && traceBox.bottom <= selectedRowBox.bottom + 1,
-        tableUsesMostWidth: tableBox.width > window.innerWidth * 0.75,
+        traceInExpectedPanelPosition: isMobile ? traceBox.top > tableBox.top : Math.abs(traceBox.top - tableBox.top) < 140,
+        traceOutsideSelectedRow: !!selectedRowBox && !(traceBox.top >= selectedRowBox.top && traceBox.bottom <= selectedRowBox.bottom + 1),
+        tableHasPrimaryColumnWidth: isMobile ? tableBox.width > window.innerWidth * 0.75 : tableBox.width > window.innerWidth * 0.45,
         pageOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         tableScrollsInside: holder.scrollWidth > holder.clientWidth,
       };
     });
-    expect(overallLayout.traceInsideTable).toBe(true);
-    expect(overallLayout.traceInsideSelectedRow).toBe(true);
-    expect(overallLayout.tableUsesMostWidth).toBe(true);
+    expect(overallLayout.traceInExpectedPanelPosition).toBe(true);
+    expect(overallLayout.traceOutsideSelectedRow).toBe(true);
+    expect(overallLayout.tableHasPrimaryColumnWidth).toBe(true);
     expect(overallLayout.pageOverflow).toBe(false);
 
     await page.goto('/community.html?view=overall&p=Crimsix');
     await expect(page.getByRole('heading', { name: 'Crimsix Overall Trace' })).toBeVisible();
     await page.waitForFunction(() => document.activeElement?.id === 'cc-overall-trace-card');
-    const crimsixTraceVisible = await page.evaluate(() => {
-      const trace = document.querySelector('#cc-overall-trace-card') as HTMLElement;
-      const rect = trace.getBoundingClientRect();
-      return rect.top >= 0 && rect.top < window.innerHeight;
-    });
-    expect(crimsixTraceVisible).toBe(true);
+    await expect(page.locator('#cc-overall-table .tabulator-row.community-selected-row')).toContainText('Crimsix');
+    await expect(page.locator('#cc-overall-trace-card .overall-calc-list')).toContainText('BO2 #2');
 
     await page.locator('#cc-eramenu .colmenu-btn').click();
     await page.locator('#cc-eramenu .era-preset[data-preset="cdl"]').click();
     await expect(page).toHaveURL(/eras=cdl/);
     await expect(page.locator('#cc-eramenu .colmenu-btn')).toContainText('Eras: CDL');
     await expect(page.locator('#cc-overall-table .tabulator-row').first()).toContainText('Simp');
-
-    await page.locator('#cc-mode').selectOption('played');
-    await expect(page).toHaveURL(/mode=played/);
-    await expect(page).not.toHaveURL(/view=overall/);
-    await expect(page.getByRole('heading', { name: 'Per Played Title Ranking' })).toBeVisible();
 
     await page.locator('#cc-view-title').click();
     await expect(page.locator('#cc-game')).toHaveValue('Black Ops 2');

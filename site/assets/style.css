@@ -624,8 +624,6 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .community-overall-table .tabulator-row{cursor:pointer}
 .community-overall-table .tabulator-row.community-selected-row{background:var(--accent-soft)}
 .community-overall-table .tabulator-cell.score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
-.cc-row-detail{clear:both;border-top:1px solid var(--accent-line);background:#fff;padding:var(--space-3)}
-.cc-row-detail .panel-shell{margin-bottom:0}
 .community-table th,.community-table td{vertical-align:middle}
 .community-table .score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
 .bar-mini{display:block;height:6px;margin-top:4px;border-radius:999px;background:var(--panel-2);overflow:hidden}

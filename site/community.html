@@ -34,13 +34,6 @@
         <button type="button" id="cc-view-title" data-cc-view="title">Per-title</button>
       </div>
     </div>
-    <label class="field-label" id="cc-mode-field">Overall ranking
-      <select id="cc-mode" class="select">
-        <option value="total">Career total</option>
-        <option value="played">Per played title</option>
-        <option value="ranked">Per ranked title</option>
-      </select>
-    </label>
     <div class="field-label" id="cc-era-field">Eras
       <div class="colmenu eramenu" id="cc-eramenu"></div>
     </div>
@@ -58,8 +51,6 @@
 mountNav('community.html');
 
 const gameSel = document.getElementById('cc-game');
-const modeSel = document.getElementById('cc-mode');
-const modeField = document.getElementById('cc-mode-field');
 const titleField = document.getElementById('cc-title-field');
 const eraField = document.getElementById('cc-era-field');
 const host = document.getElementById('cc-root');
@@ -72,26 +63,7 @@ let CONSENSUS_GAMES = [];
 let ERA_HELPERS = null;
 let overallTable = null;
 
-const OVERALL_MODES = {
-  total: {
-    label: 'Career Total Ranking',
-    metric: r => r.total,
-    note: 'Rewards accumulated title-level community consensus across a full career.',
-    badge: 'GOAT accumulation',
-  },
-  played: {
-    label: 'Per Played Title Ranking',
-    metric: r => r.perPlayed,
-    note: 'Divides total consensus points by every title the player entered, including played-but-unranked titles.',
-    badge: 'Career-length normalized',
-  },
-  ranked: {
-    label: 'Per Ranked Title Ranking',
-    metric: r => r.perRanked,
-    note: 'Divides total consensus points by ranked titles only, emphasizing peak quality when the player made a title list.',
-    badge: 'Peak / quality',
-  },
-};
+const OVERALL_LABEL = 'Overall Ranking';
 
 const sourceLabel = s => String(s || '').replaceAll('_', ' ');
 const sourceStatusPill = status => {
@@ -113,14 +85,14 @@ const selectedUrl = (game, player) => {
   url.searchParams.delete('mode');
   return url.pathname + '?' + url.searchParams.toString();
 };
-const overallUrl = (player, mode) => {
+const overallUrl = player => {
   const url = new URL(location.href);
   url.searchParams.set('view', 'overall');
-  if(mode) url.searchParams.set('mode', mode);
   if(player) url.searchParams.set('p', player);
   const token = selectionToken(currentEraSelection);
   if(token !== 'all') url.searchParams.set('eras', token);
   else url.searchParams.delete('eras');
+  url.searchParams.delete('mode');
   url.searchParams.delete('g');
   return url.pathname + '?' + url.searchParams.toString();
 };
@@ -179,12 +151,11 @@ function readState(){
   const view = requestedView === 'overall' || requestedView === 'title'
     ? requestedView
     : (params.has('g') ? 'title' : 'overall');
-  const mode = OVERALL_MODES[params.get('mode')] ? params.get('mode') : 'total';
   const game = games.includes(params.get('g')) ? params.get('g') : (games.includes('Black Ops 2') ? 'Black Ops 2' : games[0]);
   const rows = CC.consensus.games[game] || [];
   const selected = matchingConsensusRow(rows, params.get('p'));
   const player = selected ? selected.player : (rows[0] && rows[0].player);
-  return {view, mode, game, player, overallPlayer: params.get('p'), eras: parseEraSelection(params.get('eras'))};
+  return {view, game, player, overallPlayer: params.get('p'), eras: parseEraSelection(params.get('eras'))};
 }
 function defaultConsensusGame(){
   return CONSENSUS_GAMES.includes('Black Ops 2') ? 'Black Ops 2' : CONSENSUS_GAMES[0];
@@ -201,13 +172,12 @@ function setTitleUrl(game, player){
   url.searchParams.delete('eras');
   history.replaceState(null, '', url);
 }
-function setOverallUrl(mode, player){
+function setOverallUrl(player){
   const url = new URL(location.href);
   url.searchParams.delete('view');
-  if(mode === 'total') url.searchParams.delete('mode');
-  else url.searchParams.set('mode', mode);
+  url.searchParams.delete('mode');
   const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
-  const defaultPlayer = overallRows(mode, selectedGames)[0]?.player;
+  const defaultPlayer = overallRows(selectedGames)[0]?.player;
   if(player && player !== defaultPlayer) url.searchParams.set('p', player);
   else url.searchParams.delete('p');
   const token = selectionToken(currentEraSelection);
@@ -220,7 +190,6 @@ function setActiveView(view){
   document.querySelectorAll('[data-cc-view]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.ccView === view);
   });
-  modeField.hidden = view !== 'overall';
   eraField.hidden = view !== 'overall';
   titleField.hidden = view !== 'title';
 }
@@ -437,9 +406,11 @@ function buildOverallRows(selectedGames){
     return rec;
   });
 }
-function overallRows(mode, selectedGames){
-  const metric = OVERALL_MODES[mode].metric;
-  return buildOverallRows(selectedGames).slice().sort((a, b) => metric(b) - metric(a) || b.total - a.total || a.player.localeCompare(b.player));
+function overallRows(selectedGames){
+  return buildOverallRows(selectedGames)
+    .slice()
+    .sort((a, b) => b.total - a.total || a.player.localeCompare(b.player))
+    .map((r, i) => ({...r, rank: i + 1}));
 }
 function matchingOverallRow(rows, player){
   if(!player) return rows[0];
@@ -453,32 +424,29 @@ function titlePlacementChip(player, placement){
 function renderOverallSummary(rows, selectedGames){
   return '';
 }
-function renderOverallTable(rows, selected, mode){
-  const cfg = OVERALL_MODES[mode];
+function renderOverallTable(rows, selected){
   return `<section class="panel-shell">
     <div class="panel-head">
-      <div><h2>${esc(cfg.label)}</h2><p class="small muted">${esc(cfg.note)} Event wins are shown only for resume context.</p></div>
-      <span class="pill tag">${esc(cfg.badge)}</span>
+      <div><h2>${OVERALL_LABEL}</h2><p class="small muted">Rewards accumulated title-level community consensus across a full career. Event wins are shown only for resume context.</p></div>
+      <span class="pill tag">GOAT accumulation</span>
     </div>
     <div class="panel-body">
-      <p class="small muted">Click a player row to expand its trace. Event wins are context only and do not affect the score.</p>
+      <p class="small muted">Click a player row or Trace to inspect the title-by-title score. Event wins are context only and do not affect the score.</p>
       <div id="cc-overall-table" class="community-overall-table" role="region" aria-label="Overall community consensus table"></div>
     </div>
   </section>`;
 }
-function mountOverallTable(rows, selected, mode){
+function mountOverallTable(rows, selected){
   if(overallTable){
     try { overallTable.destroy(); } catch(e) {}
     overallTable = null;
   }
-  const cfg = OVERALL_MODES[mode];
-  const metric = cfg.metric;
-  const topMetric = metric(rows[0] || {total: 1, perPlayed: 1, perRanked: 1}) || 1;
+  const topMetric = rows[0]?.total || 1;
   const data = rows.map((r, i) => ({
     ...r,
     rank: i + 1,
-    activeScore: metric(r),
-    activeWidth: Math.max(4, Math.round(metric(r) / topMetric * 100)),
+    activeScore: r.total,
+    activeWidth: Math.max(4, Math.round(r.total / topMetric * 100)),
     selected: selected && r.player === selected.player,
   }));
   const M = window.matchMedia('(max-width: 760px)').matches;
@@ -490,7 +458,7 @@ function mountOverallTable(rows, selected, mode){
     columns: [
       {title:'Rank', field:'rank', width:M?58:64, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Player', field:'player', minWidth:M?130:160, widthGrow:1.2, formatter:c=>`<strong>${playerCell(c.getValue())}</strong>`},
-      {title:'Active score', field:'activeScore', minWidth:M?112:136, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum score',
+      {title:'Overall score', field:'activeScore', minWidth:M?112:136, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum score',
         formatter:c=>`${Number(c.getValue()).toFixed(3)}<span class="bar-mini"><span style="width:${c.getData().activeWidth}%"></span></span>`},
       {title:'Average rank', field:'averageRank', minWidth:116, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
         headerTooltip:'Average across played titles; played-but-unranked titles count as rank 31.',
@@ -501,80 +469,71 @@ function mountOverallTable(rows, selected, mode){
       {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Top 5', field:'top5', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
       {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Trace', field:'player', minWidth:86, formatter:c=>{
+        const player = c.getValue();
+        return `<a class="evidence-link" href="${esc(overallUrl(player))}" data-overall-player="${esc(player)}">Trace</a>`;
+      }},
     ],
-    rowFormatter:row => formatOverallExpandedRow(row, mode),
+    rowFormatter:row => row.getElement().classList.toggle('community-selected-row', !!row.getData().selected),
   });
   overallTable.on('rowClick', (e, row) => {
-    if(e.target.closest('.cc-row-detail,a,button,input,label,select,textarea')) return;
-    const nextPlayer = row.getData().selected ? null : row.getData().player;
-    renderOverall(mode, nextPlayer, {focusTrace: !!nextPlayer});
+    if(e.target.closest('a,button,input,label,select,textarea')) return;
+    renderOverall(row.getData().player, {focusTrace: true});
   });
 }
-function formatOverallExpandedRow(row, mode){
-  const el = row.getElement();
-  el.querySelector('.cc-row-detail')?.remove();
-  const data = row.getData();
-  el.classList.toggle('community-selected-row', !!data.selected);
-  if(!data.selected) return;
-  const detail = document.createElement('div');
-  detail.className = 'cc-row-detail';
-  detail.id = 'cc-overall-trace-card';
-  detail.tabIndex = -1;
-  detail.setAttribute('data-detail', data.player);
-  detail.innerHTML = renderOverallDetail(data, mode);
-  el.appendChild(detail);
-  row.normalizeHeight?.();
-}
-function renderOverallDetail(playerRow, mode){
-  const cfg = OVERALL_MODES[mode];
-  const calcRows = playerRow.placements.map(p => `<tr>
-    <td>${titlePlacementChip(playerRow.player, p)}</td>
-    <td class="n">${p.rank}</td>
-    <td class="n">${p.points.toFixed(3)}</td>
-    <td class="context-band n">${p.wins}<span class="sub">not scored</span></td>
-  </tr>`).join('');
+function renderOverallDetail(playerRow){
+  const calcRows = playerRow.placements.map(p => `<div class="calc-row">
+    <div class="calc-row-head"><span class="calc-title">${titlePlacementChip(playerRow.player, p)}</span><span class="contribution">${p.points.toFixed(3)}</span></div>
+    <span class="sub">Rank #${p.rank} · ${p.wins} event win${p.wins === 1 ? '' : 's'} · event wins not scored</span>
+    <div class="calc-math">
+      <span class="math-chip"><span class="k">Rank</span><span class="v">#${p.rank}</span></span>
+      <span class="math-op">→</span>
+      <span class="math-chip"><span class="k">Rank points</span><span class="v">${p.points.toFixed(3)}</span></span>
+    </div>
+  </div>`).join('') || '<p class="small muted">No ranked titles in this era selection.</p>';
   return `<aside class="panel-shell">
     <div class="panel-head">
       <div><h2>${esc(playerRow.player)} Overall Trace</h2><p class="small muted">Every title row links to the per-title trace where the source inputs are shown.</p></div>
-      <span class="pill tag">${esc(cfg.badge)}</span>
+      <span class="pill tag">Overall #${playerRow.rank}</span>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" id="cc-overall-trace-card" tabindex="-1">
+      <div class="mini-grid community-mini-grid">
+        <div class="mini"><div class="k">Score</div><div class="v">${playerRow.total.toFixed(3)}</div></div>
+        <div class="mini"><div class="k">Avg rank</div><div class="v">${playerRow.averageRank == null ? '-' : playerRow.averageRank.toFixed(1)}</div></div>
+        <div class="mini"><div class="k">Titles</div><div class="v">${playerRow.rankedTitles}<span class="sub">ranked</span></div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${playerRow.eventWins}<span class="sub">not scored</span></div></div>
+      </div>
       <p class="small muted">Overall points are the sum of title ranks converted with
         <a href="methodology.html#community-rank-points">the rank-points curve</a>:
         <span class="formula">((31 - rank) / 30) ** 2.5</span>. Use the title links for the source-level trace behind each title rank.</p>
       <div class="calc-summary small muted">
         <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}
       </div>
-      ${TableSurface.dataTable({
-        label: `${playerRow.player} overall trace`,
-        caption: `${playerRow.player} overall community consensus trace`,
-        wrapperClass: 'cc-calc-table-wrap',
-        tableClass: 'data cc-calc-table',
-        head: '<thead><tr><th scope="col">Title trace</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Rank points</th><th scope="col" class="context-band n">Event wins</th></tr></thead>',
-        rows: calcRows
-      })}
+      <div class="calc-list overall-calc-list">${calcRows}</div>
     </div>
   </aside>`;
 }
 function focusOverallTrace(){
   const card = document.getElementById('cc-overall-trace-card');
   if(!card) return;
-  card.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+  card.scrollIntoView({block: 'nearest', behavior: 'auto'});
   card.focus({preventScroll: true});
 }
-function renderOverall(mode, player, opts={}){
+function renderOverall(player, opts={}){
   const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
-  const rows = overallRows(mode, selectedGames);
-  const selected = player ? matchingOverallRow(rows, player) : null;
+  const rows = overallRows(selectedGames);
+  const selected = matchingOverallRow(rows, player);
   setActiveView('overall');
-  modeSel.value = mode;
-  setOverallUrl(mode, selected && selected.player);
+  setOverallUrl(selected && selected.player);
   host.innerHTML = `
     ${renderOverallSummary(rows, selectedGames)}
     <div class="note community-method-note">Recent titles may be driven by a single large community poll; older titles are often reconstructed from smaller preserved threads and lists. Use the title links to inspect the underlying evidence.</div>
-    ${renderOverallTable(rows, selected, mode)}
+    <div class="community-layout">
+      ${renderOverallTable(rows, selected)}
+      ${renderOverallDetail(selected)}
+    </div>
   `;
-  mountOverallTable(rows, selected, mode);
+  mountOverallTable(rows, selected);
   bindOverallLinks();
   if(opts.focusTrace){
     requestAnimationFrame(() => setTimeout(focusOverallTrace, 0));
@@ -582,6 +541,12 @@ function renderOverall(mode, player, opts={}){
 }
 function bindOverallLinks(){
   host.onclick = e => {
+    const overall = e.target.closest('[data-overall-player]');
+    if(overall){
+      e.preventDefault();
+      renderOverall(overall.dataset.overallPlayer, {focusTrace: true});
+      return;
+    }
     const title = e.target.closest('[data-title-link]');
     if(title){
       e.preventDefault();
@@ -736,21 +701,16 @@ fetch('community-consensus.json')
     currentEraSelection = state.eras;
     mountCommunityEraMenu(currentEraSelection, sel => {
       currentEraSelection = sel;
-      renderOverall(modeSel.value, new URLSearchParams(location.search).get('p'));
+      renderOverall(new URLSearchParams(location.search).get('p'));
     });
     gameSel.value = state.game;
     if(state.view === 'title') renderTitle(state.game, state.player);
-    else renderOverall(state.mode, state.overallPlayer, {focusTrace: !!state.overallPlayer});
+    else renderOverall(state.overallPlayer, {focusTrace: !!state.overallPlayer});
     document.querySelectorAll('[data-cc-view]').forEach(btn => {
       btn.addEventListener('click', () => {
         if(btn.dataset.ccView === 'title') renderTitle(gameSel.value || defaultConsensusGame(), null);
-        else renderOverall(modeSel.value, null);
+        else renderOverall(null);
       });
-    });
-    modeSel.addEventListener('change', () => {
-      const selectedGames = new Set([...currentEraSelection].filter(g => CONSENSUS_GAMES.includes(g)));
-      const selected = matchingOverallRow(overallRows(modeSel.value, selectedGames), new URLSearchParams(location.search).get('p'));
-      renderOverall(modeSel.value, selected && selected.player);
     });
     gameSel.addEventListener('change', () => renderTitle(gameSel.value, null));
     shareBtn.addEventListener('click', async () => {
