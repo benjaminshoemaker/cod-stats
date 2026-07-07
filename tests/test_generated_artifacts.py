@@ -138,6 +138,18 @@ def test_community_consensus_json_is_generated_for_static_site():
     assert mismatches == {}
 
 
+def test_community_consensus_artifact_is_fresh():
+    # community_consensus.json is only rewritten by a manual
+    # `scripts/build_community_consensus.py --output` run, but build_data.py
+    # consumes it as if it were source data. If the sources/ballots files are
+    # edited without a rerun, the site silently ships stale consensus ranks.
+    # If this fails, rerun:
+    #     python3 scripts/build_community_consensus.py --output community_consensus.json
+    from scripts.build_community_consensus import build
+    stored = json.load(open(os.path.join(ROOT, "community_consensus.json")))
+    assert build() == stored
+
+
 def test_clusters_covers_every_leaderboard_player(clusters, lb):
     names = {p["name"] for p in clusters["players"]}
     assert names == set(lb), (

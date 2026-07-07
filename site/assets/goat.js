@@ -32,10 +32,11 @@ export function goatContext(D){
   for(const game of D.games){
     for(const event of game.events || []) eventGame.set(event.event, game.game);
   }
+  const cdlStart = gameInfo.get('Modern Warfare')?.order || 0;
   const ERA_PRESETS = {
     all: allGames,
-    cdl: allGames.filter(g => (gameInfo.get(g)?.order || 0) >= (gameInfo.get('Modern Warfare')?.order || 0)),
-    mlgCwl: ['Black Ops 2','Ghosts','Advanced Warfare','Black Ops 3','Infinite Warfare','World War II','Black Ops 4'],
+    cdl: allGames.filter(g => (gameInfo.get(g)?.order || 0) >= cdlStart),
+    mlgCwl: allGames.filter(g => !(gameInfo.get(g)?.preBo2) && (gameInfo.get(g)?.order || 0) < cdlStart),
     postBo2: allGames.filter(g => !(gameInfo.get(g)?.preBo2)),
     preBo2: allGames.filter(g => gameInfo.get(g)?.preBo2),
   };

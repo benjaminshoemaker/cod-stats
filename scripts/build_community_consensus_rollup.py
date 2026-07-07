@@ -16,10 +16,15 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from scripts.build_community_consensus import build as build_consensus
+from build_data import ASOF, DROP_GAMES, DROP_EVENTS
 
 PARTICIPATION_PATH = os.path.join(ROOT, "player_participation.json")
 WINS_PATH = os.path.join(ROOT, "player_event_wins.json")
 TITLE_POINT_EXPONENT = 2.5
+# A played-but-unranked title counts as this rank in "Avg rank (played)" —
+# one past the 30-player consensus cutoff. Must stay equal to the site's
+# community.html averageRank penalty.
+UNRANKED_PLAYED_RANK = 31
 
 TITLES = [
     "Black Ops",
@@ -54,6 +59,16 @@ ALIASES = {
 def load_json(path):
     with open(path) as f:
         return json.load(f)
+
+
+def in_universe(row):
+    """build_data.py's console-major universe: DROP_GAMES/DROP_EVENTS out,
+    rows on/before ASOF only (undated rows kept, matching _played)."""
+    return (
+        row.get("Game") not in DROP_GAMES
+        and row.get("Event") not in DROP_EVENTS
+        and (row.get("Date") or "0000") <= ASOF
+    )
 
 
 def labels(player):
@@ -106,19 +121,26 @@ def build_rollup():
             row["Game"]
             for row in participation
             if row.get("Game") in games and row.get("Player") in player_labels
+            and in_universe(row)
         }
         player_row["played_titles"] = max(len(played_titles), player_row["ranked_titles"])
         player_row["event_wins"] = sum(
             1
             for row in wins
             if row.get("Game") in games and row.get("Player") in player_labels
+            and in_universe(row)
         )
         player_row["events"] = len({
             (row.get("Game"), row.get("Event"))
             for row in participation
             if row.get("Game") in games and row.get("Player") in player_labels
+            and in_universe(row)
         })
         player_row["avg_rank_ranked"] = player_row["rank_sum"] / player_row["ranked_titles"]
+        unranked_played = player_row["played_titles"] - player_row["ranked_titles"]
+        player_row["avg_rank_played"] = (
+            player_row["rank_sum"] + unranked_played * UNRANKED_PLAYED_RANK
+        ) / player_row["played_titles"]
         player_row["score_per_played_title"] = (
             player_row["overall_score"] / player_row["played_titles"]
         )
@@ -171,8 +193,8 @@ def sort_per_ranked(row):
 
 def table(rows, rank_label, limit):
     lines = [
-        f"| {rank_label} | Player | Total score | Score/title played | Score/ranked title | Event wins | Played titles | Ranked titles | Top 1 | Top 3 | Top 5 | Top 10 | Avg rank | Top-10 title placements |",
-        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|",
+        f"| {rank_label} | Player | Total score | Score/title played | Score/ranked title | Event wins | Played titles | Ranked titles | Top 1 | Top 3 | Top 5 | Top 10 | Avg rank (ranked) | Avg rank (played) | Top-10 title placements |",
+        "|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     for idx, row in enumerate(rows[:limit], start=1):
         placements = "; ".join(row["top_10_title_placements"]) or "none"
@@ -183,7 +205,7 @@ def table(rows, rank_label, limit):
             f"{row['event_wins']} | {row['played_titles']} | "
             f"{row['ranked_titles']} | {row['top_1']} | {row['top_3']} | "
             f"{row['top_5']} | {row['top_10']} | "
-            f"{row['avg_rank_ranked']:.2f} | {placements} |"
+            f"{row['avg_rank_ranked']:.2f} | {row['avg_rank_played']:.2f} | {placements} |"
         )
     return "\n".join(lines)
 
@@ -211,9 +233,23 @@ def markdown(result, limit):
             "title's consensus construction and confidence notes, not as a "
             "cross-title season multiplier. Played-but-unranked titles add no "
             "score, so `Score/title played` is the career-length normalized "
-            "view. `Score/ranked title` is the peak/quality view."
+            "view. `Score/ranked title` is the peak/quality view. "
+            "`Avg rank (ranked)` averages over ranked titles only; "
+            "`Avg rank (played)` averages over all played titles with "
+            "played-but-unranked titles counted as rank 31 — the same "
+            "definition the site's Community page uses for its Average rank "
+            "column. Event wins and played titles use the site's console-major "
+            "universe (drop games/events and as-of cutoff from build_data.py)."
         ),
         "Title weights: every included title = 1.00.",
+        (
+            "Site note: the `Score/title played` and `Score/ranked title` "
+            "columns are analysis-only views. The community page's overall "
+            "table intentionally shows one headline score per player (total "
+            "score) with average rank, title count, event wins (context "
+            "only), and top-N counts; the per-title normalizations stay in "
+            "this report."
+        ),
         "## Overall Total Score",
         table(by_total, "Overall", limit),
         "## Normalized By Played Titles",

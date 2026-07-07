@@ -336,7 +336,10 @@ function seasonValue(name, game){
   const entries = entriesFor(name, game);
   const wins = s ? s.wins : 0;
   const entered = entries.length || (PART ? 0 : (s ? s.majors : 0));
-  return { wins, entered, share: entered ? wins / entered : 0, champ: champEventFor(name, game), season: s };
+  // until participation.json arrives (or if it fails), the denominator is the
+  // season's scheduled majors, not events entered — label it honestly
+  const fromEntries = entries.length > 0;
+  return { wins, entered, fromEntries, share: entered ? wins / entered : 0, champ: champEventFor(name, game), season: s };
 }
 
 function seasonCell(name, game, bestShare, index){
@@ -352,7 +355,7 @@ function seasonCell(name, game, bestShare, index){
   return `<div class="compare-season-cell${best}" style="--cmp-color:${color};--heat:${heat}%;--season-score:${fill}%">
     <div class="season-top">${best ? '<span class="best-badge">Best<span class="sr-only"> value</span></span>' : ''}<strong>${v.wins} / ${v.entered}</strong>${v.champ ? ' <span class="pill champ" title="Won Champs">◆</span>' : ''}</div>
     <div class="season-meter" aria-hidden="true"><i></i></div>
-    <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of entered</span>
+    <span class="small ${v.wins ? 'muted' : 'faint'}">${pct(v.wins, v.entered)} of ${v.fromEntries ? 'entered' : 'scheduled'}</span>
     ${teams.length ? `<span class="season-teams">${teams.map(t => teamBadge(t, 'compact')).join('')}</span>` : ''}
     <span class="season-role">${rolePill(role)} ${roleDisputeLink(name, game, role)}</span>
     ${events ? `<span class="small faint event-list">${events}</span>` : ''}

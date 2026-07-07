@@ -48,7 +48,8 @@
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
-<script>
+<script type="module">
+import { titlePoint } from './assets/goat.js';
 mountNav('community.html');
 
 const gameSel = document.getElementById('cc-game');
@@ -349,7 +350,8 @@ function sourceBallotCount(id){
   return ballotsBySource[id] ? ballotsBySource[id].length : 0;
 }
 function rankPoints(rank){
-  return Math.pow(Math.max(0, (31 - Number(rank || 31)) / 30), 2.5);
+  // shared curve from goat.js; a missing rank counts as 31 (zero points)
+  return titlePoint(Number(rank || 31)) ?? 0;
 }
 function gameAbbrev(game){
   const map = {
