@@ -144,6 +144,8 @@ button,input{font:inherit}
 .gb-row-detail{clear:both;display:block;width:100%;background:#fbfcff;border-top:1px solid var(--gb-line);padding:12px 14px;cursor:default}
 .gb-detail-table{max-width:none;overflow:visible}
 .gb-detail-head{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--gb-line)}
+.gb-detail-head>div:first-child{min-width:0}
+.gb-detail-head p{overflow-wrap:anywhere}
 .gb-detail-head h3{margin:0;font-size:15px}
 .gb-detail-head p{margin:3px 0 0;color:var(--gb-muted);font-size:12px}
 .gb-detail-score{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;font-size:22px;font-weight:850}
@@ -359,6 +361,7 @@ button,input{font:inherit}
             <div class="gb-map-legend">
               <span class="gb-map-dot">Resume x Skill</span>
               <span class="gb-map-dot peak">Peak bubble</span>
+              <span class="gb-map-dot fade">Fewer titles = faded</span>
             </div>
           </div>
           <div class="gb-map-card" id="mapHost"></div>
@@ -394,12 +397,24 @@ button,input{font:inherit}
 <script src="data.js"></script>
 <script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
-<script>
-const CRITERIA = [
-  {key:'resume', label:'Resume', group:'Primary criteria', help:'Team success: adjusted wins plus explicit Champs ring bonus.'},
-  {key:'skill', label:'Individual Skill', group:'Primary criteria', help:'Additive community-consensus score across selected titles.'},
-  {key:'longevity', label:'Longevity', group:'Primary criteria', help:'Titles with at least one recorded major entry in the selected era.'},
-  {key:'peak', label:'Peak', group:'Primary criteria', help:'Best single-title blend of winning peak and same-title consensus.'},
+<script type="module">
+import { CRITERIA as CRITERIA_CORE, DEFAULT_WEIGHTS, DEFAULT_ENABLED, DEFAULT_RING, clampWeight,
+  goatContext, buildConsensusIndex, parseGoatConfig, computeGoat, activeWeights as computeActiveWeights }
+  from './assets/goat.js';
+
+const CRITERIA_HELP = {
+  resume:'Winning: era-adjusted event wins, plus extra credit for Champs rings.',
+  skill:'What fans thought: community skill rankings, per title.',
+  longevity:'Showing up: how many titles they entered majors in.',
+  peak:'Their best single title — winning and fan ranking combined.',
+};
+const CRITERIA = CRITERIA_CORE.map(c => ({...c, group:'Primary criteria', help:CRITERIA_HELP[c.key]}));
+const WEIGHT_PRESETS = [
+  {key:'default', label:'Site default', weights:{resume:25, skill:25, longevity:25, peak:25}, ring:2},
+  {key:'rings', label:'Rings matter', weights:{resume:70, skill:10, longevity:10, peak:10}, ring:5},
+  {key:'skill', label:'Skill over rings', weights:{resume:10, skill:55, longevity:10, peak:25}, ring:1},
+  {key:'longevity', label:'Longevity list', weights:{resume:20, skill:15, longevity:50, peak:15}, ring:2},
+  {key:'peak', label:'Peak merchant', weights:{resume:10, skill:20, longevity:10, peak:60}, ring:2},
 ];
 const SORT_FIELDS = new Set(['rank','player','score','resume','skill','longevity','peak']);
 const FIXED_SORT_FIELDS = new Set(['rank','player','score']);
@@ -412,22 +427,9 @@ const GOAT_HEADER_TIPS = {
   longevity:'0-100 score from titles with at least one recorded major entry.',
   peak:'Best single-title 50/50 blend of title resume peak and title consensus peak.',
 };
-const DEFAULT_WEIGHTS = {resume:25, skill:25, longevity:25, peak:25};
-const DEFAULT_ENABLED = {resume:true, skill:true, longevity:true, peak:true};
-const DEFAULT_RING = 2;
-const allGames = window.APP_DATA.meta.seasonOrder;
-const gameInfo = new Map(window.APP_DATA.games.map(g => [g.game, g]));
-const eventGame = new Map();
-for(const game of window.APP_DATA.games){
-  for(const event of game.events || []) eventGame.set(event.event, game.game);
-}
-const ERA_PRESETS = {
-  all: allGames,
-  cdl: allGames.filter(g => (gameInfo.get(g)?.order || 0) >= (gameInfo.get('Modern Warfare')?.order || 0)),
-  mlgCwl: ['Black Ops 2','Ghosts','Advanced Warfare','Black Ops 3','Infinite Warfare','World War II','Black Ops 4'],
-  postBo2: allGames.filter(g => !(gameInfo.get(g)?.preBo2)),
-  preBo2: allGames.filter(g => gameInfo.get(g)?.preBo2),
-};
+const ctx = goatContext(window.APP_DATA);
+const {allGames, ERA_PRESETS, players} = ctx;
+const ERA_LABELS = {all:'All titles', cdl:'CDL era', mlgCwl:'MLG–CWL era', postBo2:'Post-BO2', preBo2:'Pre-BO2'};
 const VALID_VIEWS = new Set(['rank','map']);
 const state = {
   enabled:{...DEFAULT_ENABLED},
@@ -438,60 +440,29 @@ const state = {
   view:'rank',
   sort:{key:'rank', dir:'asc'},
 };
-const players = Object.values(window.APP_DATA.players);
 const controlsHost = document.getElementById('criteriaControls');
 const titleControlsHost = document.getElementById('titleControls');
 const mapHost = document.getElementById('mapHost');
 const tableMedia = matchMedia('(max-width:760px)');
-const LANE_COLORS = {
-  resume:'#2563eb',
-  skill:'#047857',
-  longevity:'#b45309',
-  peak:'#6d28d9',
-};
 let consensusRowsByPlayer = new Map();
 let consensusMeta = {titles:0, rows:0, status:'loading'};
-let renderCache = new Map();
 let renderScales = {};
 let goatTable = null;
 let selectedPlayerName = null;
+let hadShareParams = false;
+let baselineCache = {key:null, map:null};
 
-function clampWeight(value){
-  return Math.max(0, Math.min(100, Number(value) || 0));
-}
 function formatRing(value){
   return Number(value).toFixed(1).replace(/\.0$/, '');
 }
 function applyUrlState(){
   const params = new URLSearchParams(location.search);
-  const criteria = params.get('criteria');
-  if(params.has('criteria')){
-    const active = new Set(criteria.split(',').filter(key => Object.prototype.hasOwnProperty.call(DEFAULT_ENABLED, key)));
-    for(const c of CRITERIA) state.enabled[c.key] = active.has(c.key);
-  }
-  const weights = params.get('weights');
-  if(weights){
-    for(const part of weights.split(',')){
-      const [key, value] = part.split(':');
-      if(Object.prototype.hasOwnProperty.call(DEFAULT_WEIGHTS, key)) state.weights[key] = clampWeight(value);
-    }
-  }
-  if(params.has('rings')){
-    const ring = Number(params.get('rings'));
-    if(Number.isFinite(ring)) state.ring = Math.max(1, Math.min(6, ring));
-  }
-  const era = params.get('era');
-  const titles = params.get('titles');
-  if(era && ERA_PRESETS[era]){
-    state.selectedGames = new Set(ERA_PRESETS[era]);
-    state.eraPreset = era;
-  }else if(titles){
-    const wanted = new Set(titles.split(',').map(t => t.trim()).filter(t => allGames.includes(t)));
-    if(wanted.size){
-      state.selectedGames = wanted;
-      state.eraPreset = null;
-    }
-  }
+  const cfg = parseGoatConfig(params, ctx);
+  state.weights = cfg.weights;
+  state.enabled = cfg.enabled;
+  state.ring = cfg.ring;
+  state.selectedGames = cfg.selectedGames;
+  state.eraPreset = cfg.eraPreset;
   const view = params.get('view');
   if(VALID_VIEWS.has(view)) state.view = view;
   const sort = params.get('sort');
@@ -499,6 +470,7 @@ function applyUrlState(){
   if(SORT_FIELDS.has(sort)){
     state.sort = {key:sort, dir:dir === 'asc' ? 'asc' : 'desc'};
   }
+  hadShareParams = ['criteria','weights','rings','era','titles'].some(k => params.has(k));
 }
 function sameSetAsList(set, list){
   return set.size === list.length && list.every(item => set.has(item));
@@ -529,8 +501,12 @@ function updateUrlState(){
   }
   history.replaceState(null, '', url);
 }
+function shownCriteria(){
+  const enabledCriteria = CRITERIA.filter(c => state.enabled[c.key]);
+  return enabledCriteria.length === 1 ? [] : enabledCriteria;
+}
 function visibleSortFields(){
-  return new Set([...FIXED_SORT_FIELDS, ...CRITERIA.filter(c => state.enabled[c.key]).map(c => c.key)]);
+  return new Set([...FIXED_SORT_FIELDS, ...shownCriteria().map(c => c.key)]);
 }
 function ensureVisibleSort(){
   if(!visibleSortFields().has(state.sort.key)){
@@ -544,174 +520,15 @@ function escapeHtml(value){
 }
 function escapeAttr(value){ return escapeHtml(value); }
 function initials(name){ return name.split(/\s+/).map(s => s[0]).join('').slice(0,2).toUpperCase(); }
-function playerKey(name){ return String(name || '').replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase(); }
-function titlePoint(rank){
-  const r = Number(rank);
-  if(!Number.isFinite(r)) return null;
-  return Math.pow(Math.max(0, 31 - r) / 30, 2.5);
-}
 function selectedGamesArray(){ return allGames.filter(g => state.selectedGames.has(g)); }
-function selectedMbar(){
-  const games = selectedGamesArray();
-  return games.length ? games.reduce((sum,g) => sum + (gameInfo.get(g)?.denom || 0), 0) / games.length : 0;
+function currentConfig(ring=state.ring, weights=state.weights, enabled=state.enabled){
+  return {selectedGames:state.selectedGames, ring, weights, enabled};
 }
-function maxFinite(values){
-  const vals = values.filter(v => Number.isFinite(v));
-  return vals.length ? Math.max(...vals) : null;
+function assignedTotal(){
+  return CRITERIA.reduce((sum,c) => sum + (state.enabled[c.key] ? (Number(state.weights[c.key]) || 0) : 0), 0);
 }
-function scoreFromMaxValues(values){
-  const max = maxFinite(values) || 0;
-  return value => {
-    if(!Number.isFinite(value) || !max) return null;
-    return Math.max(0, (value / max) * 100);
-  };
-}
-function titleResumePeakValue(candidate, ring=state.ring){
-  return candidate.titleAdj + candidate.titleChamps * (ring - 1);
-}
-function buildConsensusIndex(data){
-  const byPlayer = new Map();
-  let rowCount = 0;
-  for(const [game, rows] of Object.entries(data.games || {})){
-    for(const row of rows || []){
-      if(!row || row.ranked === false) continue;
-      const points = titlePoint(row.consensus_rank);
-      if(!Number.isFinite(points)) continue;
-      const key = playerKey(row.player);
-      const list = byPlayer.get(key) || [];
-      list.push({...row, game, rank:Number(row.consensus_rank), points});
-      byPlayer.set(key, list);
-      rowCount++;
-    }
-  }
-  consensusRowsByPlayer = byPlayer;
-  consensusMeta = {titles:Object.keys(data.games || {}).length, rows:rowCount, status:'ready'};
-}
-function consensusFor(p){
-  const rows = (consensusRowsByPlayer.get(playerKey(p.name)) || []).filter(r => state.selectedGames.has(r.game));
-  if(!rows.length) return null;
-  const totalPoints = rows.reduce((sum,r) => sum + r.points, 0);
-  const bestRank = Math.min(...rows.map(r => r.rank));
-  const top3 = rows.filter(r => r.rank <= 3).length;
-  const top5 = rows.filter(r => r.rank <= 5).length;
-  return {
-    rows,
-    rankedTitles:rows.length,
-    totalPoints,
-    quality:totalPoints / rows.length,
-    bestRank,
-    bestRankScore:31 - bestRank,
-    top3Rate:top3 / rows.length,
-    top5Rate:top5 / rows.length,
-  };
-}
-function selectedStats(p){
-  if(renderCache.has(p.name)) return renderCache.get(p.name);
-  const seasons = (p.seasons || []).filter(s => state.selectedGames.has(s.game));
-  const placementTitles = new Set((p.placements || [])
-    .filter(row => state.selectedGames.has(row.game) && Number(row.events || 0) > 0)
-    .map(row => row.game)).size;
-  const mbar = selectedMbar();
-  const share = seasons.reduce((sum,s) => sum + (s.majors ? s.wins / s.majors : 0), 0);
-  const adj = share * mbar;
-  const champs = (p.champ_events || []).filter(ev => state.selectedGames.has(eventGame.get(ev.event))).length;
-  const consensus = consensusFor(p);
-  const seasonByGame = new Map(seasons.map(s => [s.game, s]));
-  const consensusByGame = new Map((consensus?.rows || []).map(row => [row.game, row]));
-  const champsByGame = new Map();
-  for(const ev of p.champ_events || []){
-    const game = eventGame.get(ev.event);
-    if(state.selectedGames.has(game)) champsByGame.set(game, (champsByGame.get(game) || 0) + 1);
-  }
-  const titlePeaks = selectedGamesArray()
-    .filter(game => seasonByGame.has(game) || consensusByGame.has(game))
-    .map(game => {
-      const season = seasonByGame.get(game);
-      const consensusRow = consensusByGame.get(game);
-      return {
-        game,
-        titleAdj: season?.majors ? (season.wins / season.majors) * mbar : 0,
-        titleWins: season?.wins || 0,
-        titleMajors: season?.majors || 0,
-        titleChamps: champsByGame.get(game) || 0,
-        skillPoints: consensusRow?.points,
-        consensusRank: consensusRow?.rank,
-      };
-    });
-  const out = {
-    seasons,
-    consensus,
-    adj,
-    champs,
-    titles:placementTitles,
-    winningTitles:seasons.length,
-    titlePeaks,
-  };
-  renderCache.set(p.name, out);
-  return out;
-}
-function makeScales(ring=state.ring){
-  const titleCandidates = players.flatMap(p => selectedStats(p).titlePeaks);
-  const resumeValues = players.map(p => {
-    const s = selectedStats(p);
-    return s.adj + s.champs * (ring - 1);
-  });
-  const consensusValues = players.map(p => selectedStats(p).consensus?.totalPoints);
-  const titleValues = players.map(p => selectedStats(p).titles);
-  const titleResumeValues = titleCandidates.map(candidate => titleResumePeakValue(candidate, ring));
-  const titleSkillValues = titleCandidates.map(candidate => candidate.skillPoints);
-  return {
-    ringBonusResume: scoreFromMaxValues(resumeValues),
-    consensusTotal: scoreFromMaxValues(consensusValues),
-    titles: scoreFromMaxValues(titleValues),
-    titleResumePeak: scoreFromMaxValues(titleResumeValues),
-    titleSkillPeak: scoreFromMaxValues(titleSkillValues),
-    maxes:{
-      resume:maxFinite(resumeValues),
-      skill:maxFinite(consensusValues),
-      longevity:maxFinite(titleValues),
-      titleResumePeak:maxFinite(titleResumeValues),
-      titleSkillPeak:maxFinite(titleSkillValues),
-    },
-  };
-}
-function peakFromCandidates(candidates, scales=renderScales, ring=state.ring){
-  let best = null;
-  for(const candidate of candidates || []){
-    const resumeInput = titleResumePeakValue(candidate, ring);
-    const resumeScore = scales.titleResumePeak(resumeInput) ?? 50;
-    const skillScore = scales.titleSkillPeak(candidate.skillPoints) ?? 50;
-    const score = (resumeScore + skillScore) / 2;
-    const result = {...candidate, resumeInput, resumeScore, skillScore, score};
-    if(!best || result.score > best.score) best = result;
-  }
-  return best || {score:50, game:'-', resumeInput:0, resumeScore:50, skillScore:50};
-}
-function criterionScores(p, scales=renderScales, ring=state.ring){
-  const s = selectedStats(p);
-  const resume = scales.ringBonusResume(s.adj + s.champs * (ring - 1)) ?? 50;
-  const skill = scales.consensusTotal(s.consensus?.totalPoints) ?? 50;
-  const longevity = scales.titles(s.titles) ?? 50;
-  const peak = peakFromCandidates(s.titlePeaks, scales, ring).score;
-  return {resume, skill, longevity, peak};
-}
-function assignedTotal(weights=state.weights, enabled=state.enabled){
-  return CRITERIA.reduce((sum,c) => sum + (enabled[c.key] ? (Number(weights[c.key]) || 0) : 0), 0);
-}
-function activeWeights(weights=state.weights, enabled=state.enabled){
-  const active = CRITERIA.filter(c => enabled[c.key] && weights[c.key] > 0);
-  const total = active.reduce((sum,c) => sum + weights[c.key], 0);
-  return active.map(c => ({...c, share: total ? weights[c.key] / total : 0, weight:weights[c.key]}));
-}
-function scorePlayer(p, active=activeWeights(), scales=renderScales, ring=state.ring){
-  const lane = criterionScores(p, scales, ring);
-  const score = active.length ? active.reduce((sum,c) => sum + lane[c.key] * c.share, 0) : 0;
-  return {player:p, stats:selectedStats(p), lane, score, peakDetail:peakFromCandidates(selectedStats(p).titlePeaks, scales, ring)};
-}
-function rowsFor(active, scales, ring){
-  return players.map(p => scorePlayer(p, active, scales, ring))
-    .filter(row => row.stats.seasons.length || row.stats.consensus)
-    .sort((a,b) => b.score - a.score || b.stats.adj - a.stats.adj);
+function activeWeights(){
+  return computeActiveWeights(state.weights, state.enabled);
 }
 function sortValue(row, key){
   if(key === 'rank') return row.goatRank;
@@ -721,8 +538,6 @@ function sortValue(row, key){
   if(key === 'skill') return row.lane.skill;
   if(key === 'longevity') return row.lane.longevity;
   if(key === 'peak') return row.lane.peak;
-  if(key === 'adj') return row.stats.adj;
-  if(key === 'rings') return row.stats.champs;
   return row.score;
 }
 function sortRows(rows, sort=state.sort){
@@ -741,8 +556,12 @@ function sortRows(rows, sort=state.sort){
   });
 }
 function baselineRanks(){
-  const rows = rowsFor(activeWeights(DEFAULT_WEIGHTS, DEFAULT_ENABLED), makeScales(DEFAULT_RING), DEFAULT_RING);
-  return new Map(rows.map((row, i) => [row.player.name, i + 1]));
+  const key = selectedGamesArray().join('|');
+  if(baselineCache.key !== key){
+    const base = computeGoat(ctx, consensusRowsByPlayer, currentConfig(DEFAULT_RING, {...DEFAULT_WEIGHTS}, {...DEFAULT_ENABLED}));
+    baselineCache = {key, map:new Map(base.rows.map(row => [row.player.name, row.goatRank]))};
+  }
+  return baselineCache.map;
 }
 function rankDelta(currentRank, baseRank){
   if(!baseRank) return {text:'new', cls:'same'};
@@ -815,8 +634,8 @@ function explanationRows(row, active){
     return `<tr>
       <th scope="row"><span class="lane-dot ${part.key}"></span>${label}</th>
       <td>${detail.input}<span class="note">${escapeHtml(`${detail.note}${leaderNote}`)}</span></td>
-      <td class="n">${num(part.laneScore)} x ${Math.round(part.share * 100)}%</td>
-      <td class="n"><strong>${num(part.contribution)}</strong></td>
+      <td class="n" data-label="Lane x weight">${num(part.laneScore)} x ${Math.round(part.share * 100)}%</td>
+      <td class="n" data-label="Points"><strong>${num(part.contribution)}</strong></td>
     </tr>`;
   }).join('');
 }
@@ -865,7 +684,13 @@ function playerFormatter(cell){
 }
 function rankFormatter(cell){
   const data = cell.getRow().getData();
-  return `<div class="gb-rank-cell"><span>${data.rank}</span></div>`;
+  let delta = '';
+  if(data.deltaText && data.deltaText !== '0'){
+    const arrow = data.deltaText === 'new' ? 'new'
+      : (data.deltaText.startsWith('+') ? '▲' : '▼') + data.deltaText.replace(/^[+-]/, '');
+    delta = `<span class="gb-delta ${data.deltaCls}" title="Movement vs the site-default weights">${arrow}</span>`;
+  }
+  return `<div class="gb-rank-cell"><span>${data.rank}${delta}</span></div>`;
 }
 function scoreFormatter(cell){
   const data = cell.getRow().getData();
@@ -903,7 +728,7 @@ function buildGoatColumns(M){
     {title:'Player', field:'player', ...colSize(M,142,178,1.6), sorter:'string', formatter:playerFormatter, headerSortStartingDir:'asc', headerTooltip:GOAT_HEADER_TIPS.player},
     {title:'Score', field:'score', ...colSize(M,126,142,1.2), hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum', sorter:'number', formatter:scoreFormatter, headerSortStartingDir:'desc', headerTooltip:GOAT_HEADER_TIPS.score},
   ];
-  return columns.concat(CRITERIA.filter(c => state.enabled[c.key]).map(c => criterionColumn(c, M)));
+  return columns.concat(shownCriteria().map(c => criterionColumn(c, M)));
 }
 function applyHeaderTooltips(){
   document.querySelectorAll('#goatTable .tabulator-col[tabulator-field]').forEach(col => {
@@ -924,11 +749,17 @@ function markTableSelection(){
   });
 }
 function toggleSelectedRow(row, scrollSelected=false){
-  selectedPlayerName = selectedPlayerName === row.getData().player ? null : row.getData().player;
+  const name = row.getData().player;
+  selectedPlayerName = selectedPlayerName === name ? null : name;
   goatTable.redraw(true);
-  if(scrollSelected && selectedPlayerName){
-    requestAnimationFrame(() => row.getElement().scrollIntoView({block:'nearest', behavior:'smooth'}));
-  }
+  // the redraw destroys the old row element: put focus back on the row so
+  // keyboard users don't get dropped to <body> on every expand/collapse
+  requestAnimationFrame(() => {
+    const el = goatTable.getRows().find(r => r.getData().player === name)?.getElement();
+    if(!el) return;
+    el.focus({preventScroll:true});
+    if(scrollSelected && selectedPlayerName) el.scrollIntoView({block:'nearest', behavior:'smooth'});
+  });
 }
 function formatExpandedRow(row){
   const el = row.getElement();
@@ -955,6 +786,11 @@ function formatExpandedRow(row){
   detail.className = 'gb-row-detail';
   detail.setAttribute('data-detail', data.player);
   detail.innerHTML = data.detailHtml;
+  // the row spans the full table width inside the horizontal scroller; pin the
+  // detail to the visible holder width (position:sticky in CSS) so it reads
+  // without sideways swiping on phones
+  const holder = document.querySelector('#goatTable .tabulator-tableholder');
+  if(holder && holder.clientWidth) detail.style.width = `${holder.clientWidth}px`;
   el.appendChild(detail);
   row.normalizeHeight?.();
 }
@@ -1047,18 +883,20 @@ function renderMap(rows){
       x:leftSide ? x - r - 6 : x + r + 6,
       y,
       anchor:leftSide ? 'end' : 'start',
-      side:leftSide ? 'left' : 'right',
     };
-  }).sort((a,b) => a.side.localeCompare(b.side) || a.y - b.y);
-  let lastSide = null;
-  let lastY = 0;
+  }).sort((a,b) => a.y - b.y);
+  // greedy rectangle-overlap avoidance: labels near the same spot get pushed
+  // down instead of rendering on top of each other ("CelliumBeZy")
+  const placed = [];
   const labels = labelItems.map(item => {
-    if(item.side !== lastSide){
-      lastSide = item.side;
-      lastY = pad - 18;
-    }
-    const y = Math.min(height - pad + 6, Math.max(item.y + 4, lastY + 14));
-    lastY = y;
+    const w = item.name.length * 6.4;
+    const xs = item.anchor === 'end' ? item.x - w : item.x;
+    const xe = xs + w;
+    let y = Math.max(pad - 6, item.y + 4);
+    let guard = 0;
+    while(placed.some(p => xs < p.xe && xe > p.xs && Math.abs(y - p.y) < 12) && guard++ < 40) y += 12;
+    y = Math.min(height - 8, y);
+    placed.push({xs, xe, y});
     return `<text class="gb-map-name" x="${item.x}" y="${y}" text-anchor="${item.anchor}">${escapeHtml(item.name)}</text>`;
   }).join('');
   mapHost.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Resume versus skill scatterplot">
@@ -1068,6 +906,9 @@ function renderMap(rows){
     <line class="gb-map-axis" x1="${pad}" y1="${pad}" x2="${pad}" y2="${height - pad}"></line>
     <text class="gb-map-label" x="${width / 2}" y="${height - 4}" text-anchor="middle">Resume</text>
     <text class="gb-map-label" x="16" y="${height / 2}" text-anchor="middle" transform="rotate(-90 16 ${height / 2})">Individual Skill</text>
+    <text class="gb-map-quad" x="${width - pad - 8}" y="${pad + 16}" text-anchor="end">Resume + skill</text>
+    <text class="gb-map-quad" x="${pad + 8}" y="${pad + 16}">Skill-first</text>
+    <text class="gb-map-quad" x="${width - pad - 8}" y="${height - pad - 10}" text-anchor="end">Resume-first</text>
     ${points}
     ${labels}
   </svg>`;
@@ -1096,10 +937,10 @@ function renderControls(){
         </div>
         <div class="gb-points-row">
           <button class="gb-step" type="button" data-step="${c.key}" data-delta="-5" aria-label="Decrease ${c.label} weight" ${state.enabled[c.key] ? '' : 'disabled'}>-</button>
-          <input class="gb-points-input" type="number" min="0" max="100" step="5" value="${state.weights[c.key]}" data-weight="${c.key}" aria-label="${c.label} points" ${state.enabled[c.key] ? '' : 'disabled'}>
+          <input class="gb-points-input" type="number" min="0" max="100" step="5" value="${state.weights[c.key]}" id="gb-weight-${c.key}" name="gb-weight-${c.key}" data-weight="${c.key}" aria-label="${c.label} points" ${state.enabled[c.key] ? '' : 'disabled'}>
           <button class="gb-step" type="button" data-step="${c.key}" data-delta="5" aria-label="Increase ${c.label} weight" ${state.enabled[c.key] ? '' : 'disabled'}>+</button>
         </div>
-        <small>${c.help}</small>
+        <small>${c.help}<span class="gb-favors" data-favors="${c.key}"></span></small>
       </div>`).join('');
     return `<div class="gb-group-title">${group}</div>${rows}`;
   }).join('');
@@ -1112,9 +953,16 @@ function renderControls(){
     });
   });
   controlsHost.querySelectorAll('[data-weight]').forEach(input => {
+    // 'input' must NOT rebuild the controls DOM: doing so destroys the field
+    // mid-keystroke and made typing multi-digit weights impossible
     input.addEventListener('input', e => {
       const key = e.target.dataset.weight;
       state.weights[key] = clampWeight(e.target.value);
+      render({rebuildControls:false});
+    });
+    input.addEventListener('change', e => {
+      const key = e.target.dataset.weight;
+      state.weights[key] = Math.round(clampWeight(e.target.value) / 5) * 5;
       render();
     });
   });
@@ -1134,6 +982,7 @@ function setView(view){
   document.querySelectorAll('[data-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
   document.getElementById('rankView').hidden = view !== 'rank';
   document.getElementById('mapView').hidden = view !== 'map';
+  updateUrlState();
 }
 document.querySelectorAll('[data-view]').forEach(btn => {
   btn.addEventListener('click', () => setView(btn.dataset.view));
@@ -1182,12 +1031,66 @@ function renderBudget(total){
     status.textContent = `Over by: ${Math.abs(remaining)}`;
   }
 }
-function render(){
+function syncControlValues(){
+  controlsHost.querySelectorAll('.gb-criterion').forEach(card => {
+    const input = card.querySelector('[data-weight]');
+    if(!input) return;
+    const key = input.dataset.weight;
+    const pill = card.querySelector('.gb-weight');
+    if(pill) pill.textContent = state.enabled[key] ? `${state.weights[key]} pts` : 'off';
+  });
+}
+function updateFavors(rows){
+  controlsHost.querySelectorAll('[data-favors]').forEach(span => {
+    const key = span.dataset.favors;
+    if(!rows.length){ span.textContent = ''; return; }
+    const top = rows.slice().sort((a,b) => b.lane[key] - a.lane[key]).slice(0, 2).map(r => r.player.name);
+    span.textContent = `Favors ${top.join(' & ')} in the selected era.`;
+  });
+}
+function presetMatches(preset){
+  return CRITERIA.every(c => state.enabled[c.key] && state.weights[c.key] === preset.weights[c.key]) && state.ring === preset.ring;
+}
+function renderPresets(){
+  const host = document.getElementById('presetChips');
+  host.innerHTML = WEIGHT_PRESETS.map(p =>
+    `<button type="button" data-preset="${p.key}" class="${presetMatches(p) ? 'active' : ''}">${p.label}</button>`).join('');
+  host.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = WEIGHT_PRESETS.find(p => p.key === btn.dataset.preset);
+      state.weights = {...preset.weights};
+      state.enabled = {...DEFAULT_ENABLED};
+      state.ring = preset.ring;
+      render();
+    });
+  });
+}
+function stateSummary(active){
+  const weightsText = active.map(c => `${c.label} ${Math.round(c.share * 100)}%`).join(' / ') || 'no active criteria';
+  const eraText = state.eraPreset ? ERA_LABELS[state.eraPreset] : `${state.selectedGames.size} titles`;
+  return `${weightsText} · ${eraText} · rings ${formatRing(state.ring)}x`;
+}
+function emptyReason(active){
+  if(!state.selectedGames.size) return 'No titles selected — pick at least one title in the Era Filter to build a ranking.';
+  if(!active.length){
+    return CRITERIA.some(c => state.enabled[c.key])
+      ? 'Every active criterion is at 0 points — give at least one criterion some points to build a ranking.'
+      : 'All criteria are turned off — turn at least one on to build a ranking.';
+  }
+  return '';
+}
+function render(opts={}){
+  const rebuildControls = opts.rebuildControls !== false;
   updateUrlState();
-  renderCache = new Map();
-  renderScales = makeScales();
-  renderTitleControls();
-  renderControls();
+  const result = computeGoat(ctx, consensusRowsByPlayer, currentConfig());
+  renderScales = result.scales;
+  if(rebuildControls){
+    renderTitleControls();
+    renderControls();
+  }else{
+    syncControlValues();
+  }
+  renderPresets();
   setEraPreset(state.eraPreset);
   document.getElementById('ringWeight').value = state.ring;
   document.getElementById('ringValue').textContent = state.ring.toFixed(1);
@@ -1200,14 +1103,39 @@ function render(){
   document.getElementById('laneCount').textContent = active.length;
   const weightSummary = active.map(c => `${c.label} ${Math.round(c.share * 100)}%`).join(' / ') || 'No criteria selected.';
   document.getElementById('scoreNote').textContent = total === 100 ? weightSummary : `Preview normalized from ${total} assigned points: ${weightSummary}`;
-  document.getElementById('skillCoverage').textContent = consensusMeta.status === 'ready' ? `${selectedGamesArray().filter(g => Array.from(consensusRowsByPlayer.values()).some(rows => rows.some(r => r.game === g))).length}` : 'loading';
-  document.getElementById('playerCount').textContent = `${players.length} players`;
+  const dataNote = document.getElementById('dataNote');
+  if(consensusMeta.status === 'unavailable'){
+    dataNote.textContent = 'Community skill rankings failed to load — Individual Skill and Peak are using neutral values for every player. Reload the page to retry.';
+    dataNote.hidden = false;
+  }else{
+    dataNote.hidden = true;
+  }
+  document.getElementById('skillCoverage').textContent =
+    consensusMeta.status === 'ready'
+      ? `${selectedGamesArray().filter(g => Array.from(consensusRowsByPlayer.values()).some(rows => rows.some(r => r.game === g))).length}`
+      : (consensusMeta.status === 'unavailable' ? '—' : 'loading');
   document.getElementById('formulaSummary').textContent = `Final score = ${active.map(c => `${Math.round(c.share * 100)}% ${c.label}`).join(' + ') || 'no active criteria'}. Point weights are normalized from ${total} assigned point${total === 1 ? '' : 's'}; each lane scales its raw input to 100 for the selected-era leader across the ${state.selectedGames.size} selected title${state.selectedGames.size === 1 ? '' : 's'}.`;
-  const rankedRows = rowsFor(active, renderScales, state.ring).map((row, i) => ({...row, goatRank:i + 1}));
-  const baseRanks = baselineRanks();
+  const reason = emptyReason(active);
+  const rankedRows = reason ? [] : result.rows;
+  document.getElementById('playerCount').textContent = `${rankedRows.length} players`;
+  const emptyNote = document.getElementById('emptyNote');
+  emptyNote.hidden = !reason;
+  if(reason) emptyNote.textContent = reason;
+  const tableHost = document.getElementById('goatTable');
+  const hint = document.querySelector('#rankView .scrollhint');
+  const wasHidden = tableHost.style.display === 'none';
+  tableHost.style.display = reason ? 'none' : '';
+  if(hint) hint.style.display = reason ? 'none' : '';
+  const baseRanks = rankedRows.length ? baselineRanks() : new Map();
   document.getElementById('leaderName').textContent = rankedRows[0]?.player.name || '-';
   renderGoatTable(rankedRows, active, baseRanks);
+  if(wasHidden && !reason && goatTable) goatTable.redraw(true);
   renderMap(rankedRows);
+  const miniBar = document.getElementById('miniBar');
+  miniBar.hidden = !rankedRows.length;
+  document.getElementById('miniTop').innerHTML = rankedRows.slice(0, 3)
+    .map(r => `<span class="r">${r.goatRank}</span> ${escapeHtml(r.player.name)}`).join('  ·  ');
+  updateFavors(result.rows);
   setView(state.view);
 }
 async function loadConsensus(){
@@ -1215,16 +1143,72 @@ async function loadConsensus(){
     const response = await fetch('community-consensus.json');
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const payload = await response.json();
-    buildConsensusIndex(payload.consensus || payload);
+    const built = buildConsensusIndex(payload.consensus || payload);
+    consensusRowsByPlayer = built.byPlayer;
+    consensusMeta = {titles:built.titles, rows:built.rows, status:'ready'};
   }catch(err){
     consensusMeta = {titles:0, rows:0, status:'unavailable'};
-    document.getElementById('scoreNote').textContent = `Community consensus failed to load: ${err.message}`;
   }
+  baselineCache = {key:null, map:null};
   render();
 }
+function flashButton(btn, text, resetText){
+  btn.textContent = text;
+  setTimeout(() => { btn.textContent = resetText; }, 1800);
+}
+async function shareList(btn, resetText){
+  const link = location.origin + '/g' + (location.search || '');
+  if(matchMedia('(pointer:coarse)').matches && navigator.share){
+    try{ await navigator.share({title:'My CoD GOAT list', url:link}); return; }
+    catch(err){ if(err && err.name === 'AbortError') return; }
+  }
+  try{
+    await navigator.clipboard.writeText(link);
+    flashButton(btn, 'Link copied ✓', resetText);
+  }catch{
+    try{
+      const t = document.createElement('input');
+      t.value = link; t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+      flashButton(btn, 'Link copied ✓', resetText);
+    }catch{ flashButton(btn, 'Copy failed', resetText); }
+  }
+}
+document.getElementById('shareList').addEventListener('click', e => shareList(e.currentTarget, 'Share list'));
+document.getElementById('miniShare').addEventListener('click', e => shareList(e.currentTarget, 'Share'));
+document.getElementById('miniJump').addEventListener('click', () => {
+  setView('rank');
+  document.getElementById('goatTable').scrollIntoView({behavior:'smooth', block:'start'});
+});
+document.getElementById('resetCustom').addEventListener('click', () => {
+  state.enabled = {...DEFAULT_ENABLED};
+  state.weights = {...DEFAULT_WEIGHTS};
+  state.ring = DEFAULT_RING;
+  state.selectedGames = new Set(allGames);
+  state.eraPreset = 'all';
+  document.getElementById('customBanner').hidden = true;
+  render();
+});
+function maybeShowBanner(){
+  const custom = hadShareParams && !(isDefaultEnabled() && isDefaultWeights()
+    && state.ring === DEFAULT_RING && sameSetAsList(state.selectedGames, allGames));
+  if(!custom) return;
+  document.getElementById('customSummary').textContent = stateSummary(activeWeights());
+  document.getElementById('customBanner').hidden = false;
+}
+
+// exposed for the Playwright oracle tests (module scope isn't reachable from page.evaluate)
+window.__goatTest = {
+  state,
+  rows: () => computeGoat(ctx, consensusRowsByPlayer, currentConfig()).rows,
+  rowData: row => rowData(row, activeWeights(), new Map()),
+};
+
 applyUrlState();
+maybeShowBanner();
 renderTitleControls();
 renderControls();
+renderPresets();
 loadConsensus().finally(() => mountFoot());
 </script>
 </body>

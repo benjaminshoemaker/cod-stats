@@ -1208,7 +1208,8 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
 
     const comparison = await page.evaluate(() => {
-      const rows = rowsFor(activeWeights(), renderScales, state.ring);
+      const {rows: rowsOf, state} = (window as any).__goatTest;
+      const rows = rowsOf();
       const pick = (name: string) => {
         const row = rows.find((r: any) => r.player.name === name);
         const stats = row.stats;
@@ -1235,13 +1236,14 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
 
     const longevity = await page.evaluate(() => {
-      const rows = rowsFor(activeWeights(), renderScales, state.ring);
+      const {rows: rowsOf, rowData} = (window as any).__goatTest;
+      const rows = rowsOf();
       const pick = (name: string) => {
         const row = rows.find((r: any) => r.player.name === name);
         return {
           input: row.stats.titles,
           score: row.lane.longevity,
-          sub: rowData(row, activeWeights(), new Map()).playerSub,
+          sub: rowData(row).playerSub,
         };
       };
       return {clayster: pick('Clayster'), scump: pick('Scump'), crim: pick('Crimsix')};
@@ -1336,7 +1338,156 @@ test.describe('GOAT Builder', () => {
     await expect(detail.locator('.gb-fact')).toHaveCount(0);
     await expect(detail.locator('.scrollhint')).toHaveCount(0);
     await expect(detail.locator('.scroll-region, .scroll-x, [data-scroll-region]')).toHaveCount(0);
-    await expect(crimsixRow.locator('.gb-delta')).toHaveCount(0);
+  });
+
+  test('weights can be typed as multi-digit numbers without losing focus', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    const input = page.locator('#gb-weight-peak');
+    await input.click({ clickCount: 3 });
+    await input.pressSequentially('100');
+    await expect(input).toHaveValue('100');
+    await expect(input).toBeFocused();
+    await expect(page.locator('#activeShare')).toHaveText('175 pts');
+    await expect(page.locator('#budgetStatus')).toHaveText('Over by: 75');
+    await input.press('Tab');
+    await expect(page.locator('#gb-weight-peak')).toHaveValue('100');
+    await expect(page.locator('#scoreNote')).toContainText('Preview normalized from 175 assigned points');
+  });
+
+  test('map view round-trips through the URL', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await page.locator('[data-view="map"]').click();
+    await expect(page.locator('#mapView')).toBeVisible();
+    await expect(page).toHaveURL(/view=map/);
+
+    await page.goto(page.url());
+    await expect(page.locator('#mapView')).toBeVisible();
+    await expect(page.locator('#rankView')).toBeHidden();
+  });
+
+  test('degenerate criteria states show an accurate empty state instead of a fake ranking', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=');
+    await expect(page.locator('#emptyNote')).toBeVisible();
+    await expect(page.locator('#emptyNote')).toContainText('All criteria are turned off');
+    await expect(page.locator('#playerCount')).toHaveText('0 players');
+    await expect(page.locator('#leaderName')).toHaveText('-');
+    await expect(page.locator('#goatTable')).toBeHidden();
+
+    await page.goto('/goat-builder.html?weights=resume%3A0%2Cskill%3A0%2Clongevity%3A0%2Cpeak%3A0');
+    await expect(page.locator('#emptyNote')).toContainText('Every active criterion is at 0 points');
+    await expect(page.locator('#goatTable')).toBeHidden();
+
+    await page.locator('[data-preset="default"]').click();
+    await expect(page.locator('#emptyNote')).toBeHidden();
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    await expect(page.locator('#playerCount')).not.toHaveText('0 players');
+  });
+
+  test('consensus fetch failure is surfaced instead of silently degrading', async ({ page }) => {
+    await page.route('**/community-consensus.json', route => route.fulfill({ status: 500, body: 'nope' }));
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#dataNote')).toBeVisible();
+    await expect(page.locator('#dataNote')).toContainText('Community skill rankings failed to load');
+    await expect(page.locator('#skillCoverage')).toHaveText('—');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+  });
+
+  test('share button copies a /g share link carrying the current build', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('/goat-builder.html?weights=resume%3A50%2Cskill%3A20%2Clongevity%3A15%2Cpeak%3A15&rings=4&era=cdl');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    await page.locator('#shareList').click();
+    await expect(page.locator('#shareList')).toHaveText('Link copied ✓');
+    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    expect(copied).toContain('/g?');
+    expect(copied).toContain('era=cdl');
+    expect(copied).toContain('rings=4');
+    await expect(page.locator('#shareList')).toHaveText('Share list', { timeout: 4000 });
+  });
+
+  test('shared links show a custom-list banner that resets to the site default', async ({ page }) => {
+    await page.goto('/goat-builder.html?weights=resume%3A50%2Cskill%3A20%2Clongevity%3A15%2Cpeak%3A15&rings=4&era=cdl');
+    await expect(page.locator('#customBanner')).toBeVisible();
+    await expect(page.locator('#customSummary')).toContainText('Resume 50%');
+    await expect(page.locator('#customSummary')).toContainText('CDL era');
+    await expect(page.locator('#customSummary')).toContainText('rings 4x');
+
+    await page.locator('#resetCustom').click();
+    await expect(page.locator('#customBanner')).toBeHidden();
+    await expect(page).toHaveURL(/\/goat-builder\.html$/);
+    await expect(page.locator('#activeShare')).toHaveText('100 pts');
+    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#customBanner')).toBeHidden();
+  });
+
+  test('rank deltas appear against the site-default baseline only when settings differ', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    await expect(page.locator('#goatTable .gb-delta')).toHaveCount(0);
+
+    await page.locator('[data-preset="rings"]').click();
+    await expect(page.locator('#ringStat')).toHaveText('5.0x');
+    await expect(page.locator('#goatTable .gb-delta.up').first()).toBeVisible();
+    await expect(page.locator('#goatTable .gb-delta.down').first()).toBeVisible();
+  });
+
+  test('weight presets apply their configuration and mark themselves active', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('[data-preset="default"]')).toHaveClass(/active/);
+    await page.locator('[data-preset="skill"]').click();
+    await expect(page.locator('[data-preset="skill"]')).toHaveClass(/active/);
+    await expect(page.locator('#ringStat')).toHaveText('1.0x');
+    await expect(page.locator('#scoreNote')).toContainText('Individual Skill 55%');
+    await expect(page).toHaveURL(/weights=/);
+  });
+
+  test('single active criterion hides the redundant duplicate lane column', async ({ page }) => {
+    await page.goto('/goat-builder.html?criteria=resume');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    const fields = await page.$$eval(
+      '#goatTable .tabulator-header .tabulator-col[tabulator-field]',
+      els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
+    );
+    expect(fields).toEqual(['rank', 'player', 'score']);
+  });
+
+  test('mobile mini-bar shows the live top three and jumps to the table', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#miniBar')).toBeVisible();
+    await expect(page.locator('#miniTop .r').first()).toHaveText('1');
+    await expect(page.locator('#miniTop')).toContainText('·');
+
+    await page.locator('#miniJump').click();
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeInViewport();
+
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await expect(page.locator('#miniBar')).toBeHidden();
+  });
+
+  test('expanded detail stays within the viewport on phones', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    await page.locator('#goatTable .tabulator-row').first().click();
+    const detail = page.locator('#goatTable .gb-row-detail').first();
+    await expect(detail).toBeVisible();
+    const metrics = await page.evaluate(() => {
+      const d = document.querySelector('#goatTable .gb-row-detail') as HTMLElement;
+      const thead = document.querySelector('#goatTable .gb-explain-table thead') as HTMLElement;
+      const pts = document.querySelector('#goatTable .gb-explain-table td[data-label="Points"]') as HTMLElement;
+      return {
+        right: d.getBoundingClientRect().right,
+        viewport: window.innerWidth,
+        theadDisplay: getComputedStyle(thead).display,
+        ptsLabel: getComputedStyle(pts, '::before').content,
+      };
+    });
+    expect(metrics.right).toBeLessThanOrEqual(metrics.viewport + 1);
+    expect(metrics.theadDisplay).toBe('none');
+    expect(metrics.ptsLabel).toContain('Points');
   });
 
   test('is available directly but not linked from global navigation', async ({ page }) => {
