@@ -1201,7 +1201,7 @@ test.describe('GOAT Builder', () => {
   });
 
   test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {
-    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A25%2Cskill%3A25%2Clongevity%3A25%2Cpeak%3A25&rings=2&era=all&view=rank&sort=rank&dir=asc');
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A50%2Cskill%3A30%2Clongevity%3A10%2Cpeak%3A10&rings=2&era=all&view=rank&sort=rank&dir=asc');
 
     await expect(page.getByRole('heading', { name: 'GOAT Ranking Builder' })).toBeVisible();
     await expect(page.locator('#laneCount')).toHaveText('4');
@@ -1215,9 +1215,9 @@ test.describe('GOAT Builder', () => {
     await page.locator('[data-enabled="skill"]').uncheck();
 
     await expect(page.locator('#laneCount')).toHaveText('3');
-    await expect(page.locator('#activeShare')).toHaveText('75 pts');
-    await expect(page.locator('#budgetStatus')).toHaveText('Remaining: 25');
-    await expect(page.locator('#scoreNote')).toContainText('Resume 33% / Longevity 33% / Peak 33%');
+    await expect(page.locator('#activeShare')).toHaveText('70 pts');
+    await expect(page.locator('#budgetStatus')).toHaveText('Remaining: 30');
+    await expect(page.locator('#scoreNote')).toContainText('Resume 71% / Longevity 14% / Peak 14%');
     await expect(page.locator('#goatTable .tabulator-col[tabulator-field="skill"]')).toHaveCount(0);
     await expect(page.locator('#goatTable .tabulator-col[tabulator-field="resume"]')).toBeVisible();
     await expect(page).toHaveURL(/criteria=resume%2Clongevity%2Cpeak|criteria=resume,longevity,peak/);
@@ -1374,7 +1374,10 @@ test.describe('GOAT Builder', () => {
     await expect(detail).toContainText('Crimsix score build');
     await expect(detail).toContainText('4.30 consensus points');
     await expect(detail).toContainText('Rank points use ((31 - rank) / 30)^2.5');
-    await expect(detail).toContainText('Title resume input 6.1 = 4.1 title-adjusted wins + 1 Champs ring x 2.0 extra');
+    await expect(detail).toContainText('each ring adds 2.0 extra wins on top');
+    await expect(detail).toContainText('Winning half');
+    await expect(detail).toContainText('Fan-ranking half');
+    await expect(detail).toContainText('Era leader:');
     await expect(detail.getByRole('link', { name: 'Resume' })).toHaveAttribute('href', 'player.html?p=Crimsix#adjusted-wins');
     await expect(detail.getByRole('link', { name: 'Individual Skill' })).toHaveAttribute('href', 'community.html?view=overall&p=Crimsix');
     await expect(detail.getByRole('link', { name: 'Longevity' })).toHaveAttribute('href', 'player.html?p=Crimsix&majors=all#major-wins');
@@ -1392,11 +1395,11 @@ test.describe('GOAT Builder', () => {
     await input.pressSequentially('100');
     await expect(input).toHaveValue('100');
     await expect(input).toBeFocused();
-    await expect(page.locator('#activeShare')).toHaveText('175 pts');
-    await expect(page.locator('#budgetStatus')).toHaveText('Over by: 75');
+    await expect(page.locator('#activeShare')).toHaveText('190 pts');
+    await expect(page.locator('#budgetStatus')).toHaveText('Over by: 90');
     await input.press('Tab');
     await expect(page.locator('#gb-weight-peak')).toHaveValue('100');
-    await expect(page.locator('#scoreNote')).toContainText('Preview normalized from 175 assigned points');
+    await expect(page.locator('#scoreNote')).toContainText('Preview normalized from 190 assigned points');
   });
 
   test('map view round-trips through the URL', async ({ page }) => {
@@ -1422,7 +1425,7 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#emptyNote')).toContainText('Every active criterion is at 0 points');
     await expect(page.locator('#goatTable')).toBeHidden();
 
-    await page.locator('[data-preset="default"]').click();
+    await page.locator('[data-preset="balanced"]').click();
     await expect(page.locator('#emptyNote')).toBeHidden();
     await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
     await expect(page.locator('#playerCount')).not.toHaveText('0 players');
@@ -1480,7 +1483,7 @@ test.describe('GOAT Builder', () => {
 
   test('weight presets apply their configuration and mark themselves active', async ({ page }) => {
     await page.goto('/goat-builder.html');
-    await expect(page.locator('[data-preset="default"]')).toHaveClass(/active/);
+    await expect(page.locator('[data-preset="balanced"]')).toHaveClass(/active/);
     await page.locator('[data-preset="skill"]').click();
     await expect(page.locator('[data-preset="skill"]')).toHaveClass(/active/);
     await expect(page.locator('#ringStat')).toHaveText('1.0x');
@@ -1541,5 +1544,57 @@ test.describe('GOAT Builder', () => {
 
     await page.goto('/index.html');
     await expect(page.locator('.site-head .nav').getByRole('link', { name: /GOAT/i })).toHaveCount(0);
+  });
+});
+
+test.describe('comprehension fixes', () => {
+  test('leaderboard adjusted values expand into reconstructible season math', async ({ page }) => {
+    await page.goto('/index.html');
+    const row = page.locator('#table .tabulator-row', { hasText: 'Crimsix' }).first();
+    await row.locator('.adjmath').click();
+    const detail = page.locator('#table .adjmath-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Crimsix — adjusted wins, season by season');
+    await expect(detail).toContainText('season-share');
+    await expect(detail).toContainText('= 26.9 adjusted wins');
+    await page.locator('#table .tabulator-row', { hasText: 'Crimsix' }).first().locator('.adjmath').click();
+    await expect(page.locator('#table .adjmath-detail')).toHaveCount(0);
+    await expect(page.locator('.colkey')).toContainText('Peak = best season');
+    await expect(page.locator('.legend')).toContainText('preference, not a measurement');
+  });
+
+  test('KOR states its qualification bar and uses one opponent-place format', async ({ page }) => {
+    await page.goto('/kor.html');
+    await expect(page.locator('#kor-table .tabulator-row').first()).toBeVisible();
+    await expect(page.locator('.kor-summary .stat', { hasText: 'Qualified seasons' })).toContainText('maps to qualify');
+    await expect(page.locator('.kor-panel', { hasText: 'Read this as' }))
+      .toContainText('taken over everyone who qualifies');
+    const cells = await page.locator('#kor-table .tabulator-cell[tabulator-field="medianOpponentPlace"]')
+      .evaluateAll(els => els.map(e => (e.textContent || '').trim()).filter(t => t && t !== '–'));
+    expect(cells.length).toBeGreaterThan(5);
+    for (const c of cells.slice(0, 30)) expect(c).toMatch(/^\d+\.\d$/);
+  });
+
+  test('community overall explains career-total vs average rank with a stable-exponent note', async ({ page }) => {
+    await page.goto('/community.html?view=overall&p=Scump');
+    await expect(page.locator('h2', { hasText: 'Overall Ranking' }).locator('..')).toContainText('career total');
+    const trace = page.locator('#cc-overall-trace-card');
+    await expect(trace).toBeVisible();
+    await expect(trace).toContainText('7.64');          // trace tile matches the table's 2-decimal display
+    await expect(trace.locator('.mini', { hasText: 'Wins' })).toContainText('not scored');
+    await expect(trace).toContainText('unchanged for any exponent from 0.5 to 8');
+  });
+
+  test('GOAT explain rows name the era leader for every lane', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    const row = page.locator('#goatTable .tabulator-row').filter({ hasText: 'Scump' }).first();
+    await row.evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await row.click();
+    const detail = page.locator('#goatTable .gb-row-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail).toContainText('Era leader: Crimsix (29.9)');
+    await expect(detail).toContainText('Era leader: Scump (7.64)');
+    await expect(detail).toContainText('Fan-ranked in 13 of the 15 selected titles');
+    await expect(detail).toContainText('Winning half');
   });
 });

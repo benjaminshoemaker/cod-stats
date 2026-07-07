@@ -466,7 +466,7 @@ function renderOverallSummary(rows, selectedGames){
 function renderOverallTable(rows, selected){
   return `<section class="panel-shell">
     <div class="panel-head">
-      <div><h2>${OVERALL_LABEL}</h2><p class="small muted">Who does the community rate highest across a whole career? Each title rank earns points; the points add up. Recent titles often rest on one large poll, older titles on smaller preserved threads — click a player row or Trace to inspect the evidence behind their score.</p></div>
+      <div><h2>${OVERALL_LABEL}</h2><p class="small muted">Who does the community rate highest across a whole career? Each title rank earns points; the points add up — so the overall score is a career total, and being ranked in more titles adds more. Average rank is the per-title view: sort by it to compare peaks instead. Top 1/3/5/10 count the titles where the community ranked the player that high. Recent titles often rest on one large poll, older titles on smaller preserved threads — click a player row or Trace to inspect the evidence behind their score.</p></div>
       <span class="pill tag">As of ${esc(D.meta.asOf)}</span>
     </div>
     <div class="panel-body">
@@ -507,10 +507,14 @@ function mountOverallTable(rows, selected){
         headerTooltip:'Played titles included in the average-rank denominator.'},
       {title:'Event wins', field:'eventWins', minWidth:108, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum context-band',
         headerTooltip:'Context only — event wins never affect the community score.'},
-      {title:'Top 1', field:'top1', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
-      {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
-      {title:'Top 5', field:'top5', minWidth:84, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum top-count'},
-      {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum'},
+      {title:'Top 1', field:'top1', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        headerTooltip:'Titles where the community ranked this player #1.'},
+      {title:'Top 3', field:'top3', minWidth:72, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        headerTooltip:'Titles where the community ranked this player in the top 3.'},
+      {title:'Top 5', field:'top5', minWidth:84, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum top-count',
+        headerTooltip:'Titles where the community ranked this player in the top 5.'},
+      {title:'Top 10', field:'top10', minWidth:82, hozAlign:'right', headerHozAlign:'right', cssClass:'tabnum',
+        headerTooltip:'Titles where the community ranked this player in the top 10.'},
       {title:'Trace', field:'player', minWidth:86, formatter:c=>{
         const player = c.getValue();
         return `<a class="evidence-link" href="${esc(overallUrl(player))}" data-overall-player="${esc(player)}">Trace</a>`;
@@ -541,14 +545,16 @@ function renderOverallDetail(playerRow){
     <div class="panel-body" id="cc-overall-trace-card" tabindex="-1">
       <a class="cc-backlink" href="#cc-overall-table" data-cc-back>← Back to ranking</a>
       <div class="mini-grid community-mini-grid">
-        <div class="mini"><div class="k">Score</div><div class="v">${playerRow.total.toFixed(3)}</div></div>
+        <div class="mini"><div class="k">Score</div><div class="v">${playerRow.total.toFixed(2)}</div></div>
         <div class="mini"><div class="k">Avg rank</div><div class="v">${playerRow.averageRank == null ? '-' : playerRow.averageRank.toFixed(1)}</div></div>
         <div class="mini"><div class="k">Titles</div><div class="v">${playerRow.rankedTitles}<span class="sub">ranked</span></div></div>
-        <div class="mini"><div class="k">Wins</div><div class="v">${playerRow.eventWins}<span class="sub">context</span></div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${playerRow.eventWins}<span class="sub">not scored</span></div></div>
       </div>
       <p class="small muted">Overall points are the sum of title ranks converted with
         <a href="methodology.html#community-rank-points">the rank-points curve</a>:
-        <span class="formula">((31 - rank) / 30) ** 2.5</span>. Use the title links for the source-level trace behind each title rank.</p>
+        <span class="formula">((31 - rank) / 30) ** 2.5</span> — a deliberately top-heavy curve (rank 1 = 1.000, rank 30 ≈ 0),
+        so elite finishes count far more than list tails. The overall order barely leans on that choice: the #1 and #2 spots
+        are unchanged for any exponent from 0.5 to 8. Use the title links for the source-level trace behind each title rank.</p>
       <div class="calc-summary small muted">
         <strong>Total:</strong> ${playerRow.placements.map(p => p.points.toFixed(3)).join(' + ')} = ${playerRow.total.toFixed(3)}
       </div>
@@ -706,10 +712,10 @@ function renderTrace(game, player){
     <div class="panel-body" id="cc-title-trace-card" tabindex="-1">
       <a class="cc-backlink" href="#" data-cc-back>← Back to ranking</a>
       <div class="mini-grid community-mini-grid">
-        <div class="mini"><div class="k">Score</div><div class="v">${Number(rank.consensus_score).toFixed(3)}</div></div>
+        <div class="mini"><div class="k">Score</div><div class="v">${Number(rank.consensus_score).toFixed(2)}</div></div>
         <div class="mini"><div class="k">Sources</div><div class="v">${rank.source_count}</div></div>
         <div class="mini"><div class="k">Confidence</div><div class="v sm">${esc(rank.confidence)}</div></div>
-        <div class="mini"><div class="k">Wins</div><div class="v">${rawWins(game, player)}<span class="sub">context</span></div></div>
+        <div class="mini"><div class="k">Wins</div><div class="v">${rawWins(game, player)}<span class="sub">not scored</span></div></div>
       </div>
       <p class="small muted">Contribution = the player's average rank-points inside a source multiplied by that source's final weight.</p>
       <span class="formula">contribution = avg_rank_points × final_source_weight</span>

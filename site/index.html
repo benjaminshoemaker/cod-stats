@@ -60,13 +60,14 @@
   </div>
 
   <p class="scrollhint small faint">Swipe the table sideways to see all columns →</p>
-  <p class="colkey small muted">Adj = era-adjusted wins · +◆ = with ring weighting · Win % = wins divided by majors entered · Avg place = mean finish across included majors · Raw # = rank by raw wins</p>
+  <p class="colkey small muted">Adj = era-adjusted wins (tap a value for its season-by-season math) · +◆ = with ring weighting · Win % = wins divided by majors entered · Avg place = mean finish across included majors · Raw # = rank by raw wins · Peak = best season: share of that season's majors won · Eras = distinct titles with a major win</p>
   <div id="table"></div>
 
   <div class="legend">
     <span><span class="sw" style="background:var(--accent)"></span>Adjusted = season-share &times; avg majors/season</span>
     <span><span class="sw" style="background:var(--pos)"></span>▲ gained vs raw (wins or rank)</span>
     <span><span class="sw" style="background:var(--neg)"></span>▼ lost vs raw</span>
+    <span><span class="sw" style="background:#b8860b"></span>◆ Ring weight is a preference, not a measurement — the ×1 default counts every major equally</span>
   </div>
   <p class="small muted">Wins measure resumes, not slaying. For kill production, see
     <a href="kor.html">Kills Over Replacement</a> — kills per map above a title/mode replacement baseline.</p>
@@ -176,7 +177,12 @@ const buildColumns = M => [
       : {title:"Player", field:"name", ...colSize(M,112,128,1.7), sorter:"string", formatter:playerFmt},
     {title:M?"Adj":"Adjusted", field:"adjusted", ...colSize(M,76,112,1.15), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number",
-      formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`, headerTooltip:"Era-adjusted wins"},
+      formatter:c=>{
+        const open = c.getRow().getData().name === adjMathName;
+        return `<button type="button" class="adjmath" aria-expanded="${open}" title="Show how this number is built, season by season">${c.getValue().toFixed(1)}</button>`;
+      },
+      cellClick:(e,cell)=>toggleAdjMath(cell.getRow().getData().name),
+      headerTooltip:"Era-adjusted wins. Click a value to see the season-by-season math."},
     {title:M?"+◆":"Adj +◆", field:"adjWeighted", ...colSize(M,80,88,1), hozAlign:"right", headerHozAlign:"right",
       cssClass:"tabnum", sorter:"number", visible: ringN>1,
       formatter:c=>`<strong>${c.getValue().toFixed(1)}</strong>`,
@@ -217,6 +223,33 @@ const buildColumns = M => [
 const columns = buildColumns(mq.matches);
 columns.forEach(c=>{ if(startHide.has(c.field)) c.visible = false; });
 
+// expandable adjusted-wins math: which player's season-by-season build is open.
+// This is the on-page answer to "where did his 11 wins go?" — every Adjusted
+// value can be rebuilt from its own row without leaving the page.
+let adjMathName = null;
+function toggleAdjMath(name){
+  adjMathName = adjMathName === name ? null : name;
+  table.redraw(true);
+}
+function adjMathHtml(d){
+  const games = ORDER.filter(g=>selected.has(g));
+  const mbar = games.reduce((a,g)=>a+DENOM[g],0)/(games.length||1);
+  const seasons = (D.players[d.name]?.seasons||[]).filter(s=>selected.has(s.game)&&s.wins>0);
+  const share = seasons.reduce((a,s)=>a+s.wins/s.majors,0);
+  const body = seasons.map(s=>`<tr><th scope="row">${esc(s.game)}</th><td class="n">won ${s.wins} of ${s.majors} majors</td><td class="n">${(s.wins/s.majors).toFixed(3)}</td></tr>`).join('');
+  const ringLine = ringN>1
+    ? `<p class="small muted">Ring weighting: ${d.adjusted.toFixed(1)} + ${d.champs} ring${d.champs===1?'':'s'} &times; ${ringN-1} extra = <strong>${d.adjWeighted.toFixed(1)}</strong> (Adj +◆).</p>`
+    : '';
+  return `<p class="small"><strong>${esc(d.name)} — adjusted wins, season by season.</strong> Each win counts as its share of that season's majors; seasons without a win add 0.</p>
+    <table class="data adjmath-table">
+      ${tableCaption(`${d.name} adjusted wins build`)}
+      <thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Season-share</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table>
+    <p class="small"><strong>Total ${share.toFixed(3)} season-share &times; ${mbar.toFixed(2)} avg majors/season = ${(share*mbar).toFixed(1)} adjusted wins.</strong></p>
+    ${ringLine}`;
+}
+
 const table = TableSurface.mountTabulator("#table",{
   label: 'Leaderboard table',
   data: cr(selected, ringN),
@@ -224,6 +257,20 @@ const table = TableSurface.mountTabulator("#table",{
   placeholder:"No players match your search.",
   initialSort:[{column:startSort,dir:startDir}],
   columns,
+  rowFormatter:row=>{
+    const el = row.getElement();
+    el.querySelector('.adjmath-detail')?.remove();
+    const d = row.getData();
+    if(d.name !== adjMathName) return;
+    const detail = document.createElement('div');
+    detail.className = 'adjmath-detail';
+    detail.innerHTML = adjMathHtml(d);
+    // pin to the visible holder width so the math reads without sideways swiping
+    const holder = document.querySelector('#table .tabulator-tableholder');
+    if(holder && holder.clientWidth) detail.style.width = `${holder.clientWidth}px`;
+    el.appendChild(detail);
+    row.normalizeHeight?.();
+  },
   onBuilt:t=>{
     // apply search from URL
     if(startQ){ searchInput.value = startQ; t.setFilter("name","like",startQ); }

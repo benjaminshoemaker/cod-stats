@@ -727,3 +727,12 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
   .community-controls .sharebtn{width:100%;justify-content:center}
   .community-mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+/* leaderboard: expandable adjusted-wins math (click the Adjusted value) */
+.adjmath{border:0;background:none;padding:0;font:inherit;font-weight:700;color:inherit;cursor:pointer;
+  text-decoration:underline dotted var(--muted);text-underline-offset:3px}
+.adjmath:hover,.adjmath[aria-expanded="true"]{text-decoration-style:solid;color:var(--accent)}
+.adjmath-detail{clear:both;display:block;width:100%;background:var(--panel-2);border-top:1px solid var(--line);
+  padding:var(--space-3) var(--space-4);cursor:default;position:sticky;left:0}
+.adjmath-detail .small{margin:0 0 var(--space-2)}
+.adjmath-table{margin:0 0 var(--space-2);min-width:0;width:auto}
+.adjmath-table td.n,.adjmath-table th.n{text-align:right}

@@ -262,7 +262,7 @@ button,input{font:inherit}
       <strong>Custom list from a shared link — not the site default.</strong>
       <small id="customSummary"></small>
     </div>
-    <button type="button" id="resetCustom">Reset to site default</button>
+    <button type="button" id="resetCustom">Reset to Balanced default</button>
   </div>
 
   <div class="gb-layout">
@@ -303,7 +303,7 @@ button,input{font:inherit}
               <strong>Weight Budget</strong>
               <small>Assign points in 5-point steps. The ranking previews live.</small>
             </div>
-            <button class="gb-budget-reset" type="button" id="resetWeights">Reset 25 each</button>
+            <button class="gb-budget-reset" type="button" id="resetWeights">Reset to Balanced</button>
           </div>
           <div class="gb-budget-bar" id="budgetBar" aria-label="Current criteria weight distribution"></div>
           <span class="gb-pill gb-budget-status ok" id="budgetStatus">Remaining: 0</span>
@@ -327,7 +327,7 @@ button,input{font:inherit}
       <div class="gb-panel-head">
         <div>
           <h2>Resulting Ranking</h2>
-          <p id="scoreNote">Equal 25-point allocation across all criteria.</p>
+          <p id="scoreNote">Balanced default: Resume 50% / Individual Skill 30% / Longevity 10% / Peak 10%.</p>
         </div>
         <div class="gb-toolbar">
           <button class="gb-button" type="button" id="shareList" aria-live="polite">Share list</button>
@@ -373,7 +373,7 @@ button,input{font:inherit}
             <div class="gb-formula-grid">
               <div class="gb-formula-item"><strong>Resume</strong><span>Ring-weighted adjusted wins, scaled to the selected-era leader.</span></div>
               <div class="gb-formula-item"><strong>Individual Skill</strong><span>Additive community-consensus score, scaled to the selected-era leader.</span></div>
-              <div class="gb-formula-item"><strong>Longevity</strong><span>Titles with a recorded major placing, scaled to the selected-era leader.</span></div>
+              <div class="gb-formula-item"><strong>Longevity</strong><span>Titles with a recorded major entry, scaled to the selected-era leader.</span></div>
               <div class="gb-formula-item"><strong>Peak</strong><span>Best single-title 50/50 blend of title resume peak and same-title consensus score.</span></div>
             </div>
             <p class="gb-foot">Missing community-consensus rows are treated as neutral for the Skill lane, not zero. Full details on the inputs: <a href="methodology.html">methodology</a> · <a href="community.html">community consensus</a>.</p>
@@ -410,7 +410,7 @@ const CRITERIA_HELP = {
 };
 const CRITERIA = CRITERIA_CORE.map(c => ({...c, group:'Primary criteria', help:CRITERIA_HELP[c.key]}));
 const WEIGHT_PRESETS = [
-  {key:'default', label:'Site default', weights:{resume:25, skill:25, longevity:25, peak:25}, ring:2},
+  {key:'balanced', label:'Balanced', weights:{resume:50, skill:30, longevity:10, peak:10}, ring:2},
   {key:'rings', label:'Rings matter', weights:{resume:70, skill:10, longevity:10, peak:10}, ring:5},
   {key:'skill', label:'Skill over rings', weights:{resume:10, skill:55, longevity:10, peak:25}, ring:1},
   {key:'longevity', label:'Longevity list', weights:{resume:20, skill:15, longevity:50, peak:15}, ring:2},
@@ -451,6 +451,7 @@ let goatTable = null;
 let selectedPlayerName = null;
 let hadShareParams = false;
 let baselineCache = {key:null, map:null};
+let skillTitleCount = 0;
 
 function formatRing(value){
   return Number(value).toFixed(1).replace(/\.0$/, '');
@@ -588,38 +589,39 @@ function criterionInputDetail(row, key){
   const s = row.stats;
   const peak = row.peakDetail || {};
   const extraRing = state.ring - 1;
+  const leaders = renderScales.leaders || {};
   const profileUrl = `player.html?p=${encodeURIComponent(row.player.name)}`;
   if(key === 'resume'){
     const raw = s.adj + s.champs * extraRing;
     return {
       href:`${profileUrl}#adjusted-wins`,
       input:`${num(raw)} ring-weighted wins`,
-      leader:`${num(renderScales.maxes?.resume)} leader input`,
-      note:`${num(s.adj)} adjusted wins + ${s.champs || 0} Champs ring${s.champs === 1 ? '' : 's'} x ${num(extraRing)} extra`,
+      leader:`Era leader: ${leaders.resume || '-'} (${num(renderScales.maxes?.resume)})`,
+      note:`${num(s.adj)} adjusted wins (event wins, every season weighted equally) + ${s.champs || 0} Champs ring${s.champs === 1 ? '' : 's'} at ${formatRing(state.ring)}x ring weight (each ring adds ${num(extraRing)} extra win${extraRing === 1 ? '' : 's'} on top).`,
     };
   }
   if(key === 'skill'){
     return {
       href:`community.html?view=overall&p=${encodeURIComponent(row.player.name)}`,
       input:`${num(s.consensus?.totalPoints, 2)} consensus points`,
-      leader:`${num(renderScales.maxes?.skill, 2)} leader input`,
-      note:`Sum of rank points from ${s.consensus?.rankedTitles || 0} selected title ranking dataset${(s.consensus?.rankedTitles || 0) === 1 ? '' : 's'}. Rank points use ((31 - rank) / 30)^2.5.`,
+      leader:`Era leader: ${leaders.skill || '-'} (${num(renderScales.maxes?.skill, 2)})`,
+      note:`Fan-ranked in ${s.consensus?.rankedTitles || 0} of the ${skillTitleCount} selected titles with community ranking data. Rank points use ((31 - rank) / 30)^2.5.`,
     };
   }
   if(key === 'longevity'){
     return {
       href:`${profileUrl}&majors=all#major-wins`,
       input:`${s.titles} major-entry title${s.titles === 1 ? '' : 's'}`,
-      leader:`${num(renderScales.maxes?.longevity, 0)} leader input`,
+      leader:`Era leader: ${leaders.longevity || '-'} (${num(renderScales.maxes?.longevity, 0)})`,
       note:'A title counts when this player has at least one recorded major entry in that selected title.',
     };
   }
   if(key === 'peak'){
-    const skill = Number.isFinite(peak.skillPoints) ? num(peak.skillPoints, 2) : '-';
+    const skill = Number.isFinite(peak.skillPoints) ? `${num(peak.skillPoints, 2)} fan-ranking points` : 'no fan ranking (neutral 50)';
     return {
       input:`${escapeHtml(peak.game || '-')} peak: ${num(peak.score)} score`,
-      leader:'100.0 top title blend',
-      note:`Title resume input ${num(peak.resumeInput)} = ${num(peak.titleAdj)} title-adjusted wins + ${(peak.titleChamps || 0)} Champs ring${peak.titleChamps === 1 ? '' : 's'} x ${num(extraRing)} extra. Title consensus points: ${skill}.`,
+      leader:`Best single title: ${leaders.peak || '-'} (100.0)`,
+      note:`Average of two halves. Winning half ${num(peak.resumeScore)}: ${num(peak.resumeInput)} title wins incl. rings, vs ${leaders.titleResumePeak || '-'}'s best ${num(renderScales.maxes?.titleResumePeak)}. Fan-ranking half ${num(peak.skillScore)}: ${skill}, vs ${leaders.titleSkillPeak || '-'}'s best ${num(renderScales.maxes?.titleSkillPeak, 2)}. (${num(peak.resumeScore)} + ${num(peak.skillScore)}) / 2 = ${num(peak.score)}.`,
     };
   }
   return {input:'-', leader:'-', note:''};
@@ -630,7 +632,7 @@ function explanationRows(row, active){
     const label = detail.href
       ? `<a href="${escapeAttr(detail.href)}">${escapeHtml(part.label)}</a>`
       : escapeHtml(part.label);
-    const leaderNote = detail.leader && detail.leader !== '-' ? ` Leader: ${detail.leader}.` : '';
+    const leaderNote = detail.leader && detail.leader !== '-' ? ` ${detail.leader}.` : '';
     return `<tr>
       <th scope="row"><span class="lane-dot ${part.key}"></span>${label}</th>
       <td>${detail.input}<span class="note">${escapeHtml(`${detail.note}${leaderNote}`)}</span></td>
@@ -688,7 +690,7 @@ function rankFormatter(cell){
   if(data.deltaText && data.deltaText !== '0'){
     const arrow = data.deltaText === 'new' ? 'new'
       : (data.deltaText.startsWith('+') ? '▲' : '▼') + data.deltaText.replace(/^[+-]/, '');
-    delta = `<span class="gb-delta ${data.deltaCls}" title="Movement vs the site-default weights">${arrow}</span>`;
+    delta = `<span class="gb-delta ${data.deltaCls}" title="Movement vs the Balanced default weights">${arrow}</span>`;
   }
   return `<div class="gb-rank-cell"><span>${data.rank}${delta}</span></div>`;
 }
@@ -1110,9 +1112,11 @@ function render(opts={}){
   }else{
     dataNote.hidden = true;
   }
+  skillTitleCount = consensusMeta.status === 'ready'
+    ? selectedGamesArray().filter(g => Array.from(consensusRowsByPlayer.values()).some(rows => rows.some(r => r.game === g))).length
+    : 0;
   document.getElementById('skillCoverage').textContent =
-    consensusMeta.status === 'ready'
-      ? `${selectedGamesArray().filter(g => Array.from(consensusRowsByPlayer.values()).some(rows => rows.some(r => r.game === g))).length}`
+    consensusMeta.status === 'ready' ? `${skillTitleCount}`
       : (consensusMeta.status === 'unavailable' ? '—' : 'loading');
   document.getElementById('formulaSummary').textContent = `Final score = ${active.map(c => `${Math.round(c.share * 100)}% ${c.label}`).join(' + ') || 'no active criteria'}. Point weights are normalized from ${total} assigned point${total === 1 ? '' : 's'}; each lane scales its raw input to 100 for the selected-era leader across the ${state.selectedGames.size} selected title${state.selectedGames.size === 1 ? '' : 's'}.`;
   const reason = emptyReason(active);

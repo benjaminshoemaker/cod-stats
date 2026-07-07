@@ -9,7 +9,7 @@ export const CRITERIA = [
   {key:'longevity', label:'Longevity'},
   {key:'peak', label:'Peak'},
 ];
-export const DEFAULT_WEIGHTS = {resume:25, skill:25, longevity:25, peak:25};
+export const DEFAULT_WEIGHTS = {resume:50, skill:30, longevity:10, peak:10};
 export const DEFAULT_ENABLED = {resume:true, skill:true, longevity:true, peak:true};
 export const DEFAULT_RING = 2;
 
@@ -210,7 +210,7 @@ export function computeGoat(ctx, consensusByPlayer, config){
     return out;
   };
 
-  const titleCandidates = ctx.players.flatMap(p => statsFor(p).titlePeaks);
+  const titleCandidates = ctx.players.flatMap(p => statsFor(p).titlePeaks.map(c => ({...c, owner:p.name})));
   const resumeValues = ctx.players.map(p => {
     const s = statsFor(p);
     return s.adj + s.champs * (ring - 1);
@@ -219,6 +219,17 @@ export function computeGoat(ctx, consensusByPlayer, config){
   const titleValues = ctx.players.map(p => statsFor(p).titles);
   const titleResumeValues = titleCandidates.map(candidate => titleResumePeakValue(candidate, ring));
   const titleSkillValues = titleCandidates.map(candidate => candidate.skillPoints);
+  // the player who owns each lane's max — the explain layer names the person a
+  // lane is scaled against, not just the number
+  const leaderName = (values, names) => {
+    let best = null, name = null;
+    values.forEach((v, i) => {
+      if(Number.isFinite(v) && (best === null || v > best)){ best = v; name = names[i]; }
+    });
+    return name;
+  };
+  const playerNames = ctx.players.map(p => p.name);
+  const candidateOwners = titleCandidates.map(c => c.owner);
   const scales = {
     ringBonusResume: scoreFromMaxValues(resumeValues),
     consensusTotal: scoreFromMaxValues(consensusValues),
@@ -232,10 +243,18 @@ export function computeGoat(ctx, consensusByPlayer, config){
       titleResumePeak:maxFinite(titleResumeValues),
       titleSkillPeak:maxFinite(titleSkillValues),
     },
+    leaders:{
+      resume:leaderName(resumeValues, playerNames),
+      skill:leaderName(consensusValues, playerNames),
+      longevity:leaderName(titleValues, playerNames),
+      titleResumePeak:leaderName(titleResumeValues, candidateOwners),
+      titleSkillPeak:leaderName(titleSkillValues, candidateOwners),
+      peak:null,
+    },
   };
 
   const active = activeWeights(config.weights, config.enabled);
-  const rows = ctx.players.map(p => {
+  const scored = ctx.players.map(p => {
     const s = statsFor(p);
     const lane = {
       resume: scales.ringBonusResume(s.adj + s.champs * (ring - 1)) ?? 50,
@@ -245,7 +264,12 @@ export function computeGoat(ctx, consensusByPlayer, config){
     };
     const score = active.length ? active.reduce((sum,c) => sum + lane[c.key] * c.share, 0) : 0;
     return {player:p, stats:s, lane, score, peakDetail:peakFromCandidates(s.titlePeaks, scales, ring)};
-  })
+  });
+  let bestPeak = -Infinity;
+  for(const row of scored){
+    if(row.lane.peak > bestPeak){ bestPeak = row.lane.peak; scales.leaders.peak = row.player.name; }
+  }
+  const rows = scored
     .filter(row => row.stats.seasons.length || row.stats.consensus)
     .sort((a,b) => b.score - a.score || b.stats.adj - a.stats.adj)
     .map((row, i) => ({...row, goatRank:i + 1}));
