@@ -726,6 +726,7 @@ a:focus-visible,button:focus-visible,.toggle:focus-within,input:focus-visible,
 .community-overall-table .tabulator-col.top-count .tabulator-col-content{padding-right:var(--space-4)}
 .community-table th,.community-table td{vertical-align:middle}
 .community-table .score{font-family:var(--mono);font-size:var(--text-lg);font-weight:800}
+.community-table .source-detail{min-width:190px}
 .bar-mini{display:block;height:6px;margin-top:4px;border-radius:999px;background:var(--panel-2);overflow:hidden}
 .bar-mini span{display:block;height:100%;border-radius:999px;background:var(--accent)}
 .title-strip{display:flex;flex-wrap:wrap;gap:var(--space-1)}

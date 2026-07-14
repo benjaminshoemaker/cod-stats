@@ -165,6 +165,30 @@ def rank_points_from_source(source):
     }
 
 
+def aggregate_source_details(source):
+    totals = dict(source.get("detail_totals") or {})
+    details = {}
+    first_place_total = totals.get("best_player_votes")
+    if first_place_total is None:
+        first_place_total = sum(
+            int((entry.get("source_detail") or {}).get("best_player_votes") or 0)
+            for entry in source.get("ranked_players") or []
+        )
+        if first_place_total:
+            totals["best_player_votes"] = first_place_total
+    for entry in source.get("ranked_players") or []:
+        detail = dict(entry.get("source_detail") or {})
+        if not detail:
+            continue
+        if first_place_total and detail.get("best_player_votes") is not None:
+            detail["best_player_vote_share"] = float(detail["best_player_votes"]) / float(first_place_total)
+        respondents = totals.get("respondents")
+        if respondents and detail.get("top_10_inclusion_votes") is not None:
+            detail["top_10_inclusion_share"] = float(detail["top_10_inclusion_votes"]) / float(respondents)
+        details[entry["player"]] = detail
+    return totals, details
+
+
 def build(game=None):
     sources = load_json(SOURCES_PATH)["sources"]
     ballots = load_json(BALLOTS_PATH)["ballots"]
@@ -186,6 +210,7 @@ def build(game=None):
         if kind == "community_aggregate_survey":
             base = rank_points_from_source(source)
             ballot_count = int(source.get("valid_ballots") or source.get("sample_size") or 0)
+            detail_totals, details = aggregate_source_details(source)
         else:
             source_ballots = ballots_by_source.get(sid, [])
             if kind == "single_community_ballot" and len(source_ballots) != 1:
@@ -193,6 +218,7 @@ def build(game=None):
             base = average_ballots(source_ballots)
             ballot_count = len(source_ballots)
             ballot_reception = comment_reception_weights(source_ballots)
+            detail_totals, details = {}, {}
         base_weight = source_weight(source, ballot_count)
         coverage_weight = coverage_multiplier(source.get("coverage"))
         season_weight = season_coverage_multiplier(source.get("season_coverage"))
@@ -208,6 +234,10 @@ def build(game=None):
             "weight": weight,
             "scores": contrib,
         }
+        if detail_totals:
+            source_contributions[sid]["detail_totals"] = detail_totals
+        if details:
+            source_contributions[sid]["details"] = details
         if kind != "community_aggregate_survey":
             source_contributions[sid]["ballot_reception"] = ballot_reception
         for player in contrib:
@@ -241,13 +271,7 @@ def build(game=None):
                 previous_rank = idx
                 previous_score = row["consensus_score"]
             row["consensus_rank"] = previous_rank
-        for idx, row in enumerate(rows):
-            prev_score = rows[idx - 1]["consensus_score"] if idx else None
-            next_score = rows[idx + 1]["consensus_score"] if idx + 1 < len(rows) else None
-            row["close_race"] = any(
-                other is not None and row["consensus_score"] and abs(row["consensus_score"] - other) / row["consensus_score"] <= 0.05
-                for other in (prev_score, next_score)
-            )
+        for row in rows:
             if row["aggregate_survey_count"] and row["source_count"] >= 1:
                 row["confidence"] = "high"
             elif row["source_count"] >= 5:

@@ -14,8 +14,8 @@ function mountNav(active){
       <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false">Insights <span aria-hidden="true">▾</span></button>
       <div class="navdrop-menu">${VIZ.map(([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`).join('')}</div>
     </div>`;
-  const before=[['index.html','Leaderboard'],['compare.html','Compare'],['community.html','Community']], after=[['games.html','Seasons'],['methodology.html','Methodology'],['changelog.html','Changelog']];
-  const lnk=([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`;
+  const before=[['index.html','Leaderboard'],['compare.html','Compare'],['community.html','Community'],['goat-builder.html','GOAT','GOAT Builder']], after=[['games.html','Seasons'],['methodology.html','Methodology'],['changelog.html','Changelog']];
+  const lnk=([h,t,label])=>`<a href="${h}" class="${h===active?'active':''}"${label?` aria-label="${label}"`:''}>${t}</a>`;
   const nav=before.map(lnk).join('')+drop+after.map(lnk).join('');
   document.body.insertAdjacentHTML('afterbegin',
     `<a class="skip" href="#root">Skip to content</a>`+

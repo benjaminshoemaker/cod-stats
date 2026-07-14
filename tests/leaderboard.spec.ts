@@ -512,7 +512,8 @@ test.describe('pages', () => {
     await expect(page.getByText('2.5, is an intentional top-heavy curve')).toBeVisible();
     await expect(page.locator('#community-rank-points .anchor-link')).toHaveAttribute('href', '#community-rank-points');
     await expect(page.locator('#community-confidence .anchor-link')).toHaveAttribute('href', '#community-confidence');
-    await expect(page.getByText('read those as effectively tied')).toBeVisible();
+    await expect(page.getByText('Consensus strength gaps are meaningful')).toBeVisible();
+    await expect(page.getByText('top-10 inclusion share')).toBeVisible();
     await expect(page.getByText('rank 24 is')).toBeVisible();
     await expect(page.getByText('about 0.026 points')).toBeVisible();
     await page.goto('/community.html');
@@ -823,6 +824,7 @@ test.describe('pages', () => {
     await page.locator('#cc-view-title').click();
     await expect(page.locator('#cc-game')).toHaveValue('Black Ops 2');
     await expect(page.getByRole('heading', { name: 'Black Ops 2 Ranking' })).toBeVisible();
+    await expect(page.locator('.community-table thead')).toContainText('Consensus strength');
     await expect(page.locator('.community-table tbody tr').first()).toContainText('Karma');
     await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).toContainText('4');
     await expect(page.locator('.community-table tbody tr').first().locator('.context-band')).not.toContainText('not scored');
@@ -851,6 +853,29 @@ test.describe('pages', () => {
     await page.goto('/community.html?g=Ghosts&p=Scump');
     await expect(page.getByRole('heading', { name: 'Scump Trace' })).toBeVisible();
     await expect(page.locator('.community-table tr.selected')).toContainText('Scump');
+
+    await page.goto('/community.html?g=Modern+Warfare+II&p=HyDra');
+    await expect(page.getByRole('heading', { name: 'HyDra Trace' })).toBeVisible();
+    await expect(page.locator('.community-table thead')).toContainText('Poll detail');
+    await expect(page.locator('.community-table thead')).not.toContainText('Community score');
+    await expect(page.locator('.community-table tbody tr').first()).toContainText('200/258 first-place votes');
+    await expect(page.locator('.community-table tbody tr').first()).toContainText('43 2-5');
+    await expect(page.locator('.community-table')).not.toContainText('close race');
+    await expect(page.locator('#cc-title-trace-card .cc-evidence').first()).toContainText('200/258 first-place votes');
+    await expect(page.locator('#cc-title-trace-card .cc-evidence').first()).toContainText('77.5%');
+    await expect(page.locator('#cc-title-trace-card .cc-evidence').first()).not.toContainText('1,131 source points');
+
+    await page.goto('/community.html?g=Modern+Warfare+II&p=Drazah');
+    await expect(page.getByRole('heading', { name: 'Drazah Trace' })).toBeVisible();
+    await expect(page.locator('.community-table tr.selected')).toContainText('21 2-5');
+    await expect(page.locator('.community-table tr.selected')).not.toContainText('first-place votes');
+    await expect(page.locator('#cc-title-trace-card .cc-evidence').first()).not.toContainText('source points');
+
+    await page.goto('/community.html?g=Black+Ops+4&p=Dashy');
+    await expect(page.getByRole('heading', { name: 'Dashy Trace' })).toBeVisible();
+    await expect(page.locator('.community-table thead')).toContainText('Poll detail');
+    await expect(page.locator('.community-table tbody tr').first()).toContainText('about 757/810 top-10 inclusions');
+    await expect(page.locator('#cc-title-trace-card .cc-evidence').first()).toContainText('93.4%');
 
     await page.goto('/community.html?g=Modern+Warfare&p=ABeZy');
     await expect(page.getByRole('heading', { name: 'aBeZy Trace' })).toBeVisible();
@@ -1601,12 +1626,13 @@ test.describe('GOAT Builder', () => {
     expect(metrics.ptsLabel).toContain('Points');
   });
 
-  test('is available directly but not linked from global navigation', async ({ page }) => {
+  test('is linked from global navigation', async ({ page }) => {
     await page.goto('/goat-builder.html');
-    await expect(page.locator('.site-head .nav').getByRole('link', { name: /GOAT/i })).toHaveCount(0);
+    await expect(page.locator('.site-head .nav').getByRole('link', { name: 'GOAT Builder' })).toHaveAttribute('href', 'goat-builder.html');
+    await expect(page.locator('.site-head .nav a.active')).toHaveText('GOAT');
 
     await page.goto('/index.html');
-    await expect(page.locator('.site-head .nav').getByRole('link', { name: /GOAT/i })).toHaveCount(0);
+    await expect(page.locator('.site-head .nav').getByRole('link', { name: 'GOAT Builder' })).toHaveAttribute('href', 'goat-builder.html');
   });
 });
 

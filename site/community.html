@@ -71,6 +71,8 @@ let overallTable = null;
 const OVERALL_LABEL = 'Overall Ranking';
 
 const sourceLabel = s => String(s || '').replaceAll('_', ' ');
+const fmtInt = n => Number(n || 0).toLocaleString('en-US');
+const fmtPct1 = n => `${(Number(n || 0) * 100).toFixed(1)}%`;
 const STATUS_TITLES = {
   scored: 'Scored: counted toward the consensus ranking',
   reviewed_not_scored: 'Reviewed, not scored: relevant, but no cleanly extractable ranked list',
@@ -351,6 +353,37 @@ function gameContributions(game, player){
 }
 function sourceBallotCount(id){
   return ballotsBySource[id] ? ballotsBySource[id].length : 0;
+}
+function aggregatePlayerHit(src, player){
+  const key = playerLookupKey(player);
+  return src && Array.isArray(src.ranked_players)
+    ? src.ranked_players.find(rp => playerLookupKey(rp.player) === key)
+    : null;
+}
+function titleEvidenceColumn(game){
+  const scored = gameSources(game).filter(s => s.status === 'scored');
+  const aggregate = scored.length === 1 && scored[0].source_kind === 'community_aggregate_survey'
+    ? scored[0]
+    : null;
+  if(!aggregate){
+    return {
+      title: 'Consensus strength',
+      className: 'n score',
+      headingText: 'Consensus strength is source-weighted; shown to 2 decimals (traces keep exact values). It is most meaningful when multiple scored sources can agree or disagree. Click a row or Trace for the evidence. Event wins are context only.',
+      cell: r => Number(r.consensus_score).toFixed(2)
+    };
+  }
+  return {
+    title: 'Poll detail',
+    className: 'source-detail',
+    headingText: 'This title currently rests on one aggregate poll, so the table shows poll/source detail instead of treating adjacent rank-points as margin. Click a row or Trace for the scoring math. Event wins are context only.',
+    cell: r => {
+      const hit = aggregatePlayerHit(aggregate, r.player);
+      const detail = aggregateDetailText(aggregate, hit);
+      if(detail) return detail;
+      return hit ? `Ranked #${hit.rank} of ${aggregate.ranking_size || aggregate.ranked_players.length}` : 'No poll detail';
+    }
+  };
 }
 function rankPoints(rank){
   // shared curve from goat.js; a missing rank counts as 31 (zero points)
@@ -635,14 +668,15 @@ function renderSummary(game, rows, sources){
   </div>`;
 }
 function renderTable(game, rows, selectedPlayer){
+  const evidenceCol = titleEvidenceColumn(game);
   const body = rows.map(r => {
     const selected = r.player === selectedPlayer ? ' class="selected"' : '';
     const wins = rawWins(game, r.player);
     const events = winningEvents(game, r.player);
     return `<tr${selected} data-row-player="${esc(r.player)}">
       <td class="n">${r.consensus_rank}</td>
-      <td><strong>${playerCell(r.player)}</strong>${r.close_race ? '<span class="sub" title="Consensus score within 5% of the adjacent rank — treat the order as effectively tied">close race</span>' : ''}</td>
-      <td class="n score">${Number(r.consensus_score).toFixed(2)}</td>
+      <td><strong>${playerCell(r.player)}</strong></td>
+      <td class="${evidenceCol.className}">${evidenceCol.cell(r)}</td>
       <td>${confidencePill(r.confidence)}</td>
       <td class="n">${r.source_count}</td>
       <td class="context-band n" title="${esc(events)}">${wins}</td>
@@ -651,7 +685,7 @@ function renderTable(game, rows, selectedPlayer){
   }).join('');
   return `<section class="panel-shell">
     <div class="panel-head">
-      <div><h2>${esc(game)} Ranking</h2><p class="small muted">Community score is source-weighted; shown to 2 decimals (traces keep exact values). Click a row or Trace for the evidence. Event wins are context only.</p></div>
+      <div><h2>${esc(game)} Ranking</h2><p class="small muted">${esc(evidenceCol.headingText)}</p></div>
       <span class="pill tag">Top ${rows.length} retained</span>
     </div>
     ${TableSurface.dataTable({
@@ -660,18 +694,64 @@ function renderTable(game, rows, selectedPlayer){
       wrapperClass: 'panel-body',
       tableClass: 'data community-table',
       hint: 'Scroll sideways to see source count, event wins, and trace links.',
-      head: '<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="n">Community score</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n" title="Context only — never affects the community score">Event wins</th><th scope="col">Trace</th></tr></thead>',
+      head: `<thead><tr><th scope="col" class="n">Rank</th><th scope="col">Player</th><th scope="col" class="${esc(evidenceCol.className)}">${esc(evidenceCol.title)}</th><th scope="col">Conf.</th><th scope="col" class="n">Sources</th><th scope="col" class="context-band n" title="Context only — never affects the community score">Event wins</th><th scope="col">Trace</th></tr></thead>`,
       rows: body
     })}
-    <p class="small muted cc-legend">Confidence — <strong>high</strong>: aggregate survey or 5+ scored sources · <strong>medium</strong>: 3–4 · <strong>low</strong>: 1–2, treat as provisional. <strong>Close race</strong>: within 5% of the next rank, effectively tied. <a href="methodology.html#community-confidence">How confidence works →</a></p>
+    <p class="small muted cc-legend">Confidence — <strong>high</strong>: aggregate survey or 5+ scored sources · <strong>medium</strong>: 3–4 · <strong>low</strong>: 1–2, treat as provisional. <a href="methodology.html#community-confidence">How confidence works →</a></p>
   </section>`;
+}
+function aggregateDetailText(src, hit){
+  const detail = hit && hit.source_detail;
+  if(!detail) return '';
+  const parts = [];
+  const totals = src && src.detail_totals || {};
+  const firstPlaceTotal = totals.best_player_votes;
+  const respondents = totals.respondents;
+  if(respondents && detail.top_10_inclusion_votes !== undefined){
+    const approx = detail.estimated_from_chart || totals.estimated_from_chart ? 'about ' : '';
+    const share = detail.top_10_inclusion_pct !== undefined
+      ? Number(detail.top_10_inclusion_pct) / 100
+      : detail.top_10_inclusion_share !== undefined
+      ? Number(detail.top_10_inclusion_share)
+      : Number(detail.top_10_inclusion_votes) / Number(respondents);
+    parts.push(`${approx}${fmtInt(detail.top_10_inclusion_votes)}/${fmtInt(respondents)} top-10 inclusions (${fmtPct1(share)})`);
+  } else if(detail.top_10_inclusion_pct !== undefined){
+    const approx = detail.estimated_from_chart || totals.estimated_from_chart ? 'about ' : '';
+    parts.push(`${approx}${Number(detail.top_10_inclusion_pct).toFixed(1)}% top-10 inclusion`);
+  }
+  if(firstPlaceTotal && Number(detail.best_player_votes || 0) > 0){
+    const share = detail.best_player_vote_share !== undefined
+      ? Number(detail.best_player_vote_share)
+      : Number(detail.best_player_votes) / Number(firstPlaceTotal);
+    parts.push(`${fmtInt(detail.best_player_votes)}/${fmtInt(firstPlaceTotal)} first-place votes (${fmtPct1(share)})`);
+  }
+  const bucket = [
+    ['ranks_2_5_votes', '2-5'],
+    ['ranks_6_10_votes', '6-10'],
+    ['ranks_2_10_votes', '2-10'],
+    ['ranks_11_20_votes', '11-20'],
+    ['ranks_21_30_votes', '21-30'],
+    ['top_10_votes', 'top 10'],
+    ['top_20_votes', 'top 20'],
+    ['top_30_votes', 'top 30'],
+  ].find(([key]) => detail[key] !== undefined && Number(detail[key] || 0) > 0);
+  if(bucket && parts.length < 2){
+    parts.push(`${fmtInt(detail[bucket[0]])} ${bucket[1]}`);
+  }
+  if(!parts.length && detail.source_points !== undefined){
+    parts.push(`${fmtInt(detail.source_points)} source points`);
+  }
+  return parts.join('; ');
 }
 function sourceEvidence(sourceId, player){
   const key = playerLookupKey(player);
   const src = sourceById[sourceId];
   if(src && Array.isArray(src.ranked_players)){
-    const hit = src.ranked_players.find(rp => playerLookupKey(rp.player) === key);
-    if(hit) return `Ranked #${hit.rank} of ${src.ranking_size || src.ranked_players.length}`;
+    const hit = aggregatePlayerHit(src, player);
+    if(hit){
+      const detail = aggregateDetailText(src, hit);
+      return `Ranked #${hit.rank} of ${src.ranking_size || src.ranked_players.length}${detail ? `; ${detail}` : ''}`;
+    }
   }
   const ballots = ballotsBySource[sourceId] || [];
   const ranks = [];

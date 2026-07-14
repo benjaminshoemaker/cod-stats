@@ -2034,129 +2034,283 @@
       "ranking_size": 30,
       "sample_size": null,
       "quality_multiplier": 0.85,
-      "methodology_notes": "End-of-title community survey result. The chart is top-10 inclusion percentage, not an ordinal ranking; only the top 30 visible names are scored and the source is quality-discounted.",
+      "methodology_notes": "End-of-title community survey result. The chart is top-10 inclusion percentage, not an ordinal ranking; only the top 30 visible names are scored and the source is quality-discounted. Source detail records approximate chart-read inclusion votes against the author-reported 810 respondents.",
       "ranked_players": [
         {
           "player": "Dashy",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "top_10_inclusion_pct": 93.4,
+            "top_10_inclusion_votes": 757,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Simp",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "top_10_inclusion_pct": 89.1,
+            "top_10_inclusion_votes": 722,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Octane",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "top_10_inclusion_pct": 87.0,
+            "top_10_inclusion_votes": 705,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "top_10_inclusion_pct": 72.9,
+            "top_10_inclusion_votes": 590,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Dylan",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "top_10_inclusion_pct": 72.7,
+            "top_10_inclusion_votes": 589,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Envoy",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "top_10_inclusion_pct": 66.5,
+            "top_10_inclusion_votes": 539,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Priestahh",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "top_10_inclusion_pct": 63.8,
+            "top_10_inclusion_votes": 517,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "SlasheR",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "top_10_inclusion_pct": 57.8,
+            "top_10_inclusion_votes": 468,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Skrapz",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "top_10_inclusion_pct": 33.5,
+            "top_10_inclusion_votes": 271,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Temp",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "top_10_inclusion_pct": 32.4,
+            "top_10_inclusion_votes": 262,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "FormaL",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "top_10_inclusion_pct": 32.2,
+            "top_10_inclusion_votes": 261,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Arcitys",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "top_10_inclusion_pct": 29.2,
+            "top_10_inclusion_votes": 237,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "TJHaLy",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "top_10_inclusion_pct": 22.6,
+            "top_10_inclusion_votes": 183,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Kenny",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "top_10_inclusion_pct": 20.0,
+            "top_10_inclusion_votes": 162,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Gunless",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "top_10_inclusion_pct": 19.8,
+            "top_10_inclusion_votes": 160,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Brack",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "top_10_inclusion_pct": 17.7,
+            "top_10_inclusion_votes": 143,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Cellium",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "top_10_inclusion_pct": 16.8,
+            "top_10_inclusion_votes": 136,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Scump",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "top_10_inclusion_pct": 16.2,
+            "top_10_inclusion_votes": 131,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Huke",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "top_10_inclusion_pct": 16.0,
+            "top_10_inclusion_votes": 130,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Attach",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "top_10_inclusion_pct": 13.6,
+            "top_10_inclusion_votes": 110,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Maux",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "top_10_inclusion_pct": 12.4,
+            "top_10_inclusion_votes": 100,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Karma",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "top_10_inclusion_pct": 6.8,
+            "top_10_inclusion_votes": 55,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Havok",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "top_10_inclusion_pct": 6.2,
+            "top_10_inclusion_votes": 50,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Clayster",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "top_10_inclusion_pct": 6.0,
+            "top_10_inclusion_votes": 49,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "GodRx",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "top_10_inclusion_pct": 4.5,
+            "top_10_inclusion_votes": 36,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Skyz",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "top_10_inclusion_pct": 4.5,
+            "top_10_inclusion_votes": 36,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "MajorManiak",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "top_10_inclusion_pct": 4.3,
+            "top_10_inclusion_votes": 35,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Crimsix",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "top_10_inclusion_pct": 4.3,
+            "top_10_inclusion_votes": 35,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "ZooMaa",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "top_10_inclusion_pct": 3.6,
+            "top_10_inclusion_votes": 29,
+            "estimated_from_chart": true
+          }
         },
         {
           "player": "Enable",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "top_10_inclusion_pct": 3.6,
+            "top_10_inclusion_votes": 29,
+            "estimated_from_chart": true
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "respondents": 810,
+        "estimated_from_chart": true
+      }
     },
     {
       "source_id": "mw2019_reddit_2020_end_top30_survey",
@@ -2174,129 +2328,312 @@
       "ranking_size": 30,
       "valid_ballots": 345,
       "quality_multiplier": 1.0,
-      "methodology_notes": "End-of-title annual community survey. Author reported 545 responses, 345 counted, and a top-30 score formula based on top-10/top-20/top-30 buckets.",
+      "methodology_notes": "End-of-title annual community survey. Author reported 545 responses, 345 counted, and a top-30 score formula based on top-10/top-20/top-30 buckets. Source detail records the visible bucket counts and source points.",
       "ranked_players": [
         {
           "player": "Simp",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "top_10_votes": 311,
+            "top_20_votes": 11,
+            "top_30_votes": 1,
+            "source_points": 956
+          }
         },
         {
           "player": "Envoy",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "top_10_votes": 300,
+            "top_20_votes": 17,
+            "top_30_votes": 2,
+            "source_points": 936
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "top_10_votes": 303,
+            "top_20_votes": 9,
+            "top_30_votes": 3,
+            "source_points": 930
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "top_10_votes": 282,
+            "top_20_votes": 32,
+            "top_30_votes": 1,
+            "source_points": 911
+          }
         },
         {
           "player": "Cellium",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "top_10_votes": 264,
+            "top_20_votes": 33,
+            "top_30_votes": 7,
+            "source_points": 865
+          }
         },
         {
           "player": "Octane",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "top_10_votes": 267,
+            "top_20_votes": 27,
+            "top_30_votes": 8,
+            "source_points": 863
+          }
         },
         {
           "player": "Arcitys",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "top_10_votes": 205,
+            "top_20_votes": 99,
+            "top_30_votes": 5,
+            "source_points": 818
+          }
         },
         {
           "player": "Huke",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "top_10_votes": 137,
+            "top_20_votes": 121,
+            "top_30_votes": 13,
+            "source_points": 666
+          }
         },
         {
           "player": "Skyz",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "top_10_votes": 192,
+            "top_20_votes": 37,
+            "top_30_votes": 14,
+            "source_points": 664
+          }
         },
         {
           "player": "Scump",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "top_10_votes": 117,
+            "top_20_votes": 142,
+            "top_30_votes": 27,
+            "source_points": 662
+          }
         },
         {
           "player": "Clayster",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "top_10_votes": 104,
+            "top_20_votes": 139,
+            "top_30_votes": 40,
+            "source_points": 630
+          }
         },
         {
           "player": "Wuskin",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "top_10_votes": 114,
+            "top_20_votes": 107,
+            "top_30_votes": 22,
+            "source_points": 578
+          }
         },
         {
           "player": "FormaL",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "top_10_votes": 77,
+            "top_20_votes": 152,
+            "top_30_votes": 35,
+            "source_points": 570
+          }
         },
         {
           "player": "iLLeY",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "top_10_votes": 75,
+            "top_20_votes": 149,
+            "top_30_votes": 39,
+            "source_points": 562
+          }
         },
         {
           "player": "Crimsix",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "top_10_votes": 64,
+            "top_20_votes": 118,
+            "top_30_votes": 70,
+            "source_points": 498
+          }
         },
         {
           "player": "Owakening",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "top_10_votes": 84,
+            "top_20_votes": 84,
+            "top_30_votes": 42,
+            "source_points": 462
+          }
         },
         {
           "player": "Mack",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "top_10_votes": 66,
+            "top_20_votes": 103,
+            "top_30_votes": 50,
+            "source_points": 454
+          }
         },
         {
           "player": "SlasheR",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "top_10_votes": 45,
+            "top_20_votes": 101,
+            "top_30_votes": 44,
+            "source_points": 381
+          }
         },
         {
           "player": "Priestahh",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "top_10_votes": 29,
+            "top_20_votes": 108,
+            "top_30_votes": 73,
+            "source_points": 376
+          }
         },
         {
           "player": "Fero",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "top_10_votes": 44,
+            "top_20_votes": 102,
+            "top_30_votes": 35,
+            "source_points": 371
+          }
         },
         {
           "player": "Attach",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "top_10_votes": 31,
+            "top_20_votes": 108,
+            "top_30_votes": 57,
+            "source_points": 366
+          }
         },
         {
           "player": "MajorManiak",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "top_10_votes": 6,
+            "top_20_votes": 102,
+            "top_30_votes": 88,
+            "source_points": 310
+          }
         },
         {
           "player": "Cammy",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "top_10_votes": 25,
+            "top_20_votes": 74,
+            "top_30_votes": 66,
+            "source_points": 289
+          }
         },
         {
           "player": "ZooMaa",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "top_10_votes": 8,
+            "top_20_votes": 58,
+            "top_30_votes": 96,
+            "source_points": 236
+          }
         },
         {
           "player": "Methodz",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "top_10_votes": 7,
+            "top_20_votes": 56,
+            "top_30_votes": 85,
+            "source_points": 218
+          }
         },
         {
           "player": "GodRx",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "top_10_votes": 14,
+            "top_20_votes": 60,
+            "top_30_votes": 53,
+            "source_points": 215
+          }
         },
         {
           "player": "Skrapz",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "top_10_votes": 4,
+            "top_20_votes": 46,
+            "top_30_votes": 74,
+            "source_points": 178
+          }
         },
         {
           "player": "Prestinni",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "top_10_votes": 7,
+            "top_20_votes": 29,
+            "top_30_votes": 85,
+            "source_points": 164
+          }
         },
         {
           "player": "CleanX",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "top_10_votes": 7,
+            "top_20_votes": 37,
+            "top_30_votes": 64,
+            "source_points": 159
+          }
         },
         {
           "player": "Kenny",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "top_10_votes": 4,
+            "top_20_votes": 26,
+            "top_30_votes": 75,
+            "source_points": 139
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "valid_ballots": 345
+      }
     },
     {
       "source_id": "bocw_reddit_2021_end_top30_survey",
@@ -2318,125 +2655,338 @@
       "ranked_players": [
         {
           "player": "Simp",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "best_player_votes": 390,
+            "ranks_2_10_votes": 367,
+            "ranks_11_20_votes": 7,
+            "ranks_21_30_votes": 2,
+            "source_points": 3067
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "best_player_votes": 231,
+            "ranks_2_10_votes": 528,
+            "ranks_11_20_votes": 10,
+            "ranks_21_30_votes": 4,
+            "source_points": 2763
+          }
         },
         {
           "player": "Cammy",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "best_player_votes": 64,
+            "ranks_2_10_votes": 648,
+            "ranks_11_20_votes": 27,
+            "ranks_21_30_votes": 8,
+            "source_points": 2326
+          }
         },
         {
           "player": "Cellium",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "best_player_votes": 24,
+            "ranks_2_10_votes": 661,
+            "ranks_11_20_votes": 28,
+            "ranks_21_30_votes": 8,
+            "source_points": 2167
+          }
         },
         {
           "player": "Insight",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "best_player_votes": 10,
+            "ranks_2_10_votes": 646,
+            "ranks_11_20_votes": 32,
+            "ranks_21_30_votes": 10,
+            "source_points": 2072
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "best_player_votes": 11,
+            "ranks_2_10_votes": 625,
+            "ranks_11_20_votes": 50,
+            "ranks_21_30_votes": 12,
+            "source_points": 2054
+          }
         },
         {
           "player": "Scump",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "best_player_votes": 17,
+            "ranks_2_10_votes": 427,
+            "ranks_11_20_votes": 229,
+            "ranks_21_30_votes": 20,
+            "source_points": 1844
+          }
         },
         {
           "player": "Standy",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_10_votes": 486,
+            "ranks_11_20_votes": 148,
+            "ranks_21_30_votes": 25,
+            "source_points": 1794
+          }
         },
         {
           "player": "HyDra",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_10_votes": 454,
+            "ranks_11_20_votes": 188,
+            "ranks_21_30_votes": 17,
+            "source_points": 1770
+          }
         },
         {
           "player": "CleanX",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_10_votes": 426,
+            "ranks_11_20_votes": 214,
+            "ranks_21_30_votes": 28,
+            "source_points": 1749
+          }
         },
         {
           "player": "Dashy",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "best_player_votes": 5,
+            "ranks_2_10_votes": 419,
+            "ranks_11_20_votes": 218,
+            "ranks_21_30_votes": 27,
+            "source_points": 1745
+          }
         },
         {
           "player": "Arcitys",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "best_player_votes": 6,
+            "ranks_2_10_votes": 293,
+            "ranks_11_20_votes": 350,
+            "ranks_21_30_votes": 27,
+            "source_points": 1636
+          }
         },
         {
           "player": "Bance",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_10_votes": 149,
+            "ranks_11_20_votes": 397,
+            "ranks_21_30_votes": 99,
+            "source_points": 1350
+          }
         },
         {
           "player": "Kenny",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_10_votes": 94,
+            "ranks_11_20_votes": 401,
+            "ranks_21_30_votes": 101,
+            "source_points": 1195
+          }
         },
         {
           "player": "Envoy",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "best_player_votes": 1,
+            "ranks_2_10_votes": 67,
+            "ranks_11_20_votes": 435,
+            "ranks_21_30_votes": 103,
+            "source_points": 1179
+          }
         },
         {
           "player": "Clayster",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 53,
+            "ranks_11_20_votes": 388,
+            "ranks_21_30_votes": 144,
+            "source_points": 1079
+          }
         },
         {
           "player": "Asim",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 25,
+            "ranks_11_20_votes": 366,
+            "ranks_21_30_votes": 183,
+            "source_points": 990
+          }
         },
         {
           "player": "Attach",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "best_player_votes": 1,
+            "ranks_2_10_votes": 26,
+            "ranks_11_20_votes": 301,
+            "ranks_21_30_votes": 230,
+            "source_points": 915
+          }
         },
         {
           "player": "Octane",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 51,
+            "ranks_11_20_votes": 279,
+            "ranks_21_30_votes": 193,
+            "source_points": 904
+          }
         },
         {
           "player": "Vivid",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 30,
+            "ranks_11_20_votes": 299,
+            "ranks_21_30_votes": 185,
+            "source_points": 873
+          }
         },
         {
           "player": "Drazah",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 21,
+            "ranks_11_20_votes": 257,
+            "ranks_21_30_votes": 252,
+            "source_points": 829
+          }
         },
         {
           "player": "Neptune",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 22,
+            "ranks_11_20_votes": 222,
+            "ranks_21_30_votes": 226,
+            "source_points": 736
+          }
         },
         {
           "player": "Crimsix",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 22,
+            "ranks_11_20_votes": 210,
+            "ranks_21_30_votes": 230,
+            "source_points": 716
+          }
         },
         {
           "player": "Afro",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 19,
+            "ranks_11_20_votes": 220,
+            "ranks_21_30_votes": 209,
+            "source_points": 706
+          }
         },
         {
           "player": "iLLeY",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 25,
+            "ranks_11_20_votes": 181,
+            "ranks_21_30_votes": 247,
+            "source_points": 684
+          }
         },
         {
           "player": "Priestahh",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 19,
+            "ranks_11_20_votes": 185,
+            "ranks_21_30_votes": 243,
+            "source_points": 670
+          }
         },
         {
           "player": "Skyz",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 8,
+            "ranks_11_20_votes": 154,
+            "ranks_21_30_votes": 207,
+            "source_points": 539
+          }
         },
         {
           "player": "Gunless",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 8,
+            "ranks_11_20_votes": 96,
+            "ranks_21_30_votes": 281,
+            "source_points": 497
+          }
         },
         {
           "player": "FormaL",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 15,
+            "ranks_11_20_votes": 82,
+            "ranks_21_30_votes": 262,
+            "source_points": 471
+          }
         },
         {
           "player": "SlasheR",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 7,
+            "ranks_11_20_votes": 82,
+            "ranks_21_30_votes": 225,
+            "source_points": 410
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "best_player_votes": 773
+      }
     },
     {
       "source_id": "vanguard_reddit_2022_end_top30_survey",
@@ -2458,125 +3008,338 @@
       "ranked_players": [
         {
           "player": "Cellium",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "best_player_votes": 272,
+            "ranks_2_10_votes": 70,
+            "ranks_11_20_votes": 1,
+            "ranks_21_30_votes": 0,
+            "source_points": 1572
+          }
         },
         {
           "player": "Pred",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "best_player_votes": 42,
+            "ranks_2_10_votes": 300,
+            "ranks_11_20_votes": 3,
+            "ranks_21_30_votes": 0,
+            "source_points": 1113
+          }
         },
         {
           "player": "Dashy",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "best_player_votes": 61,
+            "ranks_2_10_votes": 264,
+            "ranks_11_20_votes": 2,
+            "ranks_21_30_votes": 5,
+            "source_points": 1106
+          }
         },
         {
           "player": "HyDra",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_10_votes": 284,
+            "ranks_11_20_votes": 42,
+            "ranks_21_30_votes": 4,
+            "source_points": 955
+          }
         },
         {
           "player": "Simp",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 275,
+            "ranks_11_20_votes": 52,
+            "ranks_21_30_votes": 7,
+            "source_points": 936
+          }
         },
         {
           "player": "Kenny",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "best_player_votes": 12,
+            "ranks_2_10_votes": 232,
+            "ranks_11_20_votes": 85,
+            "ranks_21_30_votes": 3,
+            "source_points": 929
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_10_votes": 263,
+            "ranks_11_20_votes": 57,
+            "ranks_21_30_votes": 13,
+            "source_points": 926
+          }
         },
         {
           "player": "Sib",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 256,
+            "ranks_11_20_votes": 68,
+            "ranks_21_30_votes": 11,
+            "source_points": 915
+          }
         },
         {
           "player": "Attach",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 250,
+            "ranks_11_20_votes": 71,
+            "ranks_21_30_votes": 6,
+            "source_points": 898
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 157,
+            "ranks_11_20_votes": 167,
+            "ranks_21_30_votes": 8,
+            "source_points": 813
+          }
         },
         {
           "player": "Envoy",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 140,
+            "ranks_11_20_votes": 178,
+            "ranks_21_30_votes": 14,
+            "source_points": 790
+          }
         },
         {
           "player": "Scump",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_10_votes": 115,
+            "ranks_11_20_votes": 181,
+            "ranks_21_30_votes": 33,
+            "source_points": 755
+          }
         },
         {
           "player": "Octane",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_10_votes": 108,
+            "ranks_11_20_votes": 191,
+            "ranks_21_30_votes": 23,
+            "source_points": 739
+          }
         },
         {
           "player": "Afro",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 98,
+            "ranks_11_20_votes": 200,
+            "ranks_21_30_votes": 23,
+            "source_points": 717
+          }
         },
         {
           "player": "CleanX",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 110,
+            "ranks_11_20_votes": 170,
+            "ranks_21_30_votes": 38,
+            "source_points": 708
+          }
         },
         {
           "player": "Drazah",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 65,
+            "ranks_11_20_votes": 208,
+            "ranks_21_30_votes": 52,
+            "source_points": 663
+          }
         },
         {
           "player": "Temp",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 66,
+            "ranks_11_20_votes": 178,
+            "ranks_21_30_votes": 62,
+            "source_points": 616
+          }
         },
         {
           "player": "Arcitys",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 25,
+            "ranks_11_20_votes": 184,
+            "ranks_21_30_votes": 107,
+            "source_points": 550
+          }
         },
         {
           "player": "KiSMET",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 30,
+            "ranks_11_20_votes": 168,
+            "ranks_21_30_votes": 90,
+            "source_points": 516
+          }
         },
         {
           "player": "Owakening",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 25,
+            "ranks_11_20_votes": 168,
+            "ranks_21_30_votes": 79,
+            "source_points": 490
+          }
         },
         {
           "player": "iLLeY",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 15,
+            "ranks_11_20_votes": 141,
+            "ranks_21_30_votes": 118,
+            "source_points": 445
+          }
         },
         {
           "player": "Mack",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 6,
+            "ranks_11_20_votes": 151,
+            "ranks_21_30_votes": 125,
+            "source_points": 445
+          }
         },
         {
           "player": "SlasheR",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 13,
+            "ranks_11_20_votes": 140,
+            "ranks_21_30_votes": 119,
+            "source_points": 438
+          }
         },
         {
           "player": "Cammy",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 6,
+            "ranks_11_20_votes": 135,
+            "ranks_21_30_votes": 135,
+            "source_points": 423
+          }
         },
         {
           "player": "Skyz",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 15,
+            "ranks_11_20_votes": 133,
+            "ranks_21_30_votes": 110,
+            "source_points": 421
+          }
         },
         {
           "player": "Vivid",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 10,
+            "ranks_11_20_votes": 127,
+            "ranks_21_30_votes": 133,
+            "source_points": 417
+          }
         },
         {
           "player": "Methodz",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 10,
+            "ranks_11_20_votes": 131,
+            "ranks_21_30_votes": 124,
+            "source_points": 416
+          }
         },
         {
           "player": "Zer0",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 8,
+            "ranks_11_20_votes": 108,
+            "ranks_21_30_votes": 140,
+            "source_points": 380
+          }
         },
         {
           "player": "Insight",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 6,
+            "ranks_11_20_votes": 126,
+            "ranks_21_30_votes": 108,
+            "source_points": 378
+          }
         },
         {
           "player": "Bance",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_10_votes": 5,
+            "ranks_11_20_votes": 113,
+            "ranks_21_30_votes": 130,
+            "source_points": 371
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "best_player_votes": 397
+      }
     },
     {
       "source_id": "mwii_reddit_2023_end_top30_survey",
@@ -2594,127 +3357,340 @@
       "ranking_size": 30,
       "sample_size": 244,
       "quality_multiplier": 1.0,
-      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line.",
+      "detail_totals": {
+        "best_player_votes": 258
+      },
+      "methodology_notes": "End-of-title annual community survey. Sample size is the visible total vote-bucket count for the top-ranked player because the result image exposes bucket vote counts but not a separate counted-ballots line. Source detail records the visible first-place vote total separately.",
       "ranked_players": [
         {
           "player": "HyDra",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "best_player_votes": 200,
+            "ranks_2_5_votes": 43,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 0,
+            "source_points": 1131
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "best_player_votes": 31,
+            "ranks_2_5_votes": 206,
+            "ranks_6_10_votes": 4,
+            "ranks_11_20_votes": 0,
+            "source_points": 781
+          }
         },
         {
           "player": "Scrap",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "best_player_votes": 18,
+            "ranks_2_5_votes": 214,
+            "ranks_6_10_votes": 7,
+            "ranks_11_20_votes": 1,
+            "source_points": 747
+          }
         },
         {
           "player": "Cellium",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_5_votes": 191,
+            "ranks_6_10_votes": 43,
+            "ranks_11_20_votes": 5,
+            "source_points": 679
+          }
         },
         {
           "player": "Pred",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "best_player_votes": 3,
+            "ranks_2_5_votes": 177,
+            "ranks_6_10_votes": 56,
+            "ranks_11_20_votes": 4,
+            "source_points": 662
+          }
         },
         {
           "player": "Octane",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 75,
+            "ranks_6_10_votes": 140,
+            "ranks_11_20_votes": 24,
+            "source_points": 529
+          }
         },
         {
           "player": "KiSMET",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "best_player_votes": 1,
+            "ranks_2_5_votes": 46,
+            "ranks_6_10_votes": 149,
+            "ranks_11_20_votes": 48,
+            "source_points": 489
+          }
         },
         {
           "player": "Dashy",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 37,
+            "ranks_6_10_votes": 167,
+            "ranks_11_20_votes": 41,
+            "source_points": 486
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 23,
+            "ranks_6_10_votes": 158,
+            "ranks_11_20_votes": 57,
+            "source_points": 442
+          }
         },
         {
           "player": "Simp",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 22,
+            "ranks_6_10_votes": 125,
+            "ranks_11_20_votes": 93,
+            "source_points": 409
+          }
         },
         {
           "player": "Drazah",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 21,
+            "ranks_6_10_votes": 120,
+            "ranks_11_20_votes": 95,
+            "source_points": 398
+          }
         },
         {
           "player": "Envoy",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 15,
+            "ranks_6_10_votes": 95,
+            "ranks_11_20_votes": 123,
+            "source_points": 358
+          }
         },
         {
           "player": "CleanX",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 9,
+            "ranks_6_10_votes": 51,
+            "ranks_11_20_votes": 156,
+            "source_points": 285
+          }
         },
         {
           "player": "Skyz",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 6,
+            "ranks_6_10_votes": 63,
+            "ranks_11_20_votes": 141,
+            "source_points": 285
+          }
         },
         {
           "player": "Sib",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 3,
+            "ranks_6_10_votes": 38,
+            "ranks_11_20_votes": 171,
+            "source_points": 256
+          }
         },
         {
           "player": "SlasheR",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 3,
+            "ranks_6_10_votes": 17,
+            "ranks_11_20_votes": 172,
+            "source_points": 215
+          }
         },
         {
           "player": "Ghosty",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 2,
+            "ranks_6_10_votes": 22,
+            "ranks_11_20_votes": 156,
+            "source_points": 206
+          }
         },
         {
           "player": "Priestahh",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 2,
+            "ranks_6_10_votes": 17,
+            "ranks_11_20_votes": 133,
+            "source_points": 173
+          }
         },
         {
           "player": "Insight",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 18,
+            "ranks_11_20_votes": 115,
+            "source_points": 151
+          }
         },
         {
           "player": "Owakening",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 15,
+            "ranks_11_20_votes": 107,
+            "source_points": 137
+          }
         },
         {
           "player": "Scump",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_5_votes": 6,
+            "ranks_6_10_votes": 22,
+            "ranks_11_20_votes": 64,
+            "source_points": 136
+          }
         },
         {
           "player": "Temp",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 1,
+            "ranks_6_10_votes": 10,
+            "ranks_11_20_votes": 107,
+            "source_points": 130
+          }
         },
         {
           "player": "Huke",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 14,
+            "ranks_11_20_votes": 100,
+            "source_points": 128
+          }
         },
         {
           "player": "Kenny",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 8,
+            "ranks_11_20_votes": 71,
+            "source_points": 87
+          }
         },
         {
           "player": "Clayster",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 9,
+            "ranks_11_20_votes": 63,
+            "source_points": 81
+          }
         },
         {
           "player": "Capsidal",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 10,
+            "ranks_11_20_votes": 54,
+            "source_points": 74
+          }
         },
         {
           "player": "Nastie",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 4,
+            "ranks_11_20_votes": 65,
+            "source_points": 73
+          }
         },
         {
           "player": "Beans",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 7,
+            "ranks_11_20_votes": 53,
+            "source_points": 67
+          }
         },
         {
           "player": "Afro",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 5,
+            "ranks_11_20_votes": 50,
+            "source_points": 60
+          }
         },
         {
           "player": "Standy",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 6,
+            "ranks_11_20_votes": 46,
+            "source_points": 58
+          }
         }
       ]
     },
@@ -2738,125 +3714,338 @@
       "ranked_players": [
         {
           "player": "Simp",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "best_player_votes": 52,
+            "ranks_2_5_votes": 108,
+            "ranks_6_10_votes": 2,
+            "ranks_11_20_votes": 0,
+            "source_points": 588
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "best_player_votes": 47,
+            "ranks_2_5_votes": 110,
+            "ranks_6_10_votes": 5,
+            "ranks_11_20_votes": 0,
+            "source_points": 575
+          }
         },
         {
           "player": "HyDra",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "best_player_votes": 36,
+            "ranks_2_5_votes": 125,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 0,
+            "source_points": 557
+          }
         },
         {
           "player": "Scrap",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "best_player_votes": 31,
+            "ranks_2_5_votes": 131,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 0,
+            "source_points": 548
+          }
         },
         {
           "player": "Dashy",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_5_votes": 56,
+            "ranks_6_10_votes": 91,
+            "ranks_11_20_votes": 13,
+            "source_points": 373
+          }
         },
         {
           "player": "Cellium",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "best_player_votes": 2,
+            "ranks_2_5_votes": 48,
+            "ranks_6_10_votes": 92,
+            "ranks_11_20_votes": 19,
+            "source_points": 357
+          }
         },
         {
           "player": "Drazah",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 35,
+            "ranks_6_10_votes": 99,
+            "ranks_11_20_votes": 24,
+            "source_points": 327
+          }
         },
         {
           "player": "Pred",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 24,
+            "ranks_6_10_votes": 116,
+            "ranks_11_20_votes": 21,
+            "source_points": 325
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 9,
+            "ranks_6_10_votes": 104,
+            "ranks_11_20_votes": 48,
+            "source_points": 283
+          }
         },
         {
           "player": "Ghosty",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 7,
+            "ranks_6_10_votes": 93,
+            "ranks_11_20_votes": 59,
+            "source_points": 266
+          }
         },
         {
           "player": "Sib",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 4,
+            "ranks_6_10_votes": 74,
+            "ranks_11_20_votes": 78,
+            "source_points": 238
+          }
         },
         {
           "player": "Kenny",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "best_player_votes": 1,
+            "ranks_2_5_votes": 4,
+            "ranks_6_10_votes": 65,
+            "ranks_11_20_votes": 89,
+            "source_points": 236
+          }
         },
         {
           "player": "CleanX",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 33,
+            "ranks_11_20_votes": 119,
+            "source_points": 185
+          }
         },
         {
           "player": "Abuzah",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 14,
+            "ranks_11_20_votes": 139,
+            "source_points": 167
+          }
         },
         {
           "player": "Envoy",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 12,
+            "ranks_11_20_votes": 127,
+            "source_points": 151
+          }
         },
         {
           "player": "Gwinn",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 11,
+            "ranks_11_20_votes": 123,
+            "source_points": 145
+          }
         },
         {
           "player": "Skyz",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 3,
+            "ranks_11_20_votes": 93,
+            "source_points": 99
+          }
         },
         {
           "player": "Insight",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 2,
+            "ranks_11_20_votes": 89,
+            "source_points": 93
+          }
         },
         {
           "player": "Attach",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 85,
+            "source_points": 87
+          }
         },
         {
           "player": "04",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 2,
+            "ranks_11_20_votes": 78,
+            "source_points": 82
+          }
         },
         {
           "player": "Nero",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 71,
+            "source_points": 73
+          }
         },
         {
           "player": "KiSMET",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 2,
+            "ranks_11_20_votes": 67,
+            "source_points": 71
+          }
         },
         {
           "player": "JoeDeceives",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 2,
+            "ranks_11_20_votes": 63,
+            "source_points": 67
+          }
         },
         {
           "player": "Gio",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 56,
+            "source_points": 56
+          }
         },
         {
           "player": "TJHaLy",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 52,
+            "source_points": 52
+          }
         },
         {
           "player": "Estreal",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 48,
+            "source_points": 48
+          }
         },
         {
           "player": "Beans",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 32,
+            "source_points": 32
+          }
         },
         {
           "player": "Lynz",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 29,
+            "source_points": 29
+          }
         },
         {
           "player": "ReeaL",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 27,
+            "source_points": 27
+          }
         },
         {
           "player": "Nastie",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 24,
+            "source_points": 24
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "best_player_votes": 171
+      }
     },
     {
       "source_id": "bo6_reddit_2025_end_top30_survey",
@@ -2878,125 +4067,338 @@
       "ranked_players": [
         {
           "player": "Scrap",
-          "rank": 1
+          "rank": 1,
+          "source_detail": {
+            "best_player_votes": 104,
+            "ranks_2_5_votes": 88,
+            "ranks_6_10_votes": 5,
+            "ranks_11_20_votes": 4,
+            "source_points": 798
+          }
         },
         {
           "player": "Shotzzy",
-          "rank": 2
+          "rank": 2,
+          "source_detail": {
+            "best_player_votes": 45,
+            "ranks_2_5_votes": 114,
+            "ranks_6_10_votes": 43,
+            "ranks_11_20_votes": 3,
+            "source_points": 656
+          }
         },
         {
           "player": "Mercules",
-          "rank": 3
+          "rank": 3,
+          "source_detail": {
+            "best_player_votes": 29,
+            "ranks_2_5_votes": 135,
+            "ranks_6_10_votes": 30,
+            "ranks_11_20_votes": 7,
+            "source_points": 617
+          }
         },
         {
           "player": "HyDra",
-          "rank": 4
+          "rank": 4,
+          "source_detail": {
+            "best_player_votes": 25,
+            "ranks_2_5_votes": 149,
+            "ranks_6_10_votes": 22,
+            "ranks_11_20_votes": 0,
+            "source_points": 616
+          }
         },
         {
           "player": "Dashy",
-          "rank": 5
+          "rank": 5,
+          "source_detail": {
+            "best_player_votes": 5,
+            "ranks_2_5_votes": 100,
+            "ranks_6_10_votes": 79,
+            "ranks_11_20_votes": 12,
+            "source_points": 495
+          }
         },
         {
           "player": "Huke",
-          "rank": 6
+          "rank": 6,
+          "source_detail": {
+            "best_player_votes": 1,
+            "ranks_2_5_votes": 64,
+            "ranks_6_10_votes": 84,
+            "ranks_11_20_votes": 25,
+            "source_points": 390
+          }
         },
         {
           "player": "Neptune",
-          "rank": 7
+          "rank": 7,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 42,
+            "ranks_6_10_votes": 119,
+            "ranks_11_20_votes": 17,
+            "source_points": 381
+          }
         },
         {
           "player": "Cellium",
-          "rank": 8
+          "rank": 8,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 38,
+            "ranks_6_10_votes": 93,
+            "ranks_11_20_votes": 44,
+            "source_points": 344
+          }
         },
         {
           "player": "JoeDeceives",
-          "rank": 9
+          "rank": 9,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 29,
+            "ranks_6_10_votes": 117,
+            "ranks_11_20_votes": 24,
+            "source_points": 345
+          }
         },
         {
           "player": "Simp",
-          "rank": 10
+          "rank": 10,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 30,
+            "ranks_6_10_votes": 92,
+            "ranks_11_20_votes": 51,
+            "source_points": 325
+          }
         },
         {
           "player": "RenKoR",
-          "rank": 11
+          "rank": 11,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 19,
+            "ranks_6_10_votes": 112,
+            "ranks_11_20_votes": 42,
+            "source_points": 323
+          }
         },
         {
           "player": "04",
-          "rank": 12
+          "rank": 12,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 2,
+            "ranks_6_10_votes": 25,
+            "ranks_11_20_votes": 138,
+            "source_points": 194
+          }
         },
         {
           "player": "aBeZy",
-          "rank": 13
+          "rank": 13,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 1,
+            "ranks_6_10_votes": 27,
+            "ranks_11_20_votes": 136,
+            "source_points": 193
+          }
         },
         {
           "player": "Abuzah",
-          "rank": 14
+          "rank": 14,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 1,
+            "ranks_6_10_votes": 14,
+            "ranks_11_20_votes": 145,
+            "source_points": 176
+          }
         },
         {
           "player": "SupeR (Diego Escudero)",
-          "rank": 15
+          "rank": 15,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 2,
+            "ranks_6_10_votes": 25,
+            "ranks_11_20_votes": 111,
+            "source_points": 167
+          }
         },
         {
           "player": "Drazah",
-          "rank": 16
+          "rank": 16,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 16,
+            "ranks_11_20_votes": 135,
+            "source_points": 167
+          }
         },
         {
           "player": "CleanX",
-          "rank": 17
+          "rank": 17,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 1,
+            "ranks_6_10_votes": 16,
+            "ranks_11_20_votes": 130,
+            "source_points": 165
+          }
         },
         {
           "player": "ReeaL",
-          "rank": 18
+          "rank": 18,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 22,
+            "ranks_11_20_votes": 114,
+            "source_points": 158
+          }
         },
         {
           "player": "Ghosty",
-          "rank": 19
+          "rank": 19,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 14,
+            "ranks_11_20_votes": 125,
+            "source_points": 153
+          }
         },
         {
           "player": "Nastie",
-          "rank": 20
+          "rank": 20,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 15,
+            "ranks_11_20_votes": 115,
+            "source_points": 145
+          }
         },
         {
           "player": "Envoy",
-          "rank": 21
+          "rank": 21,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 10,
+            "ranks_11_20_votes": 121,
+            "source_points": 141
+          }
         },
         {
           "player": "Snoopy",
-          "rank": 22
+          "rank": 22,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 7,
+            "ranks_11_20_votes": 53,
+            "source_points": 67
+          }
         },
         {
           "player": "Purj",
-          "rank": 23
+          "rank": 23,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 3,
+            "ranks_11_20_votes": 48,
+            "source_points": 54
+          }
         },
         {
           "player": "Sib",
-          "rank": 24
+          "rank": 24,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 28,
+            "source_points": 30
+          }
         },
         {
           "player": "Gwinn",
-          "rank": 25
+          "rank": 25,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 1,
+            "ranks_11_20_votes": 24,
+            "source_points": 26
+          }
         },
         {
           "player": "MettalZ",
-          "rank": 26
+          "rank": 26,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 21,
+            "source_points": 21
+          }
         },
         {
           "player": "KiSMET",
-          "rank": 27
+          "rank": 27,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 20,
+            "source_points": 20
+          }
         },
         {
           "player": "Pred",
-          "rank": 28
+          "rank": 28,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 18,
+            "source_points": 18
+          }
         },
         {
           "player": "Cammy",
-          "rank": 29
+          "rank": 29,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 14,
+            "source_points": 14
+          }
         },
         {
           "player": "Beans",
-          "rank": 30
+          "rank": 30,
+          "source_detail": {
+            "best_player_votes": 0,
+            "ranks_2_5_votes": 0,
+            "ranks_6_10_votes": 0,
+            "ranks_11_20_votes": 11,
+            "source_points": 11
+          }
         }
-      ]
+      ],
+      "detail_totals": {
+        "best_player_votes": 209
+      }
     }
   ]
 }

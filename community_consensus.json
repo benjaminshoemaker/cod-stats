@@ -10,69 +10,69 @@
       "season_coverage_multiplier": 1.0,
       "weight": 1.48492424049175,
       "scores": {
-        "Karma": 1.362637518308197,
+        "Karma": 1.3626375183081967,
         "Crimsix": 1.386330421471496,
         "Clayster": 1.1193155584002403,
         "Parasite": 0.7869405507136371,
-        "ACHES": 1.021174239742085,
+        "ACHES": 1.0211742397420847,
         "TeeP": 0.6019026694601818,
-        "MiRx": 0.42856204463168057,
-        "Scump": 0.1976882318241677,
+        "MiRx": 0.4285620446316804,
+        "Scump": 0.19768823182416767,
         "KiLLa": 0.26887295794121135,
         "JKap": 0.23001690550487716,
-        "ProoFy": 0.20095192120198008,
-        "Sharp": 0.020130823472095587,
+        "ProoFy": 0.20095192120198005,
+        "Sharp": 0.02013082347209558,
         "Saints": 0.03795105171213719,
-        "John": 0.0126503505707124
+        "John": 0.012650350570712399
       },
       "ballot_reception": [
         {
           "ballot_id": "bo2_2016_top10_001",
           "comment_score": null,
           "raw_weight": 1.0,
-          "normalized_weight": 0.9087135159809875
+          "normalized_weight": 0.9087135159809874
         },
         {
           "ballot_id": "bo2_2016_top10_002",
           "comment_score": 7,
           "raw_weight": 1.25,
-          "normalized_weight": 1.1358918949762344
+          "normalized_weight": 1.1358918949762342
         },
         {
           "ballot_id": "bo2_2016_top10_003",
           "comment_score": 4,
           "raw_weight": 1.1934940079072802,
-          "normalized_weight": 1.084544136227665
+          "normalized_weight": 1.0845441362276649
         },
         {
           "ballot_id": "bo2_2016_top10_004",
           "comment_score": 3,
           "raw_weight": 1.1666666666666667,
-          "normalized_weight": 1.0601657686444854
+          "normalized_weight": 1.0601657686444852
         },
         {
           "ballot_id": "bo2_2016_top10_005",
           "comment_score": 3,
           "raw_weight": 1.1666666666666667,
-          "normalized_weight": 1.0601657686444854
+          "normalized_weight": 1.0601657686444852
         },
         {
           "ballot_id": "bo2_2016_top10_006",
           "comment_score": 4,
           "raw_weight": 1.1934940079072802,
-          "normalized_weight": 1.084544136227665
+          "normalized_weight": 1.0845441362276649
         },
         {
           "ballot_id": "bo2_2016_top10_007",
           "comment_score": 1,
           "raw_weight": 1.0833333333333333,
-          "normalized_weight": 0.9844396423127364
+          "normalized_weight": 0.9844396423127362
         },
         {
           "ballot_id": "bo2_2016_top10_008",
           "comment_score": -11,
           "raw_weight": 0.75,
-          "normalized_weight": 0.6815351369857406
+          "normalized_weight": 0.6815351369857405
         }
       ]
     },
@@ -2279,6 +2279,192 @@
         "Crimsix": 0.1785,
         "ZooMaa": 0.119,
         "Enable": 0.0595
+      },
+      "detail_totals": {
+        "respondents": 810,
+        "estimated_from_chart": true
+      },
+      "details": {
+        "Dashy": {
+          "top_10_inclusion_pct": 93.4,
+          "top_10_inclusion_votes": 757,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.9345679012345679
+        },
+        "Simp": {
+          "top_10_inclusion_pct": 89.1,
+          "top_10_inclusion_votes": 722,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.891358024691358
+        },
+        "Octane": {
+          "top_10_inclusion_pct": 87.0,
+          "top_10_inclusion_votes": 705,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.8703703703703703
+        },
+        "aBeZy": {
+          "top_10_inclusion_pct": 72.9,
+          "top_10_inclusion_votes": 590,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.7283950617283951
+        },
+        "Dylan": {
+          "top_10_inclusion_pct": 72.7,
+          "top_10_inclusion_votes": 589,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.7271604938271605
+        },
+        "Envoy": {
+          "top_10_inclusion_pct": 66.5,
+          "top_10_inclusion_votes": 539,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.6654320987654321
+        },
+        "Priestahh": {
+          "top_10_inclusion_pct": 63.8,
+          "top_10_inclusion_votes": 517,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.6382716049382716
+        },
+        "SlasheR": {
+          "top_10_inclusion_pct": 57.8,
+          "top_10_inclusion_votes": 468,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.5777777777777777
+        },
+        "Skrapz": {
+          "top_10_inclusion_pct": 33.5,
+          "top_10_inclusion_votes": 271,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.3345679012345679
+        },
+        "Temp": {
+          "top_10_inclusion_pct": 32.4,
+          "top_10_inclusion_votes": 262,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.3234567901234568
+        },
+        "FormaL": {
+          "top_10_inclusion_pct": 32.2,
+          "top_10_inclusion_votes": 261,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.32222222222222224
+        },
+        "Arcitys": {
+          "top_10_inclusion_pct": 29.2,
+          "top_10_inclusion_votes": 237,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.29259259259259257
+        },
+        "TJHaLy": {
+          "top_10_inclusion_pct": 22.6,
+          "top_10_inclusion_votes": 183,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.22592592592592592
+        },
+        "Kenny": {
+          "top_10_inclusion_pct": 20.0,
+          "top_10_inclusion_votes": 162,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.2
+        },
+        "Gunless": {
+          "top_10_inclusion_pct": 19.8,
+          "top_10_inclusion_votes": 160,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.19753086419753085
+        },
+        "Brack": {
+          "top_10_inclusion_pct": 17.7,
+          "top_10_inclusion_votes": 143,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.1765432098765432
+        },
+        "Cellium": {
+          "top_10_inclusion_pct": 16.8,
+          "top_10_inclusion_votes": 136,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.16790123456790124
+        },
+        "Scump": {
+          "top_10_inclusion_pct": 16.2,
+          "top_10_inclusion_votes": 131,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.1617283950617284
+        },
+        "Huke": {
+          "top_10_inclusion_pct": 16.0,
+          "top_10_inclusion_votes": 130,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.16049382716049382
+        },
+        "Attach": {
+          "top_10_inclusion_pct": 13.6,
+          "top_10_inclusion_votes": 110,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.13580246913580246
+        },
+        "Maux": {
+          "top_10_inclusion_pct": 12.4,
+          "top_10_inclusion_votes": 100,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.12345679012345678
+        },
+        "Karma": {
+          "top_10_inclusion_pct": 6.8,
+          "top_10_inclusion_votes": 55,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.06790123456790123
+        },
+        "Havok": {
+          "top_10_inclusion_pct": 6.2,
+          "top_10_inclusion_votes": 50,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.06172839506172839
+        },
+        "Clayster": {
+          "top_10_inclusion_pct": 6.0,
+          "top_10_inclusion_votes": 49,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.06049382716049383
+        },
+        "GodRx": {
+          "top_10_inclusion_pct": 4.5,
+          "top_10_inclusion_votes": 36,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.044444444444444446
+        },
+        "Skyz": {
+          "top_10_inclusion_pct": 4.5,
+          "top_10_inclusion_votes": 36,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.044444444444444446
+        },
+        "MajorManiak": {
+          "top_10_inclusion_pct": 4.3,
+          "top_10_inclusion_votes": 35,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.043209876543209874
+        },
+        "Crimsix": {
+          "top_10_inclusion_pct": 4.3,
+          "top_10_inclusion_votes": 35,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.043209876543209874
+        },
+        "ZooMaa": {
+          "top_10_inclusion_pct": 3.6,
+          "top_10_inclusion_votes": 29,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.03580246913580247
+        },
+        "Enable": {
+          "top_10_inclusion_pct": 3.6,
+          "top_10_inclusion_votes": 29,
+          "estimated_from_chart": true,
+          "top_10_inclusion_share": 0.03580246913580247
+        }
       }
     },
     "mw2019_reddit_2020_end_top30_survey": {
@@ -2320,6 +2506,191 @@
         "Prestinni": 0.22289010745208052,
         "CleanX": 0.14859340496805368,
         "Kenny": 0.07429670248402684
+      },
+      "detail_totals": {
+        "valid_ballots": 345
+      },
+      "details": {
+        "Simp": {
+          "top_10_votes": 311,
+          "top_20_votes": 11,
+          "top_30_votes": 1,
+          "source_points": 956
+        },
+        "Envoy": {
+          "top_10_votes": 300,
+          "top_20_votes": 17,
+          "top_30_votes": 2,
+          "source_points": 936
+        },
+        "Shotzzy": {
+          "top_10_votes": 303,
+          "top_20_votes": 9,
+          "top_30_votes": 3,
+          "source_points": 930
+        },
+        "aBeZy": {
+          "top_10_votes": 282,
+          "top_20_votes": 32,
+          "top_30_votes": 1,
+          "source_points": 911
+        },
+        "Cellium": {
+          "top_10_votes": 264,
+          "top_20_votes": 33,
+          "top_30_votes": 7,
+          "source_points": 865
+        },
+        "Octane": {
+          "top_10_votes": 267,
+          "top_20_votes": 27,
+          "top_30_votes": 8,
+          "source_points": 863
+        },
+        "Arcitys": {
+          "top_10_votes": 205,
+          "top_20_votes": 99,
+          "top_30_votes": 5,
+          "source_points": 818
+        },
+        "Huke": {
+          "top_10_votes": 137,
+          "top_20_votes": 121,
+          "top_30_votes": 13,
+          "source_points": 666
+        },
+        "Skyz": {
+          "top_10_votes": 192,
+          "top_20_votes": 37,
+          "top_30_votes": 14,
+          "source_points": 664
+        },
+        "Scump": {
+          "top_10_votes": 117,
+          "top_20_votes": 142,
+          "top_30_votes": 27,
+          "source_points": 662
+        },
+        "Clayster": {
+          "top_10_votes": 104,
+          "top_20_votes": 139,
+          "top_30_votes": 40,
+          "source_points": 630
+        },
+        "Wuskin": {
+          "top_10_votes": 114,
+          "top_20_votes": 107,
+          "top_30_votes": 22,
+          "source_points": 578
+        },
+        "FormaL": {
+          "top_10_votes": 77,
+          "top_20_votes": 152,
+          "top_30_votes": 35,
+          "source_points": 570
+        },
+        "iLLeY": {
+          "top_10_votes": 75,
+          "top_20_votes": 149,
+          "top_30_votes": 39,
+          "source_points": 562
+        },
+        "Crimsix": {
+          "top_10_votes": 64,
+          "top_20_votes": 118,
+          "top_30_votes": 70,
+          "source_points": 498
+        },
+        "Owakening": {
+          "top_10_votes": 84,
+          "top_20_votes": 84,
+          "top_30_votes": 42,
+          "source_points": 462
+        },
+        "Mack": {
+          "top_10_votes": 66,
+          "top_20_votes": 103,
+          "top_30_votes": 50,
+          "source_points": 454
+        },
+        "SlasheR": {
+          "top_10_votes": 45,
+          "top_20_votes": 101,
+          "top_30_votes": 44,
+          "source_points": 381
+        },
+        "Priestahh": {
+          "top_10_votes": 29,
+          "top_20_votes": 108,
+          "top_30_votes": 73,
+          "source_points": 376
+        },
+        "Fero": {
+          "top_10_votes": 44,
+          "top_20_votes": 102,
+          "top_30_votes": 35,
+          "source_points": 371
+        },
+        "Attach": {
+          "top_10_votes": 31,
+          "top_20_votes": 108,
+          "top_30_votes": 57,
+          "source_points": 366
+        },
+        "MajorManiak": {
+          "top_10_votes": 6,
+          "top_20_votes": 102,
+          "top_30_votes": 88,
+          "source_points": 310
+        },
+        "Cammy": {
+          "top_10_votes": 25,
+          "top_20_votes": 74,
+          "top_30_votes": 66,
+          "source_points": 289
+        },
+        "ZooMaa": {
+          "top_10_votes": 8,
+          "top_20_votes": 58,
+          "top_30_votes": 96,
+          "source_points": 236
+        },
+        "Methodz": {
+          "top_10_votes": 7,
+          "top_20_votes": 56,
+          "top_30_votes": 85,
+          "source_points": 218
+        },
+        "GodRx": {
+          "top_10_votes": 14,
+          "top_20_votes": 60,
+          "top_30_votes": 53,
+          "source_points": 215
+        },
+        "Skrapz": {
+          "top_10_votes": 4,
+          "top_20_votes": 46,
+          "top_30_votes": 74,
+          "source_points": 178
+        },
+        "Prestinni": {
+          "top_10_votes": 7,
+          "top_20_votes": 29,
+          "top_30_votes": 85,
+          "source_points": 164
+        },
+        "CleanX": {
+          "top_10_votes": 7,
+          "top_20_votes": 37,
+          "top_30_votes": 64,
+          "source_points": 159
+        },
+        "Kenny": {
+          "top_10_votes": 4,
+          "top_20_votes": 26,
+          "top_30_votes": 75,
+          "source_points": 139
+        }
       }
     },
     "bocw_reddit_2021_end_top30_survey": {
@@ -2361,6 +2732,251 @@
         "Gunless": 0.3321204600743532,
         "FormaL": 0.22141364004956876,
         "SlasheR": 0.11070682002478438
+      },
+      "detail_totals": {
+        "best_player_votes": 773
+      },
+      "details": {
+        "Simp": {
+          "best_player_votes": 390,
+          "ranks_2_10_votes": 367,
+          "ranks_11_20_votes": 7,
+          "ranks_21_30_votes": 2,
+          "source_points": 3067,
+          "best_player_vote_share": 0.5045278137128072
+        },
+        "aBeZy": {
+          "best_player_votes": 231,
+          "ranks_2_10_votes": 528,
+          "ranks_11_20_votes": 10,
+          "ranks_21_30_votes": 4,
+          "source_points": 2763,
+          "best_player_vote_share": 0.2988357050452781
+        },
+        "Cammy": {
+          "best_player_votes": 64,
+          "ranks_2_10_votes": 648,
+          "ranks_11_20_votes": 27,
+          "ranks_21_30_votes": 8,
+          "source_points": 2326,
+          "best_player_vote_share": 0.08279430789133248
+        },
+        "Cellium": {
+          "best_player_votes": 24,
+          "ranks_2_10_votes": 661,
+          "ranks_11_20_votes": 28,
+          "ranks_21_30_votes": 8,
+          "source_points": 2167,
+          "best_player_vote_share": 0.031047865459249677
+        },
+        "Insight": {
+          "best_player_votes": 10,
+          "ranks_2_10_votes": 646,
+          "ranks_11_20_votes": 32,
+          "ranks_21_30_votes": 10,
+          "source_points": 2072,
+          "best_player_vote_share": 0.0129366106080207
+        },
+        "Shotzzy": {
+          "best_player_votes": 11,
+          "ranks_2_10_votes": 625,
+          "ranks_11_20_votes": 50,
+          "ranks_21_30_votes": 12,
+          "source_points": 2054,
+          "best_player_vote_share": 0.014230271668822769
+        },
+        "Scump": {
+          "best_player_votes": 17,
+          "ranks_2_10_votes": 427,
+          "ranks_11_20_votes": 229,
+          "ranks_21_30_votes": 20,
+          "source_points": 1844,
+          "best_player_vote_share": 0.02199223803363519
+        },
+        "Standy": {
+          "best_player_votes": 3,
+          "ranks_2_10_votes": 486,
+          "ranks_11_20_votes": 148,
+          "ranks_21_30_votes": 25,
+          "source_points": 1794,
+          "best_player_vote_share": 0.0038809831824062097
+        },
+        "HyDra": {
+          "best_player_votes": 3,
+          "ranks_2_10_votes": 454,
+          "ranks_11_20_votes": 188,
+          "ranks_21_30_votes": 17,
+          "source_points": 1770,
+          "best_player_vote_share": 0.0038809831824062097
+        },
+        "CleanX": {
+          "best_player_votes": 3,
+          "ranks_2_10_votes": 426,
+          "ranks_11_20_votes": 214,
+          "ranks_21_30_votes": 28,
+          "source_points": 1749,
+          "best_player_vote_share": 0.0038809831824062097
+        },
+        "Dashy": {
+          "best_player_votes": 5,
+          "ranks_2_10_votes": 419,
+          "ranks_11_20_votes": 218,
+          "ranks_21_30_votes": 27,
+          "source_points": 1745,
+          "best_player_vote_share": 0.00646830530401035
+        },
+        "Arcitys": {
+          "best_player_votes": 6,
+          "ranks_2_10_votes": 293,
+          "ranks_11_20_votes": 350,
+          "ranks_21_30_votes": 27,
+          "source_points": 1636,
+          "best_player_vote_share": 0.007761966364812419
+        },
+        "Bance": {
+          "best_player_votes": 2,
+          "ranks_2_10_votes": 149,
+          "ranks_11_20_votes": 397,
+          "ranks_21_30_votes": 99,
+          "source_points": 1350,
+          "best_player_vote_share": 0.00258732212160414
+        },
+        "Kenny": {
+          "best_player_votes": 2,
+          "ranks_2_10_votes": 94,
+          "ranks_11_20_votes": 401,
+          "ranks_21_30_votes": 101,
+          "source_points": 1195,
+          "best_player_vote_share": 0.00258732212160414
+        },
+        "Envoy": {
+          "best_player_votes": 1,
+          "ranks_2_10_votes": 67,
+          "ranks_11_20_votes": 435,
+          "ranks_21_30_votes": 103,
+          "source_points": 1179,
+          "best_player_vote_share": 0.00129366106080207
+        },
+        "Clayster": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 53,
+          "ranks_11_20_votes": 388,
+          "ranks_21_30_votes": 144,
+          "source_points": 1079,
+          "best_player_vote_share": 0.0
+        },
+        "Asim": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 25,
+          "ranks_11_20_votes": 366,
+          "ranks_21_30_votes": 183,
+          "source_points": 990,
+          "best_player_vote_share": 0.0
+        },
+        "Attach": {
+          "best_player_votes": 1,
+          "ranks_2_10_votes": 26,
+          "ranks_11_20_votes": 301,
+          "ranks_21_30_votes": 230,
+          "source_points": 915,
+          "best_player_vote_share": 0.00129366106080207
+        },
+        "Octane": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 51,
+          "ranks_11_20_votes": 279,
+          "ranks_21_30_votes": 193,
+          "source_points": 904,
+          "best_player_vote_share": 0.0
+        },
+        "Vivid": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 30,
+          "ranks_11_20_votes": 299,
+          "ranks_21_30_votes": 185,
+          "source_points": 873,
+          "best_player_vote_share": 0.0
+        },
+        "Drazah": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 21,
+          "ranks_11_20_votes": 257,
+          "ranks_21_30_votes": 252,
+          "source_points": 829,
+          "best_player_vote_share": 0.0
+        },
+        "Neptune": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 22,
+          "ranks_11_20_votes": 222,
+          "ranks_21_30_votes": 226,
+          "source_points": 736,
+          "best_player_vote_share": 0.0
+        },
+        "Crimsix": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 22,
+          "ranks_11_20_votes": 210,
+          "ranks_21_30_votes": 230,
+          "source_points": 716,
+          "best_player_vote_share": 0.0
+        },
+        "Afro": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 19,
+          "ranks_11_20_votes": 220,
+          "ranks_21_30_votes": 209,
+          "source_points": 706,
+          "best_player_vote_share": 0.0
+        },
+        "iLLeY": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 25,
+          "ranks_11_20_votes": 181,
+          "ranks_21_30_votes": 247,
+          "source_points": 684,
+          "best_player_vote_share": 0.0
+        },
+        "Priestahh": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 19,
+          "ranks_11_20_votes": 185,
+          "ranks_21_30_votes": 243,
+          "source_points": 670,
+          "best_player_vote_share": 0.0
+        },
+        "Skyz": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 8,
+          "ranks_11_20_votes": 154,
+          "ranks_21_30_votes": 207,
+          "source_points": 539,
+          "best_player_vote_share": 0.0
+        },
+        "Gunless": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 8,
+          "ranks_11_20_votes": 96,
+          "ranks_21_30_votes": 281,
+          "source_points": 497,
+          "best_player_vote_share": 0.0
+        },
+        "FormaL": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 15,
+          "ranks_11_20_votes": 82,
+          "ranks_21_30_votes": 262,
+          "source_points": 471,
+          "best_player_vote_share": 0.0
+        },
+        "SlasheR": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 7,
+          "ranks_11_20_votes": 82,
+          "ranks_21_30_votes": 225,
+          "source_points": 410,
+          "best_player_vote_share": 0.0
+        }
       }
     },
     "vanguard_reddit_2022_end_top30_survey": {
@@ -2402,6 +3018,251 @@
         "Zer0": 0.22224311012942566,
         "Insight": 0.1481620734196171,
         "Bance": 0.07408103670980855
+      },
+      "detail_totals": {
+        "best_player_votes": 397
+      },
+      "details": {
+        "Cellium": {
+          "best_player_votes": 272,
+          "ranks_2_10_votes": 70,
+          "ranks_11_20_votes": 1,
+          "ranks_21_30_votes": 0,
+          "source_points": 1572,
+          "best_player_vote_share": 0.6851385390428212
+        },
+        "Pred": {
+          "best_player_votes": 42,
+          "ranks_2_10_votes": 300,
+          "ranks_11_20_votes": 3,
+          "ranks_21_30_votes": 0,
+          "source_points": 1113,
+          "best_player_vote_share": 0.10579345088161209
+        },
+        "Dashy": {
+          "best_player_votes": 61,
+          "ranks_2_10_votes": 264,
+          "ranks_11_20_votes": 2,
+          "ranks_21_30_votes": 5,
+          "source_points": 1106,
+          "best_player_vote_share": 0.15365239294710328
+        },
+        "HyDra": {
+          "best_player_votes": 3,
+          "ranks_2_10_votes": 284,
+          "ranks_11_20_votes": 42,
+          "ranks_21_30_votes": 4,
+          "source_points": 955,
+          "best_player_vote_share": 0.007556675062972292
+        },
+        "Simp": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 275,
+          "ranks_11_20_votes": 52,
+          "ranks_21_30_votes": 7,
+          "source_points": 936,
+          "best_player_vote_share": 0.0
+        },
+        "Kenny": {
+          "best_player_votes": 12,
+          "ranks_2_10_votes": 232,
+          "ranks_11_20_votes": 85,
+          "ranks_21_30_votes": 3,
+          "source_points": 929,
+          "best_player_vote_share": 0.030226700251889168
+        },
+        "Shotzzy": {
+          "best_player_votes": 2,
+          "ranks_2_10_votes": 263,
+          "ranks_11_20_votes": 57,
+          "ranks_21_30_votes": 13,
+          "source_points": 926,
+          "best_player_vote_share": 0.005037783375314861
+        },
+        "Sib": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 256,
+          "ranks_11_20_votes": 68,
+          "ranks_21_30_votes": 11,
+          "source_points": 915,
+          "best_player_vote_share": 0.0
+        },
+        "Attach": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 250,
+          "ranks_11_20_votes": 71,
+          "ranks_21_30_votes": 6,
+          "source_points": 898,
+          "best_player_vote_share": 0.0
+        },
+        "aBeZy": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 157,
+          "ranks_11_20_votes": 167,
+          "ranks_21_30_votes": 8,
+          "source_points": 813,
+          "best_player_vote_share": 0.0
+        },
+        "Envoy": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 140,
+          "ranks_11_20_votes": 178,
+          "ranks_21_30_votes": 14,
+          "source_points": 790,
+          "best_player_vote_share": 0.0
+        },
+        "Scump": {
+          "best_player_votes": 3,
+          "ranks_2_10_votes": 115,
+          "ranks_11_20_votes": 181,
+          "ranks_21_30_votes": 33,
+          "source_points": 755,
+          "best_player_vote_share": 0.007556675062972292
+        },
+        "Octane": {
+          "best_player_votes": 2,
+          "ranks_2_10_votes": 108,
+          "ranks_11_20_votes": 191,
+          "ranks_21_30_votes": 23,
+          "source_points": 739,
+          "best_player_vote_share": 0.005037783375314861
+        },
+        "Afro": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 98,
+          "ranks_11_20_votes": 200,
+          "ranks_21_30_votes": 23,
+          "source_points": 717,
+          "best_player_vote_share": 0.0
+        },
+        "CleanX": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 110,
+          "ranks_11_20_votes": 170,
+          "ranks_21_30_votes": 38,
+          "source_points": 708,
+          "best_player_vote_share": 0.0
+        },
+        "Drazah": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 65,
+          "ranks_11_20_votes": 208,
+          "ranks_21_30_votes": 52,
+          "source_points": 663,
+          "best_player_vote_share": 0.0
+        },
+        "Temp": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 66,
+          "ranks_11_20_votes": 178,
+          "ranks_21_30_votes": 62,
+          "source_points": 616,
+          "best_player_vote_share": 0.0
+        },
+        "Arcitys": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 25,
+          "ranks_11_20_votes": 184,
+          "ranks_21_30_votes": 107,
+          "source_points": 550,
+          "best_player_vote_share": 0.0
+        },
+        "KiSMET": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 30,
+          "ranks_11_20_votes": 168,
+          "ranks_21_30_votes": 90,
+          "source_points": 516,
+          "best_player_vote_share": 0.0
+        },
+        "Owakening": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 25,
+          "ranks_11_20_votes": 168,
+          "ranks_21_30_votes": 79,
+          "source_points": 490,
+          "best_player_vote_share": 0.0
+        },
+        "iLLeY": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 15,
+          "ranks_11_20_votes": 141,
+          "ranks_21_30_votes": 118,
+          "source_points": 445,
+          "best_player_vote_share": 0.0
+        },
+        "Mack": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 6,
+          "ranks_11_20_votes": 151,
+          "ranks_21_30_votes": 125,
+          "source_points": 445,
+          "best_player_vote_share": 0.0
+        },
+        "SlasheR": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 13,
+          "ranks_11_20_votes": 140,
+          "ranks_21_30_votes": 119,
+          "source_points": 438,
+          "best_player_vote_share": 0.0
+        },
+        "Cammy": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 6,
+          "ranks_11_20_votes": 135,
+          "ranks_21_30_votes": 135,
+          "source_points": 423,
+          "best_player_vote_share": 0.0
+        },
+        "Skyz": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 15,
+          "ranks_11_20_votes": 133,
+          "ranks_21_30_votes": 110,
+          "source_points": 421,
+          "best_player_vote_share": 0.0
+        },
+        "Vivid": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 10,
+          "ranks_11_20_votes": 127,
+          "ranks_21_30_votes": 133,
+          "source_points": 417,
+          "best_player_vote_share": 0.0
+        },
+        "Methodz": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 10,
+          "ranks_11_20_votes": 131,
+          "ranks_21_30_votes": 124,
+          "source_points": 416,
+          "best_player_vote_share": 0.0
+        },
+        "Zer0": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 8,
+          "ranks_11_20_votes": 108,
+          "ranks_21_30_votes": 140,
+          "source_points": 380,
+          "best_player_vote_share": 0.0
+        },
+        "Insight": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 6,
+          "ranks_11_20_votes": 126,
+          "ranks_21_30_votes": 108,
+          "source_points": 378,
+          "best_player_vote_share": 0.0
+        },
+        "Bance": {
+          "best_player_votes": 0,
+          "ranks_2_10_votes": 5,
+          "ranks_11_20_votes": 113,
+          "ranks_21_30_votes": 130,
+          "source_points": 371,
+          "best_player_vote_share": 0.0
+        }
       }
     },
     "mwii_reddit_2023_end_top30_survey": {
@@ -2443,6 +3304,251 @@
         "Beans": 0.1874459922217597,
         "Afro": 0.12496399481450646,
         "Standy": 0.06248199740725323
+      },
+      "detail_totals": {
+        "best_player_votes": 258
+      },
+      "details": {
+        "HyDra": {
+          "best_player_votes": 200,
+          "ranks_2_5_votes": 43,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 0,
+          "source_points": 1131,
+          "best_player_vote_share": 0.7751937984496124
+        },
+        "aBeZy": {
+          "best_player_votes": 31,
+          "ranks_2_5_votes": 206,
+          "ranks_6_10_votes": 4,
+          "ranks_11_20_votes": 0,
+          "source_points": 781,
+          "best_player_vote_share": 0.12015503875968993
+        },
+        "Scrap": {
+          "best_player_votes": 18,
+          "ranks_2_5_votes": 214,
+          "ranks_6_10_votes": 7,
+          "ranks_11_20_votes": 1,
+          "source_points": 747,
+          "best_player_vote_share": 0.06976744186046512
+        },
+        "Cellium": {
+          "best_player_votes": 3,
+          "ranks_2_5_votes": 191,
+          "ranks_6_10_votes": 43,
+          "ranks_11_20_votes": 5,
+          "source_points": 679,
+          "best_player_vote_share": 0.011627906976744186
+        },
+        "Pred": {
+          "best_player_votes": 3,
+          "ranks_2_5_votes": 177,
+          "ranks_6_10_votes": 56,
+          "ranks_11_20_votes": 4,
+          "source_points": 662,
+          "best_player_vote_share": 0.011627906976744186
+        },
+        "Octane": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 75,
+          "ranks_6_10_votes": 140,
+          "ranks_11_20_votes": 24,
+          "source_points": 529,
+          "best_player_vote_share": 0.0
+        },
+        "KiSMET": {
+          "best_player_votes": 1,
+          "ranks_2_5_votes": 46,
+          "ranks_6_10_votes": 149,
+          "ranks_11_20_votes": 48,
+          "source_points": 489,
+          "best_player_vote_share": 0.003875968992248062
+        },
+        "Dashy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 37,
+          "ranks_6_10_votes": 167,
+          "ranks_11_20_votes": 41,
+          "source_points": 486,
+          "best_player_vote_share": 0.0
+        },
+        "Shotzzy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 23,
+          "ranks_6_10_votes": 158,
+          "ranks_11_20_votes": 57,
+          "source_points": 442,
+          "best_player_vote_share": 0.0
+        },
+        "Simp": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 22,
+          "ranks_6_10_votes": 125,
+          "ranks_11_20_votes": 93,
+          "source_points": 409,
+          "best_player_vote_share": 0.0
+        },
+        "Drazah": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 21,
+          "ranks_6_10_votes": 120,
+          "ranks_11_20_votes": 95,
+          "source_points": 398,
+          "best_player_vote_share": 0.0
+        },
+        "Envoy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 15,
+          "ranks_6_10_votes": 95,
+          "ranks_11_20_votes": 123,
+          "source_points": 358,
+          "best_player_vote_share": 0.0
+        },
+        "CleanX": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 9,
+          "ranks_6_10_votes": 51,
+          "ranks_11_20_votes": 156,
+          "source_points": 285,
+          "best_player_vote_share": 0.0
+        },
+        "Skyz": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 6,
+          "ranks_6_10_votes": 63,
+          "ranks_11_20_votes": 141,
+          "source_points": 285,
+          "best_player_vote_share": 0.0
+        },
+        "Sib": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 3,
+          "ranks_6_10_votes": 38,
+          "ranks_11_20_votes": 171,
+          "source_points": 256,
+          "best_player_vote_share": 0.0
+        },
+        "SlasheR": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 3,
+          "ranks_6_10_votes": 17,
+          "ranks_11_20_votes": 172,
+          "source_points": 215,
+          "best_player_vote_share": 0.0
+        },
+        "Ghosty": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 2,
+          "ranks_6_10_votes": 22,
+          "ranks_11_20_votes": 156,
+          "source_points": 206,
+          "best_player_vote_share": 0.0
+        },
+        "Priestahh": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 2,
+          "ranks_6_10_votes": 17,
+          "ranks_11_20_votes": 133,
+          "source_points": 173,
+          "best_player_vote_share": 0.0
+        },
+        "Insight": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 18,
+          "ranks_11_20_votes": 115,
+          "source_points": 151,
+          "best_player_vote_share": 0.0
+        },
+        "Owakening": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 15,
+          "ranks_11_20_votes": 107,
+          "source_points": 137,
+          "best_player_vote_share": 0.0
+        },
+        "Scump": {
+          "best_player_votes": 2,
+          "ranks_2_5_votes": 6,
+          "ranks_6_10_votes": 22,
+          "ranks_11_20_votes": 64,
+          "source_points": 136,
+          "best_player_vote_share": 0.007751937984496124
+        },
+        "Temp": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 1,
+          "ranks_6_10_votes": 10,
+          "ranks_11_20_votes": 107,
+          "source_points": 130,
+          "best_player_vote_share": 0.0
+        },
+        "Huke": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 14,
+          "ranks_11_20_votes": 100,
+          "source_points": 128,
+          "best_player_vote_share": 0.0
+        },
+        "Kenny": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 8,
+          "ranks_11_20_votes": 71,
+          "source_points": 87,
+          "best_player_vote_share": 0.0
+        },
+        "Clayster": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 9,
+          "ranks_11_20_votes": 63,
+          "source_points": 81,
+          "best_player_vote_share": 0.0
+        },
+        "Capsidal": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 10,
+          "ranks_11_20_votes": 54,
+          "source_points": 74,
+          "best_player_vote_share": 0.0
+        },
+        "Nastie": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 4,
+          "ranks_11_20_votes": 65,
+          "source_points": 73,
+          "best_player_vote_share": 0.0
+        },
+        "Beans": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 7,
+          "ranks_11_20_votes": 53,
+          "source_points": 67,
+          "best_player_vote_share": 0.0
+        },
+        "Afro": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 5,
+          "ranks_11_20_votes": 50,
+          "source_points": 60,
+          "best_player_vote_share": 0.0
+        },
+        "Standy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 6,
+          "ranks_11_20_votes": 46,
+          "source_points": 58,
+          "best_player_vote_share": 0.0
+        }
       }
     },
     "mwiii_reddit_2024_end_top30_survey": {
@@ -2484,6 +3590,251 @@
         "Lynz": 0.18,
         "ReeaL": 0.11999999999999998,
         "Nastie": 0.05999999999999999
+      },
+      "detail_totals": {
+        "best_player_votes": 171
+      },
+      "details": {
+        "Simp": {
+          "best_player_votes": 52,
+          "ranks_2_5_votes": 108,
+          "ranks_6_10_votes": 2,
+          "ranks_11_20_votes": 0,
+          "source_points": 588,
+          "best_player_vote_share": 0.30409356725146197
+        },
+        "Shotzzy": {
+          "best_player_votes": 47,
+          "ranks_2_5_votes": 110,
+          "ranks_6_10_votes": 5,
+          "ranks_11_20_votes": 0,
+          "source_points": 575,
+          "best_player_vote_share": 0.27485380116959063
+        },
+        "HyDra": {
+          "best_player_votes": 36,
+          "ranks_2_5_votes": 125,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 0,
+          "source_points": 557,
+          "best_player_vote_share": 0.21052631578947367
+        },
+        "Scrap": {
+          "best_player_votes": 31,
+          "ranks_2_5_votes": 131,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 0,
+          "source_points": 548,
+          "best_player_vote_share": 0.18128654970760233
+        },
+        "Dashy": {
+          "best_player_votes": 2,
+          "ranks_2_5_votes": 56,
+          "ranks_6_10_votes": 91,
+          "ranks_11_20_votes": 13,
+          "source_points": 373,
+          "best_player_vote_share": 0.011695906432748537
+        },
+        "Cellium": {
+          "best_player_votes": 2,
+          "ranks_2_5_votes": 48,
+          "ranks_6_10_votes": 92,
+          "ranks_11_20_votes": 19,
+          "source_points": 357,
+          "best_player_vote_share": 0.011695906432748537
+        },
+        "Drazah": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 35,
+          "ranks_6_10_votes": 99,
+          "ranks_11_20_votes": 24,
+          "source_points": 327,
+          "best_player_vote_share": 0.0
+        },
+        "Pred": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 24,
+          "ranks_6_10_votes": 116,
+          "ranks_11_20_votes": 21,
+          "source_points": 325,
+          "best_player_vote_share": 0.0
+        },
+        "aBeZy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 9,
+          "ranks_6_10_votes": 104,
+          "ranks_11_20_votes": 48,
+          "source_points": 283,
+          "best_player_vote_share": 0.0
+        },
+        "Ghosty": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 7,
+          "ranks_6_10_votes": 93,
+          "ranks_11_20_votes": 59,
+          "source_points": 266,
+          "best_player_vote_share": 0.0
+        },
+        "Sib": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 4,
+          "ranks_6_10_votes": 74,
+          "ranks_11_20_votes": 78,
+          "source_points": 238,
+          "best_player_vote_share": 0.0
+        },
+        "Kenny": {
+          "best_player_votes": 1,
+          "ranks_2_5_votes": 4,
+          "ranks_6_10_votes": 65,
+          "ranks_11_20_votes": 89,
+          "source_points": 236,
+          "best_player_vote_share": 0.005847953216374269
+        },
+        "CleanX": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 33,
+          "ranks_11_20_votes": 119,
+          "source_points": 185,
+          "best_player_vote_share": 0.0
+        },
+        "Abuzah": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 14,
+          "ranks_11_20_votes": 139,
+          "source_points": 167,
+          "best_player_vote_share": 0.0
+        },
+        "Envoy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 12,
+          "ranks_11_20_votes": 127,
+          "source_points": 151,
+          "best_player_vote_share": 0.0
+        },
+        "Gwinn": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 11,
+          "ranks_11_20_votes": 123,
+          "source_points": 145,
+          "best_player_vote_share": 0.0
+        },
+        "Skyz": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 3,
+          "ranks_11_20_votes": 93,
+          "source_points": 99,
+          "best_player_vote_share": 0.0
+        },
+        "Insight": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 2,
+          "ranks_11_20_votes": 89,
+          "source_points": 93,
+          "best_player_vote_share": 0.0
+        },
+        "Attach": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 85,
+          "source_points": 87,
+          "best_player_vote_share": 0.0
+        },
+        "04": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 2,
+          "ranks_11_20_votes": 78,
+          "source_points": 82,
+          "best_player_vote_share": 0.0
+        },
+        "Nero": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 71,
+          "source_points": 73,
+          "best_player_vote_share": 0.0
+        },
+        "KiSMET": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 2,
+          "ranks_11_20_votes": 67,
+          "source_points": 71,
+          "best_player_vote_share": 0.0
+        },
+        "JoeDeceives": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 2,
+          "ranks_11_20_votes": 63,
+          "source_points": 67,
+          "best_player_vote_share": 0.0
+        },
+        "Gio": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 56,
+          "source_points": 56,
+          "best_player_vote_share": 0.0
+        },
+        "TJHaLy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 52,
+          "source_points": 52,
+          "best_player_vote_share": 0.0
+        },
+        "Estreal": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 48,
+          "source_points": 48,
+          "best_player_vote_share": 0.0
+        },
+        "Beans": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 32,
+          "source_points": 32,
+          "best_player_vote_share": 0.0
+        },
+        "Lynz": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 29,
+          "source_points": 29,
+          "best_player_vote_share": 0.0
+        },
+        "ReeaL": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 27,
+          "source_points": 27,
+          "best_player_vote_share": 0.0
+        },
+        "Nastie": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 24,
+          "source_points": 24,
+          "best_player_vote_share": 0.0
+        }
       }
     },
     "bo6_reddit_2025_end_top30_survey": {
@@ -2525,6 +3876,251 @@
         "Pred": 0.18,
         "Cammy": 0.11999999999999998,
         "Beans": 0.05999999999999999
+      },
+      "detail_totals": {
+        "best_player_votes": 209
+      },
+      "details": {
+        "Scrap": {
+          "best_player_votes": 104,
+          "ranks_2_5_votes": 88,
+          "ranks_6_10_votes": 5,
+          "ranks_11_20_votes": 4,
+          "source_points": 798,
+          "best_player_vote_share": 0.49760765550239233
+        },
+        "Shotzzy": {
+          "best_player_votes": 45,
+          "ranks_2_5_votes": 114,
+          "ranks_6_10_votes": 43,
+          "ranks_11_20_votes": 3,
+          "source_points": 656,
+          "best_player_vote_share": 0.215311004784689
+        },
+        "Mercules": {
+          "best_player_votes": 29,
+          "ranks_2_5_votes": 135,
+          "ranks_6_10_votes": 30,
+          "ranks_11_20_votes": 7,
+          "source_points": 617,
+          "best_player_vote_share": 0.13875598086124402
+        },
+        "HyDra": {
+          "best_player_votes": 25,
+          "ranks_2_5_votes": 149,
+          "ranks_6_10_votes": 22,
+          "ranks_11_20_votes": 0,
+          "source_points": 616,
+          "best_player_vote_share": 0.11961722488038277
+        },
+        "Dashy": {
+          "best_player_votes": 5,
+          "ranks_2_5_votes": 100,
+          "ranks_6_10_votes": 79,
+          "ranks_11_20_votes": 12,
+          "source_points": 495,
+          "best_player_vote_share": 0.023923444976076555
+        },
+        "Huke": {
+          "best_player_votes": 1,
+          "ranks_2_5_votes": 64,
+          "ranks_6_10_votes": 84,
+          "ranks_11_20_votes": 25,
+          "source_points": 390,
+          "best_player_vote_share": 0.004784688995215311
+        },
+        "Neptune": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 42,
+          "ranks_6_10_votes": 119,
+          "ranks_11_20_votes": 17,
+          "source_points": 381,
+          "best_player_vote_share": 0.0
+        },
+        "Cellium": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 38,
+          "ranks_6_10_votes": 93,
+          "ranks_11_20_votes": 44,
+          "source_points": 344,
+          "best_player_vote_share": 0.0
+        },
+        "JoeDeceives": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 29,
+          "ranks_6_10_votes": 117,
+          "ranks_11_20_votes": 24,
+          "source_points": 345,
+          "best_player_vote_share": 0.0
+        },
+        "Simp": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 30,
+          "ranks_6_10_votes": 92,
+          "ranks_11_20_votes": 51,
+          "source_points": 325,
+          "best_player_vote_share": 0.0
+        },
+        "RenKoR": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 19,
+          "ranks_6_10_votes": 112,
+          "ranks_11_20_votes": 42,
+          "source_points": 323,
+          "best_player_vote_share": 0.0
+        },
+        "04": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 2,
+          "ranks_6_10_votes": 25,
+          "ranks_11_20_votes": 138,
+          "source_points": 194,
+          "best_player_vote_share": 0.0
+        },
+        "aBeZy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 1,
+          "ranks_6_10_votes": 27,
+          "ranks_11_20_votes": 136,
+          "source_points": 193,
+          "best_player_vote_share": 0.0
+        },
+        "Abuzah": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 1,
+          "ranks_6_10_votes": 14,
+          "ranks_11_20_votes": 145,
+          "source_points": 176,
+          "best_player_vote_share": 0.0
+        },
+        "SupeR (Diego Escudero)": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 2,
+          "ranks_6_10_votes": 25,
+          "ranks_11_20_votes": 111,
+          "source_points": 167,
+          "best_player_vote_share": 0.0
+        },
+        "Drazah": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 16,
+          "ranks_11_20_votes": 135,
+          "source_points": 167,
+          "best_player_vote_share": 0.0
+        },
+        "CleanX": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 1,
+          "ranks_6_10_votes": 16,
+          "ranks_11_20_votes": 130,
+          "source_points": 165,
+          "best_player_vote_share": 0.0
+        },
+        "ReeaL": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 22,
+          "ranks_11_20_votes": 114,
+          "source_points": 158,
+          "best_player_vote_share": 0.0
+        },
+        "Ghosty": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 14,
+          "ranks_11_20_votes": 125,
+          "source_points": 153,
+          "best_player_vote_share": 0.0
+        },
+        "Nastie": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 15,
+          "ranks_11_20_votes": 115,
+          "source_points": 145,
+          "best_player_vote_share": 0.0
+        },
+        "Envoy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 10,
+          "ranks_11_20_votes": 121,
+          "source_points": 141,
+          "best_player_vote_share": 0.0
+        },
+        "Snoopy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 7,
+          "ranks_11_20_votes": 53,
+          "source_points": 67,
+          "best_player_vote_share": 0.0
+        },
+        "Purj": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 3,
+          "ranks_11_20_votes": 48,
+          "source_points": 54,
+          "best_player_vote_share": 0.0
+        },
+        "Sib": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 28,
+          "source_points": 30,
+          "best_player_vote_share": 0.0
+        },
+        "Gwinn": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 1,
+          "ranks_11_20_votes": 24,
+          "source_points": 26,
+          "best_player_vote_share": 0.0
+        },
+        "MettalZ": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 21,
+          "source_points": 21,
+          "best_player_vote_share": 0.0
+        },
+        "KiSMET": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 20,
+          "source_points": 20,
+          "best_player_vote_share": 0.0
+        },
+        "Pred": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 18,
+          "source_points": 18,
+          "best_player_vote_share": 0.0
+        },
+        "Cammy": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 14,
+          "source_points": 14,
+          "best_player_vote_share": 0.0
+        },
+        "Beans": {
+          "best_player_votes": 0,
+          "ranks_2_5_votes": 0,
+          "ranks_6_10_votes": 0,
+          "ranks_11_20_votes": 11,
+          "source_points": 11,
+          "best_player_vote_share": 0.0
+        }
       }
     }
   },
@@ -2540,7 +4136,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -2554,7 +4149,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -2568,7 +4162,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -2582,7 +4175,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -2596,7 +4188,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -2610,7 +4201,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -2624,7 +4214,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2638,7 +4227,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2652,7 +4240,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2666,7 +4253,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2680,7 +4266,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "medium",
         "tier": "ranked"
       },
@@ -2694,7 +4279,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2708,7 +4292,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2722,7 +4305,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2736,7 +4318,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       }
@@ -2752,7 +4333,6 @@
         "single_ballot_count": 3,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -2766,7 +4346,6 @@
         "single_ballot_count": 3,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -2780,7 +4359,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -2794,7 +4372,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -2808,7 +4385,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_5"
       },
@@ -2822,7 +4398,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2836,7 +4411,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2850,7 +4424,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -2864,7 +4437,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -2878,7 +4450,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -2892,7 +4463,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2906,7 +4476,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2920,7 +4489,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2934,7 +4502,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2948,7 +4515,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2962,7 +4528,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2976,7 +4541,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": true,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -2990,7 +4554,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -3004,7 +4567,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       }
@@ -3020,7 +4582,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_1"
       },
@@ -3034,7 +4595,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "low",
         "tier": "top_3"
       },
@@ -3048,7 +4608,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "medium",
         "tier": "top_3"
       },
@@ -3062,7 +4621,6 @@
         "single_ballot_count": 1,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_5"
       },
@@ -3076,7 +4634,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_5"
       },
@@ -3090,7 +4647,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3104,7 +4660,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3118,7 +4673,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3132,7 +4686,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3146,7 +4699,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       }
@@ -3162,7 +4714,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -3176,7 +4727,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -3190,7 +4740,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -3204,7 +4753,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -3218,7 +4766,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -3232,7 +4779,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -3246,7 +4792,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -3260,7 +4805,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -3274,7 +4818,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -3288,7 +4831,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -3302,7 +4844,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3316,7 +4857,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3330,7 +4870,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3344,7 +4883,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3358,7 +4896,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3372,7 +4909,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3386,7 +4922,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3400,7 +4935,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3414,7 +4948,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3428,7 +4961,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3442,7 +4974,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3456,7 +4987,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3470,7 +5000,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3484,7 +5013,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3498,7 +5026,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3512,7 +5039,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3526,7 +5052,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3540,7 +5065,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3554,7 +5078,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3568,7 +5091,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3582,7 +5104,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 31,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3596,7 +5117,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 32,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3610,7 +5130,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 33,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3624,7 +5143,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 34,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3638,7 +5156,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 35,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3652,7 +5169,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 36,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3666,7 +5182,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 37,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3680,7 +5195,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 38,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3694,7 +5208,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 39,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3708,7 +5221,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 40,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3722,7 +5234,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 41,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3736,7 +5247,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 42,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3750,7 +5260,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 43,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3764,7 +5273,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 44,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3778,7 +5286,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 45,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3792,7 +5299,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 46,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3806,7 +5312,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 47,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3820,7 +5325,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 48,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3834,7 +5338,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 49,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3848,7 +5351,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 50,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -3862,7 +5364,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 51,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -3878,7 +5379,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -3892,7 +5392,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -3906,7 +5405,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -3920,7 +5418,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -3934,7 +5431,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -3948,7 +5444,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3962,7 +5457,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": false,
         "confidence": "medium",
         "tier": "top_10"
       },
@@ -3976,7 +5470,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -3990,7 +5483,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -4004,7 +5496,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": false,
         "confidence": "low",
         "tier": "top_10"
       },
@@ -4018,7 +5509,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -4032,7 +5522,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -4046,7 +5535,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -4060,7 +5548,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -4074,7 +5561,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       }
@@ -4090,7 +5576,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -4104,7 +5589,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -4118,7 +5602,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -4132,7 +5615,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -4146,7 +5628,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -4160,7 +5641,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4174,7 +5654,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4188,7 +5667,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4202,7 +5680,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4216,7 +5693,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4230,7 +5706,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4244,7 +5719,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4258,7 +5732,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4272,7 +5745,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4286,7 +5758,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4300,7 +5771,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4314,7 +5784,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4328,7 +5797,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4342,7 +5810,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4356,7 +5823,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4370,7 +5836,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4384,7 +5849,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4398,7 +5862,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4412,7 +5875,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4426,7 +5888,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4440,7 +5901,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4454,7 +5914,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4468,7 +5927,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4482,7 +5940,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4496,7 +5953,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       },
@@ -4510,7 +5966,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 31,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -4526,7 +5981,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -4540,7 +5994,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -4554,7 +6007,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -4568,7 +6020,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -4582,7 +6033,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -4596,7 +6046,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4610,7 +6059,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4624,7 +6072,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4638,7 +6085,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4652,7 +6098,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -4666,7 +6111,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4680,7 +6124,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4694,7 +6137,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4708,7 +6150,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4722,7 +6163,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4736,7 +6176,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4750,7 +6189,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4764,7 +6202,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4778,7 +6215,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4792,7 +6228,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4806,7 +6241,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4820,7 +6254,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4834,7 +6267,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4848,7 +6280,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4862,7 +6293,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4876,7 +6306,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4890,7 +6319,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "medium",
         "tier": "ranked"
       },
@@ -4904,7 +6332,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4918,7 +6345,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4932,7 +6358,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -4946,7 +6371,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 31,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -4962,7 +6386,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -4976,7 +6399,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -4990,7 +6412,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -5004,7 +6425,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5018,7 +6438,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5032,7 +6451,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5046,7 +6464,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5060,7 +6477,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": false,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5074,7 +6490,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5088,7 +6503,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5102,7 +6516,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5116,7 +6529,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5130,7 +6542,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5144,7 +6555,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5158,7 +6568,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5172,7 +6581,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5186,7 +6594,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5200,7 +6607,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5214,7 +6620,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5228,7 +6633,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5242,7 +6646,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5256,7 +6659,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5270,7 +6672,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5284,7 +6685,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5298,7 +6698,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5312,7 +6711,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5326,7 +6724,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5340,7 +6737,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5354,7 +6750,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5368,7 +6763,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5382,7 +6776,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 31,
-        "close_race": false,
         "confidence": "low",
         "tier": "ranked"
       }
@@ -5398,7 +6791,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -5412,7 +6804,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -5426,7 +6817,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -5440,7 +6830,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5454,7 +6843,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5468,7 +6856,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5482,7 +6869,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5496,7 +6882,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5510,7 +6895,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5524,7 +6908,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5538,7 +6921,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5552,7 +6934,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5566,7 +6947,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5580,7 +6960,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5594,7 +6973,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5608,7 +6986,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5622,7 +6999,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5636,7 +7012,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5650,7 +7025,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5664,7 +7038,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5678,7 +7051,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5692,7 +7064,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5706,7 +7077,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5720,7 +7090,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5734,7 +7103,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5748,7 +7116,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5762,7 +7129,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5776,7 +7142,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5790,7 +7155,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5804,7 +7168,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -5820,7 +7183,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -5834,7 +7196,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -5848,7 +7209,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -5862,7 +7222,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5876,7 +7235,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -5890,7 +7248,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5904,7 +7261,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5918,7 +7274,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5932,7 +7287,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5946,7 +7300,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -5960,7 +7313,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5974,7 +7326,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -5988,7 +7339,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6002,7 +7352,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6016,7 +7365,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6030,7 +7378,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6044,7 +7391,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6058,7 +7404,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6072,7 +7417,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6086,7 +7430,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6100,7 +7443,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6114,7 +7456,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6128,7 +7469,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6142,7 +7482,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6156,7 +7495,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6170,7 +7508,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6184,7 +7521,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6198,7 +7534,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6212,7 +7547,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6226,7 +7560,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -6242,7 +7575,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -6256,7 +7588,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -6270,7 +7601,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -6284,7 +7614,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -6298,7 +7627,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -6312,7 +7640,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6326,7 +7653,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6340,7 +7666,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6354,7 +7679,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6368,7 +7692,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6382,7 +7705,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6396,7 +7718,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6410,7 +7731,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6424,7 +7744,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6438,7 +7757,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6452,7 +7770,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6466,7 +7783,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6480,7 +7796,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6494,7 +7809,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6508,7 +7822,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6522,7 +7835,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6536,7 +7848,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6550,7 +7861,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6564,7 +7874,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6578,7 +7887,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6592,7 +7900,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6606,7 +7913,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6620,7 +7926,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6634,7 +7939,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6648,7 +7952,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -6664,7 +7967,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -6678,7 +7980,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -6692,7 +7993,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -6706,7 +8006,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -6720,7 +8019,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -6734,7 +8032,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6748,7 +8045,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6762,7 +8058,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6776,7 +8071,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6790,7 +8084,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -6804,7 +8097,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6818,7 +8110,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6832,7 +8123,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6846,7 +8136,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6860,7 +8149,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6874,7 +8162,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6888,7 +8175,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6902,7 +8188,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6916,7 +8201,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6930,7 +8214,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6944,7 +8227,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6958,7 +8240,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6972,7 +8253,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -6986,7 +8266,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7000,7 +8279,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7014,7 +8292,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7028,7 +8305,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7042,7 +8318,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7056,7 +8331,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7070,7 +8344,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -7086,7 +8359,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -7100,7 +8372,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7114,7 +8385,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7128,7 +8398,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -7142,7 +8411,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -7156,7 +8424,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7170,7 +8437,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7184,7 +8450,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7198,7 +8463,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7212,7 +8476,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7226,7 +8489,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": true,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7240,7 +8502,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7254,7 +8515,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7268,7 +8528,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7282,7 +8541,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7296,7 +8554,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7310,7 +8567,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7324,7 +8580,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7338,7 +8593,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7352,7 +8606,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7366,7 +8619,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7380,7 +8632,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7394,7 +8645,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7408,7 +8658,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7422,7 +8671,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7436,7 +8684,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7450,7 +8697,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7464,7 +8710,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7478,7 +8723,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7492,7 +8736,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -7508,7 +8751,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -7522,7 +8764,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7536,7 +8777,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7550,7 +8790,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -7564,7 +8803,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -7578,7 +8816,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7592,7 +8829,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7606,7 +8842,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7620,7 +8855,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7634,7 +8868,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -7648,7 +8881,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7662,7 +8894,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7676,7 +8907,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7690,7 +8920,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7704,7 +8933,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7718,7 +8946,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7732,7 +8959,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7746,7 +8972,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7760,7 +8985,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7774,7 +8998,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7788,7 +9011,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7802,7 +9024,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7816,7 +9037,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7830,7 +9050,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7844,7 +9063,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7858,7 +9076,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7872,7 +9089,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7886,7 +9102,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7900,7 +9115,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -7914,7 +9128,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }
@@ -7930,7 +9143,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 1,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_1"
       },
@@ -7944,7 +9156,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 2,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7958,7 +9169,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 3,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_3"
       },
@@ -7972,7 +9182,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 4,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -7986,7 +9195,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 5,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_5"
       },
@@ -8000,7 +9208,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 6,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -8014,7 +9221,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 7,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -8028,7 +9234,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 8,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -8042,7 +9247,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 9,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -8056,7 +9260,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 10,
-        "close_race": true,
         "confidence": "high",
         "tier": "top_10"
       },
@@ -8070,7 +9273,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 11,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8084,7 +9286,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 12,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8098,7 +9299,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 13,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8112,7 +9312,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 14,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8126,7 +9325,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 15,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8140,7 +9338,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 16,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8154,7 +9351,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 17,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8168,7 +9364,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 18,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8182,7 +9377,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 19,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8196,7 +9390,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 20,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8210,7 +9403,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 21,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8224,7 +9416,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 22,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8238,7 +9429,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 23,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8252,7 +9442,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 24,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8266,7 +9455,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 25,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8280,7 +9468,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 26,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8294,7 +9481,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 27,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8308,7 +9494,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 28,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8322,7 +9507,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 29,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       },
@@ -8336,7 +9520,6 @@
         "single_ballot_count": 0,
         "ranked": true,
         "consensus_rank": 30,
-        "close_race": false,
         "confidence": "high",
         "tier": "ranked"
       }

@@ -404,6 +404,57 @@ def test_late_cdl_era_aggregate_sources_are_scored_as_surveys():
         assert contribution["coverage_multiplier"] == pytest.approx(1.20)
 
 
+def test_single_poll_aggregate_surveys_preserve_raw_source_detail_without_close_race():
+    result = build()
+    rows = result["games"]["Modern Warfare II"]
+    by_player = {row["player"]: row for row in rows}
+    contributions = result["source_contributions"]
+
+    assert all("close_race" not in row for row in rows)
+
+    bo4 = contributions["bo4_reddit_2019_end_top10_inclusion_poll"]
+    assert bo4["detail_totals"]["respondents"] == 810
+    assert bo4["details"]["Dashy"]["top_10_inclusion_votes"] == 757
+    assert bo4["details"]["Dashy"]["top_10_inclusion_share"] == pytest.approx(757 / 810)
+
+    mw2019 = contributions["mw2019_reddit_2020_end_top30_survey"]
+    assert mw2019["detail_totals"]["valid_ballots"] == 345
+    assert mw2019["details"]["Simp"]["top_10_votes"] == 311
+    assert mw2019["details"]["Simp"]["source_points"] == 956
+
+    bocw = contributions["bocw_reddit_2021_end_top30_survey"]
+    assert bocw["detail_totals"]["best_player_votes"] == 773
+    assert bocw["details"]["Simp"]["best_player_vote_share"] == pytest.approx(390 / 773)
+    assert bocw["details"]["Scump"]["ranks_11_20_votes"] == 229
+
+    vanguard = contributions["vanguard_reddit_2022_end_top30_survey"]
+    assert vanguard["detail_totals"]["best_player_votes"] == 397
+    assert vanguard["details"]["Cellium"]["best_player_vote_share"] == pytest.approx(272 / 397)
+    assert vanguard["details"]["Pred"]["ranks_2_10_votes"] == 300
+
+    mwii = contributions["mwii_reddit_2023_end_top30_survey"]
+    assert mwii["detail_totals"]["best_player_votes"] == 258
+    assert mwii["details"]["HyDra"]["best_player_votes"] == 200
+    assert mwii["details"]["HyDra"]["best_player_vote_share"] == pytest.approx(200 / 258)
+    assert mwii["details"]["aBeZy"]["best_player_votes"] == 31
+    assert mwii["details"]["aBeZy"]["best_player_vote_share"] == pytest.approx(31 / 258)
+    assert mwii["details"]["HyDra"]["source_points"] == 1131
+    assert mwii["details"]["aBeZy"]["source_points"] == 781
+
+    mwiii = contributions["mwiii_reddit_2024_end_top30_survey"]
+    assert mwiii["detail_totals"]["best_player_votes"] == 171
+    assert mwiii["details"]["Simp"]["best_player_vote_share"] == pytest.approx(52 / 171)
+    assert mwiii["details"]["Shotzzy"]["source_points"] == 575
+
+    bo6 = contributions["bo6_reddit_2025_end_top30_survey"]
+    assert bo6["detail_totals"]["best_player_votes"] == 209
+    assert bo6["details"]["Scrap"]["best_player_vote_share"] == pytest.approx(104 / 209)
+    assert bo6["details"]["Mercules"]["ranks_2_5_votes"] == 135
+
+    assert by_player["HyDra"]["consensus_score"] == pytest.approx(1.874, abs=0.001)
+    assert by_player["aBeZy"]["consensus_score"] == pytest.approx(1.812, abs=0.001)
+
+
 def test_cross_title_rollup_total_score_order():
     rows = sorted(build_rollup()["rows"], key=sort_total)
     assert [row["player"] for row in rows[:10]] == [
