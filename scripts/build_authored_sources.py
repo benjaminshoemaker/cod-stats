@@ -115,11 +115,8 @@ def source_index(data):
     return {source["source_id"]: source for source in data["sources"]}
 
 
-def build(path=SOURCES_PATH):
-    data = load_json(path)
-    validate(data)
-    sources_by_id = source_index(data)
-    player_rows = defaultdict(lambda: {
+def _empty_player_row():
+    return {
         "player": None,
         "source_ids": set(),
         "all_time_ranks": [],
@@ -128,49 +125,64 @@ def build(path=SOURCES_PATH):
         "claim_count": 0,
         "claim_tags": set(),
         "families": set(),
-    })
+    }
 
+
+def _player_row(player_rows, player):
+    row = player_rows[mkey(player)]
+    row["player"] = player
+    return row
+
+
+def _record_player_source(row, source_id, source):
+    row["source_ids"].add(source_id)
+    row["families"].add(source["family"])
+
+
+def _record_ranking_entry(player_rows, source, entry):
+    sid = source["source_id"]
+    player = entry["player"]
+    row = _player_row(player_rows, player)
+    _record_player_source(row, sid, source)
+    row["ranking_count"] += 1
+    row["claim_tags"].update(entry.get("claim_tags", []))
+    if source["family"] == "authored_all_time_ranking":
+        row["all_time_ranks"].append(entry["rank"])
+    elif source["family"] == "authored_title_ranking":
+        row["title_ranks"].append({
+            "source_id": sid,
+            "game": (source.get("scope") or {}).get("game"),
+            "rank": entry["rank"],
+        })
+    return {
+        "rank": entry["rank"],
+        "player": player,
+        "claim_tags": entry.get("claim_tags", []),
+    }
+
+
+def _build_ranking_lists(data, sources_by_id, player_rows):
     ranking_lists = {}
     for ranking in data.get("rankings", []):
         sid = ranking["source_id"]
         source = sources_by_id[sid]
-        rows = []
-        for entry in ranking["entries"]:
-            player = entry["player"]
-            row = player_rows[mkey(player)]
-            row["player"] = player
-            row["source_ids"].add(sid)
-            row["families"].add(source["family"])
-            row["ranking_count"] += 1
-            row["claim_tags"].update(entry.get("claim_tags", []))
-            if source["family"] == "authored_all_time_ranking":
-                row["all_time_ranks"].append(entry["rank"])
-            elif source["family"] == "authored_title_ranking":
-                row["title_ranks"].append({
-                    "source_id": sid,
-                    "game": (source.get("scope") or {}).get("game"),
-                    "rank": entry["rank"],
-                })
-            rows.append({
-                "rank": entry["rank"],
-                "player": player,
-                "claim_tags": entry.get("claim_tags", []),
-            })
+        rows = [_record_ranking_entry(player_rows, source, entry) for entry in ranking["entries"]]
         ranking_lists[sid] = {
             "source_id": sid,
             "family": source["family"],
             "title": source["title"],
             "entries": sorted(rows, key=lambda r: (r["rank"], r["player"].lower())),
         }
+    return ranking_lists
 
+
+def _build_claim_rows(data, sources_by_id, player_rows):
     claim_rows = []
     for claim in data.get("claims", []):
         source = sources_by_id[claim["source_id"]]
         player = claim["player"]
-        row = player_rows[mkey(player)]
-        row["player"] = player
-        row["source_ids"].add(claim["source_id"])
-        row["families"].add(source["family"])
+        row = _player_row(player_rows, player)
+        _record_player_source(row, claim["source_id"], source)
         row["claim_count"] += 1
         row["claim_tags"].update(claim["claim_tags"])
         claim_rows.append({
@@ -183,7 +195,10 @@ def build(path=SOURCES_PATH):
             "quote": claim.get("quote"),
             "quote_location": claim.get("quote_location"),
         })
+    return claim_rows
 
+
+def _build_player_summaries(player_rows):
     players = []
     for row in player_rows.values():
         all_time_ranks = sorted(row["all_time_ranks"])
@@ -206,7 +221,32 @@ def build(path=SOURCES_PATH):
         row["best_all_time_rank"] if row["best_all_time_rank"] is not None else 999,
         row["player"].lower(),
     ))
+    return players
 
+
+def _build_verification_leads(leads):
+    return [
+        {
+            "source_id": source["source_id"],
+            "family": source["family"],
+            "title": source["title"],
+            "url": source.get("url"),
+            "author": source.get("author"),
+            "author_type": source.get("author_type"),
+            "caveats": source.get("caveats", []),
+        }
+        for source in leads
+    ]
+
+
+def build(path=SOURCES_PATH):
+    data = load_json(path)
+    validate(data)
+    sources_by_id = source_index(data)
+    player_rows = defaultdict(_empty_player_row)
+    ranking_lists = _build_ranking_lists(data, sources_by_id, player_rows)
+    claim_rows = _build_claim_rows(data, sources_by_id, player_rows)
+    players = _build_player_summaries(player_rows)
     seeded_sources = [s for s in data["sources"] if s["status"] == SEEDED]
     leads = [s for s in data["sources"] if s["status"] == VERIFICATION_LEAD]
     return {
@@ -223,18 +263,7 @@ def build(path=SOURCES_PATH):
         "ranking_lists": ranking_lists,
         "claims": claim_rows,
         "players": players,
-        "verification_leads": [
-            {
-                "source_id": source["source_id"],
-                "family": source["family"],
-                "title": source["title"],
-                "url": source.get("url"),
-                "author": source.get("author"),
-                "author_type": source.get("author_type"),
-                "caveats": source.get("caveats", []),
-            }
-            for source in leads
-        ],
+        "verification_leads": _build_verification_leads(leads),
     }
 
 
