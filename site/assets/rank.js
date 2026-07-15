@@ -54,9 +54,10 @@ export function eraContext(D){
 
 // Recompute the leaderboard for a subset of titles. `selected` is a Set of title
 // names; `ringWeight` (default 1 = off) counts a championship as N majors via a flat
-// (N-1) bonus on top of the adjusted total. Returns rows with exact-integer ranking
+// (N-1) bonus on top of the adjusted total. `bonuses` is an optional what-if map
+// of player name -> {game,wins,champs}. Returns rows with exact-integer ranking
 // keys plus display fields. Zero-win players in the selection are dropped.
-export function computeRows(D, selected, ringWeight){
+export function computeRows(D, selected, ringWeight, bonuses){
   const N = ringWeight || 1;
   const ORDER = D.meta.seasonOrder;
   const DENOM = {}; D.games.forEach(g => { DENOM[g.game] = g.denom; });
@@ -68,15 +69,34 @@ export function computeRows(D, selected, ringWeight){
   const L = games.reduce((acc, g) => lcm(acc, BigInt(DENOM[g])), 1n);
   const Lnum = Number(L);
   const rows = [];
-  for(const name in D.players){
-    const p = D.players[name];
+  const bonusFor = name => bonuses instanceof Map ? bonuses.get(name) : bonuses?.[name];
+  const names = new Set(Object.keys(D.players || {}));
+  if(bonuses instanceof Map){
+    for(const name of bonuses.keys()) names.add(name);
+  }else if(bonuses){
+    Object.keys(bonuses).forEach(name => names.add(name));
+  }
+  for(const name of names){
+    const bonus = bonusFor(name);
+    const p = D.players[name] || {
+      name,
+      seasons:(bonus?.seasonsBefore || []).map(s => ({...s, events:[]})),
+      placements:[],
+      champ_events:[],
+    };
     const sel = p.seasons.filter(s => selected.has(s.game));
-    const raw = sel.reduce((a, s) => a + s.wins, 0);
+    const applyBonus = bonus && selected.has(bonus.game) && DENOM[bonus.game];
+    const raw = sel.reduce((a, s) => a + s.wins, 0) + (applyBonus ? (bonus.wins || 0) : 0);
     if(raw === 0) continue;
-    const numer = sel.reduce((a, s) => a + BigInt(s.wins) * (L / BigInt(s.majors)), 0n);
+    const bonusNumer = applyBonus ? BigInt(bonus.wins || 0) * (L / BigInt(DENOM[bonus.game])) : 0n;
+    const numer = sel.reduce((a, s) => a + BigInt(s.wins) * (L / BigInt(s.majors)), 0n) + bonusNumer;
     const adjusted = Math.round(Number(numer) / Lnum * MBAR * 100) / 100;
-    let best = sel[0];
+    let best = sel[0] || null;
     for(const s of sel){ if(s.wins * best.majors > best.wins * s.majors) best = s; }
+    if(applyBonus && bonus.wins){
+      const bonusSeason = {game:bonus.game, wins:bonus.wins, majors:DENOM[bonus.game]};
+      if(!best || bonusSeason.wins * best.majors > best.wins * bonusSeason.majors) best = bonusSeason;
+    }
     const yrs = [];
     for(const s of sel) for(const e of s.events) if(e.date) yrs.push(+e.date.slice(0, 4));
     const won = new Set(); sel.forEach(s => s.events.forEach(e => won.add(e.event)));
@@ -84,9 +104,12 @@ export function computeRows(D, selected, ringWeight){
     const eventsPlaced = places.reduce((a, pl) => a + pl.events, 0);
     const placeX2Sum = places.reduce((a, pl) => a + pl.placeX2Sum, 0);
     const placementWins = places.reduce((a, pl) => a + (pl.wins || 0), 0);
+    const baseChamps = D.players[name]
+      ? (p.champ_events || []).filter(c => won.has(c.event)).length
+      : (bonus?.champsBefore || 0);
     rows.push({
       name, raw, _numer: numer,
-      champs: (p.champ_events || []).filter(c => won.has(c.event)).length,
+      champs: baseChamps + (applyBonus ? (bonus.champs || 0) : 0),
       adjusted,
       primaryRole: roleSummaryForGames(p, selected),
       eventsPlaced,
@@ -94,7 +117,7 @@ export function computeRows(D, selected, ringWeight){
       winConversion: rate(placementWins, eventsPlaced),
       peak: best.wins / best.majors,
       peakInfo: { adj: Math.round(best.wins / best.majors * MBAR * 100) / 100, season: best.game, wins: best.wins, majors: best.majors },
-      eras: sel.length,
+      eras: sel.length + (applyBonus && !sel.some(s => s.game === bonus.game) ? 1 : 0),
       firstYear: yrs.length ? Math.min(...yrs) : null,
       lastYear:  yrs.length ? Math.max(...yrs) : null,
     });

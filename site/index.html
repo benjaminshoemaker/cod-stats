@@ -86,6 +86,7 @@ mountPageNav('index.html');
 const D = window.APP_DATA;
 const stakesBanner = document.getElementById('stakes-banner');
 let selectedStakeTeam = D.stakes?.scenarios?.[0]?.team || null;
+let stakeMetric = 'weighted';
 function stakeMovePill(n){
   if(n > 0) return `<span class="pill up">▲ ${n}</span>`;
   if(n < 0) return `<span class="pill down">▼ ${Math.abs(n)}</span>`;
@@ -96,38 +97,123 @@ function stakeTeamCount(s){
   return `${s.rankedPlayerCount || 0}/${s.playerCount} ranked${entrant}`;
 }
 function stakeTeamMove(s){
-  return (s.players || []).reduce((sum, p) => sum + (p.rankDelta || 0), 0);
+  const movement = stakeScenarioMovement(s);
+  return (s.players || []).reduce((sum, p) => sum + (movement.players.get(p.name)?.rankDelta || 0), 0);
 }
 function signedStakeMove(n){
   return n > 0 ? `+${n}` : String(n);
 }
-function stakeRosterRows(players){
+function stakeMetricMode(){
+  return stakeMetric;
+}
+function stakeMetricLabel(mode=stakeMetricMode()){
+  return mode === 'weighted' ? 'Adj +◆' : 'Adjusted';
+}
+function stakeValue(row, mode=stakeMetricMode()){
+  return mode === 'weighted' ? row.adjWeighted : row.adjusted;
+}
+function stakeBonusMap(scenario){
+  const map = new Map();
+  const ev = D.stakes?.event || {};
+  for(const player of scenario?.players || []){
+    if(player.ranked === false && !player.entersLeaderboard) continue;
+    map.set(player.name, {
+      game:ev.game,
+      wins:1,
+      champs:ev.isChamps ? 1 : 0,
+      champsBefore:player.champsBefore || 0,
+      seasonsBefore:player.seasonsBefore || [],
+    });
+  }
+  return map;
+}
+function stakeRankRows(scenario, mode=stakeMetricMode()){
+  const n = mode === 'weighted' ? ringN : 1;
+  const applies = selected.has(D.stakes.event.game);
+  const beforeRows = cr(selected, n);
+  const afterRows = applies ? cr(selected, n, stakeBonusMap(scenario)) : beforeRows;
+  return {
+    applies,
+    beforeRows,
+    afterRows,
+    beforeByName:new Map(beforeRows.map(row => [row.name, row])),
+    afterByName:new Map(afterRows.map(row => [row.name, row])),
+  };
+}
+function stakeScenarioMovement(scenario, mode=stakeMetricMode()){
+  const ranks = stakeRankRows(scenario, mode);
+  const players = new Map();
+  for(const player of scenario?.players || []){
+    const before = ranks.beforeByName.get(player.name);
+    const after = ranks.afterByName.get(player.name);
+    players.set(player.name, {
+      before,
+      after,
+      rankBefore: before?.adjRank ?? player.rankBefore ?? null,
+      rankAfter: after?.adjRank ?? (ranks.applies ? player.rankAfter : null),
+      rankDelta: before && after ? before.adjRank - after.adjRank : (ranks.applies ? player.rankDelta : null),
+      valueBefore: before ? stakeValue(before, mode) : (ranks.applies ? stakeFallbackValue(player, 'Before', mode) : null),
+      valueAfter: after ? stakeValue(after, mode) : (ranks.applies ? stakeFallbackValue(player, 'After', mode) : null),
+    });
+  }
+  const roster = new Set((scenario?.players || []).map(player => player.name));
+  const drops = ranks.beforeRows.map(before => {
+    if(roster.has(before.name)) return null;
+    const after = ranks.afterByName.get(before.name);
+    if(!after) return null;
+    const rankDelta = before.adjRank - after.adjRank;
+    if(rankDelta >= 0) return null;
+    return {
+      name:before.name,
+      rankBefore:before.adjRank,
+      rankAfter:after.adjRank,
+      rankDelta,
+      valueBefore:stakeValue(before, mode),
+      valueAfter:stakeValue(after, mode),
+    };
+  }).filter(Boolean).sort((a,b) => a.rankDelta - b.rankDelta || a.rankBefore - b.rankBefore || a.name.localeCompare(b.name)).slice(0, 2);
+  return {players, drops, applies:ranks.applies};
+}
+function stakeFallbackValue(player, suffix, mode=stakeMetricMode()){
+  const adjusted = player[`adjusted${suffix}`];
+  if(!Number.isFinite(adjusted)) return null;
+  if(mode !== 'weighted') return adjusted;
+  const champs = player[`champs${suffix}`] || 0;
+  return Math.round((adjusted + champs * (ringN - 1)) * 100) / 100;
+}
+function stakeFormatValue(value){
+  return Number.isFinite(value) ? value.toFixed(2) : '-';
+}
+function stakeRosterRows(players, movement, mode=stakeMetricMode()){
   return (players || []).map(p => {
+    const row = movement.players.get(p.name) || {};
+    const valueText = `${stakeFormatValue(row.valueBefore)} → ${stakeFormatValue(row.valueAfter)}`;
     if(p.entersLeaderboard) return `<tr>
       <th scope="row">${esc(p.name)}</th>
-      <td class="n">Unlisted → #${p.rankAfter}</td>
-      <td class="n"><span class="pill up">Enters</span></td>
-      <td class="n">${p.adjustedBefore.toFixed(2)} → ${p.adjustedAfter.toFixed(2)}</td>
+      <td class="n">${movement.applies ? `Unlisted → ${row.rankAfter ? `#${row.rankAfter}` : 'listed'}` : 'Not in selected era'}</td>
+      <td class="n">${movement.applies ? '<span class="pill up">Enters</span>' : '<span class="pill flat">–</span>'}</td>
+      <td class="n">${valueText}</td>
     </tr>`;
     if(p.ranked === false) return `<tr>
       <th scope="row">${esc(p.name)}</th>
-      <td class="n">Below cutoff</td>
+      <td class="n">${movement.applies ? 'Below cutoff' : 'Not in selected era'}</td>
       <td class="n"><span class="pill flat">–</span></td>
-      <td class="n">${p.rawAfter} raw win</td>
+      <td class="n">${movement.applies ? `${p.rawAfter} raw win` : '-'}</td>
     </tr>`;
     return `<tr>
       <th scope="row"><a href="player.html?p=${encodeURIComponent(p.name)}">${esc(p.name)}</a></th>
-      <td class="n">#${p.rankBefore} → #${p.rankAfter}</td>
-      <td class="n">${stakeMovePill(p.rankDelta)}</td>
-      <td class="n">${p.adjustedBefore.toFixed(2)} → ${p.adjustedAfter.toFixed(2)}</td>
+      <td class="n">#${row.rankBefore} → #${row.rankAfter}</td>
+      <td class="n">${stakeMovePill(row.rankDelta)}</td>
+      <td class="n">${valueText}</td>
     </tr>`;
   }).join('');
 }
-function stakeDropRows(drops){
+function stakeDropRows(drops, mode=stakeMetricMode()){
   return (drops || []).map(p => `<tr>
     <th scope="row"><a href="player.html?p=${encodeURIComponent(p.name)}">${esc(p.name)}</a></th>
     <td class="n">#${p.rankBefore} → #${p.rankAfter}</td>
     <td class="n">${stakeMovePill(p.rankDelta)}</td>
+    <td class="n">${stakeFormatValue(p.valueBefore)} → ${stakeFormatValue(p.valueAfter)}</td>
   </tr>`).join('');
 }
 function renderStakesBanner(){
@@ -141,21 +227,34 @@ function renderStakesBanner(){
   }
   const ev = D.stakes.event;
   const scenario = D.stakes.scenarios.find(s => s.team === selectedStakeTeam) || D.stakes.scenarios[0];
+  const mode = stakeMetricMode();
+  const metricLabel = stakeMetricLabel(mode);
+  const scenarioMovement = stakeScenarioMovement(scenario, mode);
   const teamButtons = D.stakes.scenarios.map(s => `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${esc(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}"><span>${esc(s.team)} (${signedStakeMove(stakeTeamMove(s))})</span><span>${stakeTeamCount(s)}</span></button>`).join('');
-  const rosterRows = stakeRosterRows(scenario.players);
-  const dropRows = stakeDropRows(scenario.drops);
+  const rosterRows = stakeRosterRows(scenario.players, scenarioMovement, mode);
+  const dropRows = stakeDropRows(scenarioMovement.drops, mode);
   const drops = dropRows ? TableSurface.dataTable({
       label:`${scenario.team} era-adjusted drops`,
       caption:`Biggest era-adjusted rank drops outside ${scenario.team}`,
       tableClass:'data stakes-drops-table',
-      head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th></tr></thead>`,
+      head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th><th scope="col" class="n">${esc(metricLabel)}</th></tr></thead>`,
       rows:dropRows
     }) : '<p class="stakes-note">No ranked players outside this roster move down.</p>';
+  const eventDelta = !scenarioMovement.applies ? 0 : mode === 'weighted' && ev.isChamps
+    ? ev.adjustedDelta + (ringN - 1)
+    : ev.adjustedDelta;
+  const eventDeltaPill = scenarioMovement.applies
+    ? `<span class="pill champ">+${eventDelta.toFixed(2)} ${esc(metricLabel)}${mode === 'weighted' && ev.isChamps ? ` at ×${ringN}` : ''}</span>`
+    : `<span class="pill flat">${esc(ev.game)} excluded</span>`;
   stakesBanner.innerHTML = `
     <div class="stakes-head">
       <div>
         <h2>This week: Champs scenarios</h2>
         <p>Pick a current ${esc(ev.game)} roster to see how the era-adjusted leaderboard moves if that team wins ${esc(ev.event)}.</p>
+      </div>
+      <div class="seg stakes-metric-toggle" role="group" aria-label="Scenario metric">
+        <button type="button" data-stake-metric="adjusted" aria-pressed="${mode === 'adjusted' ? 'true' : 'false'}">Adjusted</button>
+        <button type="button" data-stake-metric="weighted" aria-pressed="${mode === 'weighted' ? 'true' : 'false'}">Adj +◆</button>
       </div>
     </div>
     <div class="stakes-team-list" aria-label="Era-adjusted Champs scenario teams">${teamButtons}</div>
@@ -166,7 +265,7 @@ function renderStakesBanner(){
           label:`${scenario.team} era-adjusted scenario movement`,
           caption:`${scenario.team} era-adjusted what-if movement`,
           tableClass:'data stakes-mini-table',
-          head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th><th scope="col" class="n">Adjusted</th></tr></thead>`,
+          head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th><th scope="col" class="n">${esc(metricLabel)}</th></tr></thead>`,
           rows:rosterRows
         })}
       </section>
@@ -176,8 +275,8 @@ function renderStakesBanner(){
       </section>
     </div>
     <div class="stakes-footer">
-      <p class="stakes-note">Roster source: ${esc(scenario.rosterAsOf.event)} (${esc(scenario.rosterAsOf.date)}). One-win teammates who reach the two-win cutoff are shown as entrants.</p>
-      <span class="pill champ">+${ev.adjustedDelta.toFixed(2)} adj${ev.isChamps ? ' / +1 ◆' : ''}</span>
+      <p class="stakes-note">Roster source: ${esc(scenario.rosterAsOf.event)} (${esc(scenario.rosterAsOf.date)}). One-win teammates who reach the two-win cutoff are shown as entrants. Scenario movement follows the selected ${esc(metricLabel)} lens.</p>
+      ${eventDeltaPill}
     </div>`;
   stakesBanner.classList.remove('stakes-banner-pending');
   stakesBanner.removeAttribute('aria-hidden');
@@ -185,8 +284,11 @@ function renderStakesBanner(){
     selectedStakeTeam = btn.dataset.stakeTeam;
     renderStakesBanner();
   }));
+  stakesBanner.querySelectorAll('[data-stake-metric]').forEach(btn => btn.addEventListener('click', () => {
+    stakeMetric = btn.dataset.stakeMetric;
+    renderStakesBanner();
+  }));
 }
-renderStakesBanner();
 // era/title selection helpers (shared with the /api/og card endpoint via rank.js)
 const { ORDER, eraOf, PRESETS, DENOM, slugOf, selectionToken, parseSelection } = eraContext(D);
 const ERAS = [                                          // display groups, oldest→newest
@@ -195,7 +297,7 @@ const ERAS = [                                          // display groups, oldes
   {key:'cdl',    label:'CDL era'},
 ];
 // recompute the board for the current selection (see rank.js). Exposed for the oracle test.
-const cr = (selected, ringWeight) => computeRows(D, selected, ringWeight);
+const cr = (selected, ringWeight, bonuses) => computeRows(D, selected, ringWeight, bonuses);
 window.computeRows = cr;
 
 // arrow/pill formatter shared by Rank change & Wins change (green up / red down)
@@ -499,6 +601,7 @@ mountEraMenu(selected, sel=>{
   selected = sel;
   table.replaceData(cr(selected, ringN)).catch(()=>{});   // .catch: see COD-STATS-4/5
   setNote(selected);
+  renderStakesBanner();
   syncURL();
 });
 
@@ -507,6 +610,7 @@ mountEraMenu(selected, sel=>{
 const ringRange = document.getElementById('ringw-range');
 const ringVal   = document.getElementById('ringw-val');
 ringRange.max = RING_MAX; ringRange.value = ringN; ringVal.textContent = '×'+ringN;
+renderStakesBanner();
 ringRange.addEventListener('input', e=>{
   ringN = +e.target.value;
   ringVal.textContent = '×'+ringN;
@@ -515,6 +619,7 @@ ringRange.addEventListener('input', e=>{
   table.replaceData(cr(selected, ringN)).catch(()=>{});
   table.redraw(true);        // refit columns after showing/hiding the weighted column
   setNote(selected);
+  renderStakesBanner();
   syncURL();
 });
 

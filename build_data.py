@@ -1269,6 +1269,7 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
 
     raw_by_mkey = Counter()
     share_by_mkey = defaultdict(Fraction)
+    wins_by_mkey_game = defaultdict(Counter)
     champs_by_mkey = Counter()
     for r in pwins:
         if not _keep(r) or not _played(r.get('Date')):
@@ -1282,6 +1283,7 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
         mk = mkey(raw_name)
         raw_by_mkey[mk] += 1
         share_by_mkey[mk] += Fraction(1, S.denom[row_game])
+        wins_by_mkey_game[mk][row_game] += 1
         if is_champs_event(event_name_for(r, event_registry)):
             champs_by_mkey[mk] += 1
 
@@ -1365,6 +1367,11 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
                     'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
                     'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
                     'adjustedDelta': adjusted_delta,
+                    'seasonsBefore': [
+                        {'game': g, 'wins': wins, 'majors': S.denom[g]}
+                        for g, wins in sorted(wins_by_mkey_game.get(mk, {}).items(), key=lambda item: S.order_idx.get(item[0], 999))
+                        if g in S.denom and wins
+                    ],
                 })
             rows.append(row)
         drops = []

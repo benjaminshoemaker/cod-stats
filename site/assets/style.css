@@ -316,6 +316,7 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .stakes-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap}
 .stakes-head h2{font-size:var(--text-md);margin:0}
 .stakes-head p{margin:var(--space-1) 0 0;color:var(--muted);font-size:var(--text-sm);max-width:78ch}
+.stakes-metric-toggle{flex:0 0 auto}
 .stakes-team-list{display:flex;gap:8px;flex-wrap:wrap;min-width:0;width:100%}
 .stakes-team-list a,.stakes-team-list button{font:inherit;font-size:var(--text-sm);font-weight:800;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:var(--radius-pill);min-height:44px;padding:0 var(--space-3);display:inline-flex;align-items:center;gap:var(--space-2);max-width:100%;white-space:normal;cursor:pointer;touch-action:manipulation;transition:background-color var(--transition),border-color var(--transition),color var(--transition)}
 .stakes-team-list a:hover,.stakes-team-list button:hover{background:var(--panel-2);color:var(--ink);text-decoration:none}
@@ -329,6 +330,10 @@ table.data tr.subhead td{background:var(--panel-2);font-weight:600;color:var(--m
 .stakes-note{margin:0;color:var(--muted);font-size:var(--text-sm)}
 @media(max-width:900px){
   .stakes-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .stakes-metric-toggle{width:100%}
+  .stakes-metric-toggle button{flex:1}
 }
 .compare-tray{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;
   border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:var(--radius-md);padding:var(--space-3);margin:calc(-1 * var(--space-2)) 0 var(--space-3)}

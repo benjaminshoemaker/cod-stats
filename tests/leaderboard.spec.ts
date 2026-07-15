@@ -16,19 +16,53 @@ test.describe('leaderboard', () => {
     const widget = page.locator('#stakes-banner');
     await expect(widget).toBeVisible();
     await expect(widget).toContainText('This week: Champs scenarios');
+    await expect(widget.getByRole('button', { name: 'Adj +◆' })).toHaveAttribute('aria-pressed', 'true');
 
     await widget.locator('[data-stake-team="OpTic Texas"]').click();
     await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toHaveAttribute('aria-pressed', 'true');
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+26)');
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+25)');
     await expect(widget).toContainText('OpTic Texas roster');
     await expect(widget).toContainText('Shotzzy');
     await expect(widget).toContainText('Biggest drops');
+    await expect(widget).toContainText('+3.42 Adj +◆ at ×3');
+
+    await widget.locator('[data-stake-team="Carolina Royal Ravens"]').click();
+    const carolinaRosterWeighted = widget.locator('section', { hasText: 'Carolina Royal Ravens roster' });
+    await expect(carolinaRosterWeighted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Unlisted → #47');
+
+    await page.locator('#ringw-range').evaluate((el, value) => {
+      (el as HTMLInputElement).value = String(value);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    }, 4);
+    await widget.locator('[data-stake-team="OpTic Texas"]').click();
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+22)');
+    await expect(widget).toContainText('+4.42 Adj +◆ at ×4');
+
+    await widget.getByRole('button', { name: 'Adjusted' }).click();
+    await expect(widget.getByRole('button', { name: 'Adjusted' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+26)');
+    await expect(widget).toContainText('+1.42 Adjusted');
 
     await widget.locator('[data-stake-team="Carolina Royal Ravens"]').click();
     await expect(widget).toContainText('Carolina Royal Ravens roster');
     await expect(widget).toContainText('Standy');
     await expect(widget).toContainText('Enters');
+    const carolinaRosterAdjusted = widget.locator('section', { hasText: 'Carolina Royal Ravens roster' });
+    await expect(carolinaRosterAdjusted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Unlisted → #70');
     await expect(widget).toContainText('Below cutoff');
+
+    await page.locator('.eramenu .colmenu-btn').click();
+    await page.locator('.era-preset[data-preset="mlgcwl"]').click();
+    await expect(widget.locator('[data-stake-team="Carolina Royal Ravens"]')).toContainText('Carolina Royal Ravens (0)');
+    await expect(carolinaRosterAdjusted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Not in selected era');
+    await expect(widget).toContainText('Black Ops 7 excluded');
+  });
+
+  test('Champs scenario widget defaults to adjusted plus rings', async ({ page }) => {
+    await page.goto('/index.html?rings=1');
+    const widget = page.locator('#stakes-banner');
+    await expect(widget).toBeVisible();
+    await expect(widget.getByRole('button', { name: 'Adj +◆' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('columns are in the expected order', async ({ page }) => {

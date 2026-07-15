@@ -42,6 +42,13 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-15', tag:'Improved', title:'Champs scenarios can show ring-weighted movement',
+   body:`The leaderboard Champs scenario widget now has an <strong>Adjusted / Adj +◆</strong> toggle. By default it
+   follows the current ring-weighted leaderboard view, so team totals, roster movement, biggest drops, and the event
+   delta all reflect <strong>Adj +◆</strong> when rings are weighted. Switch to <strong>Adjusted</strong> to see the
+   neutral era-adjusted movement without ring weighting. One-win entrants are now ranked in the selected lens instead
+   of reusing the neutral all-era rank, and eras that exclude the current title show the event as excluded. The main
+   leaderboard formula is unchanged.`},
   {date:'2026-07-15', tag:'Methodology', title:'Ring weighting now defaults to 3x',
    body:`The leaderboard and <a href="goat-builder.html">GOAT Builder</a> now open with Champs rings weighted at
    <strong>×3</strong>. A ring is still already counted once as a major win; the default now adds two extra major-win

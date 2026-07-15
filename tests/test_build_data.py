@@ -201,6 +201,8 @@ def test_stakes_rosters_come_from_latest_played_title_major(data):
     assert standy["rawAfter"] == 2
     assert standy["rankBefore"] is None
     assert standy["rankAfter"] >= 1
+    assert standy["seasonsBefore"]
+    assert sum(s["wins"] for s in standy["seasonsBefore"]) == standy["rawBefore"]
     for p in carolina["players"]:
         assert p["ranked"] is False
         assert p["champsAfter"] == p["champsBefore"] + 1
