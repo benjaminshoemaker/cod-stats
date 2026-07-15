@@ -2,8 +2,8 @@
    Loaded as a blocking script at the top of <body> (and preloaded from <head>)
    so the header is in the DOM for the first frame — injecting it later from the
    page modules pushed the whole page down by the nav height (layout shift).
-   Pages still call mountNav('...') from their module scripts; the guard below
-   makes those calls no-ops, and the alias map keeps player/game pages
+   Page scripts may call mountPageNav('...') after app.js loads; the guard below
+   makes those delegated calls no-ops, and the alias map keeps player/game pages
    highlighting their section (Leaderboard / Seasons) rather than themselves. */
 function mountNav(active){
   if(document.querySelector('.site-head')) return;   // already mounted at parse time

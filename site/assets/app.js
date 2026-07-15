@@ -314,6 +314,17 @@ function mountTabulatorSurface(selector, config={}){
   });
   return table;
 }
+const normalizedRows = new WeakMap();
+function normalizeRowHeightLater(row, key='default'){
+  if(!row || typeof row.normalizeHeight !== 'function') return;
+  if(normalizedRows.get(row) === key) return;
+  normalizedRows.set(row, key);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    try {
+      if(!row.getElement || row.getElement().isConnected) row.normalizeHeight();
+    } catch(e) {}
+  }));
+}
 const TableSurface = {
   attrs: attrString,
   scrollRegionAttrs,
@@ -327,6 +338,9 @@ const TableSurface = {
   mountTabulator: mountTabulatorSurface,
 };
 window.TableSurface = TableSurface;
+function mountPageNav(active){
+  if(typeof window.mountNav === 'function') window.mountNav(active);
+}
 window.scrollRegionAttrs = scrollRegionAttrs;
 window.tableCaption = tableCaption;
 window.enhanceScrollRegions = enhanceScrollRegions;
@@ -420,8 +434,8 @@ function mountColumnMenu(table, cols, onChange){
 }
 
 /* Header nav lives in assets/nav.js, mounted at the top of <body> before first
-   paint (avoids the layout shift of injecting it here). Pages' mountNav('...')
-   calls hit its already-mounted guard and are no-ops. */
+   paint (avoids the layout shift of injecting it here). Pages call
+   mountPageNav('...'), which delegates to mountNav when nav.js is available. */
 function mountFoot(){
   const dataNote = D && D.meta
     ? ` · ${D.meta.numEvents} events across ${D.meta.seasonOrder.length} seasons · raw totals match the wiki exactly · data as of ${D.meta.asOf}`
@@ -431,3 +445,33 @@ function mountFoot(){
       <a href="https://cod-esports.fandom.com/wiki/List_of_Most_Major_Tournament_Wins_by_Player" target="_blank" rel="noopener">Call of Duty Esports Wiki</a>
       · major = Tier &ldquo;Major&rdquo;/&ldquo;Premier&rdquo;, 1st place${dataNote}.</footer>`);
 }
+Object.assign(window, {
+  D,
+  qs,
+  esc,
+  setCanonical,
+  yr,
+  canonicalPlayerName,
+  playerRecord,
+  getPref,
+  setPref,
+  deltaPill,
+  teamBadge,
+  roleRows,
+  roleSummary,
+  roleForGame,
+  rolePill,
+  roleDisputeUrl,
+  roleDisputeLink,
+  playerLink,
+  gameLink,
+  fmtInt,
+  fmtKd,
+  mountColumnMenu,
+  mountFoot,
+  anchorLink,
+  pageToc,
+  scrollToHashTarget,
+  mountPageNav,
+  normalizeRowHeightLater,
+});

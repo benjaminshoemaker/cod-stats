@@ -901,7 +901,7 @@ function formatExpandedRow(row){
   const holder = document.querySelector('#goatTable .tabulator-tableholder');
   if(holder && holder.clientWidth) detail.style.width = `${holder.clientWidth}px`;
   el.appendChild(detail);
-  row.normalizeHeight?.();
+  normalizeRowHeightLater(row, `goat-detail:${data.player}`);
 }
 function syncTableSortFromState(){
   if(!goatTable) return;

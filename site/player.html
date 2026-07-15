@@ -28,7 +28,7 @@
 <script src="similarity.js"></script>
 <script src="assets/app.js?v=team-logos"></script>
 <script>
-mountNav('index.html');
+mountPageNav('index.html');
 const requestedName = qs('p');
 const name = canonicalPlayerName(requestedName) || requestedName;
 const lb = D.leaderboard.find(r=>r.name===name);
@@ -42,7 +42,6 @@ if(!p || !lb){
 }else{
   document.title = `${p.name} · Map Five`;
   setCanonical(`https://mapfive.app/player.html?p=${encodeURIComponent(p.name)}`);
-  const maxMajors = Math.max(...D.meta.seasonOrder.map(g=>D.majors[g]));
   const avgPlace = p.avg_place == null ? '–' : p.avg_place.toFixed(1);
   const ratePct = v => v == null ? '–' : `${Math.round(v * 100)}%`;
   const compareHref = `compare.html?p=${encodeURIComponent(p.name)}`;
@@ -233,6 +232,7 @@ if(!p || !lb){
 
   function render(){
     const shown = p.seasons;
+    const maxMajorsForChart = Math.max(1, ...shown.map(s=>s.majors || 0));
     const mbar  = D.meta.mbarAll;
     const share = p.share_all;
     const adj   = p.adj_all;
@@ -263,8 +263,8 @@ if(!p || !lb){
         <div class="small muted" style="display:flex;justify-content:space-between">
           <span>${esc(s.game)}</span><span class="num">${s.wins} / ${s.majors} majors</span></div>
         <div class="bar-track" style="height:14px;position:relative;background:var(--panel-2)">
-          <div class="bar-fill amber" style="width:${(s.majors/maxMajors*100).toFixed(1)}%;opacity:.28"></div>
-          <div class="bar-fill" style="width:${(s.wins/maxMajors*100).toFixed(1)}%;position:absolute;top:0;left:0"></div>
+          <div class="bar-fill amber" style="width:${(s.majors/maxMajorsForChart*100).toFixed(1)}%;opacity:.28"></div>
+          <div class="bar-fill" style="width:${(s.wins/maxMajorsForChart*100).toFixed(1)}%;position:absolute;top:0;left:0"></div>
         </div></div>`).join('') || '<p class="small faint">No included seasons.</p>';
 
     // full major list — wins only (default) or every major entered (auditable)

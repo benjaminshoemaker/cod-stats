@@ -81,7 +81,7 @@
 <script src="assets/app.js"></script>
 <script type="module">
 import { computeRows, eraContext } from './assets/rank.js';
-mountNav('index.html');
+mountPageNav('index.html');
 
 const D = window.APP_DATA;
 const stakesBanner = document.getElementById('stakes-banner');
@@ -291,7 +291,7 @@ const table = TableSurface.mountTabulator("#table",{
     const holder = document.querySelector('#table .tabulator-tableholder');
     if(holder && holder.clientWidth) detail.style.width = `${holder.clientWidth}px`;
     el.appendChild(detail);
-    row.normalizeHeight?.();
+    normalizeRowHeightLater(row, `adjmath:${d.name}`);
   },
   onBuilt:t=>{
     // apply search from URL

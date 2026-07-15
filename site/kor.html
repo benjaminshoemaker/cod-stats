@@ -53,7 +53,7 @@
 <script src="vendor/tabulator.min.js"></script>
 <script src="assets/app.js"></script>
 <script>
-mountNav('kor.html');
+mountPageNav('kor.html');
 const gameSel = document.getElementById('kor-game');
 const splitBtns = [...document.querySelectorAll('#kor-split button')];
 const host = document.getElementById('kor-root');
@@ -313,7 +313,7 @@ function toggleKorEvent(row, d, btn){
     btn.setAttribute('aria-expanded', String(open));
     btn.textContent = open ? '▾' : '▸';
     btn.setAttribute('aria-label', btn.getAttribute('aria-label').replace(open ? /^Show/ : /^Hide/, open ? 'Hide' : 'Show'));
-    row.normalizeHeight?.();
+    normalizeRowHeightLater(row, `kor-event:${key}:${open ? 'open' : 'closed'}`);
     // normalizeHeight can make Tabulator rebuild the row (fresh detail, fresh
     // buttons); once that settles, put focus back on this event's toggle
     requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -379,7 +379,7 @@ function formatKorRow(row){
   if(refocusId != null){
     detail.querySelector(`.kor-event-toggle[data-event-id="${CSS.escape(refocusId)}"]`)?.focus();
   }
-  row.normalizeHeight?.();
+  normalizeRowHeightLater(row, `kor-detail:${expandedKey}:${expandedEvents.size}`);
 }
 
 function toggleKorRow(row){
