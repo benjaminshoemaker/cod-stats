@@ -25,6 +25,7 @@
   /* era band fills, tokenized so the JS band renderer reads the same values */
   :root{--band-prebo2:#f2f5f9;--band-mlgcwl:#eef4fb;--band-cdl:#eef7f2}
   .chart-wrap{position:relative;overflow-x:auto}
+  .tj-stage{position:relative;min-width:720px}
   svg.tj{display:block;width:100%;min-width:720px;height:auto;font-family:var(--sans)}
   svg.tj .grid{stroke:var(--line)}
   svg.tj .tick{fill:var(--faint);font-size:11px}
@@ -40,6 +41,11 @@
   svg.tj.dim .line:not(.spot){opacity:.1}
   svg.tj .line.spot .vis{stroke-width:3.4}
   svg.tj .line.spot:not(.sel) .vis{stroke:var(--accent)}
+  svg.tj .line-link:focus-visible{outline:none}
+  svg.tj .line-link:focus-visible .vis{stroke:var(--ink);stroke-width:3.4}
+  .trace-key{position:absolute;z-index:3;width:44px;height:44px;transform:translate(-22px,-22px);
+    border:0;border-radius:50%;background:transparent;padding:0;cursor:pointer;color:transparent}
+  .trace-key:focus-visible{outline:3px solid var(--accent);outline-offset:2px;background:var(--accent-soft)}
   svg.tj .xhair{stroke:var(--line-2);stroke-dasharray:3 3;opacity:0;pointer-events:none}
   svg.tj .xdot{fill:#fff;stroke-width:2.5;opacity:0;pointer-events:none}
   svg.tj a{cursor:pointer}
@@ -84,6 +90,7 @@ const PAL = ['#2563eb','#d97706','#059669','#7c3aed','#e11d48','#0891b2','#65a30
 // design tokens, read once: championship gold + the era band fills (single source of truth)
 const cssv = getComputedStyle(document.documentElement);
 const GOLD = cssv.getPropertyValue('--gold').trim();
+const GOLD_INK = cssv.getPropertyValue('--gold-ink').trim();
 const ERAFILL = {prebo2:cssv.getPropertyValue('--band-prebo2').trim(),
   mlgcwl:cssv.getPropertyValue('--band-mlgcwl').trim(), cdl:cssv.getPropertyValue('--band-cdl').trim()};
 
@@ -153,14 +160,14 @@ function draw(){
   const drawLine = name=>{
     const pts=series(name); if(!pts.length) return '';
     const sel=selected.has(name), d=path(pts);
-    let g=`<g class="line${sel?' sel':''}" data-name="${esc(name)}">`;
+    let g=`<a class="line-link" href="#" tabindex="0" focusable="true" role="button" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."><g class="line${sel?' sel':''}" data-name="${esc(name)}">`;
     if(sel) g+=`<path class="halo" d="${d}"/>`;
     g+=`<path class="vis" d="${d}"${sel?` style="stroke:${colorOf[name]}"`:''}/>`;
     g+=`<path class="hit" d="${d}"/>`;
     if(sel){ const byIdx=Object.fromEntries(pts.map(p=>[p.idx,p]));
       for(const c of (D.players[name].champ_events||[])){ const p=byIdx[IDX[event2game[c.event]]];
         if(p){ const cx=X(p.idx),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)}: ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
-    return g+'</g>';
+    return g+'</g></a>';
   };
   for(const n of ALLNAMES) if(!selected.has(n)) s+=drawLine(n);
   const selList=[...selected].sort((a,b)=>adjOf(b)-adjOf(a));
@@ -173,31 +180,39 @@ function draw(){
   // crosshair (updated on hover)
   s+=`<line class="xhair" x1="0" x2="0" y1="${PY0}" y2="${PYb}"/><circle class="xdot" r="4.5"/>`;
   s+='</svg>';
-  wrap.innerHTML=s;
+  const keys=ALLNAMES.map(name=>{
+    const pts=series(name);
+    if(!pts.length) return '';
+    const p=pts[pts.length-1];
+    const sel=selected.has(name);
+    return `<button class="trace-key" type="button" data-name="${esc(name)}" style="left:${X(p.idx).toFixed(1)}px;top:${Y(p.cum).toFixed(1)}px" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."></button>`;
+  }).join('');
+  wrap.innerHTML=`<div class="tj-stage" style="width:${W}px">${s}${keys}</div>`;
   attachHover();
 }
 
 const tt=document.getElementById('tt');
 function attachHover(){
-  const svg=document.querySelector('svg.tj');
+  const stage=document.querySelector('.tj-stage');
+  const svg=stage.querySelector('svg.tj');
   const xhair=svg.querySelector('.xhair'), xdot=svg.querySelector('.xdot');
   let spotted=null;   // the currently spotlighted <g>, so the hot path only touches classes on change
+  let suppressKeyboardClick=false;
+  const eventLine=target=>target.closest('.line') || target.closest('.line-link')?.querySelector('.line');
+  const lineByName=name=>[...svg.querySelectorAll('.line')].find(g=>g.dataset.name===name);
   const clear=()=>{ spotted=null; svg.classList.remove('dim');
     svg.querySelectorAll('.line.spot').forEach(x=>x.classList.remove('spot'));
     tt.style.display='none'; xhair.style.opacity='0'; xdot.style.opacity='0'; };
-  svg.addEventListener('mousemove', e=>{
-    const g=e.target.closest('.line');
-    if(!g){ clear(); return; }
-    const rect=svg.getBoundingClientRect();   // layout read before the class writes below
+  const spotLine=g=>{
     if(g!==spotted){
       spotted=g; svg.classList.add('dim');
       svg.querySelectorAll('.line.spot').forEach(x=>x.classList.remove('spot'));
-      g.classList.add('spot'); g.parentNode.appendChild(g);
+      g.classList.add('spot');
+      const layer = g.closest('.line-link') || g;
+      layer.parentNode.appendChild(layer);
     }
-    const name=g.dataset.name, pts=series(name), col=colorOf[name]||'#2563eb';
-    const vbx=(e.clientX-rect.left)*(geom.W/rect.width);
-    const mi=Math.round((vbx-geom.PX0)/geom.dx);
-    let p=pts[0]; for(const q of pts){ if(q.idx<=mi) p=q; }
+  };
+  const setTrace=(name,p,col)=>{
     const gx=geom.X(p.idx), gy=geom.Y(p.cum);
     xhair.setAttribute('x1',gx); xhair.setAttribute('x2',gx); xhair.style.opacity='1';
     xdot.setAttribute('cx',gx); xdot.setAttribute('cy',gy); xdot.setAttribute('stroke',col); xdot.style.opacity='1';
@@ -206,19 +221,78 @@ function attachHover(){
       `<span class="s">through ${esc(ABBR[p.season])}:</span> ${p.cum.toFixed(1)}<br>`+
       `<span class="s">career:</span> ${adjOf(name).toFixed(1)} adj wins`;
     tt.style.display='block';
+  };
+  const placeTip=(x,y)=>{
+    let lx=x+14, ly=y+14;
+    if(lx+tt.offsetWidth>innerWidth-8) lx=x-tt.offsetWidth-10;
+    if(ly+tt.offsetHeight>innerHeight-8) ly=y-tt.offsetHeight-10;
+    tt.style.left=lx+'px'; tt.style.top=ly+'px';
+  };
+  const focusTrace=g=>{
+    spotLine(g);
+    const name=g.dataset.name, pts=series(name), p=pts[pts.length-1], col=colorOf[name]||'#2563eb';
+    setTrace(name,p,col);
+    const svgRect=svg.getBoundingClientRect();
+    const x=svgRect.left + geom.X(p.idx) * (svgRect.width / geom.W);
+    const y=svgRect.top + geom.Y(p.cum) * (svgRect.height / 470);
+    placeTip(x,y);
+  };
+  svg.addEventListener('mousemove', e=>{
+    const g=eventLine(e.target);
+    if(!g){ clear(); return; }
+    const rect=svg.getBoundingClientRect();   // layout read before the class writes below
+    spotLine(g);
+    const name=g.dataset.name, pts=series(name), col=colorOf[name]||'#2563eb';
+    const vbx=(e.clientX-rect.left)*(geom.W/rect.width);
+    const mi=Math.round((vbx-geom.PX0)/geom.dx);
+    let p=pts[0]; for(const q of pts){ if(q.idx<=mi) p=q; }
+    setTrace(name,p,col);
     // clamp to the viewport: careers end at the right edge, exactly where an
     // unclamped cursor-following tooltip clips off screen
-    let lx=e.clientX+14, ly=e.clientY+14;
-    if(lx+tt.offsetWidth>innerWidth-8) lx=e.clientX-tt.offsetWidth-10;
-    if(ly+tt.offsetHeight>innerHeight-8) ly=e.clientY-tt.offsetHeight-10;
-    tt.style.left=lx+'px'; tt.style.top=ly+'px';
+    placeTip(e.clientX,e.clientY);
   });
   svg.addEventListener('mouseleave', clear);
+  svg.addEventListener('focusin', e=>{
+    const g=eventLine(e.target);
+    if(g) focusTrace(g);
+  });
+  svg.addEventListener('focusout', e=>{
+    if(eventLine(e.target)) clear();
+  });
   // click/tap a line to pin it (adds the chip + color); tapping again unpins.
   // This is the touch path: mousemove identification is mouse-only.
   svg.addEventListener('click', e=>{
-    const g=e.target.closest('.line'); if(!g) return;
+    const g=eventLine(e.target); if(!g) return;
+    e.preventDefault();
+    if(suppressKeyboardClick){ suppressKeyboardClick=false; return; }
     const n=g.dataset.name;
+    selected.has(n) ? selected.delete(n) : selected.add(n);
+    rerender();
+  });
+  svg.addEventListener('keydown', e=>{
+    const g=eventLine(e.target);
+    if(!g || (e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    suppressKeyboardClick=true;
+    setTimeout(()=>{ suppressKeyboardClick=false; }, 80);
+    const n=g.dataset.name;
+    selected.has(n) ? selected.delete(n) : selected.add(n);
+    rerender();
+  });
+  stage.addEventListener('focusin', e=>{
+    const key=e.target.closest('.trace-key');
+    if(!key) return;
+    const g=lineByName(key.dataset.name);
+    if(g) focusTrace(g);
+  });
+  stage.addEventListener('focusout', e=>{
+    if(e.target.closest('.trace-key')) clear();
+  });
+  stage.addEventListener('click', e=>{
+    const key=e.target.closest('.trace-key');
+    if(!key) return;
+    e.preventDefault();
+    const n=key.dataset.name;
     selected.has(n) ? selected.delete(n) : selected.add(n);
     rerender();
   });
@@ -233,7 +307,7 @@ function chipsHTML(){
 document.getElementById('root').innerHTML = `
   <h1>Career trajectories</h1>
   <p class="lede">Every major winner's <strong>cumulative era-adjusted wins</strong>, season by season. A steep climb is a
-  <strong>peak</strong>; a long shallow rise is <strong>longevity</strong>. <span style="color:${GOLD}">◆</span> marks a World Championship.
+  <strong>peak</strong>; a long shallow rise is <strong>longevity</strong>. <span style="color:${GOLD_INK}">◆</span> marks a World Championship.
   Hover any line to trace it, click or tap to pin it, or add players to keep them highlighted. <a href="methodology.html#era-adjustment">How adjusted wins work →</a></p>
   <div class="picker">
     <input id="search" class="search" list="allplayers" placeholder="Add a player…" autocomplete="off" aria-label="Add a player">

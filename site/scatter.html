@@ -31,8 +31,10 @@
   svg.scatter .axlabel{fill:var(--ink);font-size:13px;font-weight:600}
   svg.scatter .quad{fill:var(--faint);font-size:12px;font-weight:600;opacity:.7}
   svg.scatter .dot{fill:var(--accent);fill-opacity:.55;stroke:#fff;stroke-width:1;cursor:pointer}
-  svg.scatter .dot:hover{fill-opacity:.9}
+  svg.scatter .dot:hover,svg.scatter a:hover .dot,svg.scatter a:focus-visible .dot{fill-opacity:.9}
+  svg.scatter a:focus-visible .dot{stroke:var(--ink);stroke-width:2}
   svg.scatter .dot.champ{fill:var(--gold);fill-opacity:.6}
+  svg.scatter .hit{fill:transparent;stroke:none}
   svg.scatter .lbl{fill:var(--ink);font-size:12px;pointer-events:none}
   svg.scatter a{cursor:pointer}
 </style>
@@ -122,7 +124,10 @@ function render(){
     const held=GAMES[p.info.season]?.majors;
     const denomNote=(held && held!==p.info.majors)?` winnable (${held} held)`:'';
     const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors}${denomNote} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
-    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}" aria-label="${esc(tip)}"><circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" data-tip="${esc(tip)}"></circle></a>`;
+    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}" aria-label="${esc(tip)}">
+      <circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" data-tip="${esc(tip)}"></circle>
+      <circle class="hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${Math.max(23,r+8).toFixed(1)}" data-tip="${esc(tip)}"></circle>
+    </a>`;
   }
 
   // labels in a separate layer; nudge down to avoid overlap (dots stay on their exact spot)
@@ -160,7 +165,7 @@ function showDotTip(c){
 }
 const hideDotTip = ()=>tipEl.classList.remove('on');
 chartEl.addEventListener('mouseover', e=>{
-  const c = e.target.closest('circle.dot'); c ? showDotTip(c) : hideDotTip(); });
+  const c = e.target.closest('a')?.querySelector('circle.dot'); c ? showDotTip(c) : hideDotTip(); });
 chartEl.addEventListener('mouseleave', hideDotTip);
 chartEl.addEventListener('focusin', e=>{
   const c = e.target.closest('a')?.querySelector('circle.dot'); if(c) showDotTip(c); });

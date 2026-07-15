@@ -5,74 +5,74 @@
       "game": "Black Ops 2",
       "source_kind": "community_thread_cluster",
       "ballot_count": 8,
-      "base_weight": 1.48492424049175,
+      "base_weight": 1.484924240492,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.48492424049175,
+      "weight": 1.484924240492,
       "scores": {
-        "Karma": 1.3626375183081967,
-        "Crimsix": 1.386330421471496,
-        "Clayster": 1.1193155584002403,
-        "Parasite": 0.7869405507136371,
-        "ACHES": 1.0211742397420847,
-        "TeeP": 0.6019026694601818,
-        "MiRx": 0.4285620446316804,
-        "Scump": 0.19768823182416767,
-        "KiLLa": 0.26887295794121135,
-        "JKap": 0.23001690550487716,
-        "ProoFy": 0.20095192120198005,
-        "Sharp": 0.02013082347209558,
-        "Saints": 0.03795105171213719,
-        "John": 0.012650350570712399
+        "Karma": 1.362637518308,
+        "Crimsix": 1.386330421471,
+        "Clayster": 1.1193155584,
+        "Parasite": 0.786940550714,
+        "ACHES": 1.021174239742,
+        "TeeP": 0.60190266946,
+        "MiRx": 0.428562044632,
+        "Scump": 0.197688231824,
+        "KiLLa": 0.268872957941,
+        "JKap": 0.230016905505,
+        "ProoFy": 0.200951921202,
+        "Sharp": 0.020130823472,
+        "Saints": 0.037951051712,
+        "John": 0.012650350571
       },
       "ballot_reception": [
         {
           "ballot_id": "bo2_2016_top10_001",
           "comment_score": null,
           "raw_weight": 1.0,
-          "normalized_weight": 0.9087135159809874
+          "normalized_weight": 0.908713515981
         },
         {
           "ballot_id": "bo2_2016_top10_002",
           "comment_score": 7,
           "raw_weight": 1.25,
-          "normalized_weight": 1.1358918949762342
+          "normalized_weight": 1.135891894976
         },
         {
           "ballot_id": "bo2_2016_top10_003",
           "comment_score": 4,
-          "raw_weight": 1.1934940079072802,
-          "normalized_weight": 1.0845441362276649
+          "raw_weight": 1.193494007907,
+          "normalized_weight": 1.084544136228
         },
         {
           "ballot_id": "bo2_2016_top10_004",
           "comment_score": 3,
-          "raw_weight": 1.1666666666666667,
-          "normalized_weight": 1.0601657686444852
+          "raw_weight": 1.166666666667,
+          "normalized_weight": 1.060165768644
         },
         {
           "ballot_id": "bo2_2016_top10_005",
           "comment_score": 3,
-          "raw_weight": 1.1666666666666667,
-          "normalized_weight": 1.0601657686444852
+          "raw_weight": 1.166666666667,
+          "normalized_weight": 1.060165768644
         },
         {
           "ballot_id": "bo2_2016_top10_006",
           "comment_score": 4,
-          "raw_weight": 1.1934940079072802,
-          "normalized_weight": 1.0845441362276649
+          "raw_weight": 1.193494007907,
+          "normalized_weight": 1.084544136228
         },
         {
           "ballot_id": "bo2_2016_top10_007",
           "comment_score": 1,
-          "raw_weight": 1.0833333333333333,
-          "normalized_weight": 0.9844396423127362
+          "raw_weight": 1.083333333333,
+          "normalized_weight": 0.984439642313
         },
         {
           "ballot_id": "bo2_2016_top10_008",
           "comment_score": -11,
           "raw_weight": 0.75,
-          "normalized_weight": 0.6815351369857405
+          "normalized_weight": 0.681535136986
         }
       ]
     },
@@ -80,17 +80,17 @@
       "game": "Black Ops 2",
       "source_kind": "community_thread_cluster",
       "ballot_count": 3,
-      "base_weight": 0.9526279441628825,
+      "base_weight": 0.952627944163,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 0.9526279441628825,
+      "weight": 0.952627944163,
       "scores": {
-        "Karma": 0.9526279441628825,
-        "Crimsix": 0.7621023553303062,
-        "Clayster": 0.31754264805429416,
-        "Parasite": 0.381051177665153,
-        "ACHES": 0.3810511776651531,
-        "MiRx": 0.06350852961085883
+        "Karma": 0.952627944163,
+        "Crimsix": 0.76210235533,
+        "Clayster": 0.317542648054,
+        "Parasite": 0.381051177665,
+        "ACHES": 0.381051177665,
+        "MiRx": 0.063508529611
       },
       "ballot_reception": [
         {
@@ -117,24 +117,24 @@
       "game": "Black Ops 2",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.4696938456699067,
+      "base_weight": 1.46969384567,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.4696938456699067,
+      "weight": 1.46969384567,
       "scores": {
-        "ACHES": 1.063778402580123,
-        "Crimsix": 1.3262237321640349,
-        "Clayster": 1.0112893366633404,
-        "Karma": 1.2982295636750845,
-        "Parasite": 0.762841091323904,
-        "ProoFy": 0.09797958971132711,
-        "TeeP": 0.30093731125621903,
-        "MiRx": 0.42691106945649665,
-        "Scump": 0.6193709778180321,
-        "Sharp": 0.07348469228349533,
-        "KiLLa": 0.14696938456699066,
-        "Jurd": 0.14696938456699069,
-        "JKap": 0.07348469228349533
+        "ACHES": 1.06377840258,
+        "Crimsix": 1.326223732164,
+        "Clayster": 1.011289336663,
+        "Karma": 1.298229563675,
+        "Parasite": 0.762841091324,
+        "ProoFy": 0.097979589711,
+        "TeeP": 0.300937311256,
+        "MiRx": 0.426911069456,
+        "Scump": 0.619370977818,
+        "Sharp": 0.073484692283,
+        "KiLLa": 0.146969384567,
+        "Jurd": 0.146969384567,
+        "JKap": 0.073484692283
       },
       "ballot_reception": [
         {
@@ -179,19 +179,19 @@
       "game": "Black Ops 2",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.2859821149611685,
+      "base_weight": 1.285982114961,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.4788794322053438,
+      "weight": 1.478879432205,
       "scores": {
-        "Clayster": 0.8873276593232065,
-        "Crimsix": 1.3063434984480538,
-        "Karma": 1.2570475173745423,
-        "Parasite": 0.542255791808626,
-        "Scump": 0.049295981073511456,
-        "ACHES": 0.14788794322053442,
-        "TeeP": 0.19718392429404583,
-        "MiRx": 0.049295981073511456
+        "Clayster": 0.887327659323,
+        "Crimsix": 1.306343498448,
+        "Karma": 1.257047517375,
+        "Parasite": 0.542255791809,
+        "Scump": 0.049295981074,
+        "ACHES": 0.147887943221,
+        "TeeP": 0.197183924294,
+        "MiRx": 0.049295981074
       },
       "ballot_reception": [
         {
@@ -242,15 +242,15 @@
       "weight": 0.55,
       "scores": {
         "Karma": 0.55,
-        "Crimsix": 0.49500000000000005,
-        "Parasite": 0.44000000000000006,
+        "Crimsix": 0.495,
+        "Parasite": 0.44,
         "Clayster": 0.385,
         "ACHES": 0.33,
         "KiLLa": 0.275,
-        "MiRx": 0.22000000000000003,
+        "MiRx": 0.22,
         "JKap": 0.165,
-        "ProoFy": 0.11000000000000001,
-        "Scump": 0.05500000000000001
+        "ProoFy": 0.11,
+        "Scump": 0.055
       },
       "ballot_reception": [
         {
@@ -265,25 +265,25 @@
       "game": "Black Ops",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.347219358530748,
+      "base_weight": 1.347219358531,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.347219358530748,
+      "weight": 1.347219358531,
       "scores": {
-        "JKap": 0.9590918766683182,
-        "Scump": 0.80458933912253,
-        "ProoFy": 0.5886065530723625,
-        "John": 0.37048532359595565,
-        "StaiNViLLe": 0.17962924780409972,
-        "ACHES": 0.3854544275796307,
-        "Virus": 0.11226827987756233,
-        "Saints": 0.1347219358530748,
-        "Dedo": 0.08981462390204986,
-        "BigTymeR": 0.12830660557435694,
-        "MerK": 0.12830660557435694,
-        "Rambo": 0.12830660557435694,
-        "ASSASS1N": 0.12830660557435694,
-        "Moho": 0.12830660557435694
+        "JKap": 0.959091876668,
+        "Scump": 0.804589339123,
+        "ProoFy": 0.588606553072,
+        "John": 0.370485323596,
+        "StaiNViLLe": 0.179629247804,
+        "ACHES": 0.38545442758,
+        "Virus": 0.112268279878,
+        "Saints": 0.134721935853,
+        "Dedo": 0.089814623902,
+        "BigTymeR": 0.128306605574,
+        "MerK": 0.128306605574,
+        "Rambo": 0.128306605574,
+        "ASSASS1N": 0.128306605574,
+        "Moho": 0.128306605574
       },
       "ballot_reception": [
         {
@@ -333,19 +333,19 @@
       "season_coverage_multiplier": 1.0,
       "weight": 1.0,
       "scores": {
-        "Scump": 0.5715909090909091,
-        "TeeP": 0.5715909090909091,
-        "ACHES": 0.5715909090909091,
-        "BigTymeR": 0.3090909090909091,
+        "Scump": 0.571590909091,
+        "TeeP": 0.571590909091,
+        "ACHES": 0.571590909091,
+        "BigTymeR": 0.309090909091,
         "Vengeance": 0.1375,
-        "ASSASS1N": 0.5715909090909091,
-        "MerK": 0.4465909090909091,
-        "StaiNViLLe": 0.2965909090909091,
+        "ASSASS1N": 0.571590909091,
+        "MerK": 0.446590909091,
+        "StaiNViLLe": 0.296590909091,
         "Censor": 0.1375,
-        "JKap": 0.5715909090909091,
-        "ProoFy": 0.43409090909090914,
-        "John": 0.43409090909090914,
-        "Dedo": 0.2965909090909091,
+        "JKap": 0.571590909091,
+        "ProoFy": 0.434090909091,
+        "John": 0.434090909091,
+        "Dedo": 0.296590909091,
         "TwiZz": 0.1375,
         "Bobby": 0.1375
       },
@@ -380,15 +380,15 @@
       "game": "Black Ops",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.224744871391589,
+      "base_weight": 1.224744871392,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.408456602100327,
+      "weight": 1.4084566021,
       "scores": {
-        "JKap": 1.408456602100327,
-        "Scump": 0.7042283010501634,
-        "ProoFy": 0.547733123039016,
-        "ACHES": 0.15649517801114746
+        "JKap": 1.4084566021,
+        "Scump": 0.70422830105,
+        "ProoFy": 0.547733123039,
+        "ACHES": 0.156495178011
       },
       "ballot_reception": [
         {
@@ -433,18 +433,18 @@
       "game": "Black Ops",
       "source_kind": "community_thread_cluster",
       "ballot_count": 2,
-      "base_weight": 0.7071067811865476,
+      "base_weight": 0.707106781187,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 0.7071067811865476,
+      "weight": 0.707106781187,
       "scores": {
-        "JKap": 0.7071067811865476,
-        "ASSASS1N": 0.28284271247461906,
-        "Scump": 0.4949747468305833,
-        "ACHES": 0.28284271247461906,
-        "John": 0.07071067811865477,
-        "Rambo": 0.21213203435596426,
-        "BigTymeR": 0.07071067811865477
+        "JKap": 0.707106781187,
+        "ASSASS1N": 0.282842712475,
+        "Scump": 0.494974746831,
+        "ACHES": 0.282842712475,
+        "John": 0.070710678119,
+        "Rambo": 0.212132034356,
+        "BigTymeR": 0.070710678119
       },
       "ballot_reception": [
         {
@@ -465,17 +465,17 @@
       "game": "Black Ops",
       "source_kind": "community_thread_cluster",
       "ballot_count": 8,
-      "base_weight": 1.4142135623730951,
+      "base_weight": 1.414213562373,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.6263455967290592,
+      "weight": 1.626345596729,
       "scores": {
-        "JKap": 1.575522296831276,
-        "Scump": 0.2879986994207709,
-        "MerK": 0.169410999659277,
-        "ProoFy": 0.1016465997955662,
-        "John": 0.0508232998977831,
-        "ASSASS1N": 0.0508232998977831
+        "JKap": 1.575522296831,
+        "Scump": 0.287998699421,
+        "MerK": 0.169410999659,
+        "ProoFy": 0.101646599796,
+        "John": 0.050823299898,
+        "ASSASS1N": 0.050823299898
       },
       "ballot_reception": [
         {
@@ -559,8 +559,8 @@
       "weight": 0.5,
       "scores": {
         "JKap": 0.5,
-        "Scump": 0.3333333333333333,
-        "ACHES": 0.16666666666666666
+        "Scump": 0.333333333333,
+        "ACHES": 0.166666666667
       },
       "ballot_reception": [
         {
@@ -581,8 +581,8 @@
       "weight": 0.5,
       "scores": {
         "JKap": 0.5,
-        "Scump": 0.3333333333333333,
-        "ProoFy": 0.16666666666666666
+        "Scump": 0.333333333333,
+        "ProoFy": 0.166666666667
       },
       "ballot_reception": [
         {
@@ -597,13 +597,13 @@
       "game": "Black Ops",
       "source_kind": "community_thread_cluster",
       "ballot_count": 7,
-      "base_weight": 1.3228756555322954,
+      "base_weight": 1.322875655532,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.3228756555322954,
+      "weight": 1.322875655532,
       "scores": {
-        "JKap": 1.3228756555322954,
-        "Scump": 0.0944911182523068
+        "JKap": 1.322875655532,
+        "Scump": 0.094491118252
       },
       "ballot_reception": [
         {
@@ -654,18 +654,18 @@
       "game": "Modern Warfare 3",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.224744871391589,
+      "base_weight": 1.224744871392,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.408456602100327,
+      "weight": 1.4084566021,
       "scores": {
-        "Scump": 1.095466246078032,
-        "MerK": 0.3129903560222949,
-        "ProoFy": 0.6651045065473766,
-        "TeeP": 0.15649517801114746,
-        "Rambo": 0.23474276701672117,
-        "BigTymeR": 0.07824758900557373,
-        "Parasite": 0.15649517801114746
+        "Scump": 1.095466246078,
+        "MerK": 0.312990356022,
+        "ProoFy": 0.665104506547,
+        "TeeP": 0.156495178011,
+        "Rambo": 0.234742767017,
+        "BigTymeR": 0.078247589006,
+        "Parasite": 0.156495178011
       },
       "ballot_reception": [
         {
@@ -717,9 +717,9 @@
       "scores": {
         "Scump": 1.0,
         "MerK": 0.35,
-        "BigTymeR": 0.30000000000000004,
-        "JKap": 0.30000000000000004,
-        "ACHES": 0.15000000000000002,
+        "BigTymeR": 0.3,
+        "JKap": 0.3,
+        "ACHES": 0.15,
         "Rambo": 0.35,
         "PHiZZURP": 0.05
       },
@@ -757,11 +757,11 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.7249999999999999,
+      "weight": 1.725,
       "scores": {
-        "Scump": 1.6962499999999998,
-        "ProoFy": 0.16291666666666663,
-        "BigTymeR": 0.03833333333333332
+        "Scump": 1.69625,
+        "ProoFy": 0.162916666667,
+        "BigTymeR": 0.038333333333
       },
       "ballot_reception": [
         {
@@ -882,41 +882,41 @@
       "game": "Ghosts",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 450,
-      "base_weight": 2.6516504294495533,
+      "base_weight": 2.65165042945,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 0.6,
-      "weight": 1.909188309203678,
+      "weight": 1.909188309204,
       "scores": {
-        "Crimsix": 1.909188309203678,
-        "ACHES": 1.8455486988968888,
-        "Scump": 1.7819090885900997,
-        "TeeP": 1.7182694782833103,
-        "Karma": 1.654629867976521,
-        "Clayster": 1.590990257669732,
-        "Nameless": 1.5273506473629426,
-        "Nadeshot": 1.4637110370561532,
-        "Saints": 1.400071426749364,
-        "ProoFy": 1.3364318164425746,
-        "Apathy": 1.2727922061357853,
-        "JKap": 1.2091525958289961,
-        "Parasite": 1.1455129855222068,
-        "Swanny": 1.0818733752154175,
-        "Dedo": 1.0182337649086284,
-        "MerK": 0.954594154601839,
-        "Theory": 0.8909545442950498,
-        "Jurd": 0.8273149339882605,
-        "FormaL": 0.7636753236814713,
-        "Sharp": 0.700035713374682,
-        "Study": 0.6363961030678926,
-        "MadCat": 0.5727564927611034,
-        "KiLLa": 0.5091168824543142,
-        "Goonjar": 0.4454772721475249,
-        "PHiZZURP": 0.38183766184073564,
-        "Replays": 0.3181980515339463,
-        "Mochila": 0.2545584412271571,
-        "Tommey": 0.19091883092036782,
-        "Muddawg": 0.12727922061357855,
-        "MiRx": 0.06363961030678927
+        "Crimsix": 1.909188309204,
+        "ACHES": 1.845548698897,
+        "Scump": 1.78190908859,
+        "TeeP": 1.718269478283,
+        "Karma": 1.654629867977,
+        "Clayster": 1.59099025767,
+        "Nameless": 1.527350647363,
+        "Nadeshot": 1.463711037056,
+        "Saints": 1.400071426749,
+        "ProoFy": 1.336431816443,
+        "Apathy": 1.272792206136,
+        "JKap": 1.209152595829,
+        "Parasite": 1.145512985522,
+        "Swanny": 1.081873375215,
+        "Dedo": 1.018233764909,
+        "MerK": 0.954594154602,
+        "Theory": 0.890954544295,
+        "Jurd": 0.827314933988,
+        "FormaL": 0.763675323681,
+        "Sharp": 0.700035713375,
+        "Study": 0.636396103068,
+        "MadCat": 0.572756492761,
+        "KiLLa": 0.509116882454,
+        "Goonjar": 0.445477272148,
+        "PHiZZURP": 0.381837661841,
+        "Replays": 0.318198051534,
+        "Mochila": 0.254558441227,
+        "Tommey": 0.19091883092,
+        "Muddawg": 0.127279220614,
+        "MiRx": 0.063639610307
       }
     },
     "ghosts_reddit_2014_end_top50_poll": {
@@ -931,47 +931,47 @@
         "Crimsix": 4.5,
         "Scump": 4.41,
         "ACHES": 4.32,
-        "Karma": 4.2299999999999995,
-        "TeeP": 4.140000000000001,
+        "Karma": 4.23,
+        "TeeP": 4.14,
         "Clayster": 4.05,
         "Apathy": 3.96,
         "Nadeshot": 3.87,
         "ProoFy": 3.78,
         "Nameless": 3.69,
         "Dedo": 3.6,
-        "Saints": 3.5100000000000002,
+        "Saints": 3.51,
         "JKap": 3.42,
         "FormaL": 3.33,
-        "MerK": 3.2399999999999998,
+        "MerK": 3.24,
         "Goonjar": 3.15,
         "Mochila": 3.06,
         "Sharp": 2.97,
         "KiLLa": 2.88,
         "ZooMaa": 2.79,
-        "BigTymeR": 2.6999999999999997,
+        "BigTymeR": 2.7,
         "Attach": 2.61,
-        "Censor": 2.5200000000000005,
+        "Censor": 2.52,
         "Jurd": 2.43,
         "Tommey": 2.34,
         "MiRx": 2.25,
         "MadCat": 2.16,
-        "Parasite": 2.0700000000000003,
+        "Parasite": 2.07,
         "MBoZe": 1.98,
         "Neslo": 1.89,
         "Replays": 1.8,
         "Swanny": 1.71,
-        "PHiZZURP": 1.6199999999999999,
+        "PHiZZURP": 1.62,
         "Burns": 1.53,
         "John": 1.44,
-        "Ricky": 1.3499999999999999,
-        "Study": 1.2600000000000002,
+        "Ricky": 1.35,
+        "Study": 1.26,
         "Theory": 1.17,
         "Rambo": 1.08,
         "Enable": 0.99,
         "Baroska": 0.9,
-        "Peatie": 0.8099999999999999,
+        "Peatie": 0.81,
         "Tipsy": 0.72,
-        "MarkyB": 0.6300000000000001,
+        "MarkyB": 0.63,
         "ASSASS1N": 0.54,
         "FighTa": 0.45,
         "Wheats": 0.36,
@@ -987,17 +987,17 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.7249999999999999,
+      "weight": 1.725,
       "scores": {
-        "Crimsix": 1.2578124999999998,
-        "ACHES": 0.7019791666666665,
+        "Crimsix": 1.2578125,
+        "ACHES": 0.701979166667,
         "TeeP": 0.330625,
-        "Karma": 0.22999999999999998,
-        "Scump": 0.03833333333333332,
-        "Apathy": 0.057499999999999996,
+        "Karma": 0.23,
+        "Scump": 0.038333333333,
+        "Apathy": 0.0575,
         "Saints": 0.043125,
-        "Nameless": 0.028749999999999998,
-        "Dedo": 0.014374999999999999
+        "Nameless": 0.02875,
+        "Dedo": 0.014375
       },
       "ballot_reception": [
         {
@@ -1103,9 +1103,9 @@
       "scores": {
         "Crimsix": 1.045,
         "ACHES": 0.55,
-        "Karma": 0.8250000000000001,
-        "Scump": 0.44000000000000006,
-        "FormaL": 0.44000000000000006
+        "Karma": 0.825,
+        "Scump": 0.44,
+        "FormaL": 0.44
       },
       "ballot_reception": [
         {
@@ -1138,26 +1138,26 @@
       "game": "Advanced Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 8,
-      "base_weight": 1.4142135623730951,
+      "base_weight": 1.414213562373,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 0.6,
-      "weight": 1.0182337649086284,
+      "weight": 1.018233764909,
       "scores": {
-        "Scump": 1.0182337649086284,
-        "Clayster": 0.8145870119269026,
-        "FormaL": 0.7636753236814714,
-        "Crimsix": 0.5854844148224614,
-        "Saints": 0.42002142802480924,
-        "SlasheR": 0.30547012947258856,
-        "Huke": 0.19091883092036782,
-        "Enable": 0.15273506473629425,
-        "Loony": 0.03818376618407357,
-        "Parasite": 0.10182337649086284,
-        "Attach": 0.02545584412271571,
-        "Jurd": 0.12727922061357855,
-        "ZooMaa": 0.02545584412271571,
-        "Swanny": 0.05091168824543142,
-        "Karma": 0.02545584412271571
+        "Scump": 1.018233764909,
+        "Clayster": 0.814587011927,
+        "FormaL": 0.763675323681,
+        "Crimsix": 0.585484414822,
+        "Saints": 0.420021428025,
+        "SlasheR": 0.305470129473,
+        "Huke": 0.19091883092,
+        "Enable": 0.152735064736,
+        "Loony": 0.038183766184,
+        "Parasite": 0.101823376491,
+        "Attach": 0.025455844123,
+        "Jurd": 0.127279220614,
+        "ZooMaa": 0.025455844123,
+        "Swanny": 0.050911688245,
+        "Karma": 0.025455844123
       },
       "ballot_reception": [
         {
@@ -1256,18 +1256,18 @@
       "game": "Advanced Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 3,
-      "base_weight": 0.9526279441628825,
+      "base_weight": 0.952627944163,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 0.9526279441628825,
+      "weight": 0.952627944163,
       "scores": {
-        "Scump": 0.9526279441628825,
-        "FormaL": 0.6827166933167325,
-        "Clayster": 0.603331031303159,
-        "ZooMaa": 0.20640272123529121,
-        "Attach": 0.06350852961085883,
-        "Huke": 0.12701705922171766,
-        "SlasheR": 0.06350852961085883
+        "Scump": 0.952627944163,
+        "FormaL": 0.682716693317,
+        "Clayster": 0.603331031303,
+        "ZooMaa": 0.206402721235,
+        "Attach": 0.063508529611,
+        "Huke": 0.127017059222,
+        "SlasheR": 0.063508529611
       },
       "ballot_reception": [
         {
@@ -1294,17 +1294,17 @@
       "game": "Advanced Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.224744871391589,
+      "base_weight": 1.224744871392,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.224744871391589,
+      "weight": 1.224744871392,
       "scores": {
-        "Scump": 1.0614455552060438,
-        "Clayster": 0.8573214099741123,
-        "FormaL": 0.7756717518813396,
-        "Huke": 0.4082482904638631,
-        "ZooMaa": 0.5307227776030219,
-        "SlasheR": 0.0408248290463863
+        "Scump": 1.061445555206,
+        "Clayster": 0.857321409974,
+        "FormaL": 0.775671751881,
+        "Huke": 0.408248290464,
+        "ZooMaa": 0.530722777603,
+        "SlasheR": 0.040824829046
       },
       "ballot_reception": [
         {
@@ -1355,12 +1355,12 @@
       "weight": 1.5,
       "scores": {
         "Scump": 1.1475,
-        "Clayster": 0.6300000000000001,
-        "FormaL": 0.37999999999999995,
-        "Huke": 0.30999999999999994,
-        "ZooMaa": 0.22499999999999998,
+        "Clayster": 0.63,
+        "FormaL": 0.38,
+        "Huke": 0.31,
+        "ZooMaa": 0.225,
         "SlasheR": 0.045,
-        "Karma": 0.11249999999999999
+        "Karma": 0.1125
       },
       "ballot_reception": [
         {
@@ -1435,61 +1435,61 @@
       "weight": 2.515625,
       "scores": {
         "Scump": 2.515625,
-        "FormaL": 2.431770833333333,
-        "John": 2.347916666666667,
+        "FormaL": 2.431770833333,
+        "John": 2.347916666667,
         "SlasheR": 2.2640625,
-        "Apathy": 2.1802083333333333,
-        "Crimsix": 2.096354166666667,
+        "Apathy": 2.180208333333,
+        "Crimsix": 2.096354166667,
         "AquA": 2.0125,
-        "Karma": 1.9286458333333334,
-        "Octane": 1.8447916666666666,
-        "JKap": 1.7609374999999998,
-        "Slacked": 1.6770833333333333,
-        "Clayster": 1.5932291666666667,
+        "Karma": 1.928645833333,
+        "Octane": 1.844791666667,
+        "JKap": 1.7609375,
+        "Slacked": 1.677083333333,
+        "Clayster": 1.593229166667,
         "Attach": 1.509375,
-        "Classic": 1.4255208333333333,
-        "Saints": 1.3416666666666666,
+        "Classic": 1.425520833333,
+        "Saints": 1.341666666667,
         "Loony": 1.2578125,
-        "Felony": 1.1739583333333334,
-        "ZooMaa": 1.0901041666666667,
+        "Felony": 1.173958333333,
+        "ZooMaa": 1.090104166667,
         "Lacefield": 1.00625,
-        "Enable": 0.9223958333333333,
-        "Nagafen": 0.8385416666666666,
+        "Enable": 0.922395833333,
+        "Nagafen": 0.838541666667,
         "Assault": 0.7546875,
-        "Faccento": 0.6708333333333333,
-        "StuDyy": 0.5869791666666667,
+        "Faccento": 0.670833333333,
+        "StuDyy": 0.586979166667,
         "Havok": 0.503125,
-        "ACHES": 0.4192708333333333,
-        "Chino": 0.33541666666666664,
+        "ACHES": 0.419270833333,
+        "Chino": 0.335416666667,
         "Ricky": 0.2515625,
-        "Nameless": 0.16770833333333332,
-        "Parasite": 0.08385416666666666
+        "Nameless": 0.167708333333,
+        "Parasite": 0.083854166667
       }
     },
     "bo3_reddit_2021_top10_thread": {
       "game": "Black Ops 3",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.224744871391589,
+      "base_weight": 1.224744871392,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.224744871391589,
+      "weight": 1.224744871392,
       "scores": {
-        "Scump": 1.0421671637119168,
-        "FormaL": 0.919692676572758,
-        "John": 0.7768057749104061,
-        "SlasheR": 0.7155685313408265,
-        "Apathy": 0.5726816296784745,
-        "Bance": 0.10206207261596574,
-        "Faccento": 0.06123724356957944,
-        "Nagafen": 0.12247448713915889,
-        "Octane": 0.3889698989697361,
-        "Classic": 0.3073202408769635,
-        "Crimsix": 0.5318568006320883,
-        "JKap": 0.11226827987756233,
-        "Slacked": 0.13268069440075547,
-        "Karma": 0.14288690166235202,
-        "AquA": 0.19505196099940122
+        "Scump": 1.042167163712,
+        "FormaL": 0.919692676573,
+        "John": 0.77680577491,
+        "SlasheR": 0.715568531341,
+        "Apathy": 0.572681629678,
+        "Bance": 0.102062072616,
+        "Faccento": 0.06123724357,
+        "Nagafen": 0.122474487139,
+        "Octane": 0.38896989897,
+        "Classic": 0.307320240877,
+        "Crimsix": 0.531856800632,
+        "JKap": 0.112268279878,
+        "Slacked": 0.132680694401,
+        "Karma": 0.142886901662,
+        "AquA": 0.195051960999
       },
       "ballot_reception": [
         {
@@ -1534,19 +1534,19 @@
       "game": "Black Ops 3",
       "source_kind": "community_thread_cluster",
       "ballot_count": 5,
-      "base_weight": 1.118033988749895,
+      "base_weight": 1.11803398875,
       "coverage_multiplier": 1.15,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.285739087062379,
+      "weight": 1.285739087062,
       "scores": {
-        "FormaL": 1.0285912696499033,
-        "Scump": 1.1828799600973887,
-        "John": 0.6171547617899419,
-        "SlasheR": 0.25714781741247583,
-        "Octane": 0.20571825392998067,
-        "Crimsix": 0.15428869044748547,
-        "Apathy": 0.25714781741247583,
-        "Slacked": 0.15428869044748553
+        "FormaL": 1.02859126965,
+        "Scump": 1.182879960097,
+        "John": 0.61715476179,
+        "SlasheR": 0.257147817412,
+        "Octane": 0.20571825393,
+        "Crimsix": 0.154288690447,
+        "Apathy": 0.257147817412,
+        "Slacked": 0.154288690447
       },
       "ballot_reception": [
         {
@@ -1590,13 +1590,13 @@
       "season_coverage_multiplier": 1.0,
       "weight": 1.1,
       "scores": {
-        "Scump": 0.9625000000000001,
+        "Scump": 0.9625,
         "FormaL": 0.9075,
         "John": 0.77,
-        "SlasheR": 0.38500000000000006,
-        "AquA": 0.05500000000000001,
-        "Apathy": 0.16500000000000004,
-        "Bance": 0.05500000000000001
+        "SlasheR": 0.385,
+        "AquA": 0.055,
+        "Apathy": 0.165,
+        "Bance": 0.055
       },
       "ballot_reception": [
         {
@@ -1672,41 +1672,41 @@
       "game": "Infinite Warfare",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 685,
-      "base_weight": 2.6172504656604803,
+      "base_weight": 2.61725046566,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 0.6,
-      "weight": 1.8844203352755455,
+      "weight": 1.884420335276,
       "scores": {
-        "FormaL": 1.8844203352755455,
-        "Octane": 1.821606324099694,
-        "Gunless": 1.7587923129238425,
-        "Scump": 1.695978301747991,
-        "Zer0": 1.6331642905721395,
-        "Bance": 1.570350279396288,
-        "Crimsix": 1.5075362682204365,
-        "Arcitys": 1.444722257044585,
-        "Dqvee": 1.3819082458687333,
-        "Karma": 1.3190942346928818,
-        "General": 1.2562802235170303,
-        "Slacked": 1.1934662123411788,
-        "Apathy": 1.1306522011653273,
-        "Classic": 1.0678381899894758,
-        "Saints": 1.0050241788136243,
-        "Enable": 0.9422101676377728,
-        "Clayster": 0.8793961564619213,
-        "MadCat": 0.8165821452860698,
-        "Jurd": 0.7537681341102183,
-        "Nameless": 0.6909541229343666,
-        "Attach": 0.6281401117585151,
-        "Prestinni": 0.5653261005826636,
-        "Priestahh": 0.5025120894068121,
-        "ZooMaa": 0.43969807823096063,
-        "Proto": 0.37688406705510913,
-        "Assault": 0.31407005587925757,
-        "LlamaGod": 0.25125604470340607,
-        "ACHES": 0.18844203352755456,
-        "AquA": 0.12562802235170303,
-        "Maux": 0.06281401117585152
+        "FormaL": 1.884420335276,
+        "Octane": 1.8216063241,
+        "Gunless": 1.758792312924,
+        "Scump": 1.695978301748,
+        "Zer0": 1.633164290572,
+        "Bance": 1.570350279396,
+        "Crimsix": 1.50753626822,
+        "Arcitys": 1.444722257045,
+        "Dqvee": 1.381908245869,
+        "Karma": 1.319094234693,
+        "General": 1.256280223517,
+        "Slacked": 1.193466212341,
+        "Apathy": 1.130652201165,
+        "Classic": 1.067838189989,
+        "Saints": 1.005024178814,
+        "Enable": 0.942210167638,
+        "Clayster": 0.879396156462,
+        "MadCat": 0.816582145286,
+        "Jurd": 0.75376813411,
+        "Nameless": 0.690954122934,
+        "Attach": 0.628140111759,
+        "Prestinni": 0.565326100583,
+        "Priestahh": 0.502512089407,
+        "ZooMaa": 0.439698078231,
+        "Proto": 0.376884067055,
+        "Assault": 0.314070055879,
+        "LlamaGod": 0.251256044703,
+        "ACHES": 0.188442033528,
+        "AquA": 0.125628022352,
+        "Maux": 0.062814011176
       }
     },
     "iw_reddit_2017_heading_into_champs_top10_thread": {
@@ -1716,23 +1716,23 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 0.85,
-      "weight": 1.5299999999999998,
+      "weight": 1.53,
       "scores": {
         "FormaL": 1.3464,
         "Octane": 1.2665,
         "Scump": 1.1764,
-        "Zer0": 0.7063499999999998,
-        "Gunless": 0.7794499999999998,
-        "Classic": 0.8346999999999998,
+        "Zer0": 0.70635,
+        "Gunless": 0.77945,
+        "Classic": 0.8347,
         "Arcitys": 0.54655,
-        "Crimsix": 0.39014999999999994,
-        "Dqvee": 0.3187499999999999,
+        "Crimsix": 0.39015,
+        "Dqvee": 0.31875,
         "Clayster": 0.1836,
         "Bance": 0.3842,
-        "Saints": 0.06119999999999999,
+        "Saints": 0.0612,
         "SlasheR": 0.13005,
-        "Enable": 0.030599999999999995,
-        "Prestinni": 0.015299999999999998,
+        "Enable": 0.0306,
+        "Prestinni": 0.0153,
         "Karma": 0.08415,
         "Attach": 0.08415
       },
@@ -1803,18 +1803,18 @@
       "game": "Infinite Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 5,
-      "base_weight": 1.118033988749895,
+      "base_weight": 1.11803398875,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 0.6,
-      "weight": 0.8049844718999243,
+      "weight": 0.8049844719,
       "scores": {
-        "FormaL": 0.7888847824619258,
-        "Gunless": 0.4507913042639575,
-        "Octane": 0.32199378875996976,
-        "Zer0": 0.19319627325598182,
-        "Scump": 0.53128975145395,
-        "Slacked": 0.06439875775199394,
-        "Arcitys": 0.06439875775199394
+        "FormaL": 0.788884782462,
+        "Gunless": 0.450791304264,
+        "Octane": 0.32199378876,
+        "Zer0": 0.193196273256,
+        "Scump": 0.531289751454,
+        "Slacked": 0.064398757752,
+        "Arcitys": 0.064398757752
       },
       "ballot_reception": [
         {
@@ -1853,18 +1853,18 @@
       "game": "Infinite Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 3,
-      "base_weight": 0.9526279441628825,
+      "base_weight": 0.952627944163,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 0.9526279441628825,
+      "weight": 0.952627944163,
       "scores": {
-        "FormaL": 0.9526279441628825,
-        "Gunless": 0.7621023553303062,
-        "Scump": 0.4445597072760118,
-        "Octane": 0.31754264805429416,
-        "Zer0": 0.06350852961085883,
-        "Karma": 0.2540341184434353,
-        "Classic": 0.06350852961085883
+        "FormaL": 0.952627944163,
+        "Gunless": 0.76210235533,
+        "Scump": 0.444559707276,
+        "Octane": 0.317542648054,
+        "Zer0": 0.063508529611,
+        "Karma": 0.254034118443,
+        "Classic": 0.063508529611
       },
       "ballot_reception": [
         {
@@ -1896,14 +1896,14 @@
       "season_coverage_multiplier": 1.0,
       "weight": 1.5,
       "scores": {
-        "Scump": 1.1097222222222223,
-        "FormaL": 1.3708333333333333,
-        "Octane": 0.5833333333333335,
-        "Gunless": 0.7819444444444446,
-        "Classic": 0.2694444444444445,
-        "Zer0": 0.20277777777777778,
-        "SlasheR": 0.10000000000000002,
-        "Arcitys": 0.13749999999999998
+        "Scump": 1.109722222222,
+        "FormaL": 1.370833333333,
+        "Octane": 0.583333333333,
+        "Gunless": 0.781944444444,
+        "Classic": 0.269444444444,
+        "Zer0": 0.202777777778,
+        "SlasheR": 0.1,
+        "Arcitys": 0.1375
       },
       "ballot_reception": [
         {
@@ -1966,16 +1966,16 @@
       "game": "Infinite Warfare",
       "source_kind": "community_thread_cluster",
       "ballot_count": 6,
-      "base_weight": 1.224744871391589,
+      "base_weight": 1.224744871392,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.224744871391589,
+      "weight": 1.224744871392,
       "scores": {
-        "FormaL": 0.9015483081076974,
-        "Gunless": 0.5613413993878116,
-        "Zer0": 0.06804138174397716,
-        "Scump": 0.1360827634879543,
-        "SlasheR": 0.06804138174397716
+        "FormaL": 0.901548308108,
+        "Gunless": 0.561341399388,
+        "Zer0": 0.068041381744,
+        "Scump": 0.136082763488,
+        "SlasheR": 0.068041381744
       },
       "ballot_reception": [
         {
@@ -2020,69 +2020,69 @@
       "game": "World War II",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 666,
-      "base_weight": 2.1935929430958696,
+      "base_weight": 2.193592943096,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 2.6323115317150436,
+      "weight": 2.632311531715,
       "scores": {
-        "Kenny": 2.6323115317150436,
-        "Gunless": 2.544567813991209,
-        "SlasheR": 2.456824096267374,
-        "TJHaLy": 2.3690803785435395,
-        "Dashy": 2.2813366608197048,
-        "Accuracy": 2.1935929430958696,
-        "ZooMaa": 2.105849225372035,
-        "John": 2.0181055076482,
-        "Crimsix": 1.9303617899243652,
-        "Skrapz": 1.8426180722005303,
-        "Methodz": 1.7548743544766956,
-        "Arcitys": 1.6671306367528609,
-        "Octane": 1.5793869190290262,
-        "Assault": 1.4916432013051912,
-        "Rated": 1.4038994835813565,
-        "Apathy": 1.3161557658575218,
-        "Fero": 1.228412048133687,
-        "Attach": 1.1406683304098524,
-        "Loony": 1.0529246126860174,
-        "Huke": 0.9651808949621826,
-        "Clayster": 0.8774371772383478,
-        "Priestahh": 0.7896934595145131,
-        "FormaL": 0.7019497417906783,
-        "Scump": 0.6142060240668435,
-        "ACHES": 0.5264623063430087,
-        "Zer0": 0.4387185886191739,
-        "Wuskin": 0.35097487089533913,
-        "Chino": 0.26323115317150436,
-        "JKap": 0.17548743544766957,
-        "Censor": 0.08774371772383478
+        "Kenny": 2.632311531715,
+        "Gunless": 2.544567813991,
+        "SlasheR": 2.456824096267,
+        "TJHaLy": 2.369080378544,
+        "Dashy": 2.28133666082,
+        "Accuracy": 2.193592943096,
+        "ZooMaa": 2.105849225372,
+        "John": 2.018105507648,
+        "Crimsix": 1.930361789924,
+        "Skrapz": 1.842618072201,
+        "Methodz": 1.754874354477,
+        "Arcitys": 1.667130636753,
+        "Octane": 1.579386919029,
+        "Assault": 1.491643201305,
+        "Rated": 1.403899483581,
+        "Apathy": 1.316155765858,
+        "Fero": 1.228412048134,
+        "Attach": 1.14066833041,
+        "Loony": 1.052924612686,
+        "Huke": 0.965180894962,
+        "Clayster": 0.877437177238,
+        "Priestahh": 0.789693459515,
+        "FormaL": 0.701949741791,
+        "Scump": 0.614206024067,
+        "ACHES": 0.526462306343,
+        "Zer0": 0.438718588619,
+        "Wuskin": 0.350974870895,
+        "Chino": 0.263231153172,
+        "JKap": 0.175487435448,
+        "Censor": 0.087743717724
       }
     },
     "ww2_reddit_2018_top10_thread": {
       "game": "World War II",
       "source_kind": "community_thread_cluster",
       "ballot_count": 5,
-      "base_weight": 1.118033988749895,
+      "base_weight": 1.11803398875,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.3416407864998738,
+      "weight": 1.3416407865,
       "scores": {
-        "Kenny": 1.2343095235798838,
-        "Gunless": 1.1020427147289873,
-        "SlasheR": 1.01612349668445,
-        "Accuracy": 0.6960269777235709,
-        "John": 0.5661995157572195,
-        "ZooMaa": 0.35343425971633047,
-        "Loony": 0.1748198600590745,
-        "Rated": 0.19379255804998174,
-        "Methodz": 0.3371719471526956,
-        "Fero": 0.17075428191816575,
-        "TJHaLy": 0.13904277241907784,
-        "Arcitys": 0.12928538488089694,
-        "Octane": 0.3219937887599697,
-        "Huke": 0.05366563145999496,
-        "Skrapz": 0.08049844718999243,
-        "Attach": 0.02683281572999748,
-        "Crimsix": 0.16099689437998485
+        "Kenny": 1.23430952358,
+        "Gunless": 1.102042714729,
+        "SlasheR": 1.016123496684,
+        "Accuracy": 0.696026977724,
+        "John": 0.566199515757,
+        "ZooMaa": 0.353434259716,
+        "Loony": 0.174819860059,
+        "Rated": 0.19379255805,
+        "Methodz": 0.337171947153,
+        "Fero": 0.170754281918,
+        "TJHaLy": 0.139042772419,
+        "Arcitys": 0.129285384881,
+        "Octane": 0.32199378876,
+        "Huke": 0.05366563146,
+        "Skrapz": 0.08049844719,
+        "Attach": 0.02683281573,
+        "Crimsix": 0.16099689438
       },
       "ballot_reception": [
         {
@@ -2124,20 +2124,20 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.7999999999999998,
+      "weight": 1.8,
       "scores": {
         "Kenny": 1.512,
-        "Gunless": 1.3319999999999999,
-        "SlasheR": 1.1159999999999997,
-        "Accuracy": 0.6479999999999999,
+        "Gunless": 1.332,
+        "SlasheR": 1.116,
+        "Accuracy": 0.648,
         "ZooMaa": 0.144,
-        "Methodz": 0.10799999999999998,
+        "Methodz": 0.108,
         "Replays": 0.036,
         "John": 0.288,
         "Dashy": 0.036,
         "Arcitys": 0.036,
         "Assault": 0.036,
-        "Crimsix": 0.10799999999999998
+        "Crimsix": 0.108
       },
       "ballot_reception": [
         {
@@ -2206,18 +2206,18 @@
       "game": "World War II",
       "source_kind": "community_thread_cluster",
       "ballot_count": 3,
-      "base_weight": 0.9526279441628825,
+      "base_weight": 0.952627944163,
       "coverage_multiplier": 1.0,
       "season_coverage_multiplier": 1.0,
-      "weight": 0.9526279441628825,
+      "weight": 0.952627944163,
       "scores": {
-        "Gunless": 0.8256108849411649,
-        "Kenny": 0.8891194145520236,
-        "SlasheR": 0.5080682368868706,
-        "Accuracy": 0.19052558883257656,
-        "TJHaLy": 0.06350852961085883,
-        "ZooMaa": 0.31754264805429416,
-        "Octane": 0.06350852961085883
+        "Gunless": 0.825610884941,
+        "Kenny": 0.889119414552,
+        "SlasheR": 0.508068236887,
+        "Accuracy": 0.190525588833,
+        "TJHaLy": 0.063508529611,
+        "ZooMaa": 0.317542648054,
+        "Octane": 0.063508529611
       },
       "ballot_reception": [
         {
@@ -2258,11 +2258,11 @@
         "Priestahh": 1.428,
         "SlasheR": 1.3685,
         "Skrapz": 1.309,
-        "Temp": 1.2494999999999998,
+        "Temp": 1.2495,
         "FormaL": 1.19,
-        "Arcitys": 1.1304999999999998,
+        "Arcitys": 1.1305,
         "TJHaLy": 1.071,
-        "Kenny": 1.0114999999999998,
+        "Kenny": 1.0115,
         "Gunless": 0.952,
         "Brack": 0.8925,
         "Cellium": 0.833,
@@ -2289,79 +2289,79 @@
           "top_10_inclusion_pct": 93.4,
           "top_10_inclusion_votes": 757,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.9345679012345679
+          "top_10_inclusion_share": 0.934567901235
         },
         "Simp": {
           "top_10_inclusion_pct": 89.1,
           "top_10_inclusion_votes": 722,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.891358024691358
+          "top_10_inclusion_share": 0.891358024691
         },
         "Octane": {
           "top_10_inclusion_pct": 87.0,
           "top_10_inclusion_votes": 705,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.8703703703703703
+          "top_10_inclusion_share": 0.87037037037
         },
         "aBeZy": {
           "top_10_inclusion_pct": 72.9,
           "top_10_inclusion_votes": 590,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.7283950617283951
+          "top_10_inclusion_share": 0.728395061728
         },
         "Dylan": {
           "top_10_inclusion_pct": 72.7,
           "top_10_inclusion_votes": 589,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.7271604938271605
+          "top_10_inclusion_share": 0.727160493827
         },
         "Envoy": {
           "top_10_inclusion_pct": 66.5,
           "top_10_inclusion_votes": 539,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.6654320987654321
+          "top_10_inclusion_share": 0.665432098765
         },
         "Priestahh": {
           "top_10_inclusion_pct": 63.8,
           "top_10_inclusion_votes": 517,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.6382716049382716
+          "top_10_inclusion_share": 0.638271604938
         },
         "SlasheR": {
           "top_10_inclusion_pct": 57.8,
           "top_10_inclusion_votes": 468,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.5777777777777777
+          "top_10_inclusion_share": 0.577777777778
         },
         "Skrapz": {
           "top_10_inclusion_pct": 33.5,
           "top_10_inclusion_votes": 271,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.3345679012345679
+          "top_10_inclusion_share": 0.334567901235
         },
         "Temp": {
           "top_10_inclusion_pct": 32.4,
           "top_10_inclusion_votes": 262,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.3234567901234568
+          "top_10_inclusion_share": 0.323456790123
         },
         "FormaL": {
           "top_10_inclusion_pct": 32.2,
           "top_10_inclusion_votes": 261,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.32222222222222224
+          "top_10_inclusion_share": 0.322222222222
         },
         "Arcitys": {
           "top_10_inclusion_pct": 29.2,
           "top_10_inclusion_votes": 237,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.29259259259259257
+          "top_10_inclusion_share": 0.292592592593
         },
         "TJHaLy": {
           "top_10_inclusion_pct": 22.6,
           "top_10_inclusion_votes": 183,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.22592592592592592
+          "top_10_inclusion_share": 0.225925925926
         },
         "Kenny": {
           "top_10_inclusion_pct": 20.0,
@@ -2373,97 +2373,97 @@
           "top_10_inclusion_pct": 19.8,
           "top_10_inclusion_votes": 160,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.19753086419753085
+          "top_10_inclusion_share": 0.197530864198
         },
         "Brack": {
           "top_10_inclusion_pct": 17.7,
           "top_10_inclusion_votes": 143,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.1765432098765432
+          "top_10_inclusion_share": 0.176543209877
         },
         "Cellium": {
           "top_10_inclusion_pct": 16.8,
           "top_10_inclusion_votes": 136,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.16790123456790124
+          "top_10_inclusion_share": 0.167901234568
         },
         "Scump": {
           "top_10_inclusion_pct": 16.2,
           "top_10_inclusion_votes": 131,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.1617283950617284
+          "top_10_inclusion_share": 0.161728395062
         },
         "Huke": {
           "top_10_inclusion_pct": 16.0,
           "top_10_inclusion_votes": 130,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.16049382716049382
+          "top_10_inclusion_share": 0.16049382716
         },
         "Attach": {
           "top_10_inclusion_pct": 13.6,
           "top_10_inclusion_votes": 110,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.13580246913580246
+          "top_10_inclusion_share": 0.135802469136
         },
         "Maux": {
           "top_10_inclusion_pct": 12.4,
           "top_10_inclusion_votes": 100,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.12345679012345678
+          "top_10_inclusion_share": 0.123456790123
         },
         "Karma": {
           "top_10_inclusion_pct": 6.8,
           "top_10_inclusion_votes": 55,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.06790123456790123
+          "top_10_inclusion_share": 0.067901234568
         },
         "Havok": {
           "top_10_inclusion_pct": 6.2,
           "top_10_inclusion_votes": 50,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.06172839506172839
+          "top_10_inclusion_share": 0.061728395062
         },
         "Clayster": {
           "top_10_inclusion_pct": 6.0,
           "top_10_inclusion_votes": 49,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.06049382716049383
+          "top_10_inclusion_share": 0.06049382716
         },
         "GodRx": {
           "top_10_inclusion_pct": 4.5,
           "top_10_inclusion_votes": 36,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.044444444444444446
+          "top_10_inclusion_share": 0.044444444444
         },
         "Skyz": {
           "top_10_inclusion_pct": 4.5,
           "top_10_inclusion_votes": 36,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.044444444444444446
+          "top_10_inclusion_share": 0.044444444444
         },
         "MajorManiak": {
           "top_10_inclusion_pct": 4.3,
           "top_10_inclusion_votes": 35,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.043209876543209874
+          "top_10_inclusion_share": 0.043209876543
         },
         "Crimsix": {
           "top_10_inclusion_pct": 4.3,
           "top_10_inclusion_votes": 35,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.043209876543209874
+          "top_10_inclusion_share": 0.043209876543
         },
         "ZooMaa": {
           "top_10_inclusion_pct": 3.6,
           "top_10_inclusion_votes": 29,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.03580246913580247
+          "top_10_inclusion_share": 0.035802469136
         },
         "Enable": {
           "top_10_inclusion_pct": 3.6,
           "top_10_inclusion_votes": 29,
           "estimated_from_chart": true,
-          "top_10_inclusion_share": 0.03580246913580247
+          "top_10_inclusion_share": 0.035802469136
         }
       }
     },
@@ -2471,41 +2471,41 @@
       "game": "Modern Warfare",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 345,
-      "base_weight": 1.857417562100671,
+      "base_weight": 1.857417562101,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 2.228901074520805,
+      "weight": 2.228901074521,
       "scores": {
-        "Simp": 2.228901074520805,
-        "Envoy": 2.1546043720367782,
-        "Shotzzy": 2.0803076695527514,
-        "aBeZy": 2.0060109670687245,
-        "Cellium": 1.9317142645846979,
-        "Octane": 1.857417562100671,
-        "Arcitys": 1.7831208596166441,
-        "Huke": 1.7088241571326173,
-        "Skyz": 1.6345274546485904,
-        "Scump": 1.5602307521645635,
-        "Clayster": 1.4859340496805367,
-        "Wuskin": 1.4116373471965098,
-        "FormaL": 1.337340644712483,
-        "iLLeY": 1.2630439422284563,
-        "Crimsix": 1.1887472397444294,
-        "Owakening": 1.1144505372604026,
-        "Mack": 1.0401538347763757,
-        "SlasheR": 0.9658571322923489,
-        "Priestahh": 0.8915604298083221,
-        "Fero": 0.8172637273242952,
-        "Attach": 0.7429670248402683,
-        "MajorManiak": 0.6686703223562415,
-        "Cammy": 0.5943736198722147,
-        "ZooMaa": 0.5200769173881878,
-        "Methodz": 0.44578021490416103,
-        "GodRx": 0.37148351242013417,
-        "Skrapz": 0.29718680993610735,
-        "Prestinni": 0.22289010745208052,
-        "CleanX": 0.14859340496805368,
-        "Kenny": 0.07429670248402684
+        "Simp": 2.228901074521,
+        "Envoy": 2.154604372037,
+        "Shotzzy": 2.080307669553,
+        "aBeZy": 2.006010967069,
+        "Cellium": 1.931714264585,
+        "Octane": 1.857417562101,
+        "Arcitys": 1.783120859617,
+        "Huke": 1.708824157133,
+        "Skyz": 1.634527454649,
+        "Scump": 1.560230752165,
+        "Clayster": 1.485934049681,
+        "Wuskin": 1.411637347197,
+        "FormaL": 1.337340644712,
+        "iLLeY": 1.263043942228,
+        "Crimsix": 1.188747239744,
+        "Owakening": 1.11445053726,
+        "Mack": 1.040153834776,
+        "SlasheR": 0.965857132292,
+        "Priestahh": 0.891560429808,
+        "Fero": 0.817263727324,
+        "Attach": 0.74296702484,
+        "MajorManiak": 0.668670322356,
+        "Cammy": 0.594373619872,
+        "ZooMaa": 0.520076917388,
+        "Methodz": 0.445780214904,
+        "GodRx": 0.37148351242,
+        "Skrapz": 0.297186809936,
+        "Prestinni": 0.222890107452,
+        "CleanX": 0.148593404968,
+        "Kenny": 0.074296702484
       },
       "detail_totals": {
         "valid_ballots": 345
@@ -2697,41 +2697,41 @@
       "game": "Black Ops Cold War",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 766,
-      "base_weight": 2.7676705006196096,
+      "base_weight": 2.76767050062,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 3.3212046007435316,
+      "weight": 3.321204600744,
       "scores": {
-        "Simp": 3.3212046007435316,
-        "aBeZy": 3.210497780718747,
-        "Cammy": 3.099790960693963,
-        "Cellium": 2.9890841406691786,
-        "Insight": 2.878377320644394,
-        "Shotzzy": 2.7676705006196096,
-        "Scump": 2.6569636805948256,
-        "Standy": 2.546256860570041,
-        "HyDra": 2.435550040545256,
-        "CleanX": 2.324843220520472,
-        "Dashy": 2.2141364004956876,
-        "Arcitys": 2.103429580470903,
-        "Bance": 1.9927227604461188,
-        "Kenny": 1.8820159404213346,
-        "Envoy": 1.77130912039655,
-        "Clayster": 1.6606023003717658,
-        "Asim": 1.5498954803469815,
-        "Attach": 1.439188660322197,
-        "Octane": 1.3284818402974128,
-        "Vivid": 1.217775020272628,
-        "Drazah": 1.1070682002478438,
-        "Neptune": 0.9963613802230594,
-        "Crimsix": 0.885654560198275,
-        "Afro": 0.7749477401734908,
-        "iLLeY": 0.6642409201487064,
-        "Priestahh": 0.5535341001239219,
-        "Skyz": 0.4428272800991375,
-        "Gunless": 0.3321204600743532,
-        "FormaL": 0.22141364004956876,
-        "SlasheR": 0.11070682002478438
+        "Simp": 3.321204600744,
+        "aBeZy": 3.210497780719,
+        "Cammy": 3.099790960694,
+        "Cellium": 2.989084140669,
+        "Insight": 2.878377320644,
+        "Shotzzy": 2.76767050062,
+        "Scump": 2.656963680595,
+        "Standy": 2.54625686057,
+        "HyDra": 2.435550040545,
+        "CleanX": 2.32484322052,
+        "Dashy": 2.214136400496,
+        "Arcitys": 2.103429580471,
+        "Bance": 1.992722760446,
+        "Kenny": 1.882015940421,
+        "Envoy": 1.771309120397,
+        "Clayster": 1.660602300372,
+        "Asim": 1.549895480347,
+        "Attach": 1.439188660322,
+        "Octane": 1.328481840297,
+        "Vivid": 1.217775020273,
+        "Drazah": 1.107068200248,
+        "Neptune": 0.996361380223,
+        "Crimsix": 0.885654560198,
+        "Afro": 0.774947740173,
+        "iLLeY": 0.664240920149,
+        "Priestahh": 0.553534100124,
+        "Skyz": 0.442827280099,
+        "Gunless": 0.332120460074,
+        "FormaL": 0.22141364005,
+        "SlasheR": 0.110706820025
       },
       "detail_totals": {
         "best_player_votes": 773
@@ -2743,7 +2743,7 @@
           "ranks_11_20_votes": 7,
           "ranks_21_30_votes": 2,
           "source_points": 3067,
-          "best_player_vote_share": 0.5045278137128072
+          "best_player_vote_share": 0.504527813713
         },
         "aBeZy": {
           "best_player_votes": 231,
@@ -2751,7 +2751,7 @@
           "ranks_11_20_votes": 10,
           "ranks_21_30_votes": 4,
           "source_points": 2763,
-          "best_player_vote_share": 0.2988357050452781
+          "best_player_vote_share": 0.298835705045
         },
         "Cammy": {
           "best_player_votes": 64,
@@ -2759,7 +2759,7 @@
           "ranks_11_20_votes": 27,
           "ranks_21_30_votes": 8,
           "source_points": 2326,
-          "best_player_vote_share": 0.08279430789133248
+          "best_player_vote_share": 0.082794307891
         },
         "Cellium": {
           "best_player_votes": 24,
@@ -2767,7 +2767,7 @@
           "ranks_11_20_votes": 28,
           "ranks_21_30_votes": 8,
           "source_points": 2167,
-          "best_player_vote_share": 0.031047865459249677
+          "best_player_vote_share": 0.031047865459
         },
         "Insight": {
           "best_player_votes": 10,
@@ -2775,7 +2775,7 @@
           "ranks_11_20_votes": 32,
           "ranks_21_30_votes": 10,
           "source_points": 2072,
-          "best_player_vote_share": 0.0129366106080207
+          "best_player_vote_share": 0.012936610608
         },
         "Shotzzy": {
           "best_player_votes": 11,
@@ -2783,7 +2783,7 @@
           "ranks_11_20_votes": 50,
           "ranks_21_30_votes": 12,
           "source_points": 2054,
-          "best_player_vote_share": 0.014230271668822769
+          "best_player_vote_share": 0.014230271669
         },
         "Scump": {
           "best_player_votes": 17,
@@ -2791,7 +2791,7 @@
           "ranks_11_20_votes": 229,
           "ranks_21_30_votes": 20,
           "source_points": 1844,
-          "best_player_vote_share": 0.02199223803363519
+          "best_player_vote_share": 0.021992238034
         },
         "Standy": {
           "best_player_votes": 3,
@@ -2799,7 +2799,7 @@
           "ranks_11_20_votes": 148,
           "ranks_21_30_votes": 25,
           "source_points": 1794,
-          "best_player_vote_share": 0.0038809831824062097
+          "best_player_vote_share": 0.003880983182
         },
         "HyDra": {
           "best_player_votes": 3,
@@ -2807,7 +2807,7 @@
           "ranks_11_20_votes": 188,
           "ranks_21_30_votes": 17,
           "source_points": 1770,
-          "best_player_vote_share": 0.0038809831824062097
+          "best_player_vote_share": 0.003880983182
         },
         "CleanX": {
           "best_player_votes": 3,
@@ -2815,7 +2815,7 @@
           "ranks_11_20_votes": 214,
           "ranks_21_30_votes": 28,
           "source_points": 1749,
-          "best_player_vote_share": 0.0038809831824062097
+          "best_player_vote_share": 0.003880983182
         },
         "Dashy": {
           "best_player_votes": 5,
@@ -2823,7 +2823,7 @@
           "ranks_11_20_votes": 218,
           "ranks_21_30_votes": 27,
           "source_points": 1745,
-          "best_player_vote_share": 0.00646830530401035
+          "best_player_vote_share": 0.006468305304
         },
         "Arcitys": {
           "best_player_votes": 6,
@@ -2831,7 +2831,7 @@
           "ranks_11_20_votes": 350,
           "ranks_21_30_votes": 27,
           "source_points": 1636,
-          "best_player_vote_share": 0.007761966364812419
+          "best_player_vote_share": 0.007761966365
         },
         "Bance": {
           "best_player_votes": 2,
@@ -2839,7 +2839,7 @@
           "ranks_11_20_votes": 397,
           "ranks_21_30_votes": 99,
           "source_points": 1350,
-          "best_player_vote_share": 0.00258732212160414
+          "best_player_vote_share": 0.002587322122
         },
         "Kenny": {
           "best_player_votes": 2,
@@ -2847,7 +2847,7 @@
           "ranks_11_20_votes": 401,
           "ranks_21_30_votes": 101,
           "source_points": 1195,
-          "best_player_vote_share": 0.00258732212160414
+          "best_player_vote_share": 0.002587322122
         },
         "Envoy": {
           "best_player_votes": 1,
@@ -2855,7 +2855,7 @@
           "ranks_11_20_votes": 435,
           "ranks_21_30_votes": 103,
           "source_points": 1179,
-          "best_player_vote_share": 0.00129366106080207
+          "best_player_vote_share": 0.001293661061
         },
         "Clayster": {
           "best_player_votes": 0,
@@ -2879,7 +2879,7 @@
           "ranks_11_20_votes": 301,
           "ranks_21_30_votes": 230,
           "source_points": 915,
-          "best_player_vote_share": 0.00129366106080207
+          "best_player_vote_share": 0.001293661061
         },
         "Octane": {
           "best_player_votes": 0,
@@ -2983,41 +2983,41 @@
       "game": "Vanguard",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 343,
-      "base_weight": 1.8520259177452136,
+      "base_weight": 1.852025917745,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 2.2224311012942564,
+      "weight": 2.222431101294,
       "scores": {
-        "Cellium": 2.2224311012942564,
-        "Pred": 2.1483500645844478,
-        "Dashy": 2.074269027874639,
-        "HyDra": 2.0001879911648306,
-        "Simp": 1.9261069544550222,
-        "Kenny": 1.8520259177452136,
-        "Shotzzy": 1.7779448810354053,
-        "Sib": 1.7038638443255967,
-        "Attach": 1.6297828076157879,
-        "aBeZy": 1.5557017709059793,
-        "Envoy": 1.481620734196171,
-        "Scump": 1.4075396974863623,
-        "Octane": 1.3334586607765537,
-        "Afro": 1.2593776240667451,
-        "CleanX": 1.1852965873569368,
-        "Drazah": 1.1112155506471282,
-        "Temp": 1.0371345139373196,
-        "Arcitys": 0.9630534772275111,
-        "KiSMET": 0.8889724405177026,
-        "Owakening": 0.8148914038078939,
-        "iLLeY": 0.7408103670980855,
-        "Mack": 0.6667293303882769,
-        "SlasheR": 0.5926482936784684,
-        "Cammy": 0.5185672569686598,
-        "Skyz": 0.4444862202588513,
-        "Vivid": 0.3704051835490427,
-        "Methodz": 0.2963241468392342,
-        "Zer0": 0.22224311012942566,
-        "Insight": 0.1481620734196171,
-        "Bance": 0.07408103670980855
+        "Cellium": 2.222431101294,
+        "Pred": 2.148350064584,
+        "Dashy": 2.074269027875,
+        "HyDra": 2.000187991165,
+        "Simp": 1.926106954455,
+        "Kenny": 1.852025917745,
+        "Shotzzy": 1.777944881035,
+        "Sib": 1.703863844326,
+        "Attach": 1.629782807616,
+        "aBeZy": 1.555701770906,
+        "Envoy": 1.481620734196,
+        "Scump": 1.407539697486,
+        "Octane": 1.333458660777,
+        "Afro": 1.259377624067,
+        "CleanX": 1.185296587357,
+        "Drazah": 1.111215550647,
+        "Temp": 1.037134513937,
+        "Arcitys": 0.963053477228,
+        "KiSMET": 0.888972440518,
+        "Owakening": 0.814891403808,
+        "iLLeY": 0.740810367098,
+        "Mack": 0.666729330388,
+        "SlasheR": 0.592648293678,
+        "Cammy": 0.518567256969,
+        "Skyz": 0.444486220259,
+        "Vivid": 0.370405183549,
+        "Methodz": 0.296324146839,
+        "Zer0": 0.222243110129,
+        "Insight": 0.14816207342,
+        "Bance": 0.07408103671
       },
       "detail_totals": {
         "best_player_votes": 397
@@ -3029,7 +3029,7 @@
           "ranks_11_20_votes": 1,
           "ranks_21_30_votes": 0,
           "source_points": 1572,
-          "best_player_vote_share": 0.6851385390428212
+          "best_player_vote_share": 0.685138539043
         },
         "Pred": {
           "best_player_votes": 42,
@@ -3037,7 +3037,7 @@
           "ranks_11_20_votes": 3,
           "ranks_21_30_votes": 0,
           "source_points": 1113,
-          "best_player_vote_share": 0.10579345088161209
+          "best_player_vote_share": 0.105793450882
         },
         "Dashy": {
           "best_player_votes": 61,
@@ -3045,7 +3045,7 @@
           "ranks_11_20_votes": 2,
           "ranks_21_30_votes": 5,
           "source_points": 1106,
-          "best_player_vote_share": 0.15365239294710328
+          "best_player_vote_share": 0.153652392947
         },
         "HyDra": {
           "best_player_votes": 3,
@@ -3053,7 +3053,7 @@
           "ranks_11_20_votes": 42,
           "ranks_21_30_votes": 4,
           "source_points": 955,
-          "best_player_vote_share": 0.007556675062972292
+          "best_player_vote_share": 0.007556675063
         },
         "Simp": {
           "best_player_votes": 0,
@@ -3069,7 +3069,7 @@
           "ranks_11_20_votes": 85,
           "ranks_21_30_votes": 3,
           "source_points": 929,
-          "best_player_vote_share": 0.030226700251889168
+          "best_player_vote_share": 0.030226700252
         },
         "Shotzzy": {
           "best_player_votes": 2,
@@ -3077,7 +3077,7 @@
           "ranks_11_20_votes": 57,
           "ranks_21_30_votes": 13,
           "source_points": 926,
-          "best_player_vote_share": 0.005037783375314861
+          "best_player_vote_share": 0.005037783375
         },
         "Sib": {
           "best_player_votes": 0,
@@ -3117,7 +3117,7 @@
           "ranks_11_20_votes": 181,
           "ranks_21_30_votes": 33,
           "source_points": 755,
-          "best_player_vote_share": 0.007556675062972292
+          "best_player_vote_share": 0.007556675063
         },
         "Octane": {
           "best_player_votes": 2,
@@ -3125,7 +3125,7 @@
           "ranks_11_20_votes": 191,
           "ranks_21_30_votes": 23,
           "source_points": 739,
-          "best_player_vote_share": 0.005037783375314861
+          "best_player_vote_share": 0.005037783375
         },
         "Afro": {
           "best_player_votes": 0,
@@ -3269,41 +3269,41 @@
       "game": "Modern Warfare II",
       "source_kind": "community_aggregate_survey",
       "ballot_count": 244,
-      "base_weight": 1.5620499351813308,
+      "base_weight": 1.562049935181,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.8744599222175968,
+      "weight": 1.874459922218,
       "scores": {
-        "HyDra": 1.8744599222175968,
-        "aBeZy": 1.8119779248103436,
-        "Scrap": 1.7494959274030903,
-        "Cellium": 1.687013929995837,
-        "Pred": 1.624531932588584,
-        "Octane": 1.5620499351813308,
-        "KiSMET": 1.4995679377740776,
-        "Dashy": 1.4370859403668244,
-        "Shotzzy": 1.374603942959571,
-        "Simp": 1.3121219455523176,
-        "Drazah": 1.2496399481450644,
-        "Envoy": 1.1871579507378112,
-        "CleanX": 1.1246759533305581,
-        "Skyz": 1.062193955923305,
-        "Sib": 0.9997119585160517,
-        "SlasheR": 0.9372299611087984,
-        "Ghosty": 0.8747479637015452,
-        "Priestahh": 0.812265966294292,
-        "Insight": 0.7497839688870388,
-        "Owakening": 0.6873019714797854,
-        "Scump": 0.6248199740725322,
-        "Temp": 0.5623379766652791,
-        "Huke": 0.49985597925802583,
-        "Kenny": 0.4373739818507726,
-        "Clayster": 0.3748919844435194,
-        "Capsidal": 0.3124099870362661,
-        "Nastie": 0.24992798962901291,
-        "Beans": 0.1874459922217597,
-        "Afro": 0.12496399481450646,
-        "Standy": 0.06248199740725323
+        "HyDra": 1.874459922218,
+        "aBeZy": 1.81197792481,
+        "Scrap": 1.749495927403,
+        "Cellium": 1.687013929996,
+        "Pred": 1.624531932589,
+        "Octane": 1.562049935181,
+        "KiSMET": 1.499567937774,
+        "Dashy": 1.437085940367,
+        "Shotzzy": 1.37460394296,
+        "Simp": 1.312121945552,
+        "Drazah": 1.249639948145,
+        "Envoy": 1.187157950738,
+        "CleanX": 1.124675953331,
+        "Skyz": 1.062193955923,
+        "Sib": 0.999711958516,
+        "SlasheR": 0.937229961109,
+        "Ghosty": 0.874747963702,
+        "Priestahh": 0.812265966294,
+        "Insight": 0.749783968887,
+        "Owakening": 0.68730197148,
+        "Scump": 0.624819974073,
+        "Temp": 0.562337976665,
+        "Huke": 0.499855979258,
+        "Kenny": 0.437373981851,
+        "Clayster": 0.374891984444,
+        "Capsidal": 0.312409987036,
+        "Nastie": 0.249927989629,
+        "Beans": 0.187445992222,
+        "Afro": 0.124963994815,
+        "Standy": 0.062481997407
       },
       "detail_totals": {
         "best_player_votes": 258
@@ -3315,7 +3315,7 @@
           "ranks_6_10_votes": 1,
           "ranks_11_20_votes": 0,
           "source_points": 1131,
-          "best_player_vote_share": 0.7751937984496124
+          "best_player_vote_share": 0.77519379845
         },
         "aBeZy": {
           "best_player_votes": 31,
@@ -3323,7 +3323,7 @@
           "ranks_6_10_votes": 4,
           "ranks_11_20_votes": 0,
           "source_points": 781,
-          "best_player_vote_share": 0.12015503875968993
+          "best_player_vote_share": 0.12015503876
         },
         "Scrap": {
           "best_player_votes": 18,
@@ -3331,7 +3331,7 @@
           "ranks_6_10_votes": 7,
           "ranks_11_20_votes": 1,
           "source_points": 747,
-          "best_player_vote_share": 0.06976744186046512
+          "best_player_vote_share": 0.06976744186
         },
         "Cellium": {
           "best_player_votes": 3,
@@ -3339,7 +3339,7 @@
           "ranks_6_10_votes": 43,
           "ranks_11_20_votes": 5,
           "source_points": 679,
-          "best_player_vote_share": 0.011627906976744186
+          "best_player_vote_share": 0.011627906977
         },
         "Pred": {
           "best_player_votes": 3,
@@ -3347,7 +3347,7 @@
           "ranks_6_10_votes": 56,
           "ranks_11_20_votes": 4,
           "source_points": 662,
-          "best_player_vote_share": 0.011627906976744186
+          "best_player_vote_share": 0.011627906977
         },
         "Octane": {
           "best_player_votes": 0,
@@ -3363,7 +3363,7 @@
           "ranks_6_10_votes": 149,
           "ranks_11_20_votes": 48,
           "source_points": 489,
-          "best_player_vote_share": 0.003875968992248062
+          "best_player_vote_share": 0.003875968992
         },
         "Dashy": {
           "best_player_votes": 0,
@@ -3475,7 +3475,7 @@
           "ranks_6_10_votes": 22,
           "ranks_11_20_votes": 64,
           "source_points": 136,
-          "best_player_vote_share": 0.007751937984496124
+          "best_player_vote_share": 0.007751937984
         },
         "Temp": {
           "best_player_votes": 0,
@@ -3558,38 +3558,38 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.7999999999999998,
+      "weight": 1.8,
       "scores": {
-        "Simp": 1.7999999999999998,
-        "Shotzzy": 1.7399999999999998,
+        "Simp": 1.8,
+        "Shotzzy": 1.74,
         "HyDra": 1.68,
-        "Scrap": 1.6199999999999999,
-        "Dashy": 1.5599999999999998,
+        "Scrap": 1.62,
+        "Dashy": 1.56,
         "Cellium": 1.5,
         "Drazah": 1.44,
         "Pred": 1.38,
-        "aBeZy": 1.3199999999999998,
-        "Ghosty": 1.2599999999999998,
-        "Sib": 1.1999999999999997,
+        "aBeZy": 1.32,
+        "Ghosty": 1.26,
+        "Sib": 1.2,
         "Kenny": 1.14,
-        "CleanX": 1.0799999999999998,
-        "Abuzah": 1.0199999999999998,
-        "Envoy": 0.9599999999999999,
-        "Gwinn": 0.8999999999999999,
+        "CleanX": 1.08,
+        "Abuzah": 1.02,
+        "Envoy": 0.96,
+        "Gwinn": 0.9,
         "Skyz": 0.84,
-        "Insight": 0.7799999999999999,
+        "Insight": 0.78,
         "Attach": 0.72,
-        "04": 0.6599999999999999,
-        "Nero": 0.5999999999999999,
-        "KiSMET": 0.5399999999999999,
-        "JoeDeceives": 0.4799999999999999,
+        "04": 0.66,
+        "Nero": 0.6,
+        "KiSMET": 0.54,
+        "JoeDeceives": 0.48,
         "Gio": 0.42,
         "TJHaLy": 0.36,
-        "Estreal": 0.29999999999999993,
-        "Beans": 0.23999999999999996,
+        "Estreal": 0.3,
+        "Beans": 0.24,
         "Lynz": 0.18,
-        "ReeaL": 0.11999999999999998,
-        "Nastie": 0.05999999999999999
+        "ReeaL": 0.12,
+        "Nastie": 0.06
       },
       "detail_totals": {
         "best_player_votes": 171
@@ -3601,7 +3601,7 @@
           "ranks_6_10_votes": 2,
           "ranks_11_20_votes": 0,
           "source_points": 588,
-          "best_player_vote_share": 0.30409356725146197
+          "best_player_vote_share": 0.304093567251
         },
         "Shotzzy": {
           "best_player_votes": 47,
@@ -3609,7 +3609,7 @@
           "ranks_6_10_votes": 5,
           "ranks_11_20_votes": 0,
           "source_points": 575,
-          "best_player_vote_share": 0.27485380116959063
+          "best_player_vote_share": 0.27485380117
         },
         "HyDra": {
           "best_player_votes": 36,
@@ -3617,7 +3617,7 @@
           "ranks_6_10_votes": 1,
           "ranks_11_20_votes": 0,
           "source_points": 557,
-          "best_player_vote_share": 0.21052631578947367
+          "best_player_vote_share": 0.210526315789
         },
         "Scrap": {
           "best_player_votes": 31,
@@ -3625,7 +3625,7 @@
           "ranks_6_10_votes": 0,
           "ranks_11_20_votes": 0,
           "source_points": 548,
-          "best_player_vote_share": 0.18128654970760233
+          "best_player_vote_share": 0.181286549708
         },
         "Dashy": {
           "best_player_votes": 2,
@@ -3633,7 +3633,7 @@
           "ranks_6_10_votes": 91,
           "ranks_11_20_votes": 13,
           "source_points": 373,
-          "best_player_vote_share": 0.011695906432748537
+          "best_player_vote_share": 0.011695906433
         },
         "Cellium": {
           "best_player_votes": 2,
@@ -3641,7 +3641,7 @@
           "ranks_6_10_votes": 92,
           "ranks_11_20_votes": 19,
           "source_points": 357,
-          "best_player_vote_share": 0.011695906432748537
+          "best_player_vote_share": 0.011695906433
         },
         "Drazah": {
           "best_player_votes": 0,
@@ -3689,7 +3689,7 @@
           "ranks_6_10_votes": 65,
           "ranks_11_20_votes": 89,
           "source_points": 236,
-          "best_player_vote_share": 0.005847953216374269
+          "best_player_vote_share": 0.005847953216
         },
         "CleanX": {
           "best_player_votes": 0,
@@ -3844,38 +3844,38 @@
       "base_weight": 1.5,
       "coverage_multiplier": 1.2,
       "season_coverage_multiplier": 1.0,
-      "weight": 1.7999999999999998,
+      "weight": 1.8,
       "scores": {
-        "Scrap": 1.7999999999999998,
-        "Shotzzy": 1.7399999999999998,
+        "Scrap": 1.8,
+        "Shotzzy": 1.74,
         "Mercules": 1.68,
-        "HyDra": 1.6199999999999999,
-        "Dashy": 1.5599999999999998,
+        "HyDra": 1.62,
+        "Dashy": 1.56,
         "Huke": 1.5,
         "Neptune": 1.44,
         "Cellium": 1.38,
-        "JoeDeceives": 1.3199999999999998,
-        "Simp": 1.2599999999999998,
-        "RenKoR": 1.1999999999999997,
+        "JoeDeceives": 1.32,
+        "Simp": 1.26,
+        "RenKoR": 1.2,
         "04": 1.14,
-        "aBeZy": 1.0799999999999998,
-        "Abuzah": 1.0199999999999998,
-        "SupeR (Diego Escudero)": 0.9599999999999999,
-        "Drazah": 0.8999999999999999,
+        "aBeZy": 1.08,
+        "Abuzah": 1.02,
+        "SupeR (Diego Escudero)": 0.96,
+        "Drazah": 0.9,
         "CleanX": 0.84,
-        "ReeaL": 0.7799999999999999,
+        "ReeaL": 0.78,
         "Ghosty": 0.72,
-        "Nastie": 0.6599999999999999,
-        "Envoy": 0.5999999999999999,
-        "Snoopy": 0.5399999999999999,
-        "Purj": 0.4799999999999999,
+        "Nastie": 0.66,
+        "Envoy": 0.6,
+        "Snoopy": 0.54,
+        "Purj": 0.48,
         "Sib": 0.42,
         "Gwinn": 0.36,
-        "MettalZ": 0.29999999999999993,
-        "KiSMET": 0.23999999999999996,
+        "MettalZ": 0.3,
+        "KiSMET": 0.24,
         "Pred": 0.18,
-        "Cammy": 0.11999999999999998,
-        "Beans": 0.05999999999999999
+        "Cammy": 0.12,
+        "Beans": 0.06
       },
       "detail_totals": {
         "best_player_votes": 209
@@ -3887,7 +3887,7 @@
           "ranks_6_10_votes": 5,
           "ranks_11_20_votes": 4,
           "source_points": 798,
-          "best_player_vote_share": 0.49760765550239233
+          "best_player_vote_share": 0.497607655502
         },
         "Shotzzy": {
           "best_player_votes": 45,
@@ -3895,7 +3895,7 @@
           "ranks_6_10_votes": 43,
           "ranks_11_20_votes": 3,
           "source_points": 656,
-          "best_player_vote_share": 0.215311004784689
+          "best_player_vote_share": 0.215311004785
         },
         "Mercules": {
           "best_player_votes": 29,
@@ -3903,7 +3903,7 @@
           "ranks_6_10_votes": 30,
           "ranks_11_20_votes": 7,
           "source_points": 617,
-          "best_player_vote_share": 0.13875598086124402
+          "best_player_vote_share": 0.138755980861
         },
         "HyDra": {
           "best_player_votes": 25,
@@ -3911,7 +3911,7 @@
           "ranks_6_10_votes": 22,
           "ranks_11_20_votes": 0,
           "source_points": 616,
-          "best_player_vote_share": 0.11961722488038277
+          "best_player_vote_share": 0.11961722488
         },
         "Dashy": {
           "best_player_votes": 5,
@@ -3919,7 +3919,7 @@
           "ranks_6_10_votes": 79,
           "ranks_11_20_votes": 12,
           "source_points": 495,
-          "best_player_vote_share": 0.023923444976076555
+          "best_player_vote_share": 0.023923444976
         },
         "Huke": {
           "best_player_votes": 1,
@@ -3927,7 +3927,7 @@
           "ranks_6_10_votes": 84,
           "ranks_11_20_votes": 25,
           "source_points": 390,
-          "best_player_vote_share": 0.004784688995215311
+          "best_player_vote_share": 0.004784688995
         },
         "Neptune": {
           "best_player_votes": 0,

@@ -189,6 +189,17 @@ def aggregate_source_details(source):
     return totals, details
 
 
+def stable_trace_numbers(value):
+    """Round trace-only floats so regenerated artifacts are byte-stable."""
+    if isinstance(value, float):
+        return round(value, 12)
+    if isinstance(value, list):
+        return [stable_trace_numbers(item) for item in value]
+    if isinstance(value, dict):
+        return {key: stable_trace_numbers(item) for key, item in value.items()}
+    return value
+
+
 def build(game=None):
     sources = load_json(SOURCES_PATH)["sources"]
     ballots = load_json(BALLOTS_PATH)["ballots"]
@@ -291,7 +302,7 @@ def build(game=None):
 
     return {
         "schema_version": 1,
-        "source_contributions": source_contributions,
+        "source_contributions": stable_trace_numbers(source_contributions),
         "games": dict(by_game),
     }
 

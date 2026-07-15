@@ -10,18 +10,19 @@ function mountNav(active){
   // "Insights" groups the charts and the derived-signature page in a dropdown.
   const VIZ=[['kor.html','Kills Over Replacement'],['authored-vs-community.html','Authored-list check'],['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['map.html','Similarity map'],['signatures.html','Signatures']];
   const vizActive=VIZ.some(([h])=>h===active);
+  const activeAttrs=h=>h===active?' class="active" aria-current="page"':'';
   const drop=`<div class="navdrop${vizActive?' active':''}">
-      <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false">Insights <span aria-hidden="true">▾</span></button>
-      <div class="navdrop-menu">${VIZ.map(([h,t])=>`<a href="${h}" class="${h===active?'active':''}">${t}</a>`).join('')}</div>
+      <button type="button" class="navdrop-btn" aria-haspopup="true" aria-expanded="false" aria-controls="insights-menu">Insights <span aria-hidden="true">▾</span></button>
+      <div class="navdrop-menu" id="insights-menu">${VIZ.map(([h,t])=>`<a href="${h}"${activeAttrs(h)}>${t}</a>`).join('')}</div>
     </div>`;
   const before=[['index.html','Leaderboard'],['compare.html','Compare'],['community.html','Community'],['goat-builder.html','GOAT','GOAT Builder']], after=[['games.html','Seasons'],['methodology.html','Methodology'],['changelog.html','Changelog']];
-  const lnk=([h,t,label])=>`<a href="${h}" class="${h===active?'active':''}"${label?` aria-label="${label}"`:''}>${t}</a>`;
+  const lnk=([h,t,label])=>`<a href="${h}"${activeAttrs(h)}${label?` aria-label="${label}"`:''}>${t}</a>`;
   const nav=before.map(lnk).join('')+drop+after.map(lnk).join('');
   document.body.insertAdjacentHTML('afterbegin',
     `<a class="skip" href="#root">Skip to content</a>`+
     `<header class="site-head"><div class="inner">
       <a class="brand" href="index.html">Map Five</a>
-      <nav class="nav">${nav}</nav>
+      <nav class="nav" aria-label="Primary">${nav}</nav>
     </div></header>`);
   // dropdown open/close (click to toggle, click-away + Esc to close)
   const dd=document.querySelector('.navdrop');

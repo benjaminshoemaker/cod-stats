@@ -140,6 +140,8 @@ export function activeWeights(weights, enabled){
 // era-leader scales the lanes were normalized against.
 export function computeGoat(ctx, consensusByPlayer, config){
   const {selectedGames, ring} = config;
+  const bonuses = config.bonuses || new Map();
+  const bonusFor = name => bonuses instanceof Map ? bonuses.get(name) : bonuses[name];
   const selectedList = ctx.allGames.filter(g => selectedGames.has(g));
   const mbar = selectedList.length
     ? selectedList.reduce((sum,g) => sum + (ctx.gameInfo.get(g)?.denom || 0), 0) / selectedList.length
@@ -167,13 +169,19 @@ export function computeGoat(ctx, consensusByPlayer, config){
   const cache = new Map();
   const statsFor = p => {
     if(cache.has(p.name)) return cache.get(p.name);
+    const bonus = bonusFor(p.name);
+    const bonusGame = bonus?.game;
+    const applyBonus = bonus && selectedGames.has(bonusGame);
+    const bonusDenom = applyBonus ? (ctx.gameInfo.get(bonusGame)?.denom || 0) : 0;
     const seasons = (p.seasons || []).filter(s => selectedGames.has(s.game));
     const placementTitles = new Set((p.placements || [])
       .filter(row => selectedGames.has(row.game) && Number(row.events || 0) > 0)
       .map(row => row.game)).size;
-    const share = seasons.reduce((sum,s) => sum + (s.majors ? s.wins / s.majors : 0), 0);
+    const share = seasons.reduce((sum,s) => sum + (s.majors ? s.wins / s.majors : 0), 0)
+      + (applyBonus && bonusDenom ? (bonus.wins || 0) / bonusDenom : 0);
     const adj = share * mbar;
-    const champs = (p.champ_events || []).filter(ev => selectedGames.has(ctx.eventGame.get(ev.event))).length;
+    const champs = (p.champ_events || []).filter(ev => selectedGames.has(ctx.eventGame.get(ev.event))).length
+      + (applyBonus ? (bonus.champs || 0) : 0);
     const consensus = consensusFor(p);
     const seasonByGame = new Map(seasons.map(s => [s.game, s]));
     const consensusByGame = new Map((consensus?.rows || []).map(row => [row.game, row]));
@@ -183,16 +191,19 @@ export function computeGoat(ctx, consensusByPlayer, config){
       if(selectedGames.has(game)) champsByGame.set(game, (champsByGame.get(game) || 0) + 1);
     }
     const titlePeaks = selectedList
-      .filter(game => seasonByGame.has(game) || consensusByGame.has(game))
+      .filter(game => seasonByGame.has(game) || consensusByGame.has(game) || (applyBonus && game === bonusGame))
       .map(game => {
         const season = seasonByGame.get(game);
         const consensusRow = consensusByGame.get(game);
+        const gameBonus = applyBonus && game === bonusGame ? bonus : null;
+        const titleMajors = season?.majors || bonusDenom || 0;
+        const titleWins = (season?.wins || 0) + (gameBonus?.wins || 0);
         return {
           game,
-          titleAdj: season?.majors ? (season.wins / season.majors) * mbar : 0,
-          titleWins: season?.wins || 0,
-          titleMajors: season?.majors || 0,
-          titleChamps: champsByGame.get(game) || 0,
+          titleAdj: titleMajors ? (titleWins / titleMajors) * mbar : 0,
+          titleWins,
+          titleMajors,
+          titleChamps: (champsByGame.get(game) || 0) + (gameBonus?.champs || 0),
           skillPoints: consensusRow?.points,
           consensusRank: consensusRow?.rank,
         };

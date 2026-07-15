@@ -106,6 +106,53 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
         assert s["share"] == round(s["wins"] / 6, 4)
 
 
+def test_stakes_uses_next_future_major_and_current_denominator(data):
+    stakes = data["stakes"]
+    event = stakes["event"]
+    bo7 = next(g for g in data["games"] if g["game"] == "Black Ops 7")
+
+    assert event["event"] == "Call of Duty League Championship 2026"
+    assert event["game"] == "Black Ops 7"
+    assert event["date"] == "2026-07-16"
+    assert event["isChamps"] is True
+    assert event["denominator"] == bo7["denom"] == 6
+    assert event["playedMajors"] == bo7["majors"] == 4
+    assert event["winShareDelta"] == round(1 / bo7["denom"], 4)
+    assert event["adjustedDelta"] == round(data["meta"]["mbarAll"] / bo7["denom"], 2)
+
+
+def test_stakes_rosters_come_from_latest_played_title_major(data):
+    stakes = data["stakes"]
+    optic = next(s for s in stakes["scenarios"] if s["team"] == "OpTic Texas")
+
+    assert optic["rosterAsOf"]["event"] == "Call of Duty League 2026 - Major 4"
+    assert optic["rosterAsOf"]["date"] == "2026-06-26"
+    assert {p["name"] for p in optic["players"]} == {"Dashy", "Huke", "Mercules", "Shotzzy"}
+    for row in optic["players"]:
+        assert row["rawAfter"] == row["rawBefore"] + 1
+        assert row["champsAfter"] == row["champsBefore"] + 1
+        assert row["adjustedDelta"] == stakes["event"]["adjustedDelta"]
+
+
+def test_stakes_rank_after_uses_exact_fraction_shares(data):
+    from fractions import Fraction
+
+    stakes = data["stakes"]
+    optic = next(s for s in stakes["scenarios"] if s["team"] == "OpTic Texas")
+    denom = stakes["event"]["denominator"]
+    shares = {}
+    for name, p in data["players"].items():
+        shares[name] = sum((Fraction(s["wins"], s["majors"]) for s in p["seasons"]), Fraction(0))
+    scenario_shares = dict(shares)
+    for row in optic["players"]:
+        scenario_shares[row["name"]] += Fraction(1, denom)
+
+    for row in optic["players"]:
+        expected_rank = 1 + sum(1 for v in scenario_shares.values() if v > scenario_shares[row["name"]])
+        assert row["rankBefore"] == 1 + sum(1 for v in shares.values() if v > shares[row["name"]])
+        assert row["rankAfter"] == expected_rank
+
+
 def test_black_ops_4_excludes_pro_league_match_bonus_page(data):
     # The BO4 Pro League page is a league/match-bonus listing, not a tournament
     # champion. Only the Miami Pro League Playoffs count as a BO4 major.

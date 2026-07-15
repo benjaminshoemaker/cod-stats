@@ -42,6 +42,20 @@ mountNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-14', tag:'Improved', title:'Design-system and chart accessibility pass',
+   body:`GOAT Builder now uses the shared site spacing, typography, color tokens, and mobile tap-target sizing.
+   Chart interactions were tightened so Peak vs Longevity points have larger hit areas and Career Trajectories lines
+   can be focused and pinned from the keyboard. Low-emphasis and championship-marker text colors now keep stronger
+   contrast on tinted surfaces. Rankings, scores, and methodology are unchanged.`},
+  {date:'2026-07-14', tag:'New', title:'GOAT Builder Champs scenarios',
+   body:`Added a temporary Champs scenario panel to the <a href="goat-builder.html">GOAT Builder</a>. Pick a current
+   Black Ops 7 roster to see how those players move in your active GOAT ranking if they win Champs. The scenario uses
+   the existing six-major BO7 denominator, exact-fraction ranks, current roster rows from the latest played BO7 major,
+   and the weights, ring value, and title filter currently selected in the builder. Current rankings are unchanged.`},
+  {date:'2026-07-14', tag:'Improved', title:'Community and methodology copy tightened',
+   body:`Community Consensus and methodology copy now uses more direct language around source trails,
+   community rankings, poll margins, and excluded sources. The older table-system changelog wording was also
+   made less internal. Rankings, scores, and methodology are unchanged.`},
   {date:'2026-07-14', tag:'Improved', title:'GOAT Builder linked in navigation',
    body:`The <a href="goat-builder.html">GOAT Builder</a> is now available from the global navigation instead of
    only through direct links. Rankings, weights, and scoring are unchanged.`},
@@ -149,9 +163,9 @@ const ENTRIES = [
    excluded evidence. The <a href="methodology.html#community-consensus">methodology</a> explains the scoring boundary:
    these are compiled community rankings, not site-authored rankings, and event wins are shown only as context. Era-adjusted
    wins rankings are unchanged.`},
-  {date:'2026-07-06', tag:'Improved', title:'Tighter data-surface design system',
-   body:`The Kills Over Replacement page, season tables, player profile tables, compare tables, and heatmap table alternative now share
-   the same accessible data-surface contract: labeled horizontal-scroll regions, screen-reader captions, scoped table headers, and
+  {date:'2026-07-06', tag:'Improved', title:'Tighter data table design system',
+   body:`The Kills Over Replacement page, season tables, player profile tables, compare tables, and heatmap table alternative now use
+   the same accessible table wrapper: labeled horizontal-scroll regions, screen-reader captions, scoped table headers, and
    globally-sized segmented controls. The style guide now documents the KOR widget, role pills, and reusable table helpers. Rankings
    and stats are unchanged.`},
   {date:'2026-07-06', tag:'New', title:'Kills Over Replacement leaderboard',

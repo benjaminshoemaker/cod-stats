@@ -25,7 +25,7 @@
 <script src="assets/nav.js"></script>
 <main class="wrap wide community-page" id="root" tabindex="-1">
   <h1>Community Consensus</h1>
-  <p class="lede">A source-backed compilation of community rankings by title. These are not site-authored player rankings; they are an attempt to make the available community evidence visible and reproducible.</p>
+  <p class="lede">Community rankings by title, with the source trail behind each one. These are not site-authored player rankings.</p>
   <div class="note community-method-note">
     Event wins are shown as a sanity check only. They do <strong>not</strong> affect community score.
     <a href="methodology.html#community-consensus">Methodology →</a>
@@ -821,7 +821,7 @@ function renderSourceLedger(game, sources){
     </tr>`;
   }).join('');
   return `<section class="panel-shell source-ledger">
-    <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted"><strong>Scored</strong> sources count toward the ranking. <strong>Reviewed not scored</strong> sources were found but had no cleanly extractable ranked list. <strong>Excluded</strong> sources belong to other evidence lanes (media, official awards, or stat lists).</p></div></div>
+    <div class="panel-head"><div><h2>Source Ledger</h2><p class="small muted"><strong>Scored</strong> sources count toward the ranking. <strong>Reviewed not scored</strong> sources were found but had no cleanly extractable ranked list. <strong>Excluded</strong> sources are media lists, official awards, or stat lists, so they are kept out of the community ranking.</p></div></div>
     ${TableSurface.dataTable({
       label: `${game} source ledger`,
       caption: `${game} community consensus source ledger`,

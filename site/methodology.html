@@ -110,7 +110,7 @@ const bo2=D.majors['Black Ops 2'], small=6;
 
 root.innerHTML=`
   <h1>Methodology</h1>
-  <p class="lede">The site has several distinct evidence lanes. Start with the lane you care about, then use the detailed sections below to see what is measured, what is excluded, and how to reproduce the numbers.</p>
+  <p class="lede">The site separates wins, community opinion, KOR, and formal awards. Start with the piece you care about, then use the detailed sections below to see what is measured, what is excluded, and how to reproduce the numbers.</p>
   <div class="method-hub" aria-label="Methodology areas">
     <a class="method-card" href="#era-adjustment">
       <span class="pill tag">Core leaderboard</span>
@@ -271,9 +271,11 @@ root.innerHTML=`
   environment — for a title-adjusted view, use KOR above.</p>
 
   <h2 id="community-consensus">7. Community consensus ${anchorLink('community-consensus','Community consensus')}</h2>
-  <p>The <a href="community.html">Community Consensus</a> page is a separate evidence lane from era-adjusted wins, KOR, formal honors, and authored/media rankings. It tries to answer one narrower question: <strong>what did the available community ranking evidence say about the best players in each title?</strong> It is not an author ranking and it does not use event wins as a scoring input.</p>
-  <p>Each title is scored from explicit ranked community evidence: aggregate survey results where available, thread clusters with extractable ranked ballots, and rare single community ballots when they are the only usable source. A player's ballot points are normalized by list size, source contributions are weighted by source type, sample size, timing, season coverage, and bounded Reddit-score signals, then summed within that title.</p>
-  <p>Source density is not uniform across eras, so the table exposes magnitude differently by source shape. Older titles generally do not have one preserved end-of-title aggregate poll, so their rankings are reconstructed from multiple smaller Reddit threads, archived discussions, and other extractable community lists. In those titles, <strong>Consensus strength</strong> is useful magnitude: it reflects how consistently a player appears high across independent scored sources after source weighting. For recent titles, the strongest usable evidence is often a single large community poll, so the rank-point score mostly restates poll rank rather than margin. Those title tables show <strong>Poll detail</strong> instead, using a compact view of the source's first-place or next-best vote bucket, or top-10 inclusion share where available.</p>
+  <p>The <a href="community.html">Community Consensus</a> page is separate from era-adjusted wins, KOR, formal honors, and authored/media rankings. It answers one narrower question: <strong>what did the available community ranking evidence say about the best players in each title?</strong> It is not an author ranking and it does not use event wins as a scoring input.</p>
+  <p>Each title starts with ranked community evidence: aggregate survey results where available, thread clusters with extractable ranked ballots, and rare single community ballots when they are the only usable source.</p>
+  <p>A player's ballot points are normalized by list size. Source contributions are then weighted by source type, sample size, timing, season coverage, and bounded Reddit-score signals, then summed within that title.</p>
+  <p>Older titles usually do not have one clean end-of-title aggregate poll. They are rebuilt from smaller preserved Reddit threads, archived discussions, and other extractable community lists, so those tables show <strong>Consensus strength</strong> instead of pretending there is one clean vote margin. It reflects how consistently a player appears high across independent scored sources after source weighting.</p>
+  <p>Recent titles often rest on one large community poll, so the rank-point score mostly restates poll rank rather than margin. Those title tables show <strong>Poll detail</strong> instead, using a compact view of the source's first-place or next-best vote bucket, or top-10 inclusion share where available.</p>
   <p>Thread comments from the same discussion are averaged into one source before source weighting, because they are not fully independent publications. When individual comment scores are captured, they only redistribute influence <em>inside that source</em>; they do not make the whole thread count as more independent evidence. Reviewed-but-not-scored sources remain visible in the ledger so missing or rejected evidence does not disappear.</p>
   <h3 id="community-confidence">Confidence, source detail, and ledger statuses ${anchorLink('community-confidence','Community confidence')}</h3>
   <p>Each ranked row carries a <strong>confidence</strong> tag driven by source depth: <strong>high</strong> means the title has an
@@ -287,8 +289,8 @@ root.innerHTML=`
   they do not replace
   the rank-point scoring formula unless the methodology explicitly changes.</p>
   <p>In the source ledger, <strong>scored</strong> sources count toward the ranking; <strong>reviewed not scored</strong> sources were
-  found and logged but had no cleanly extractable ranked list; <strong>excluded</strong> sources belong to other evidence lanes
-  (media, official awards, or stat lists). Keeping non-scored sources visible is deliberate: it records what was searched, so
+  found and logged but had no cleanly extractable ranked list; <strong>excluded</strong> sources are media lists, official awards,
+  or stat lists, so they stay out of the community ranking. Keeping non-scored sources visible is deliberate: it records what was searched, so
   "not found yet" is never silently confused with "not searched."</p>
   <p>Ranking tables display community scores rounded to two decimals to avoid implying more precision than reconstructed community
   evidence supports; the per-player traces keep the exact three-decimal contributions so the math stays fully auditable.</p>
@@ -300,7 +302,7 @@ root.innerHTML=`
   more than lower retained ranks while still giving partial credit across the list.</p>
   <p>For example, rank 24 is <span class="formula">((31 - 24) / 30) ** 2.5</span>, or about 0.026 points. Every played title can
   contribute the same maximum; source quality is handled inside the title, not by making modern titles count more.</p>
-  <p><strong>How to read it:</strong> consensus is useful for preserving the community's memory of title-level player quality, especially where raw wins miss the story. It should sit beside resume, stats, honors, and source caveats. A blank or low score means the current source inventory did not capture support, not that no support existed.</p>
+  <p><strong>How to read it:</strong> community rankings help capture title-level opinions, especially where raw wins miss the story. They should sit beside resume, stats, honors, and source caveats. A blank or low score means the current source inventory did not capture support, not that no support existed.</p>
 
   <h2 id="formal-accolades">8. Formal accolades ${anchorLink('formal-accolades','Formal accolades')}</h2>
   <p><strong>Formal accolades</strong> are profile context, not an input to adjusted wins, community consensus, or Kills Over Replacement. Player pages and compare rows surface official recognition rows from the CoD Esports Wiki awards table: Champs MVPs, Event MVPs, Grand Finals MVPs, Season MVP, Rookie of the Year, CDL First/Second Team, and CWL All-Star selections.</p>

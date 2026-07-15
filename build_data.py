@@ -1149,6 +1149,109 @@ def build_meta(S, events):
             'consoleMajors': sum(S.majors[g] for g in S.order), 'numEvents': len(events)}
 
 
+def build_stakes(events_all, ppart, players_out, exact_share, S, event_registry, disp_by_mkey):
+    """Precompute what-if rank movement for the next scheduled major.
+
+    The scenario adds one win to every leaderboard player on a team's latest
+    same-title roster. It deliberately uses the existing in-progress denominator
+    for that title, so this page never creates an alternate methodology.
+    """
+    future = sorted(
+        [e for e in events_all if not _played(e.get('Date')) and e.get('Game') in S.denom],
+        key=lambda e: (e.get('Date') or '9999', e.get('Event') or ''),
+    )
+    if not future:
+        return {'status': 'unavailable', 'reason': 'No future scheduled console majors in the source snapshot.'}
+
+    event = next((e for e in future if not (e.get('Winner') or '').strip()), future[0])
+    game = event['Game']
+    denom = S.denom[game]
+    win_delta = Fraction(1, denom)
+    adjusted_delta = round(float(win_delta) * S.mbar_all, 2)
+    before_ranks = crank({n: s[0] for n, s in exact_share.items()})
+
+    latest_by_player = {}
+    top_mkeys = set(disp_by_mkey)
+    for r in ppart:
+        if not _keep(r) or r.get('Game') != game or not _played(r.get('Date')):
+            continue
+        if str(r.get('Place') or '').strip() in NONPLAY:
+            continue
+        mk = mkey(r.get('Player') or '')
+        if mk not in top_mkeys:
+            continue
+        date_key = (r.get('Date') or '', event_name_for(r, event_registry))
+        prev = latest_by_player.get(mk)
+        if not prev or date_key > (prev.get('Date') or '', event_name_for(prev, event_registry)):
+            latest_by_player[mk] = r
+
+    by_team = defaultdict(list)
+    for mk, r in latest_by_player.items():
+        team = str(r.get('Team') or '').strip()
+        if team:
+            by_team[team].append((disp_by_mkey[mk], r))
+
+    scenarios = []
+    for team, roster in sorted(by_team.items()):
+        roster_names = {name for name, _ in roster}
+        scenario_shares = dict((n, s[0]) for n, s in exact_share.items())
+        for name in roster_names:
+            scenario_shares[name] += win_delta
+        after_ranks = crank(scenario_shares)
+        rows = []
+        for name, r in sorted(roster, key=lambda item: before_ranks[item[0]]):
+            p = players_out[name]
+            before_share = exact_share[name][0]
+            after_share = scenario_shares[name]
+            rows.append({
+                'name': name,
+                'team': team,
+                'rankBefore': before_ranks[name],
+                'rankAfter': after_ranks[name],
+                'rankDelta': before_ranks[name] - after_ranks[name],
+                'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
+                'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
+                'adjustedDelta': adjusted_delta,
+                'rawBefore': p['raw'],
+                'rawAfter': p['raw'] + 1,
+                'champsBefore': p['champs'],
+                'champsAfter': p['champs'] + (1 if is_champs_event(event_name_for(event, event_registry)) else 0),
+            })
+        latest_row = max((r for _, r in roster), key=lambda r: (r.get('Date') or '', event_name_for(r, event_registry)))
+        scenarios.append({
+            'team': team,
+            'playerCount': len(rows),
+            'bestRankGain': max((r['rankDelta'] for r in rows), default=0),
+            'rosterAsOf': {
+                'event': event_name_for(latest_row, event_registry),
+                'date': latest_row.get('Date') or '',
+                'game': latest_row.get('Game') or game,
+            },
+            'players': rows,
+        })
+
+    scenarios.sort(key=lambda s: (-s['bestRankGain'], s['team']))
+    return {
+        'status': 'ready',
+        'asOf': ASOF,
+        'event': {
+            'event': event_name_for(event, event_registry),
+            'eventId': event_id_for(event, event_registry),
+            'game': game,
+            'date': event.get('Date') or '',
+            'location': event.get('Location') or '',
+            'region': event.get('Region') or '',
+            'denominator': denom,
+            'playedMajors': S.held[game],
+            'scheduledMajors': denom,
+            'winShareDelta': round(float(win_delta), 4),
+            'adjustedDelta': adjusted_delta,
+            'isChamps': is_champs_event(event_name_for(event, event_registry)),
+        },
+        'scenarios': scenarios,
+    }
+
+
 def load_community_consensus_payload():
     """Bundle the manually curated community-consensus sources for static serving.
 
@@ -1252,6 +1355,7 @@ def build():
             'players': players_out,
             'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry),
             'majors': dict(S.majors),
+            'stakes': build_stakes(events_all, ppart, players_out, exact_share, S, event_registry, disp_by_mkey),
             'teamLogos': build_team_logos(participation, load_team_logos()),
             '_participation': participation,
             '_kor': build_kor(

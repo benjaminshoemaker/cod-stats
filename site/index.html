@@ -33,6 +33,7 @@
   This leaderboard treats <strong>every season as equal weight</strong>: a win counts as a share of that
   season's majors, then is rescaled back to a familiar "wins" number.
   <a href="methodology.html">Methodology &amp; source rules &rarr;</a></p>
+  <div id="stakes-banner" class="stakes-banner stakes-banner-pending" aria-hidden="true"></div>
 
   <div class="controls">
     <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off" aria-label="Search players">
@@ -83,6 +84,22 @@ import { computeRows, eraContext } from './assets/rank.js';
 mountNav('index.html');
 
 const D = window.APP_DATA;
+const stakesBanner = document.getElementById('stakes-banner');
+if(D.stakes && D.stakes.status === 'ready' && D.stakes.event && stakesBanner){
+  const ev = D.stakes.event;
+  const best = (D.stakes.scenarios || [])[0];
+  const bestCopy = best ? ` ${esc(best.team)} has the biggest rank swing in the current roster scenarios.` : '';
+  stakesBanner.innerHTML = `
+    <div>
+      <strong>Champs stakes: ${esc(ev.event)}</strong>
+      <p>See who moves if each current ${esc(ev.game)} roster wins the next major.${bestCopy}</p>
+    </div>
+    <a class="sharebtn" href="stakes.html">Open stakes page</a>`;
+  stakesBanner.classList.remove('stakes-banner-pending');
+  stakesBanner.removeAttribute('aria-hidden');
+}else if(stakesBanner){
+  stakesBanner.remove();
+}
 // era/title selection helpers (shared with the /api/og card endpoint via rank.js)
 const { ORDER, eraOf, PRESETS, DENOM, slugOf, selectionToken, parseSelection } = eraContext(D);
 const ERAS = [                                          // display groups, oldest→newest

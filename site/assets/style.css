@@ -1,7 +1,7 @@
 /* Map Five | clean analytical theme */
 :root{
   --bg:#ffffff; --panel:#fafafa; --panel-2:#f3f4f6;
-  --ink:#16181d; --muted:#5b616e; --faint:#6b7280;
+  --ink:#16181d; --muted:#5b616e; --faint:#4b5563;
   --line:#e5e7eb; --line-2:#d1d5db;
   --accent:#2563eb; --accent-soft:#eff4ff; --accent-line:#dbe5ff; --accent-ink:#1e40af;
   /* dark tooltip chrome (trajectory #tt) */

@@ -504,7 +504,7 @@ test.describe('pages', () => {
     await expect(page.locator('table.data th[scope="col"]')).toHaveCount(6);
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
-    await expect(page.getByText('The site has several distinct evidence lanes')).toBeVisible();
+    await expect(page.getByText('The site separates wins, community opinion, KOR, and formal awards')).toBeVisible();
     await expect(page.locator('.method-hub .method-card', { hasText: 'Era-adjusted wins' })).toHaveAttribute('href', '#era-adjustment');
     await expect(page.locator('.method-hub .method-card', { hasText: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
     await expect(page.getByText('rank 30 rounds to 0.000')).toBeVisible();
@@ -590,13 +590,24 @@ test.describe('pages', () => {
     // every leaderboard player with wins should be a dot
     const expected = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
     await expect(page.locator('svg.scatter circle.dot')).toHaveCount(expected);
+    await expect(page.locator('svg.scatter circle.hit')).toHaveCount(expected);
+    const minHitBox = await page.locator('svg.scatter circle.hit').evaluateAll(els =>
+      Math.min(...els.map(el => Math.min(el.getBoundingClientRect().width, el.getBoundingClientRect().height)))
+    );
+    expect(minHitBox).toBeGreaterThanOrEqual(44);
   });
 
   test('Insights nav dropdown lists the chart pages', async ({ page }) => {
     await page.goto('/index.html');
+    await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Leaderboard' })).toHaveAttribute('aria-current', 'page');
     await page.click('.navdrop-btn');
+    await expect(page.locator('.navdrop-btn')).toHaveAttribute('aria-controls', 'insights-menu');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
     expect(links).toEqual(['kor.html', 'authored-vs-community.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
+
+    await page.goto('/scatter.html');
+    await page.click('.navdrop-btn');
+    await expect(page.locator('#insights-menu a[href="scatter.html"]')).toHaveAttribute('aria-current', 'page');
   });
 
   test('Kills Over Replacement page renders all-time and title splits', async ({ page }) => {
@@ -911,6 +922,23 @@ test.describe('pages', () => {
     const gold = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--gold').trim());
     expect(await page.locator(`svg.hm circle[fill="${gold}"]`).count()).toBeGreaterThan(0);
+    const goldInkContrast = await page.locator('p.lede span', { hasText: '◆ gold dot' }).evaluate(el => {
+      const parse = (value: string) => {
+        const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : [0, 0, 0];
+      };
+      const lum = ([r, g, b]: number[]) => {
+        const channel = (v: number) => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        };
+        return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+      };
+      const fg = lum(parse(getComputedStyle(el).color));
+      const bg = lum([255, 255, 255]);
+      return (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+    });
+    expect(goldInkContrast).toBeGreaterThanOrEqual(4.5);
   });
 
   test('heatmap tooltips use scoring denominators, not held event counts', async ({ page }) => {
@@ -1286,6 +1314,27 @@ test.describe('GOAT Builder', () => {
     expect(new Set(skills)).not.toEqual(new Set(['50']));
     expect(skills).toContain('100');
     expect(errors).toEqual([]);
+  });
+
+  test('temporary Champs scenarios recompute movement from active GOAT settings', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatStakes')).toBeVisible();
+    await expect(page.locator('#goatStakes')).toContainText('This week: Champs scenarios');
+    await expect(page.locator('#stakeIntro')).toContainText('Call of Duty League Championship 2026');
+
+    await page.getByRole('button', { name: 'OpTic Texas' }).click();
+    const stakes = page.locator('#goatStakes');
+    await expect(stakes.locator('.gb-stakes-table tbody')).toContainText('Shotzzy');
+    await expect(stakes.locator('.gb-stakes-table tbody')).toContainText('Dashy');
+    await expect(stakes.locator('.gb-stakes-note')).toContainText('Movement is recalculated from your current weights');
+    const before = await stakes.locator('.gb-stakes-table tbody tr', { hasText: 'Shotzzy' }).textContent();
+
+    await page.locator('#ringWeight').evaluate((input: HTMLInputElement) => {
+      input.value = '5';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    const after = await stakes.locator('.gb-stakes-table tbody tr', { hasText: 'Shotzzy' }).textContent();
+    expect(after).not.toEqual(before);
   });
 
   test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {
@@ -1693,5 +1742,117 @@ test.describe('comprehension fixes', () => {
     await expect(detail).toContainText('Era leader: Scump (7.64)');
     await expect(detail).toContainText('Fan-ranked in 13 of the 15 selected titles');
     await expect(detail).toContainText('Winning half');
+  });
+});
+
+test.describe('design-system adherence', () => {
+  test('GOAT Builder uses the shared page rhythm and mobile target sizing', async ({ page }) => {
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+
+    const desktop = await page.evaluate(() => {
+      const body = getComputedStyle(document.body);
+      const html = getComputedStyle(document.documentElement);
+      const root = getComputedStyle(document.documentElement);
+      return {
+        fontSize: body.fontSize,
+        htmlBg: html.backgroundColor,
+        pageBg: root.getPropertyValue('--bg').trim(),
+        goatBg: root.getPropertyValue('--gb-bg').trim(),
+        goatLine: root.getPropertyValue('--gb-line').trim(),
+        line: root.getPropertyValue('--line').trim(),
+      };
+    });
+    expect(desktop.fontSize).toBe(test.info().project.name === 'mobile' ? '16px' : '15px');
+    expect(desktop.goatBg).toBe(desktop.pageBg);
+    expect(desktop.goatLine).toBe(desktop.line);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/goat-builder.html');
+    await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
+    const smallTargets = await page.evaluate(() => {
+      const visible = (el: Element) => {
+        const s = getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return s.display !== 'none' && s.visibility !== 'hidden' && r.width > 0 && r.height > 0;
+      };
+      return Array.from(document.querySelectorAll('.gb-presets button,.gb-era-presets button,.gb-button,.gb-view-toggle button,.gb-budget-reset,.gb-step,.gb-points-input,.gb-mini-actions button'))
+        .filter(visible)
+        .map(el => {
+          const r = el.getBoundingClientRect();
+          return { text: (el.textContent || el.getAttribute('aria-label') || '').trim(), width: r.width, height: r.height };
+        })
+        .filter(item => item.width < 44 || item.height < 44);
+    });
+    expect(smallTargets).toEqual([]);
+  });
+
+  test('faint and gold text tokens retain AA contrast on tinted surfaces', async ({ page }) => {
+    await page.goto('/styleguide.html');
+    const ratios = await page.evaluate(() => {
+      const css = getComputedStyle(document.documentElement);
+      const parse = (hex: string) => {
+        const h = hex.trim();
+        return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+      };
+      const lum = ([r, g, b]: number[]) => {
+        const f = (v: number) => {
+          v /= 255;
+          return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        };
+        return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+      };
+      const contrast = (fg: string, bg: string) => {
+        const a = lum(parse(fg)), b = lum(parse(bg));
+        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      };
+      return {
+        faintOnPanel2: contrast(css.getPropertyValue('--faint'), css.getPropertyValue('--panel-2')),
+        faintOnAccentSoft: contrast(css.getPropertyValue('--faint'), css.getPropertyValue('--accent-soft')),
+        goldInkOnWhite: contrast(css.getPropertyValue('--gold-ink'), '#ffffff'),
+      };
+    });
+    expect(ratios.faintOnPanel2).toBeGreaterThanOrEqual(4.5);
+    expect(ratios.faintOnAccentSoft).toBeGreaterThanOrEqual(4.5);
+    expect(ratios.goldInkOnWhite).toBeGreaterThanOrEqual(4.5);
+
+    await page.goto('/heatmap.html');
+    await expect(page.locator('.lede span', { hasText: '◆ gold dot' })).toHaveCSS('color', 'rgb(122, 95, 19)');
+    await page.goto('/trajectory.html');
+    await expect(page.locator('.lede span', { hasText: '◆' })).toHaveCSS('color', 'rgb(122, 95, 19)');
+  });
+
+  test('chart pages expose keyboard-operable hit targets', async ({ page }) => {
+    await page.goto('/scatter.html');
+    const scatterHit = page.locator('svg.scatter a').first();
+    await expect(scatterHit).toBeVisible();
+    const scatterMetrics = await scatterHit.evaluate(el => {
+      const hit = el.querySelector('circle.hit') as SVGCircleElement | null;
+      const dot = el.querySelector('circle.dot') as SVGCircleElement | null;
+      return {
+        href: (el as SVGElement).getAttribute('href') || (el as SVGElement).getAttribute('xlink:href'),
+        hitRadius: Number(hit?.getAttribute('r') || 0),
+        dotRadius: Number(dot?.getAttribute('r') || 0),
+      };
+    });
+    expect(scatterMetrics.href).toContain('player.html?p=');
+    expect(scatterMetrics.hitRadius).toBeGreaterThanOrEqual(22);
+    expect(scatterMetrics.hitRadius).toBeGreaterThan(scatterMetrics.dotRadius);
+
+    await page.goto('/trajectory.html');
+    const line = page.locator('.trace-key').first();
+    await expect(line).toBeVisible();
+    await expect(line).toHaveAttribute('aria-label', /trajectory/);
+    const keySize = await line.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return { width: r.width, height: r.height };
+    });
+    expect(keySize.width).toBeGreaterThanOrEqual(44);
+    expect(keySize.height).toBeGreaterThanOrEqual(44);
+    await line.focus();
+    await expect(page.locator('#tt')).toBeVisible();
+    const before = await page.locator('#chips .chip').count();
+    await page.keyboard.press('Enter');
+    await expect.poll(() => page.locator('#chips .chip').count()).not.toBe(before);
   });
 });
