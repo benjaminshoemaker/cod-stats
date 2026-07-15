@@ -625,6 +625,59 @@ def test_event_registry_adds_canonical_ids_to_participation_and_skill_rows(data)
     assert london["event"] == "CWL London 2019"
 
 
+def test_legacy_player_event_stats_stay_separate_from_map_rows(monkeypatch, tmp_path):
+    import shutil
+    for f in (
+        "major_events.json",
+        "player_event_wins.json",
+        "champs_wins.json",
+        "player_participation.json",
+        "team_participation.json",
+    ):
+        shutil.copy(build_data._p(f), tmp_path / f)
+    rows = [
+        {"Player": "Scump", "Event": "Call of Duty Championship 2013", "Game": "Black Ops 2",
+         "Date": "2013-04-05", "Mode": "Hardpoint", "Kills": "20", "Deaths": "10"},
+    ]
+    legacy = [
+        {"Player": "Scump", "Event": "Call of Duty Championship 2013", "Game": "Black Ops 2",
+         "Date": "2013-04-05", "Team": "OpTic Gaming", "Maps": 5, "KD": 1.25,
+         "Granularity": "eventAggregate", "Source": "codcompstats legacy wiki page",
+         "SourceUrl": "https://example.com/scump-aw", "SourcePage": "Scump/Statistics/Black Ops 2",
+         "LegacyEvent": "COD Champs"},
+        {"Player": "Scump", "Event": "MLG Spring Championship 2013", "Game": "Black Ops 2",
+         "Date": "2013-06-28", "Team": "OpTic Gaming", "Maps": 7, "KD": 1.1,
+         "Granularity": "eventAggregate", "Source": "codcompstats legacy wiki page",
+         "SourceUrl": "https://example.com/scump-aw", "SourcePage": "Scump/Statistics/Black Ops 2",
+         "LegacyEvent": "MLG Spring"},
+        {"Player": "Scump", "Event": "Not A Major", "Game": "Black Ops 2",
+         "Date": "2013-06-28", "Maps": 99, "KD": 9.99},
+    ]
+    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
+    json.dump(legacy, open(tmp_path / "legacy_player_event_stats.json", "w"))
+    (tmp_path / "site").mkdir()
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+
+    built = build_data.build()
+    stats = built["players"]["Scump"]["skillStats"]
+    legacy_stats = built["players"]["Scump"]["legacySkillStats"]
+    assert stats["overall"]["maps"] == 1
+    assert stats["overall"]["kd"] == 2
+    assert legacy_stats["coverage"] == {"events": 2, "maps": 12, "games": ["Black Ops 2"]}
+    assert [r["event"] for r in legacy_stats["byEvent"]] == ["Call of Duty Championship 2013", "MLG Spring Championship 2013"]
+    assert legacy_stats["byEvent"][0]["sourceType"] == "legacyAggregate"
+
+    build_data.write(built, tmp_path / "site" / "data.js")
+    skill_events = json.load(open(tmp_path / "site" / "skill-events.json"))
+    scump_events = skill_events["Scump"]
+    champs = next(r for r in scump_events if r["event"] == "Call of Duty Championship 2013")
+    spring = next(r for r in scump_events if r["event"] == "MLG Spring Championship 2013")
+    assert champs["overall"]["maps"] == 1
+    assert champs["legacyAggregate"]["overall"] == {"maps": 5, "kd": 1.25}
+    assert spring["sourceType"] == "legacyAggregate"
+    assert spring["overall"] == {"maps": 7, "kd": 1.1}
+
+
 def test_skill_stats_emit_map_win_summaries_when_source_has_results(monkeypatch, tmp_path):
     import shutil
     for f in (

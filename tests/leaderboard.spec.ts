@@ -1054,6 +1054,18 @@ test.describe('pages', () => {
     await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Scump']);
   });
 
+  test('player stat drilldown labels legacy aggregate coverage separately', async ({ page }) => {
+    await page.goto('/player.html?p=Karma');
+    await expect(page.locator('#stats-on-record')).toContainText('legacy aggregate');
+    const awSeason = page.locator('.skill-season').filter({ hasText: 'Advanced Warfare' });
+    await awSeason.locator('summary').click();
+    await expect(awSeason.locator('.skill-event-table')).toContainText('Map rows');
+    await expect(awSeason.locator('.skill-event-table')).toContainText('Legacy aggregate');
+    await expect(awSeason.locator('.skill-event-table')).toContainText('UMG Dallas 2015');
+    await page.locator('#skill-mode button[data-mode="snd"]').click();
+    await expect(awSeason.locator('.skill-event-table')).not.toContainText('Legacy aggregate');
+  });
+
   test('similar player detail can compare both players', async ({ page }) => {
     await page.goto('/player.html?p=Shotzzy');
     await page.locator('.sim-row[data-comp="Simp"]').click();

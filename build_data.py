@@ -146,6 +146,11 @@ def load_sources():
     return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages
 
 
+def load_legacy_player_event_stats():
+    path = _p('legacy_player_event_stats.json')
+    return json.load(open(path)) if os.path.exists(path) else []
+
+
 def build_event_registry(events_all, event_pages, *row_groups):
     """Map tournament display names and page IDs to one canonical event ID.
 
@@ -626,6 +631,96 @@ def index_skill_stats(rows, top50_mkeys, S, event_registry):
     return out
 
 
+def _stat_float(value):
+    if value in (None, ''):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def index_legacy_skill_stats(rows, top50_mkeys, S, event_registry, major_event_ids):
+    """Index codcompstats legacy event aggregates separately from map rows."""
+    work = {}
+    for r in rows:
+        player = r.get('Player')
+        mk = mkey(player or '')
+        if mk not in top50_mkeys:
+            continue
+        if not _keep(r) or not _played(r.get('Date')):
+            continue
+        event_id = event_id_for(r, event_registry)
+        if event_id not in major_event_ids:
+            continue
+        maps = _stat_int(r.get('Maps'))
+        kd = _stat_float(r.get('KD'))
+        if not maps or kd is None:
+            continue
+        game = r.get('Game') or ''
+        if not game:
+            continue
+        event = event_name_for(r, event_registry)
+        date = r.get('Date') or ''
+        team = str(r.get('Team') or '').strip()
+        row = work.setdefault(mk, {
+            'events': set(),
+            'games': set(),
+            'maps': 0,
+            'by_game': {},
+            'by_event': {},
+        })
+        row['events'].add(event_id)
+        row['games'].add(game)
+        row['maps'] += maps
+        game_group = row['by_game'].setdefault(game, {'events': set(), 'maps': 0})
+        game_group['events'].add(event_id)
+        game_group['maps'] += maps
+        row['by_event'][(game, event_id)] = {
+            'game': game,
+            'event': event,
+            'eventId': event_id,
+            'firstDate': date or None,
+            'lastDate': date or None,
+            'teams': [team] if team else [],
+            'sourceType': 'legacyAggregate',
+            'sourceLabel': 'Legacy aggregate',
+            'granularity': r.get('Granularity') or 'eventAggregate',
+            'source': r.get('Source') or 'codcompstats legacy wiki page',
+            'sourceUrl': r.get('SourceUrl') or '',
+            'sourcePage': r.get('SourcePage') or '',
+            'legacyEvent': r.get('LegacyEvent') or event,
+            'overall': {'maps': maps, 'kd': round(kd, 3)},
+            'splits': {'snd': _finish_stat_bucket(_empty_stat_bucket()), 'respawn': _finish_stat_bucket(_empty_stat_bucket())},
+        }
+    out = {}
+    for mk, row in work.items():
+        games = sorted(row['games'], key=lambda g: S.order_idx.get(g, 999))
+        by_game = []
+        for game in games:
+            group = row['by_game'][game]
+            by_game.append({
+                'game': game,
+                'events': len(group['events']),
+                'maps': group['maps'],
+            })
+        by_event = sorted(
+            row['by_event'].values(),
+            key=lambda r: (S.order_idx.get(r['game'], 999), r['firstDate'] or '', r['event']),
+        )
+        out[mk] = {
+            'source': 'codcompstats legacy wiki pages',
+            'coverage': {
+                'events': len(row['events']),
+                'maps': row['maps'],
+                'games': games,
+            },
+            'byGame': by_game,
+            'byEvent': by_event,
+        }
+    return out
+
+
 KOR_SPLITS = {
     'respawn': {'label': 'Respawn', 'minMaps': 28},
     'snd': {'label': 'S&D', 'minMaps': 10},
@@ -1059,6 +1154,7 @@ def build_player(n, pub, S, idx):
            'teams': teams_of(all_majors),
            'honors': idx.accolades_by.get(mk, []),
            'skillStats': idx.skill_stats_by.get(mk),
+           'legacySkillStats': idx.legacy_skill_stats_by.get(mk),
            'note': PLAYER_NOTES.get(n)}
     rec['role_by_game'] = role_by_game(n, [r['game'] for r in all_majors], S, idx.role_stints)
     rec['primary_role'] = primary_role(rec['role_by_game'])
@@ -1329,6 +1425,7 @@ def build():
     events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = load_sources()
     S = season_context(events, events_all)
     event_registry = build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
+    major_event_ids = {event_id_for(e, event_registry) for e in events}
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
     disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
@@ -1340,6 +1437,7 @@ def build():
         champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins),
         accolades_by=index_accolades(accolades, top50_mkeys),
         skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S, event_registry),
+        legacy_skill_stats_by=index_legacy_skill_stats(load_legacy_player_event_stats(), top50_mkeys, S, event_registry, major_event_ids),
         event_registry=event_registry,
         role_stints=index_role_stints(load_role_stints(), disp_by_mkey, S))
 
@@ -1363,7 +1461,7 @@ def build():
                 tpart,
                 S,
                 event_registry,
-                {event_id_for(e, event_registry) for e in events},
+                major_event_ids,
                 idx.role_stints,
                 disp_by_mkey,
             )}
@@ -1396,12 +1494,27 @@ def write(data, path=None):
     # leaderboard payload focused on career and season aggregates, then lazy-load
     # the event drilldown from player.html.
     skill_events = {}
+    order_idx = {g: i for i, g in enumerate(data.get('meta', {}).get('seasonOrder', []))}
     for name, player in data.get('players', {}).items():
+        rows = []
         stats = player.get('skillStats')
         if stats and 'byEvent' in stats:
-            events = stats.pop('byEvent')
-            if events:
-                skill_events[name] = events
+            rows.extend({**event, 'sourceType': 'mapRows', 'sourceLabel': 'Map rows'} for event in stats.pop('byEvent'))
+        legacy_stats = player.get('legacySkillStats')
+        legacy_events = legacy_stats.pop('byEvent') if legacy_stats and 'byEvent' in legacy_stats else []
+        legacy_by_key = {(event.get('game'), event.get('eventId')): event for event in legacy_events}
+        current_keys = {(event.get('game'), event.get('eventId')) for event in rows}
+        for row in rows:
+            key = (row.get('game'), row.get('eventId'))
+            legacy = legacy_by_key.get(key)
+            current_maps = ((row.get('overall') or {}).get('maps') or 0)
+            legacy_maps = ((legacy or {}).get('overall') or {}).get('maps') or 0
+            if legacy and legacy_maps > current_maps:
+                row['legacyAggregate'] = legacy
+        rows.extend(event for key, event in legacy_by_key.items() if key not in current_keys)
+        if rows:
+            rows.sort(key=lambda r: (order_idx.get(r.get('game'), 999), r.get('firstDate') or '', r.get('event') or '', r.get('sourceType') or ''))
+            skill_events[name] = rows
     with open(_p('site', 'skill-events.json'), 'w') as f:
         json.dump(skill_events, f)
     with open(path, 'w') as f:

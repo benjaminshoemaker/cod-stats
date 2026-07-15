@@ -107,3 +107,22 @@ When `Win` is available on the source row, each emitted metric bucket also gains
 `mapWins`, `mapLosses`, and `mapWinRate`. Older source snapshots without `Win`
 still build without those fields; absence means the source row did not carry
 map result data, not that the player went winless.
+
+## Legacy Aggregate Backfill
+
+`legacy_player_event_stats.json` is a separate, major-only source for legacy
+codcompstats-backed wiki pages. These rows are event aggregates, not map-level
+`PlayerStats` rows. They can show that a Ghosts or Advanced Warfare event has
+broader K/D coverage than the committed map rows, but they do not include
+per-map kills/deaths, opponents, series IDs, or map results.
+
+`build_data.py` keeps this source out of `skillStats` career totals, similarity
+features, KOR, same-map validation, and map-win reconstruction. It emits a
+lightweight `legacySkillStats` summary in `site/data.js` and attaches legacy
+aggregate details only to the lazy `site/skill-events.json` player drilldown.
+The player page labels those rows as `Legacy aggregate` and keeps `Map rows`
+visibly separate.
+
+Regular-season and non-major league aggregates discovered during the audit are
+not committed to the source file. They should stay quarantined unless the site
+adds a separate broader stat-context surface.

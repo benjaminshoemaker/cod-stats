@@ -42,6 +42,11 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-15', tag:'Improved', title:'Legacy Ghosts/AW stat coverage',
+   body:`Player profiles can now show source-badged codcompstats legacy aggregate rows in the tournament stat drilldown
+   when Ghosts or Advanced Warfare map-level PlayerStats rows are missing or partial. These rows are labeled
+   <strong>Legacy aggregate</strong> and stay separate from <strong>Map rows</strong>; leaderboard rankings, KOR,
+   similarity, and player header stat totals are unchanged.`},
   {date:'2026-07-14', tag:'Improved', title:'Design-system and chart accessibility pass',
    body:`GOAT Builder now uses the shared site spacing, typography, color tokens, and mobile tap-target sizing.
    Chart interactions were tightened so Peak vs Longevity points have larger hit areas and Career Trajectories lines

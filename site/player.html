@@ -84,13 +84,14 @@ if(!p || !lb){
       }) : '<p class="small faint">No honors found in the current source set.</p>'}
     </section>`;
   const skillStats = p.skillStats;
+  const legacyStats = p.legacySkillStats;
   const skillDateRange = stats => {
     if(!stats || (!stats.firstDate && !stats.lastDate)) return '';
     if(stats.firstDate === stats.lastDate) return stats.firstDate || '';
     return `${stats.firstDate || '?'} – ${stats.lastDate || '?'}`;
   };
   const modeLabel = mode => mode === 'snd' ? 'S&D' : (mode === 'respawn' ? 'Respawn' : 'Overall');
-  const splitBucket = (row, mode) => mode === 'overall' ? row.overall : ((row.splits && row.splits[mode]) || null);
+  const splitBucket = (row, mode) => row ? (mode === 'overall' ? row.overall : ((row.splits && row.splits[mode]) || null)) : null;
   const splitTone = b => !b || b.maps < 10 || b.kd == null ? 'muted' : (b.kd < 1 ? 'warn' : 'flat');
   const statStrong = (b, field, kind='int') => b && b[field] != null
     ? (kind === 'kd' ? fmtKd(b[field]) : fmtInt(b[field]))
@@ -102,21 +103,26 @@ if(!p || !lb){
     return `<span class="skill-split-pill ${tone}"><strong>${modeLabel(mode)}</strong> ${statStrong(b, 'kd', 'kd')} <span>${sample}</span></span>`;
   };
   const coverageMaps = skillStats?.coverage?.maps ?? skillStats?.overall?.maps;
-  const skillStatsSection = skillStats ? `<section id="stats-on-record" class="skill-stats-block">
+  const legacyCoverage = legacyStats?.coverage;
+  const statsCoveragePills = [
+    skillStats ? `<span class="pill flat">${fmtInt(skillStats.coverage?.events)} map-row event${skillStats.coverage?.events === 1 ? '' : 's'} · ${fmtInt(coverageMaps)} map${coverageMaps === 1 ? '' : 's'}</span>` : '',
+    legacyStats ? `<span class="pill flat">${fmtInt(legacyCoverage?.events)} legacy aggregate event${legacyCoverage?.events === 1 ? '' : 's'}</span>` : ''
+  ].filter(Boolean).join('');
+  const skillStatsSection = (skillStats || legacyStats) ? `<section id="stats-on-record" class="skill-stats-block">
       <div class="section-head">
         <div>
           <h2>Stats on record ${anchorLink('stats-on-record','Stats on record')}</h2>
-          <p class="small muted">Kills/deaths from CoD Esports Wiki PlayerStats rows where map-level stats are available. Respawn includes every mode except S&D. These rows are source coverage, not a full-career guarantee.
+          <p class="small muted">Kills/deaths from CoD Esports Wiki PlayerStats rows where map-level stats are available. Legacy codcompstats rows appear only as source-badged event aggregates when they fill missing or partial Ghosts/AW coverage. Respawn includes every mode except S&D. These rows are source coverage, not a full-career guarantee.
             See where these rates rank on the <a href="kor.html">Kills Over Replacement board</a>.</p>
         </div>
-        <span class="pill flat">${fmtInt(skillStats.coverage?.events)} event${skillStats.coverage?.events === 1 ? '' : 's'} · ${fmtInt(coverageMaps)} map${coverageMaps === 1 ? '' : 's'}</span>
+        <div class="skill-source-pills">${statsCoveragePills}</div>
       </div>
-      <div class="stat-row skill-record-row">
+      ${skillStats ? `<div class="stat-row skill-record-row">
         <div class="stat"><div class="k">K/D</div><div class="v">${fmtKd(skillStats.overall?.kd)}</div><div class="small faint">${skillDateRange(skillStats.coverage)}</div></div>
         <div class="stat"><div class="k">Kills</div><div class="v">${fmtInt(skillStats.overall?.kills)}</div><div class="small faint">from stat rows</div></div>
         <div class="stat"><div class="k">Deaths</div><div class="v">${fmtInt(skillStats.overall?.deaths)}</div><div class="small faint">from stat rows</div></div>
-      </div>
-      <div class="skill-split-grid" aria-label="K/D by mode split">
+      </div>` : `<p class="small faint">No map-level PlayerStats kills/deaths rows found for this player in the current source set. Legacy event aggregates are listed in the tournament drilldown when available.</p>`}
+      ${skillStats ? `<div class="skill-split-grid" aria-label="K/D by mode split">
         ${['respawn','snd'].map(mode=>{
           const b = skillBucket(skillStats, mode);
           return `<div class="skill-split-card ${splitTone(b)}">
@@ -125,7 +131,7 @@ if(!p || !lb){
             <div class="small faint">${fmtInt(b?.maps)} map${b?.maps === 1 ? '' : 's'}</div>
           </div>`;
         }).join('')}
-      </div>
+      </div>` : ''}
       <div class="skill-table-head">
         <div>
           <h3>By season and tournament</h3>
@@ -330,7 +336,7 @@ if(!p || !lb){
       : '';
   }
   function renderSkillStats(mode='overall'){
-    if(!skillStats) return;
+    if(!skillStats && !legacyStats) return;
     const host = document.getElementById('skill-season-table');
     if(!host) return;
     if(!SKILL_EVENTS){
@@ -351,46 +357,70 @@ if(!p || !lb){
     SKILL_EVENTS.forEach(ev => {
       (eventsByGame[ev.game] = eventsByGame[ev.game] || []).push(ev);
     });
-    const seasons = (skillStats.byGame || []).filter(season => {
-      const b = splitBucket(season, mode);
-      return b && b.maps;
+    const seasonMap = new Map();
+    (skillStats?.byGame || []).forEach(season => {
+      seasonMap.set(season.game, {game: season.game, mapRows: season, legacy: null});
     });
+    (legacyStats?.byGame || []).forEach(season => {
+      const item = seasonMap.get(season.game) || {game: season.game, mapRows: null, legacy: null};
+      item.legacy = season;
+      seasonMap.set(season.game, item);
+    });
+    const seasons = Array.from(seasonMap.values()).filter(season => {
+      const b = splitBucket(season.mapRows, mode);
+      return (b && b.maps) || (mode === 'overall' && season.legacy && season.legacy.events);
+    }).sort((a,b)=>orderIdx[a.game]-orderIdx[b.game]);
     if(!seasons.length){
       host.innerHTML = `<p class="small faint">No ${modeLabel(mode)} season-level stats available in the current source set.</p>`;
     }else{
       host.innerHTML = seasons.map((season, index)=>{
-      const b = splitBucket(season, mode);
+      const b = splitBucket(season.mapRows, mode);
       const events = (eventsByGame[season.game] || []).filter(ev => {
+        if(ev.sourceType === 'legacyAggregate' && mode !== 'overall') return false;
         const eb = splitBucket(ev, mode);
-        return eb && eb.maps;
+        return (eb && eb.maps) || (mode === 'overall' && ev.legacyAggregate);
       });
+      const sourceCell = (ev, eb) => {
+        const currentMaps = eb?.maps || 0;
+        const legacy = mode === 'overall' ? (ev.sourceType === 'legacyAggregate' ? ev : ev.legacyAggregate) : null;
+        const mapRowLine = ev.sourceType !== 'legacyAggregate'
+          ? `<div><span class="pill flat">Map rows</span> <span class="small faint">${fmtInt(currentMaps)} maps</span></div>`
+          : '';
+        const legacyLine = legacy
+          ? `<div><span class="pill flat">Legacy aggregate</span> <span class="small faint">${fmtInt(legacy.overall?.maps)} maps · ${fmtKd(legacy.overall?.kd)} K/D</span></div>`
+          : '';
+        return `${mapRowLine}${legacyLine || '<span class="faint">–</span>'}`;
+      };
       const body = events.map(ev=>{
         const eb = splitBucket(ev, mode);
+        const isLegacyRow = ev.sourceType === 'legacyAggregate';
+        const shown = isLegacyRow ? ev.overall : eb;
         return `<tr>
           <td class="num small">${yr(ev.firstDate)}</td>
           <td>${esc(ev.event)}</td>
           <td>${(ev.teams || []).map(t=>teamBadge(t, 'compact')).join(' ') || '<span class="faint">–</span>'}</td>
-          <td class="n">${fmtInt(eb?.maps)}</td>
-          <td class="n ${eb && eb.kd < 1 ? 'stat-warn' : ''}"><strong>${fmtKd(eb?.kd)}</strong></td>
-          <td class="n">${fmtInt(eb?.kills)}</td>
-          <td class="n">${fmtInt(eb?.deaths)}</td>
-          <td class="n">${fmtInt(eb?.interactions)}</td>
+          <td>${sourceCell(ev, eb)}</td>
+          <td class="n">${fmtInt(shown?.maps)}</td>
+          <td class="n ${shown && shown.kd < 1 ? 'stat-warn' : ''}"><strong>${fmtKd(shown?.kd)}</strong></td>
+          <td class="n">${isLegacyRow ? '<span class="faint">–</span>' : fmtInt(eb?.kills)}</td>
+          <td class="n">${isLegacyRow ? '<span class="faint">–</span>' : fmtInt(eb?.deaths)}</td>
+          <td class="n">${isLegacyRow ? '<span class="faint">–</span>' : fmtInt(eb?.interactions)}</td>
         </tr>`;
       }).join('');
       return `<details class="skill-season">
         <summary>
           <span class="skill-season-title">${gameLink(season.game)}</span>
-          <span class="skill-season-meta">${statStrong(b, 'kd', 'kd')} K/D · ${fmtInt(b?.maps)} maps · ${events.length} event${events.length === 1 ? '' : 's'}</span>
+          <span class="skill-season-meta">${b && b.maps ? `${statStrong(b, 'kd', 'kd')} K/D · ${fmtInt(b?.maps)} map rows` : 'No map rows'}${season.legacy ? ` · ${fmtInt(season.legacy.events)} legacy aggregate${season.legacy.events === 1 ? '' : 's'}` : ''}</span>
         </summary>
         <div class="skill-season-detail">
-          <div class="skill-summary-pills" aria-label="${esc(season.game)} mode split summary">${['overall','respawn','snd'].map(m=>splitSummary(season, m)).join('')}</div>
+          ${season.mapRows ? `<div class="skill-summary-pills" aria-label="${esc(season.game)} mode split summary">${['overall','respawn','snd'].map(m=>splitSummary(season.mapRows, m)).join('')}</div>` : ''}
           ${TableSurface.dataTable({
             label: `${p.name} ${season.game} tournament stats table`,
             caption: `${p.name} ${season.game} tournament stats by selected mode`,
             tableClass: 'data skill-event-table',
             hint: 'Scroll horizontally for all tournament columns.',
-            head: '<thead><tr><th scope="col" class="n">Year</th><th scope="col">Tournament</th><th scope="col">Team</th><th scope="col" class="n">Maps</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Kills</th><th scope="col" class="n">Deaths</th><th scope="col" class="n">Kills + deaths</th></tr></thead>',
-            rows: body || `<tr><td colspan="8" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`
+            head: '<thead><tr><th scope="col" class="n">Year</th><th scope="col">Tournament</th><th scope="col">Team</th><th scope="col">Source coverage</th><th scope="col" class="n">Maps</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Kills</th><th scope="col" class="n">Deaths</th><th scope="col" class="n">Kills + deaths</th></tr></thead>',
+            rows: body || `<tr><td colspan="9" class="small faint">No ${modeLabel(mode)} rows for this season.</td></tr>`
           })}</div>
       </details>`;
       }).join('');
