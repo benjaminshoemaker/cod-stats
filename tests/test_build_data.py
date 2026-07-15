@@ -106,6 +106,55 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
         assert s["share"] == round(s["wins"] / 6, 4)
 
 
+def test_current_bo7_major_roster_has_participant_stat_rows():
+    # The stakes/current-roster work needs stat coverage for all current CDL
+    # players, including players outside the published 2+ win leaderboard. The
+    # participant-wide PlayerStats pull is the coverage source for that.
+    roster_event = "Call of Duty League 2026 - Major 4"
+    stat_event_page = "Call of Duty League/2026 Season/Major 4"
+    known_source_substitutions = {
+        # TournamentPlayers currently lists Standy for Carolina Major 4, while
+        # PlayerStats records the Carolina map rows under KnoX.
+        (roster_event, "Carolina Royal Ravens", "Standy"): "KnoX",
+    }
+
+    participation = json.load(open(build_data._p("player_participation.json")))
+    stats = json.load(open(build_data._p("player_stats_participants.json")))
+
+    def key(name):
+        return build_data.mkey(name or "")
+
+    stat_players = {
+        (r.get("Event"), r.get("Team"), key(r.get("Player") or r.get("PlayerName")))
+        for r in stats
+        if r.get("Game") == "Black Ops 7"
+        and r.get("Event") in {roster_event, stat_event_page}
+    }
+    roster_rows = [
+        r for r in participation
+        if r.get("Game") == "Black Ops 7"
+        and r.get("Event") == roster_event
+        and r.get("Place") not in build_data.NONPLAY
+    ]
+    assert len(roster_rows) == 48
+
+    missing = []
+    used_substitutions = set()
+    for row in roster_rows:
+        player = row["Player"]
+        team = row["Team"]
+        substitution_key = (roster_event, team, player)
+        stat_player = known_source_substitutions.get(substitution_key, player)
+        if stat_player != player:
+            used_substitutions.add(substitution_key)
+            assert (stat_event_page, team, key(player)) not in stat_players
+        if (stat_event_page, team, key(stat_player)) not in stat_players:
+            missing.append((team, player, stat_player))
+
+    assert used_substitutions == set(known_source_substitutions)
+    assert missing == []
+
+
 def test_stakes_uses_next_future_major_and_current_denominator(data):
     stakes = data["stakes"]
     event = stakes["event"]
