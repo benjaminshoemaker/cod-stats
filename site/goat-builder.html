@@ -125,10 +125,14 @@ button,input{font:inherit}
 .gb-stakes-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid var(--gb-line)}
 .gb-stakes-head h3{margin:0;font-size:15px}
 .gb-stakes-head p{margin:3px 0 0;color:var(--gb-muted);font-size:12px}
-.gb-stakes-teams{display:flex;gap:6px;flex-wrap:wrap;padding:12px 14px 0}
-.gb-stakes-teams button{border:1px solid var(--gb-line);background:#fff;color:var(--gb-muted);border-radius:var(--radius-pill);min-height:44px;padding:0 12px;font-size:var(--text-sm);font-weight:800;cursor:pointer}
+.gb-stakes-teams{display:flex;gap:8px;flex-wrap:wrap;min-width:0;width:100%;padding:12px 14px 0}
+.gb-stakes-teams button{border:1px solid var(--gb-line);background:#fff;color:var(--gb-muted);border-radius:var(--radius-pill);min-height:44px;max-width:100%;padding:0 12px;font-size:var(--text-sm);font-weight:800;white-space:normal;cursor:pointer;touch-action:manipulation;transition:background-color var(--transition),border-color var(--transition),color var(--transition)}
 .gb-stakes-teams button.active{border-color:var(--accent-line);background:var(--gb-blue-soft);color:var(--gb-blue)}
 .gb-stakes-body{padding:12px 14px}
+.gb-stakes-section + .gb-stakes-section{margin-top:14px}
+.gb-stakes-subhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 7px}
+.gb-stakes-subhead h4{margin:0;font-size:13px}
+.gb-stakes-subhead span{color:var(--gb-muted);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0}
 .gb-stakes-table{min-width:760px}
 .gb-stakes-table .pos{color:var(--gb-teal);font-weight:850}
 .gb-stakes-table .neg{color:var(--gb-red);font-weight:850}
@@ -324,13 +328,13 @@ button,input{font:inherit}
         <div class="gb-ring">
           <div class="gb-ring-head">
             <strong>Champs Ring Weight</strong>
-            <span class="gb-weight"><span id="ringValue">2.0</span>x</span>
+            <span class="gb-weight"><span id="ringValue">3.0</span>x</span>
           </div>
           <div class="gb-slider-row">
-            <input class="gb-slider" id="ringWeight" type="range" min="1" max="6" step="0.5" value="2">
+            <input class="gb-slider" id="ringWeight" type="range" min="1" max="6" step="0.5" value="3">
             <span class="gb-weight">◆</span>
           </div>
-          <small>Site default: 2x — how much a ring matters is your call, not a measurement. Champs is already counted once in adjusted wins; at 2x each ring adds one extra major-win unit inside Resume. There is no pure rings-only list — Resume always counts every major win.</small>
+          <small>Site default: 3x — how much a ring matters is your call, not a measurement. Champs is already counted once in adjusted wins; at 3x each ring adds two extra major-win units inside Resume. There is no pure rings-only list — Resume always counts every major win.</small>
         </div>
       </div>
     </aside>
@@ -354,7 +358,7 @@ button,input{font:inherit}
         <p class="gb-note" id="dataNote" role="status" hidden></p>
         <div class="gb-summary-grid">
           <div class="gb-stat"><div class="k">Your GOAT</div><div class="v" id="leaderName">-</div></div>
-          <div class="gb-stat"><div class="k">Ring weight</div><div class="v" id="ringStat">2x</div></div>
+          <div class="gb-stat"><div class="k">Ring weight</div><div class="v" id="ringStat">3x</div></div>
           <div class="gb-stat"><div class="k">Skill datasets</div><div class="v" id="skillCoverage">-</div><div class="sub">selected title rankings</div></div>
           <div class="gb-stat"><div class="k">Active criteria</div><div class="v" id="laneCount">4</div><div class="sub">included in score</div></div>
         </div>
@@ -568,11 +572,17 @@ function movementClass(value){
   if(value < 0) return 'neg';
   return 'flat';
 }
+function signedWhole(value){
+  if(value > 0) return `+${value}`;
+  if(value < 0) return String(value);
+  return '0';
+}
 function stakeBonusMap(scenario){
   const map = new Map();
   if(!scenario || stakesData.status !== 'ready') return map;
   const event = stakesData.event || {};
   for(const player of scenario.players || []){
+    if(player.ranked === false) continue;
     map.set(player.name, {game:event.game, wins:1, champs:event.isChamps ? 1 : 0});
   }
   return map;
@@ -590,23 +600,54 @@ function renderGoatStakes(baseRows){
   const scenario = stakesData.scenarios.find(s => s.team === selectedStakeTeam) || stakesData.scenarios[0];
   const event = stakesData.event;
   const applies = state.selectedGames.has(event.game);
-  const scenarioResult = computeGoat(ctx, consensusRowsByPlayer, {...currentConfig(), bonuses:stakeBonusMap(scenario)});
+  const config = currentConfig();
   const beforeByName = new Map(baseRows.map(row => [row.player.name, row]));
-  const afterByName = new Map(scenarioResult.rows.map(row => [row.player.name, row]));
+  function scenarioGoatMovement(s){
+    const result = computeGoat(ctx, consensusRowsByPlayer, {...config, bonuses:stakeBonusMap(s)});
+    const afterMap = new Map(result.rows.map(row => [row.player.name, row]));
+    const net = (s.players || []).reduce((sum, player) => {
+      if(player.ranked === false) return sum;
+      const before = beforeByName.get(player.name);
+      const after = afterMap.get(player.name);
+      return before && after ? sum + before.goatRank - after.goatRank : sum;
+    }, 0);
+    return {net, afterMap};
+  }
+  const movementByTeam = new Map(stakesData.scenarios.map(s => [s.team, scenarioGoatMovement(s)]));
+  const afterByName = movementByTeam.get(scenario.team)?.afterMap || beforeByName;
+  const rosterNames = new Set((scenario.players || []).map(player => player.name));
   document.getElementById('stakeIntro').textContent = `Pick a current ${event.game} roster to see how your active GOAT settings move if that team wins ${event.event}.`;
   document.getElementById('stakeDelta').textContent = applies
     ? `+${event.adjustedDelta.toFixed(2)} adj${event.isChamps ? ' / +1 ring' : ''}`
     : `${event.game} excluded`;
   const teamsHost = document.getElementById('stakeTeams');
-  teamsHost.innerHTML = stakesData.scenarios.map(s => `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${escapeAttr(s.team)}">${escapeHtml(s.team)}</button>`).join('');
+  teamsHost.innerHTML = stakesData.scenarios.map(s => {
+    const net = movementByTeam.get(s.team)?.net || 0;
+    return `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${escapeAttr(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}">${escapeHtml(s.team)} (${signedWhole(net)})</button>`;
+  }).join('');
   teamsHost.querySelectorAll('[data-stake-team]').forEach(btn => btn.addEventListener('click', () => {
     selectedStakeTeam = btn.dataset.stakeTeam;
     render();
   }));
-  const rows = (scenario.players || []).map(player => {
+  const rosterRows = (scenario.players || []).map(player => {
     const before = beforeByName.get(player.name);
     const after = afterByName.get(player.name);
-    if(!before || !after) return '';
+    if(player.entersLeaderboard) return `<tr>
+      <th scope="row">${escapeHtml(player.name)}</th>
+      <td class="n">Enters 2-win list (#${player.rankAfter})</td>
+      <td class="n"><span class="pos">New</span></td>
+      <td class="n">${num(player.adjustedBefore)} -> ${num(player.adjustedAfter)}</td>
+      <td class="n">Profile pending</td>
+      <td class="n">Profile pending</td>
+    </tr>`;
+    if(player.ranked === false || !before || !after) return `<tr>
+      <th scope="row">${escapeHtml(player.name)}</th>
+      <td class="n">Below cutoff</td>
+      <td class="n"><span class="flat">-</span></td>
+      <td class="n">${player.rawAfter || 1} raw win</td>
+      <td class="n">-</td>
+      <td class="n">-</td>
+    </tr>`;
     const rankMove = before.goatRank - after.goatRank;
     const scoreMove = after.score - before.score;
     const resumeMove = after.lane.resume - before.lane.resume;
@@ -620,18 +661,48 @@ function renderGoatStakes(baseRows){
       <td class="n"><span class="${movementClass(peakMove)}">${signedNumber(peakMove)}</span></td>
     </tr>`;
   }).join('');
+  const dropRows = baseRows.map(before => {
+    const after = afterByName.get(before.player.name);
+    if(!after || rosterNames.has(before.player.name)) return null;
+    const rankMove = before.goatRank - after.goatRank;
+    const scoreMove = after.score - before.score;
+    if(rankMove >= 0) return null;
+    return {before, after, rankMove, scoreMove};
+  }).filter(Boolean)
+    .sort((a,b) => a.rankMove - b.rankMove || a.scoreMove - b.scoreMove || a.before.goatRank - b.before.goatRank)
+    .slice(0, 2)
+    .map(({before, after, rankMove, scoreMove}) => `<tr>
+      <th scope="row"><a href="player.html?p=${encodeURIComponent(before.player.name)}">${escapeHtml(before.player.name)}</a></th>
+      <td class="n">#${before.goatRank} -> #${after.goatRank}</td>
+      <td class="n"><span class="neg">▼ ${Math.abs(rankMove)}</span></td>
+      <td class="n">${num(before.score)} -> ${num(after.score)} <span class="${movementClass(scoreMove)}">${signedNumber(scoreMove)}</span></td>
+    </tr>`).join('');
+  const dropsTable = dropRows ? TableSurface.dataTable({
+      label:`${scenario.team} biggest negative GOAT scenario movement`,
+      caption:`The two ranked players outside ${scenario.team} who lose the most rank position under this scenario`,
+      tableClass:'data gb-stakes-table',
+      head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">GOAT rank</th><th scope="col" class="n">Move</th><th scope="col" class="n">Score</th></tr></thead>`,
+      rows:dropRows
+    }) : '<p class="gb-stakes-note">No ranked players outside this roster move down under the current settings.</p>';
   const excluded = applies ? '' : `<p class="gb-note">No GOAT movement is applied because ${escapeHtml(event.game)} is outside the selected era/title set.</p>`;
   document.getElementById('stakeBody').innerHTML = `
     ${excluded}
-    ${TableSurface.dataTable({
-      label:`${scenario.team} GOAT scenario movement`,
-      caption:`${scenario.team} scenario under current GOAT settings`,
-      tableClass:'data gb-stakes-table',
-      head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">GOAT rank</th><th scope="col" class="n">Move</th>
-        <th scope="col" class="n">Score</th><th scope="col" class="n">Resume</th><th scope="col" class="n">Peak</th></tr></thead>`,
-      rows
-    })}
-    <p class="gb-stakes-note">Roster source: ${escapeHtml(scenario.rosterAsOf.event)} (${escapeHtml(scenario.rosterAsOf.date)}). Movement is recalculated from your current weights, ring value, and selected titles.</p>`;
+    <div class="gb-stakes-section">
+      <div class="gb-stakes-subhead"><h4>${escapeHtml(scenario.team)} roster</h4><span>${scenario.playerCount} players / ${scenario.rankedPlayerCount || 0} ranked${scenario.entrantCount ? ` / ${scenario.entrantCount} enters` : ''}</span></div>
+      ${TableSurface.dataTable({
+        label:`${scenario.team} GOAT scenario movement`,
+        caption:`${scenario.team} scenario under current GOAT settings`,
+        tableClass:'data gb-stakes-table',
+        head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">GOAT rank</th><th scope="col" class="n">Move</th>
+          <th scope="col" class="n">Score</th><th scope="col" class="n">Resume</th><th scope="col" class="n">Peak</th></tr></thead>`,
+        rows:rosterRows
+      })}
+    </div>
+    <div class="gb-stakes-section">
+      <div class="gb-stakes-subhead"><h4>Biggest drops</h4><span>outside selected team</span></div>
+      ${dropsTable}
+    </div>
+    <p class="gb-stakes-note">Roster source: ${escapeHtml(scenario.rosterAsOf.event)} (${escapeHtml(scenario.rosterAsOf.date)}). Movement is recalculated from your current weights, ring value, and selected titles. One-win players who reach the two-win cutoff are marked as entrants; full GOAT movement still requires a ranked player profile.</p>`;
   panel.hidden = false;
 }
 function sortValue(row, key){

@@ -1245,12 +1245,12 @@ def build_meta(S, events):
             'consoleMajors': sum(S.majors[g] for g in S.order), 'numEvents': len(events)}
 
 
-def build_stakes(events_all, ppart, players_out, exact_share, S, event_registry, disp_by_mkey):
+def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_registry, disp_by_mkey):
     """Precompute what-if rank movement for the next scheduled major.
 
-    The scenario adds one win to every leaderboard player on a team's latest
-    same-title roster. It deliberately uses the existing in-progress denominator
-    for that title, so this page never creates an alternate methodology.
+    The scenario roster comes from the latest played same-title major for all
+    participants. Existing ranked players and one-win current players who would
+    reach the leaderboard cutoff get exact-fraction scenario ranks.
     """
     future = sorted(
         [e for e in events_all if not _played(e.get('Date')) and e.get('Game') in S.denom],
@@ -1265,65 +1265,140 @@ def build_stakes(events_all, ppart, players_out, exact_share, S, event_registry,
     win_delta = Fraction(1, denom)
     adjusted_delta = round(float(win_delta) * S.mbar_all, 2)
     before_ranks = crank({n: s[0] for n, s in exact_share.items()})
+    is_champs = is_champs_event(event_name_for(event, event_registry))
 
-    latest_by_player = {}
-    top_mkeys = set(disp_by_mkey)
+    raw_by_mkey = Counter()
+    share_by_mkey = defaultdict(Fraction)
+    champs_by_mkey = Counter()
+    for r in pwins:
+        if not _keep(r) or not _played(r.get('Date')):
+            continue
+        row_game = r.get('Game')
+        if row_game not in S.denom:
+            continue
+        raw_name = str(r.get('Player') or '').strip()
+        if not raw_name:
+            continue
+        mk = mkey(raw_name)
+        raw_by_mkey[mk] += 1
+        share_by_mkey[mk] += Fraction(1, S.denom[row_game])
+        if is_champs_event(event_name_for(r, event_registry)):
+            champs_by_mkey[mk] += 1
+
+    roster_candidates = []
     for r in ppart:
         if not _keep(r) or r.get('Game') != game or not _played(r.get('Date')):
             continue
         if str(r.get('Place') or '').strip() in NONPLAY:
             continue
-        mk = mkey(r.get('Player') or '')
-        if mk not in top_mkeys:
-            continue
-        date_key = (r.get('Date') or '', event_name_for(r, event_registry))
-        prev = latest_by_player.get(mk)
-        if not prev or date_key > (prev.get('Date') or '', event_name_for(prev, event_registry)):
-            latest_by_player[mk] = r
+        roster_candidates.append(r)
+    if not roster_candidates:
+        return {'status': 'unavailable', 'reason': f'No played {game} roster source is available.'}
+
+    latest_key = max((r.get('Date') or '', event_name_for(r, event_registry)) for r in roster_candidates)
+    roster_rows = [
+        r for r in roster_candidates
+        if (r.get('Date') or '', event_name_for(r, event_registry)) == latest_key
+    ]
 
     by_team = defaultdict(list)
-    for mk, r in latest_by_player.items():
+    for r in roster_rows:
         team = str(r.get('Team') or '').strip()
         if team:
-            by_team[team].append((disp_by_mkey[mk], r))
+            raw_name = str(r.get('Player') or '').strip()
+            mk = mkey(raw_name)
+            name = disp_by_mkey.get(mk, raw_name)
+            by_team[team].append((name, mk, mk in disp_by_mkey, r))
 
     scenarios = []
     for team, roster in sorted(by_team.items()):
-        roster_names = {name for name, _ in roster}
+        ranked_names = {name for name, _, ranked, _ in roster if ranked}
+        entrant_names = set()
         scenario_shares = dict((n, s[0]) for n, s in exact_share.items())
-        for name in roster_names:
+        for name in ranked_names:
             scenario_shares[name] += win_delta
+        for name, mk, ranked, _ in roster:
+            if ranked:
+                continue
+            raw_before = raw_by_mkey.get(mk, 0)
+            if raw_before + 1 >= 2:
+                entrant_names.add(name)
+                scenario_shares[name] = share_by_mkey.get(mk, Fraction(0)) + win_delta
         after_ranks = crank(scenario_shares)
         rows = []
-        for name, r in sorted(roster, key=lambda item: before_ranks[item[0]]):
-            p = players_out[name]
-            before_share = exact_share[name][0]
-            after_share = scenario_shares[name]
-            rows.append({
+        def roster_sort_key(item):
+            name, _, ranked, _ = item
+            if ranked:
+                return (0, before_ranks[name], name)
+            if name in entrant_names:
+                return (1, after_ranks[name], name.lower())
+            return (2, 9999, name.lower())
+        for name, mk, ranked, r in sorted(roster, key=roster_sort_key):
+            raw_before = raw_by_mkey.get(mk, 0)
+            champs_before = champs_by_mkey.get(mk, 0)
+            before_share = exact_share[name][0] if ranked else share_by_mkey.get(mk, Fraction(0))
+            after_share = scenario_shares.get(name, before_share + win_delta)
+            row = {
                 'name': name,
                 'team': team,
+                'ranked': ranked,
+                'entersLeaderboard': name in entrant_names,
+                'rawBefore': raw_before if not ranked else players_out[name]['raw'],
+                'rawAfter': (raw_before if not ranked else players_out[name]['raw']) + 1,
+                'champsBefore': champs_before if not ranked else players_out[name]['champs'],
+                'champsAfter': (champs_before if not ranked else players_out[name]['champs']) + (1 if is_champs else 0),
+            }
+            if ranked:
+                row.update({
+                    'rankBefore': before_ranks[name],
+                    'rankAfter': after_ranks[name],
+                    'rankDelta': before_ranks[name] - after_ranks[name],
+                    'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
+                    'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
+                    'adjustedDelta': adjusted_delta,
+                })
+            elif name in entrant_names:
+                row.update({
+                    'rankBefore': None,
+                    'rankAfter': after_ranks[name],
+                    'rankDelta': None,
+                    'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
+                    'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
+                    'adjustedDelta': adjusted_delta,
+                })
+            rows.append(row)
+        drops = []
+        scenario_player_names = ranked_names | entrant_names
+        for name in players_out:
+            if name in scenario_player_names:
+                continue
+            rank_delta = before_ranks[name] - after_ranks[name]
+            if rank_delta >= 0:
+                continue
+            before_share = exact_share[name][0]
+            drops.append({
+                'name': name,
                 'rankBefore': before_ranks[name],
                 'rankAfter': after_ranks[name],
-                'rankDelta': before_ranks[name] - after_ranks[name],
+                'rankDelta': rank_delta,
                 'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
-                'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
-                'adjustedDelta': adjusted_delta,
-                'rawBefore': p['raw'],
-                'rawAfter': p['raw'] + 1,
-                'champsBefore': p['champs'],
-                'champsAfter': p['champs'] + (1 if is_champs_event(event_name_for(event, event_registry)) else 0),
+                'adjustedAfter': round(float(before_share) * S.mbar_all, 2),
             })
-        latest_row = max((r for _, r in roster), key=lambda r: (r.get('Date') or '', event_name_for(r, event_registry)))
+        drops.sort(key=lambda r: (r['rankDelta'], r['rankBefore'], r['name']))
+        latest_row = roster[0][3]
         scenarios.append({
             'team': team,
             'playerCount': len(rows),
-            'bestRankGain': max((r['rankDelta'] for r in rows), default=0),
+            'rankedPlayerCount': sum(1 for r in rows if r['ranked']),
+            'entrantCount': sum(1 for r in rows if r.get('entersLeaderboard')),
+            'bestRankGain': max(((r.get('rankDelta') or 0) for r in rows), default=0),
             'rosterAsOf': {
                 'event': event_name_for(latest_row, event_registry),
                 'date': latest_row.get('Date') or '',
                 'game': latest_row.get('Game') or game,
             },
             'players': rows,
+            'drops': drops[:2],
         })
 
     scenarios.sort(key=lambda s: (-s['bestRankGain'], s['team']))
@@ -1342,7 +1417,7 @@ def build_stakes(events_all, ppart, players_out, exact_share, S, event_registry,
             'scheduledMajors': denom,
             'winShareDelta': round(float(win_delta), 4),
             'adjustedDelta': adjusted_delta,
-            'isChamps': is_champs_event(event_name_for(event, event_registry)),
+            'isChamps': is_champs,
         },
         'scenarios': scenarios,
     }
@@ -1453,7 +1528,7 @@ def build():
             'players': players_out,
             'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry),
             'majors': dict(S.majors),
-            'stakes': build_stakes(events_all, ppart, players_out, exact_share, S, event_registry, disp_by_mkey),
+            'stakes': build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_registry, disp_by_mkey),
             'teamLogos': build_team_logos(participation, load_team_logos()),
             '_participation': participation,
             '_kor': build_kor(

@@ -363,10 +363,10 @@ root.innerHTML=`
 
   <div class="qa">
     <h3>"Shouldn't a Championship be worth more than a regular major?"</h3>
-    <p>By default it's treated like any other major. A World Championship is simply one of that season's majors. Whether a ring is worth
-    <em>more</em> is subjective, so rather than bake in a number we made it a knob: the <a href="index.html">leaderboard</a>'s optional
-    <strong>"Ring weight"</strong> slider lets you set a ring worth up to 6 regular majors and re-ranks by an <strong>"Adj +◆"</strong> total.
-    It's off by default and never touches the neutral era-adjusted number.</p>
+    <p>The neutral adjusted-wins number still treats a World Championship like any other major. Whether a ring is worth
+    <em>more</em> is subjective, so the <a href="index.html">leaderboard</a> exposes it as a <strong>"Ring weight"</strong> slider.
+    The site default is <strong>×3</strong>: each ring is already counted once as a major win, then adds two extra major-win units
+    in <strong>"Adj +◆"</strong>. You can set it anywhere from ×1 to ×6, and it never changes the neutral era-adjusted number.</p>
   </div>
 
   <div class="note" style="margin-top:var(--space-5)">

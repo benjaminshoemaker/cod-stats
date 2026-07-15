@@ -172,15 +172,48 @@ def test_stakes_uses_next_future_major_and_current_denominator(data):
 
 def test_stakes_rosters_come_from_latest_played_title_major(data):
     stakes = data["stakes"]
+    assert len(stakes["scenarios"]) == 12
+    assert sum(s["playerCount"] for s in stakes["scenarios"]) == 48
+
     optic = next(s for s in stakes["scenarios"] if s["team"] == "OpTic Texas")
+    carolina = next(s for s in stakes["scenarios"] if s["team"] == "Carolina Royal Ravens")
+    cloud9 = next(s for s in stakes["scenarios"] if s["team"] == "Cloud9 New York")
 
     assert optic["rosterAsOf"]["event"] == "Call of Duty League 2026 - Major 4"
     assert optic["rosterAsOf"]["date"] == "2026-06-26"
     assert {p["name"] for p in optic["players"]} == {"Dashy", "Huke", "Mercules", "Shotzzy"}
+    assert optic["rankedPlayerCount"] == 4
+    assert len(optic["drops"]) == 2
+    assert all(row["rankDelta"] < 0 for row in optic["drops"])
     for row in optic["players"]:
+        assert row["ranked"] is True
         assert row["rawAfter"] == row["rawBefore"] + 1
         assert row["champsAfter"] == row["champsBefore"] + 1
         assert row["adjustedDelta"] == stakes["event"]["adjustedDelta"]
+
+    assert {p["name"] for p in carolina["players"]} == {"Exceed", "Fire", "Lurqxx", "Standy"}
+    assert carolina["rankedPlayerCount"] == 0
+    assert carolina["entrantCount"] == 1
+    standy = next(p for p in carolina["players"] if p["name"] == "Standy")
+    assert standy["ranked"] is False
+    assert standy["entersLeaderboard"] is True
+    assert standy["rawBefore"] == 1
+    assert standy["rawAfter"] == 2
+    assert standy["rankBefore"] is None
+    assert standy["rankAfter"] >= 1
+    for p in carolina["players"]:
+        assert p["ranked"] is False
+        assert p["champsAfter"] == p["champsBefore"] + 1
+
+    riyadh = next(s for s in stakes["scenarios"] if s["team"] == "Riyadh Falcons")
+    exnid = next(p for p in riyadh["players"] if p["name"] == "Exnid")
+    assert exnid["ranked"] is False
+    assert exnid["entersLeaderboard"] is False
+    assert exnid["rawBefore"] == 0
+    assert exnid["rawAfter"] == 1
+
+    assert {p["name"] for p in cloud9["players"]} == {"Encourage", "Hide", "Nejra", "Wevy"}
+    assert "Mack" not in {p["name"] for p in cloud9["players"]}
 
 
 def test_stakes_rank_after_uses_exact_fraction_shares(data):
@@ -194,6 +227,7 @@ def test_stakes_rank_after_uses_exact_fraction_shares(data):
         shares[name] = sum((Fraction(s["wins"], s["majors"]) for s in p["seasons"]), Fraction(0))
     scenario_shares = dict(shares)
     for row in optic["players"]:
+        assert row["ranked"] is True
         scenario_shares[row["name"]] += Fraction(1, denom)
 
     for row in optic["players"]:

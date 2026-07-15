@@ -43,7 +43,7 @@
       <span class="ringw-lbl">◆ Ring&nbsp;weight</span>
       <input type="range" id="ringw-range" min="1" max="6" step="1"
         aria-label="Ring weight: a World Championship counts as this many regular majors">
-      <span class="ringw-val" id="ringw-val">×1</span>
+      <span class="ringw-val" id="ringw-val">×3</span>
     </label>
     <button type="button" class="clearfilters" id="compare-mode">Compare</button>
     <button type="button" class="sharebtn" id="sharebtn">Share ranking</button>
@@ -69,7 +69,7 @@
     <span><span class="sw" style="background:var(--accent)"></span>Adjusted = season-share &times; avg majors/season</span>
     <span><span class="sw" style="background:var(--pos)"></span>▲ gained vs raw (wins or rank)</span>
     <span><span class="sw" style="background:var(--neg)"></span>▼ lost vs raw</span>
-    <span><span class="sw" style="background:#b8860b"></span>◆ Ring weight is a preference, not a measurement — the ×1 default counts every major equally</span>
+    <span><span class="sw" style="background:#b8860b"></span>◆ Ring weight is a preference, not a measurement — the ×3 default adds two extra major-win units per ring</span>
   </div>
   <p class="small muted">Wins measure resumes, not slaying. For kill production, see
     <a href="kor.html">Kills Over Replacement</a> — kills per map above a title/mode replacement baseline.</p>
@@ -85,21 +85,108 @@ mountPageNav('index.html');
 
 const D = window.APP_DATA;
 const stakesBanner = document.getElementById('stakes-banner');
-if(D.stakes && D.stakes.status === 'ready' && D.stakes.event && stakesBanner){
+let selectedStakeTeam = D.stakes?.scenarios?.[0]?.team || null;
+function stakeMovePill(n){
+  if(n > 0) return `<span class="pill up">▲ ${n}</span>`;
+  if(n < 0) return `<span class="pill down">▼ ${Math.abs(n)}</span>`;
+  return `<span class="pill flat">–</span>`;
+}
+function stakeTeamCount(s){
+  const entrant = s.entrantCount ? `, ${s.entrantCount} enters` : '';
+  return `${s.rankedPlayerCount || 0}/${s.playerCount} ranked${entrant}`;
+}
+function stakeTeamMove(s){
+  return (s.players || []).reduce((sum, p) => sum + (p.rankDelta || 0), 0);
+}
+function signedStakeMove(n){
+  return n > 0 ? `+${n}` : String(n);
+}
+function stakeRosterRows(players){
+  return (players || []).map(p => {
+    if(p.entersLeaderboard) return `<tr>
+      <th scope="row">${esc(p.name)}</th>
+      <td class="n">Unlisted → #${p.rankAfter}</td>
+      <td class="n"><span class="pill up">Enters</span></td>
+      <td class="n">${p.adjustedBefore.toFixed(2)} → ${p.adjustedAfter.toFixed(2)}</td>
+    </tr>`;
+    if(p.ranked === false) return `<tr>
+      <th scope="row">${esc(p.name)}</th>
+      <td class="n">Below cutoff</td>
+      <td class="n"><span class="pill flat">–</span></td>
+      <td class="n">${p.rawAfter} raw win</td>
+    </tr>`;
+    return `<tr>
+      <th scope="row"><a href="player.html?p=${encodeURIComponent(p.name)}">${esc(p.name)}</a></th>
+      <td class="n">#${p.rankBefore} → #${p.rankAfter}</td>
+      <td class="n">${stakeMovePill(p.rankDelta)}</td>
+      <td class="n">${p.adjustedBefore.toFixed(2)} → ${p.adjustedAfter.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+}
+function stakeDropRows(drops){
+  return (drops || []).map(p => `<tr>
+    <th scope="row"><a href="player.html?p=${encodeURIComponent(p.name)}">${esc(p.name)}</a></th>
+    <td class="n">#${p.rankBefore} → #${p.rankAfter}</td>
+    <td class="n">${stakeMovePill(p.rankDelta)}</td>
+  </tr>`).join('');
+}
+function renderStakesBanner(){
+  if(!stakesBanner) return;
+  if(D.stakes?.status !== 'ready' || !D.stakes.event || !D.stakes.scenarios?.length){
+    stakesBanner.remove();
+    return;
+  }
+  if(!D.stakes.scenarios.some(s => s.team === selectedStakeTeam)){
+    selectedStakeTeam = D.stakes.scenarios[0].team;
+  }
   const ev = D.stakes.event;
-  const best = (D.stakes.scenarios || [])[0];
-  const bestCopy = best ? ` ${esc(best.team)} has the biggest rank swing in the current roster scenarios.` : '';
+  const scenario = D.stakes.scenarios.find(s => s.team === selectedStakeTeam) || D.stakes.scenarios[0];
+  const teamButtons = D.stakes.scenarios.map(s => `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${esc(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}"><span>${esc(s.team)} (${signedStakeMove(stakeTeamMove(s))})</span><span>${stakeTeamCount(s)}</span></button>`).join('');
+  const rosterRows = stakeRosterRows(scenario.players);
+  const dropRows = stakeDropRows(scenario.drops);
+  const drops = dropRows ? TableSurface.dataTable({
+      label:`${scenario.team} era-adjusted drops`,
+      caption:`Biggest era-adjusted rank drops outside ${scenario.team}`,
+      tableClass:'data stakes-drops-table',
+      head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th></tr></thead>`,
+      rows:dropRows
+    }) : '<p class="stakes-note">No ranked players outside this roster move down.</p>';
   stakesBanner.innerHTML = `
-    <div>
-      <strong>Champs stakes: ${esc(ev.event)}</strong>
-      <p>See who moves if each current ${esc(ev.game)} roster wins the next major.${bestCopy}</p>
+    <div class="stakes-head">
+      <div>
+        <h2>This week: Champs scenarios</h2>
+        <p>Pick a current ${esc(ev.game)} roster to see how the era-adjusted leaderboard moves if that team wins ${esc(ev.event)}.</p>
+      </div>
     </div>
-    <a class="sharebtn" href="stakes.html">Open stakes page</a>`;
+    <div class="stakes-team-list" aria-label="Era-adjusted Champs scenario teams">${teamButtons}</div>
+    <div class="stakes-grid">
+      <section>
+        <h3>${esc(scenario.team)} roster</h3>
+        ${TableSurface.dataTable({
+          label:`${scenario.team} era-adjusted scenario movement`,
+          caption:`${scenario.team} era-adjusted what-if movement`,
+          tableClass:'data stakes-mini-table',
+          head:`<thead><tr><th scope="col">Player</th><th scope="col" class="n">Rank</th><th scope="col" class="n">Move</th><th scope="col" class="n">Adjusted</th></tr></thead>`,
+          rows:rosterRows
+        })}
+      </section>
+      <section>
+        <h3>Biggest drops</h3>
+        ${drops}
+      </section>
+    </div>
+    <div class="stakes-footer">
+      <p class="stakes-note">Roster source: ${esc(scenario.rosterAsOf.event)} (${esc(scenario.rosterAsOf.date)}). One-win teammates who reach the two-win cutoff are shown as entrants.</p>
+      <span class="pill champ">+${ev.adjustedDelta.toFixed(2)} adj${ev.isChamps ? ' / +1 ◆' : ''}</span>
+    </div>`;
   stakesBanner.classList.remove('stakes-banner-pending');
   stakesBanner.removeAttribute('aria-hidden');
-}else if(stakesBanner){
-  stakesBanner.remove();
+  stakesBanner.querySelectorAll('[data-stake-team]').forEach(btn => btn.addEventListener('click', () => {
+    selectedStakeTeam = btn.dataset.stakeTeam;
+    renderStakesBanner();
+  }));
 }
+renderStakesBanner();
 // era/title selection helpers (shared with the /api/og card endpoint via rank.js)
 const { ORDER, eraOf, PRESETS, DENOM, slugOf, selectionToken, parseSelection } = eraContext(D);
 const ERAS = [                                          // display groups, oldest→newest
@@ -132,9 +219,10 @@ const startQ    = params.get('q') || '';
 // so a bare/root URL always loads defaults and a link fully reproduces its view.
 let selected = parseSelection(params.get('eras')) || new Set(PRESETS.all);
 
-// championship weighting: a ring counts as N majors (1 = off), from ?rings=.
+// championship weighting: a ring counts as N majors, from ?rings=.
 const RING_MAX = 6;
-let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || 1)) || 1));
+const DEFAULT_RING = 3;
+let ringN = Math.min(RING_MAX, Math.max(1, Math.round(+(params.get('rings') || DEFAULT_RING)) || DEFAULT_RING));
 const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank';
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
 let compareMode = false;
@@ -310,7 +398,7 @@ function syncURL(){
   if(s && !(s.field==='adjRank' && s.dir==='asc')){ p.set('sort',s.field); p.set('dir',s.dir); }
   const token = selectionToken(selected);
   if(token !== 'all') p.set('eras', token);
-  if(ringN > 1) p.set('rings', ringN);
+  if(ringN !== DEFAULT_RING) p.set('rings', ringN);
   const q = searchInput.value.trim();
   if(q) p.set('q', q);
   const hidden = COLS.filter(c=>{const col=table.getColumn(c.field); return col && !col.isVisible();}).map(c=>c.field);
@@ -414,8 +502,8 @@ mountEraMenu(selected, sel=>{
   syncURL();
 });
 
-// championship weighting slider: a ring counts as N majors (1 = off). Shows/hides the
-// "Adj +◆" column and re-ranks by the weighted total.
+// championship weighting slider: a ring counts as N majors. Shows/hides the
+// "Adj +◆" column is hidden only when set to neutral ×1, and re-ranks by the weighted total.
 const ringRange = document.getElementById('ringw-range');
 const ringVal   = document.getElementById('ringw-val');
 ringRange.max = RING_MAX; ringRange.value = ringN; ringVal.textContent = '×'+ringN;

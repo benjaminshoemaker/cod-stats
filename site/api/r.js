@@ -9,13 +9,14 @@ export const config = { runtime: 'edge' };
 // applied. The "Share this ranking" button links here.
 
 const LABEL = { all: 'All seasons', post: 'Post-BO2', prebo2: 'Pre-BO2', mlgcwl: 'MLG–CWL', cdl: 'CDL era' };
+const DEFAULT_RING = 3;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 export default function handler(req){
   const url = new URL(req.url);
   const ctx = eraContext(D);
   const selected = ctx.parseSelection(url.searchParams.get('eras')) || new Set(ctx.PRESETS.all);
-  const ring = Math.min(6, Math.max(1, Math.round(+(url.searchParams.get('rings') || 1)) || 1));
+  const ring = Math.min(6, Math.max(1, Math.round(+(url.searchParams.get('rings') || DEFAULT_RING)) || DEFAULT_RING));
   const tok = ctx.selectionToken(selected);
   const top = computeRows(D, selected, ring).sort((a, b) => a.adjRank - b.adjRank).slice(0, 3).map(r => r.name).join(', ');
 

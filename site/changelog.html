@@ -42,6 +42,12 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-15', tag:'Methodology', title:'Ring weighting now defaults to 3x',
+   body:`The leaderboard and <a href="goat-builder.html">GOAT Builder</a> now open with Champs rings weighted at
+   <strong>×3</strong>. A ring is still already counted once as a major win; the default now adds two extra major-win
+   units per ring in the weighted resume views. The neutral Adjusted column is unchanged, and shared links can still set
+   any value from ×1 to ×6. On the leaderboard this puts Karma at #3, Clayster at #7, and Shotzzy at #8 by default; in
+   the GOAT Builder it moves Karma to #4, Clayster to #6, and Shotzzy to #8.`},
   {date:'2026-07-15', tag:'Improved', title:'Legacy Ghosts/AW stat coverage',
    body:`Player profiles can now show source-badged codcompstats legacy aggregate rows in the tournament stat drilldown
    when Ghosts or Advanced Warfare map-level PlayerStats rows are missing or partial. These rows are labeled

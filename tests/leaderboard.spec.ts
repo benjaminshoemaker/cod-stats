@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'raw', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
-const FULL_COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'raw', 'winConversion', 'eventsPlaced', 'avgPlace', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
+const COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'adjWeighted', 'raw', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
+const FULL_COLUMN_ORDER = ['adjRank', 'name', 'adjusted', 'adjWeighted', 'raw', 'winConversion', 'eventsPlaced', 'avgPlace', 'winsChange', 'rawRank', 'delta', 'peak', 'eras', 'champs'];
 
 test.describe('leaderboard', () => {
   test('loads every leaderboard player', async ({ page }) => {
@@ -11,13 +11,33 @@ test.describe('leaderboard', () => {
     await expect(page.locator('#table .tabulator-row')).toHaveCount(expected);
   });
 
+  test('era-adjusted Champs scenario widget switches teams', async ({ page }) => {
+    await page.goto('/index.html');
+    const widget = page.locator('#stakes-banner');
+    await expect(widget).toBeVisible();
+    await expect(widget).toContainText('This week: Champs scenarios');
+
+    await widget.locator('[data-stake-team="OpTic Texas"]').click();
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toHaveAttribute('aria-pressed', 'true');
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+26)');
+    await expect(widget).toContainText('OpTic Texas roster');
+    await expect(widget).toContainText('Shotzzy');
+    await expect(widget).toContainText('Biggest drops');
+
+    await widget.locator('[data-stake-team="Carolina Royal Ravens"]').click();
+    await expect(widget).toContainText('Carolina Royal Ravens roster');
+    await expect(widget).toContainText('Standy');
+    await expect(widget).toContainText('Enters');
+    await expect(widget).toContainText('Below cutoff');
+  });
+
   test('columns are in the expected order', async ({ page }) => {
     await page.goto('/index.html');
     const fields = await page.$$eval(
       '#table .tabulator-header .tabulator-col[tabulator-field]',
       els => els.filter(e => (e as HTMLElement).offsetWidth > 0).map(e => e.getAttribute('tabulator-field')),
     );
-    expect(fields).toEqual(COLUMN_ORDER);   // adjWeighted is hidden until the ring slider is engaged
+    expect(fields).toEqual(COLUMN_ORDER);
   });
 
   test('placement columns are opt-in and shareable', async ({ page }) => {
@@ -142,9 +162,10 @@ test.describe('era filter', () => {
     await page.locator('.eramenu .colmenu-btn').click();
     await page.locator('.era-preset[data-preset="cdl"]').click();
     await expect(page).toHaveURL(/eras=cdl/);
-    // CDL-era leader is aBeZy (career #3), i.e. a genuine recompute, not row-hiding
+    // With the default 3x ring weight, the CDL-era leader is Shotzzy (career #8),
+    // i.e. a genuine recompute, not row-hiding.
     const first = page.locator('#table .tabulator-row').first();
-    await expect(first.locator('[tabulator-field="name"]')).toHaveText('aBeZy');
+    await expect(first.locator('[tabulator-field="name"]')).toHaveText('Shotzzy');
     // reload from the URL restores the CDL selection
     await page.goto('/index.html?eras=cdl');
     await expect(page.locator('.eramenu .colmenu-btn')).toContainText('CDL');
@@ -201,19 +222,19 @@ test.describe('era filter', () => {
 
 test.describe('filters + url state', () => {
   test('URL is the sole source of truth — the bare path loads defaults', async ({ page }) => {
-    await page.goto('/index.html?eras=cdl&rings=3&hide=peak');
+    await page.goto('/index.html?eras=cdl&rings=4&hide=peak');
     await expect(page.locator('.eramenu .colmenu-btn')).toContainText('CDL');
     // reload the bare path — must be defaults, not the previous selection (no localStorage carryover)
     await page.goto('/index.html');
     await expect(page.locator('.eramenu .colmenu-btn')).toContainText('All');
-    await expect(page.locator('#ringw-val')).toHaveText('×1');
+    await expect(page.locator('#ringw-val')).toHaveText('×3');
     await expect(page.locator('#table .tabulator-col[tabulator-field="peak"]')).toBeVisible();
     const total = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
     await expect(page.locator('#table .tabulator-row')).toHaveCount(total);
   });
 
   test('"Clear filters" clears the URL and resets everything', async ({ page }) => {
-    await page.goto('/index.html?eras=cdl&rings=3&sort=raw&dir=desc');
+    await page.goto('/index.html?eras=cdl&rings=4&sort=raw&dir=desc');
     const clear = page.locator('#clearfilters');
     await expect(clear).toBeVisible();
     await clear.click();
@@ -232,9 +253,10 @@ test.describe('filters + url state', () => {
 });
 
 test.describe('champs weighting', () => {
-  test('ring slider reveals the weighted column and updates the URL', async ({ page }) => {
+  test('ring slider updates the weighted ranking and URL', async ({ page }) => {
     await page.goto('/index.html');
-    await expect(page.locator('#table .tabulator-col[tabulator-field="adjWeighted"]')).toBeHidden();
+    await expect(page.locator('#ringw-val')).toHaveText('×3');
+    await expect(page.locator('#table .tabulator-col[tabulator-field="adjWeighted"]')).toBeVisible();
     await page.locator('#ringw-range').evaluate((el, v) => {
       (el as HTMLInputElement).value = String(v);
       el.dispatchEvent(new Event('input', { bubbles: true }));
@@ -475,7 +497,7 @@ test.describe('mobile layout', () => {
   test('swipe hint is shown', async ({ page }) => {
     test.skip(test.info().project.name !== 'mobile', 'mobile only');
     await page.goto('/index.html');
-    await expect(page.locator('.scrollhint')).toBeVisible();
+    await expect(page.locator('main > .scrollhint')).toBeVisible();
   });
 });
 
@@ -1098,11 +1120,11 @@ test.describe('pages', () => {
     await expect(page.locator('table.data img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
   });
 
-  test('exact ties share a leaderboard rank (aBeZy & Simp both #3)', async ({ page }) => {
+  test('exact ties share a leaderboard rank (aBeZy & Simp both #4)', async ({ page }) => {
     await page.goto('/index.html');
     const ranks = await page.$$eval('#table .tabulator-cell[tabulator-field="adjRank"]', els => els.map(e => e.textContent?.trim()));
-    expect(ranks.filter(r => r === '3')).toHaveLength(2);
-    expect(ranks).not.toContain('4'); // competition ranking: 1,2,3,3,5,…
+    expect(ranks.filter(r => r === '4')).toHaveLength(2);
+    expect(ranks).not.toContain('5'); // competition ranking: 1,2,3,4,4,6,…
   });
 
   test('changelog renders entries incl. the MW methodology change', async ({ page }) => {
@@ -1318,7 +1340,7 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#skillCoverage')).toHaveText('15');
     await expect(page.locator('#laneCount')).toHaveText('4');
     await expect(page.locator('#activeShare')).toHaveText('100 pts');
-    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+    await expect(page.locator('#ringStat')).toHaveText('3.0x');
 
     await expect(page.locator('#goatTable .tabulator-row').first()).toBeVisible();
     const skills = await page.locator('#goatTable .tabulator-cell[tabulator-field="skill"]').evaluateAll(cells =>
@@ -1334,28 +1356,40 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#goatStakes')).toContainText('This week: Champs scenarios');
     await expect(page.locator('#stakeIntro')).toContainText('Call of Duty League Championship 2026');
 
-    await page.getByRole('button', { name: 'OpTic Texas' }).click();
     const stakes = page.locator('#goatStakes');
-    await expect(stakes.locator('.gb-stakes-table tbody')).toContainText('Shotzzy');
-    await expect(stakes.locator('.gb-stakes-table tbody')).toContainText('Dashy');
+    await page.getByRole('button', { name: 'OpTic Texas' }).click();
+    await expect(page.getByRole('button', { name: 'OpTic Texas' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(stakes.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+24)');
+    await expect(page.getByRole('button', { name: 'Riyadh Falcons' })).toHaveAttribute('aria-pressed', 'false');
+    const roster = stakes.locator('.gb-stakes-section', { hasText: 'OpTic Texas roster' });
+    await expect(roster.locator('tbody')).toContainText('Shotzzy');
+    await expect(roster.locator('tbody')).toContainText('Dashy');
+    await expect(stakes).toContainText('Biggest drops');
+    await expect(stakes.locator('.gb-stakes-section', { hasText: 'Biggest drops' }).locator('tbody tr')).toHaveCount(2);
     await expect(stakes.locator('.gb-stakes-note')).toContainText('Movement is recalculated from your current weights');
-    const before = await stakes.locator('.gb-stakes-table tbody tr', { hasText: 'Shotzzy' }).textContent();
+    const before = await roster.locator('tbody tr', { hasText: 'Shotzzy' }).textContent();
 
     await page.locator('#ringWeight').evaluate((input: HTMLInputElement) => {
       input.value = '5';
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
-    const after = await stakes.locator('.gb-stakes-table tbody tr', { hasText: 'Shotzzy' }).textContent();
+    const after = await roster.locator('tbody tr', { hasText: 'Shotzzy' }).textContent();
     expect(after).not.toEqual(before);
+
+    await page.getByRole('button', { name: 'Carolina Royal Ravens' }).click();
+    await expect(stakes).toContainText('4 players / 0 ranked / 1 enters');
+    const carolinaRoster = stakes.locator('.gb-stakes-section', { hasText: 'Carolina Royal Ravens roster' });
+    await expect(carolinaRoster.locator('tbody')).toContainText('Standy');
+    await expect(carolinaRoster.locator('tbody')).toContainText('Enters 2-win list');
   });
 
   test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {
-    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A50%2Cskill%3A30%2Clongevity%3A10%2Cpeak%3A10&rings=2&era=all&view=rank&sort=rank&dir=asc');
+    await page.goto('/goat-builder.html?criteria=resume%2Cskill%2Clongevity%2Cpeak&weights=resume%3A50%2Cskill%3A30%2Clongevity%3A10%2Cpeak%3A10&rings=3&era=all&view=rank&sort=rank&dir=asc');
 
     await expect(page.getByRole('heading', { name: 'GOAT Ranking Builder' })).toBeVisible();
     await expect(page.locator('#laneCount')).toHaveText('4');
     await expect(page.locator('#activeShare')).toHaveText('100 pts');
-    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+    await expect(page.locator('#ringStat')).toHaveText('3.0x');
     await expect(page).toHaveURL(/\/goat-builder\.html$/);
   });
 
@@ -1613,7 +1647,7 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#customBanner')).toBeHidden();
     await expect(page).toHaveURL(/\/goat-builder\.html$/);
     await expect(page.locator('#activeShare')).toHaveText('100 pts');
-    await expect(page.locator('#ringStat')).toHaveText('2.0x');
+    await expect(page.locator('#ringStat')).toHaveText('3.0x');
 
     await page.goto('/goat-builder.html');
     await expect(page.locator('#customBanner')).toBeHidden();
@@ -1750,7 +1784,7 @@ test.describe('comprehension fixes', () => {
     await row.click();
     const detail = page.locator('#goatTable .gb-row-detail');
     await expect(detail).toBeVisible();
-    await expect(detail).toContainText('Era leader: Crimsix (29.9)');
+    await expect(detail).toContainText('Era leader: Crimsix (32.9)');
     await expect(detail).toContainText('Era leader: Scump (7.64)');
     await expect(detail).toContainText('Fan-ranked in 13 of the 15 selected titles');
     await expect(detail).toContainText('Winning half');

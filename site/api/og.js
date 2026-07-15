@@ -15,6 +15,7 @@ const TITLE = {
   cdl: 'Who dominated the CDL era?',
 };
 const LABEL = { all: 'All seasons', post: 'Post-BO2', prebo2: 'Pre-BO2', mlgcwl: 'MLG–CWL', cdl: 'CDL era' };
+const DEFAULT_RING = 3;
 
 // a rotated square stands in for the ◆ glyph (renders without needing a special font)
 const diamond = (size, color) => h('div', { style: { width: size, height: size, background: color, transform: 'rotate(45deg)', display: 'flex' } });
@@ -23,7 +24,7 @@ export default function handler(req){
   const { searchParams } = new URL(req.url);
   const ctx = eraContext(D);
   const selected = ctx.parseSelection(searchParams.get('eras')) || new Set(ctx.PRESETS.all);
-  const ring = Math.min(6, Math.max(1, Math.round(+(searchParams.get('rings') || 1)) || 1));
+  const ring = Math.min(6, Math.max(1, Math.round(+(searchParams.get('rings') || DEFAULT_RING)) || DEFAULT_RING));
   const rows = computeRows(D, selected, ring).sort((a, b) => a.adjRank - b.adjRank).slice(0, 5);
 
   const tok = ctx.selectionToken(selected);

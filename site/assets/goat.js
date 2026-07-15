@@ -11,7 +11,7 @@ export const CRITERIA = [
 ];
 export const DEFAULT_WEIGHTS = {resume:50, skill:30, longevity:10, peak:10};
 export const DEFAULT_ENABLED = {resume:true, skill:true, longevity:true, peak:true};
-export const DEFAULT_RING = 2;
+export const DEFAULT_RING = 3;
 
 export function clampWeight(value){
   return Math.max(0, Math.min(100, Number(value) || 0));
