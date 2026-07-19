@@ -11,12 +11,16 @@ test.describe('leaderboard', () => {
     await expect(page.locator('#table .tabulator-row')).toHaveCount(expected);
   });
 
-  test('era-adjusted Champs scenario widget switches teams', async ({ page }) => {
+  test('era-adjusted Champs scenario widget only offers FaZe and OpTic', async ({ page }) => {
     await page.goto('/index.html');
     const widget = page.locator('#stakes-banner');
     await expect(widget).toBeVisible();
     await expect(widget).toContainText('This week: Champs scenarios');
     await expect(widget.getByRole('button', { name: 'Adj +◆' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(widget.locator('[data-stake-team]')).toHaveCount(2);
+    expect(await widget.locator('[data-stake-team]').evaluateAll(buttons =>
+      buttons.map(button => button.getAttribute('data-stake-team')).sort(),
+    )).toEqual(['FaZe Vegas', 'OpTic Texas']);
 
     await widget.locator('[data-stake-team="OpTic Texas"]').click();
     await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toHaveAttribute('aria-pressed', 'true');
@@ -25,10 +29,6 @@ test.describe('leaderboard', () => {
     await expect(widget).toContainText('Shotzzy');
     await expect(widget).toContainText('Biggest drops');
     await expect(widget).toContainText('+3.42 Adj +◆ at ×3');
-
-    await widget.locator('[data-stake-team="Carolina Royal Ravens"]').click();
-    const carolinaRosterWeighted = widget.locator('section', { hasText: 'Carolina Royal Ravens roster' });
-    await expect(carolinaRosterWeighted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Unlisted → #47');
 
     await page.locator('#ringw-range').evaluate((el, value) => {
       (el as HTMLInputElement).value = String(value);
@@ -43,18 +43,9 @@ test.describe('leaderboard', () => {
     await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+26)');
     await expect(widget).toContainText('+1.42 Adjusted');
 
-    await widget.locator('[data-stake-team="Carolina Royal Ravens"]').click();
-    await expect(widget).toContainText('Carolina Royal Ravens roster');
-    await expect(widget).toContainText('Standy');
-    await expect(widget).toContainText('Enters');
-    const carolinaRosterAdjusted = widget.locator('section', { hasText: 'Carolina Royal Ravens roster' });
-    await expect(carolinaRosterAdjusted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Unlisted → #70');
-    await expect(widget).toContainText('Below cutoff');
-
     await page.locator('.eramenu .colmenu-btn').click();
     await page.locator('.era-preset[data-preset="mlgcwl"]').click();
-    await expect(widget.locator('[data-stake-team="Carolina Royal Ravens"]')).toContainText('Carolina Royal Ravens (0)');
-    await expect(carolinaRosterAdjusted.locator('tbody tr', { hasText: 'Standy' })).toContainText('Not in selected era');
+    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (0)');
     await expect(widget).toContainText('Black Ops 7 excluded');
   });
 
@@ -1391,10 +1382,14 @@ test.describe('GOAT Builder', () => {
     await expect(page.locator('#stakeIntro')).toContainText('Call of Duty League Championship 2026');
 
     const stakes = page.locator('#goatStakes');
+    await expect(stakes.locator('[data-stake-team]')).toHaveCount(2);
+    expect(await stakes.locator('[data-stake-team]').evaluateAll(buttons =>
+      buttons.map(button => button.getAttribute('data-stake-team')).sort(),
+    )).toEqual(['FaZe Vegas', 'OpTic Texas']);
     await page.getByRole('button', { name: 'OpTic Texas' }).click();
     await expect(page.getByRole('button', { name: 'OpTic Texas' })).toHaveAttribute('aria-pressed', 'true');
     await expect(stakes.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+24)');
-    await expect(page.getByRole('button', { name: 'Riyadh Falcons' })).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.getByRole('button', { name: 'Riyadh Falcons' })).toHaveCount(0);
     const roster = stakes.locator('.gb-stakes-section', { hasText: 'OpTic Texas roster' });
     await expect(roster.locator('tbody')).toContainText('Shotzzy');
     await expect(roster.locator('tbody')).toContainText('Dashy');
@@ -1410,11 +1405,6 @@ test.describe('GOAT Builder', () => {
     const after = await roster.locator('tbody tr', { hasText: 'Shotzzy' }).textContent();
     expect(after).not.toEqual(before);
 
-    await page.getByRole('button', { name: 'Carolina Royal Ravens' }).click();
-    await expect(stakes).toContainText('4 players / 0 ranked / 1 enters');
-    const carolinaRoster = stakes.locator('.gb-stakes-section', { hasText: 'Carolina Royal Ravens roster' });
-    await expect(carolinaRoster.locator('tbody')).toContainText('Standy');
-    await expect(carolinaRoster.locator('tbody')).toContainText('Enters 2-win list');
   });
 
   test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {

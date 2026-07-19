@@ -85,7 +85,8 @@ mountPageNav('index.html');
 
 const D = window.APP_DATA;
 const stakesBanner = document.getElementById('stakes-banner');
-let selectedStakeTeam = D.stakes?.scenarios?.[0]?.team || null;
+const stakeScenarios = champsWidgetScenarios(D.stakes);
+let selectedStakeTeam = stakeScenarios[0]?.team || null;
 let stakeMetric = 'weighted';
 function stakeMovePill(n){
   if(n > 0) return `<span class="pill up">▲ ${n}</span>`;
@@ -218,19 +219,19 @@ function stakeDropRows(drops, mode=stakeMetricMode()){
 }
 function renderStakesBanner(){
   if(!stakesBanner) return;
-  if(D.stakes?.status !== 'ready' || !D.stakes.event || !D.stakes.scenarios?.length){
+  if(D.stakes?.status !== 'ready' || !D.stakes.event || !stakeScenarios.length){
     stakesBanner.remove();
     return;
   }
-  if(!D.stakes.scenarios.some(s => s.team === selectedStakeTeam)){
-    selectedStakeTeam = D.stakes.scenarios[0].team;
+  if(!stakeScenarios.some(s => s.team === selectedStakeTeam)){
+    selectedStakeTeam = stakeScenarios[0].team;
   }
   const ev = D.stakes.event;
-  const scenario = D.stakes.scenarios.find(s => s.team === selectedStakeTeam) || D.stakes.scenarios[0];
+  const scenario = stakeScenarios.find(s => s.team === selectedStakeTeam) || stakeScenarios[0];
   const mode = stakeMetricMode();
   const metricLabel = stakeMetricLabel(mode);
   const scenarioMovement = stakeScenarioMovement(scenario, mode);
-  const teamButtons = D.stakes.scenarios.map(s => `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${esc(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}"><span>${esc(s.team)} (${signedStakeMove(stakeTeamMove(s))})</span><span>${stakeTeamCount(s)}</span></button>`).join('');
+  const teamButtons = stakeScenarios.map(s => `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${esc(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}"><span>${esc(s.team)} (${signedStakeMove(stakeTeamMove(s))})</span><span>${stakeTeamCount(s)}</span></button>`).join('');
   const rosterRows = stakeRosterRows(scenario.players, scenarioMovement, mode);
   const dropRows = stakeDropRows(scenarioMovement.drops, mode);
   const drops = dropRows ? TableSurface.dataTable({
@@ -250,7 +251,7 @@ function renderStakesBanner(){
     <div class="stakes-head">
       <div>
         <h2>This week: Champs scenarios</h2>
-        <p>Pick a current ${esc(ev.game)} roster to see how the era-adjusted leaderboard moves if that team wins ${esc(ev.event)}.</p>
+        <p>Pick FaZe or OpTic to see how the era-adjusted leaderboard moves if that team wins ${esc(ev.event)}.</p>
       </div>
       <div class="seg stakes-metric-toggle" role="group" aria-label="Scenario metric">
         <button type="button" data-stake-metric="adjusted" aria-pressed="${mode === 'adjusted' ? 'true' : 'false'}">Adjusted</button>

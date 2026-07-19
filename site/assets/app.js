@@ -89,6 +89,11 @@ function playerRecord(name){
 function getPref(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function setPref(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 
+const CHAMPS_WIDGET_TEAMS = new Set(['FaZe Vegas', 'OpTic Texas']);
+function champsWidgetScenarios(stakes){
+  return (stakes && stakes.scenarios || []).filter(scenario => CHAMPS_WIDGET_TEAMS.has(scenario.team));
+}
+
 function deltaPill(d){
   if(d>0) return `<span class="pill up">▲ ${d}</span>`;
   if(d<0) return `<span class="pill down">▼ ${Math.abs(d)}</span>`;
@@ -455,6 +460,7 @@ Object.assign(window, {
   playerRecord,
   getPref,
   setPref,
+  champsWidgetScenarios,
   deltaPill,
   teamBadge,
   roleRows,

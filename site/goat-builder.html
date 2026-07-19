@@ -459,6 +459,7 @@ const {allGames, ERA_PRESETS, players} = ctx;
 const ERA_LABELS = {all:'All titles', cdl:'CDL era', mlgCwl:'MLG–CWL era', postBo2:'Post-BO2', preBo2:'Pre-BO2'};
 const VALID_VIEWS = new Set(['rank','map']);
 const stakesData = window.APP_DATA.stakes || {};
+const stakeScenarios = champsWidgetScenarios(stakesData);
 const state = {
   enabled:{...DEFAULT_ENABLED},
   weights:{...DEFAULT_WEIGHTS},
@@ -480,7 +481,7 @@ let selectedPlayerName = null;
 let hadShareParams = false;
 let baselineCache = {key:null, map:null};
 let skillTitleCount = 0;
-let selectedStakeTeam = stakesData.scenarios?.[0]?.team || null;
+let selectedStakeTeam = stakeScenarios[0]?.team || null;
 
 function formatRing(value){
   return Number(value).toFixed(1).replace(/\.0$/, '');
@@ -590,14 +591,14 @@ function stakeBonusMap(scenario){
 function renderGoatStakes(baseRows){
   const panel = document.getElementById('goatStakes');
   if(!panel) return;
-  if(stakesData.status !== 'ready' || !stakesData.event || !stakesData.scenarios?.length){
+  if(stakesData.status !== 'ready' || !stakesData.event || !stakeScenarios.length){
     panel.hidden = true;
     return;
   }
-  if(!stakesData.scenarios.some(s => s.team === selectedStakeTeam)){
-    selectedStakeTeam = stakesData.scenarios[0].team;
+  if(!stakeScenarios.some(s => s.team === selectedStakeTeam)){
+    selectedStakeTeam = stakeScenarios[0].team;
   }
-  const scenario = stakesData.scenarios.find(s => s.team === selectedStakeTeam) || stakesData.scenarios[0];
+  const scenario = stakeScenarios.find(s => s.team === selectedStakeTeam) || stakeScenarios[0];
   const event = stakesData.event;
   const applies = state.selectedGames.has(event.game);
   const config = currentConfig();
@@ -613,15 +614,15 @@ function renderGoatStakes(baseRows){
     }, 0);
     return {net, afterMap};
   }
-  const movementByTeam = new Map(stakesData.scenarios.map(s => [s.team, scenarioGoatMovement(s)]));
+  const movementByTeam = new Map(stakeScenarios.map(s => [s.team, scenarioGoatMovement(s)]));
   const afterByName = movementByTeam.get(scenario.team)?.afterMap || beforeByName;
   const rosterNames = new Set((scenario.players || []).map(player => player.name));
-  document.getElementById('stakeIntro').textContent = `Pick a current ${event.game} roster to see how your active GOAT settings move if that team wins ${event.event}.`;
+  document.getElementById('stakeIntro').textContent = `Pick FaZe or OpTic to see how your active GOAT settings move if that team wins ${event.event}.`;
   document.getElementById('stakeDelta').textContent = applies
     ? `+${event.adjustedDelta.toFixed(2)} adj${event.isChamps ? ' / +1 ring' : ''}`
     : `${event.game} excluded`;
   const teamsHost = document.getElementById('stakeTeams');
-  teamsHost.innerHTML = stakesData.scenarios.map(s => {
+  teamsHost.innerHTML = stakeScenarios.map(s => {
     const net = movementByTeam.get(s.team)?.net || 0;
     return `<button type="button" class="${s.team === scenario.team ? 'active' : ''}" data-stake-team="${escapeAttr(s.team)}" aria-pressed="${s.team === scenario.team ? 'true' : 'false'}">${escapeHtml(s.team)} (${signedWhole(net)})</button>`;
   }).join('');
