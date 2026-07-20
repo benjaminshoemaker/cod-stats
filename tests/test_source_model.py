@@ -76,6 +76,24 @@ def test_cross_source_winner_conflict_is_rejected():
         build_data.validate_cross_source_consistency(events, [], [], [], tpart, registry)
 
 
+def test_equal_best_participation_placements_require_reviewed_resolution():
+    rows = [
+        {"Player": "Lewis", "Event": "Major", "Place": "9-12", "Team": "A"},
+        {"Player": "Lewis", "Event": "Major", "Place": "9-12", "Team": "B"},
+    ]
+    conflict_id = "participation:lewis:Major"
+    with pytest.raises(RuntimeError, match="explicit reviewed resolution"):
+        build_data.select_participation_row(rows, "lewis", "Major", {"participation": {}})
+
+    resolutions = {"participation": {conflict_id: {
+        "chosenTeam": "B",
+        "reviewedAt": "2026-07-19",
+        "rationale": "Reviewed synthetic decision",
+        "evidence": ["https://example.com/evidence"],
+    }}}
+    assert build_data.select_participation_row(rows, "lewis", "Major", resolutions)["Team"] == "B"
+
+
 def test_source_manifest_validates_hash_row_count_and_required_metadata(tmp_path):
     payload = [{"id": 1}, {"id": 2}]
     raw = json.dumps(payload).encode()

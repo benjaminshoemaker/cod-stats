@@ -12,6 +12,7 @@ from types import SimpleNamespace
 
 from source_model import (
     canonicalize_map_observations,
+    load_conflict_resolutions,
     load_source_policy,
     validate_conflict_quarantine,
     validate_source_manifest,
@@ -72,6 +73,7 @@ REQUIRED_CORE_SOURCE_FILES = {
     'community_consensus_sources.json',
     'community_consensus_ballots.json',
     'player_authored_sources.json',
+    'source_conflict_resolutions.json',
 }
 
 # A player's share divides by what a team *could win* that season, which is not
@@ -423,30 +425,63 @@ def rate_from_counts(numer, denom):
     return numer / denom
 
 
-def index_participation(ppart, top50_mkeys, event_registry):
+def select_participation_row(rows, player_key, event_id, resolutions):
+    """Choose one player/event fact without using source row order."""
+    parsed = [(place_x2(row), row) for row in rows]
+    if any(place is None for place, _ in parsed):
+        bad = next(row for place, row in parsed if place is None)
+        raise RuntimeError(
+            f"unparseable placement for {bad['Player']} at {bad['Event']}: {bad.get('Place')!r}"
+        )
+    best_place = min(place for place, _ in parsed)
+    candidates = [row for place, row in parsed if place == best_place]
+    teams = {str(row.get('Team') or '').strip() for row in candidates}
+    if len(teams) == 1:
+        return candidates[0]
+
+    conflict_id = f"participation:{player_key}:{event_id}"
+    decision = (resolutions.get('participation') or {}).get(conflict_id)
+    if not decision:
+        raise RuntimeError(
+            f"{conflict_id}: equal best placements have conflicting teams {sorted(teams)}; "
+            "add an explicit reviewed resolution"
+        )
+    chosen_team = decision.get('chosenTeam')
+    chosen = [row for row in candidates if str(row.get('Team') or '').strip() == chosen_team]
+    if len(chosen) != 1:
+        raise RuntimeError(
+            f"{conflict_id}: reviewed team {chosen_team!r} does not select exactly one fact"
+        )
+    if not decision.get('rationale') or not decision.get('evidence') or not decision.get('reviewedAt'):
+        raise RuntimeError(f"{conflict_id}: reviewed resolution lacks rationale, evidence, or review date")
+    return chosen[0]
+
+
+def index_participation(ppart, top50_mkeys, event_registry, resolutions):
     """Career span from PARTICIPATION (every major entered, won or not), not just
     wins: first-win-to-last-win understates how long a player actually competed.
     Uses the same console-major universe (drop Warzone/Mobile & dropped events,
     on/before ASOF) so a player who kept competing after their last win — e.g.
     BigTymeR played through 2014 but last won in 2012 — has an honest active
     span, and majors_played gives a real denominator for win rate."""
-    part_rows = defaultdict(dict)   # mk -> {event: {event,game,date,place}} — every major entered (won or not)
+    grouped = defaultdict(list)
     for r in ppart:
         if mkey(r['Player']) not in top50_mkeys: continue
         if not _keep(r) or not _played(r.get('Date')): continue
         if r.get('Place') in NONPLAY: continue
         k = mkey(r['Player'])
-        px2 = place_x2(r)
-        if px2 is None:
-            raise RuntimeError(f"unparseable placement for {r['Player']} at {r['Event']}: {r.get('Place')!r}")
         eid = event_id_for(r, event_registry)
+        grouped[(k, eid)].append(r)
+
+    part_rows = defaultdict(dict)   # mk -> {event: {event,game,date,place}} — every major entered (won or not)
+    for (k, eid), rows in grouped.items():
+        r = select_participation_row(rows, k, eid, resolutions)
+        px2 = place_x2(r)
         row = {'event': event_name_for(r, event_registry), 'eventId': eid, 'game': r['Game'],
                'date': r.get('Date') or '', 'place': str(r.get('Place') or '').strip(),
                'placeX2': px2, 'placeNumber': place_number(r),
                'team': str(r.get('Team') or '').strip()}
-        old = part_rows[k].get(eid)
-        if old is None or row['placeX2'] < old['placeX2']:
-            part_rows[k][eid] = row
+        part_rows[k][eid] = row
     part_dates = defaultdict(list)
     for k, rows in part_rows.items():
         part_dates[k] = [r['date'] for r in rows.values() if r.get('date')]
@@ -1650,6 +1685,7 @@ def build():
     ppart, tpart, accolades = sources.player_participation, sources.team_participation, sources.accolades
     event_pages = sources.event_pages
     player_stats = canonicalize_map_observations(sources.canonical_map_stats)
+    conflict_resolutions = load_conflict_resolutions(HERE)
     S = season_context(events, events_all)
     event_registry = build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
     major_event_ids = {event_id_for(e, event_registry) for e in events}
@@ -1657,7 +1693,9 @@ def build():
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
     disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
-    part_dates, part_rows = index_participation(ppart, top50_mkeys, event_registry)
+    part_dates, part_rows = index_participation(
+        ppart, top50_mkeys, event_registry, conflict_resolutions
+    )
     player_wins, wiki_name = index_wins(pwins, top50_mkeys)
     idx = SimpleNamespace(
         part_dates=part_dates, part_rows=part_rows,

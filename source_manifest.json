@@ -153,6 +153,15 @@
       "queryScope": "Live objective-stat benchmark definitions",
       "rowCount": 5,
       "sha256": "c8bdbe3a216f40c326ad0beb1cad9b55ad5bee962cc638714c86b5f68ace2930"
+    },
+    "source_conflict_resolutions.json": {
+      "status": "curated",
+      "source": "cod_stats source review",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Explicit reviewed decisions for otherwise ambiguous source conflicts",
+      "rowCount": null,
+      "sha256": "256cbd445631dee073de17f018e10b2e8c39f0512eb3b47b00a8ba34a11981f1"
     }
   }
 }

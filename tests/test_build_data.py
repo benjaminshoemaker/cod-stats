@@ -875,7 +875,9 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
     registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
-    _, part_rows = build_data.index_participation(ppart, top, registry)
+    _, part_rows = build_data.index_participation(
+        ppart, top, registry, build_data.load_conflict_resolutions(tmp_path)
+    )
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["place"] == "3-4"
     assert part_rows[build_data.mkey("Scump")]["Synthetic Dup"]["placeX2"] == 7
 

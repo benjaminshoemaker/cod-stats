@@ -74,7 +74,7 @@
         }
       ],
       "resolution": {
-        "rule": "bestPlacement",
+        "rule": "explicitReviewedDecision",
         "chosen": {
           "Player": "Lewis",
           "Event": "EGL 13 Blackpool",
@@ -85,6 +85,15 @@
           "Place": "9-12",
           "PlaceNumber": "9",
           "Date__precision": "1"
+        },
+        "review": {
+          "chosenTeam": "Total eCircuit",
+          "reviewedAt": "2026-07-19",
+          "rationale": "The canonical Lewis player results and Total eCircuit event roster both identify Lewis Walker with Total eCircuit; the Barrage roster is a same-handle identity collision.",
+          "evidence": [
+            "https://cod-esports.fandom.com/wiki/Lewis/Tournament_Results/Offline",
+            "https://cod-esports.fandom.com/wiki/Total_eCircuit"
+          ]
         }
       },
       "policy": "data_source_policy.json#participation"
@@ -375,7 +384,7 @@
         }
       ],
       "resolution": {
-        "rule": "bestPlacement",
+        "rule": "explicitReviewedDecision",
         "chosen": {
           "Player": "TuQuick",
           "Event": "MLG Spring Championship 2013",
@@ -386,6 +395,16 @@
           "Place": "9-12",
           "PlaceNumber": "9",
           "Date__precision": "1"
+        },
+        "review": {
+          "chosenTeam": "Evil",
+          "reviewedAt": "2026-07-19",
+          "rationale": "The tournament roster, TuQuick match history, and Evil results identify TuQuick with Evil; the Team Violent Apprehension row is a duplicate roster attribution.",
+          "evidence": [
+            "https://cod-esports.fandom.com/wiki/MLG_Spring_Championship_2013",
+            "https://cod-esports.fandom.com/wiki/TuQuick/Match_History",
+            "https://cod-esports.fandom.com/wiki/Evil"
+          ]
         }
       },
       "policy": "data_source_policy.json#participation"

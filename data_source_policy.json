@@ -18,7 +18,8 @@
     },
     "participation": {
       "authority": "player_participation.json",
-      "duplicateRule": "keep best placement and retain a resolved-conflict trace",
+      "duplicateRule": "keep the best placement; equal best placements with different teams require a reviewed decision in source_conflict_resolutions.json",
+      "resolutionAuthority": "source_conflict_resolutions.json",
       "conflictAction": "quarantine"
     },
     "eventWinner": {

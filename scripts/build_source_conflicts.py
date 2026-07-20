@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
 import build_data
-from source_model import SourceConflictError, canonicalize_map_observations
+from source_model import SourceConflictError, canonicalize_map_observations, load_conflict_resolutions
 
 
 def main():
@@ -17,6 +17,7 @@ def main():
     events_all, events, pwins, champs, ppart, tpart, accolades, _deprecated, stats, event_pages = build_data.load_sources()
     unresolved = []
     resolved = []
+    resolutions = load_conflict_resolutions(ROOT)
 
     name_ids = defaultdict(set)
     for row in [*raw_events, *event_pages]:
@@ -47,20 +48,28 @@ def main():
     for (player, event_id), rows in sorted(grouped.items()):
         if len(rows) < 2:
             continue
-        parsed = [(build_data.place_x2(row), row) for row in rows]
-        parsed = [(place, row) for place, row in parsed if place is not None]
-        if not parsed:
+        try:
+            chosen = build_data.select_participation_row(rows, player, event_id, resolutions)
+        except RuntimeError as exc:
             unresolved.append({
                 "id": f"participation:{player}:{event_id}", "entity": "participation",
-                "facts": rows, "reason": "No parseable placement",
+                "facts": rows, "reason": str(exc),
             })
             continue
-        chosen = min(parsed, key=lambda item: item[0])[1]
+        best_place = build_data.place_x2(chosen)
+        tied_best = [row for row in rows if build_data.place_x2(row) == best_place]
+        decision = (resolutions.get("participation") or {}).get(
+            f"participation:{player}:{event_id}"
+        )
         resolved.append({
             "id": f"participation:{player}:{event_id}",
             "entity": "participation",
             "facts": rows,
-            "resolution": {"rule": "bestPlacement", "chosen": chosen},
+            "resolution": {
+                "rule": "explicitReviewedDecision" if len(tied_best) > 1 else "bestPlacement",
+                "chosen": chosen,
+                **({"review": decision} if len(tied_best) > 1 else {}),
+            },
             "policy": "data_source_policy.json#participation",
         })
 

@@ -11,6 +11,7 @@ import hashlib, json, os, re, sys, time, unicodedata, urllib.parse, urllib.reque
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 import build_data
+from source_model import load_conflict_resolutions
 
 UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
@@ -27,7 +28,9 @@ def relevant_teams():
         sources.player_participation, sources.team_participation,
         sources.canonical_map_stats, sources.accolades,
     )
-    _, part_rows = build_data.index_participation(sources.player_participation, top, registry)
+    _, part_rows = build_data.index_participation(
+        sources.player_participation, top, registry, load_conflict_resolutions(HERE)
+    )
     teams = {r.get("team") for rows in part_rows.values() for r in rows.values() if r.get("team")}
     return sorted(teams)
 

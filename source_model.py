@@ -38,6 +38,7 @@ SOURCE_METADATA = {
     "player_authored_sources.json": ("curated", "Public authored sources", "Source-first authored rankings and claims"),
     "validation/benchmarks.json": ("curated", "External benchmark sources", "Dated external claims used as regression fixtures"),
     "validation/breaking-point-benchmarks.json": ("curated", "Breaking Point", "Live objective-stat benchmark definitions"),
+    "source_conflict_resolutions.json": ("curated", "cod_stats source review", "Explicit reviewed decisions for otherwise ambiguous source conflicts"),
 }
 
 
@@ -112,6 +113,16 @@ def load_source_policy(root=ROOT):
     if policy.get("schemaVersion") != 1 or not policy.get("entities"):
         raise RuntimeError(f"invalid source policy: {path}")
     return policy
+
+
+def load_conflict_resolutions(root=ROOT):
+    path = Path(root) / "source_conflict_resolutions.json"
+    if not path.exists():
+        raise RuntimeError(f"required conflict resolutions are missing: {path}")
+    resolutions = json.loads(path.read_text())
+    if resolutions.get("schemaVersion") != 1:
+        raise RuntimeError(f"invalid conflict resolution schema: {path}")
+    return resolutions
 
 
 def validate_source_manifest(root=ROOT, required=None):
