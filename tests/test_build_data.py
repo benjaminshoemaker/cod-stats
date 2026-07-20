@@ -218,6 +218,18 @@ def test_champs_2026_player_stats_are_complete():
     assert all(isinstance(r.get("Kills"), int) and isinstance(r.get("Deaths"), int) for r in rows)
 
 
+def test_checkpoint_completion_uses_stable_event_page_ids():
+    from scripts.fetch_source import _completed_event_pages_from_rows
+
+    rows = [{
+        "Event": "Call of Duty Championship 2014 US Regional Final",
+        "EventId": "Call of Duty Championship 2014/US Regional Final",
+    }]
+    assert _completed_event_pages_from_rows(rows) == {
+        "Call of Duty Championship 2014/US Regional Final"
+    }
+
+
 def test_skill_stats_use_the_canonical_major_map_source_only(data):
     sources = build_data.load_source_bundle()
     events_all, events = sources.events_all, sources.events

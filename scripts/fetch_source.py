@@ -310,7 +310,7 @@ def _participant_stat_events(refresh=False):
 
 
 def _completed_event_pages_from_rows(rows):
-    return {r.get("Event") for r in rows if r.get("Event")}
+    return {r.get("EventId") for r in rows if r.get("EventId")}
 
 
 def fetch_player_stats_participants(max_events=None, refresh_events=False):
@@ -322,9 +322,15 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
     progress_path = os.path.join(HERE, "player_stats_participants.progress.json")
     rows = _load_json(partial_path, [])
     progress = _load_json(progress_path, {"schema": 1, "completed": [], "failed": {}})
-    done = set(progress.get("completed", [])) | _completed_event_pages_from_rows(rows)
-    failed = dict(progress.get("failed", {}))
     events = _participant_stat_events(refresh=refresh_events)
+    expected_pages = {event["page"] for event in events}
+    done = (
+        set(progress.get("completed", [])) | _completed_event_pages_from_rows(rows)
+    ) & expected_pages
+    failed = {
+        page: detail for page, detail in (progress.get("failed") or {}).items()
+        if page in expected_pages
+    }
 
     def params_for(event):
         return {
