@@ -179,7 +179,9 @@ def test_stat_id_backfill_checkpoint_is_complete_for_finished_event_pages():
     completed = set(progress.get("completed") or [])
     assert completed
     assert not progress.get("failed")
-    assert {row.get("Event") for row in rows} <= completed
+    # Progress is keyed by the stable tournament page ID, which can differ
+    # from the display name (for example Championship regional subpages).
+    assert {row.get("EventId") for row in rows} <= completed
     usable = [
         row for row in rows
         if row.get("Kills") not in (None, "") and row.get("Deaths") not in (None, "")
