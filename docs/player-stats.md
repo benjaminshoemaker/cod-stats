@@ -121,9 +121,12 @@ unresolved entry exists.
 ## Provenance
 
 `source_manifest.json` records every source artifact's status, source, query
-scope, provenance timestamp, row count, and SHA-256 hash. The build validates
-the manifest before computing site data, so missing, partially refreshed, or
-manually changed snapshots cannot silently ship.
+scope and version, source schema version, provenance timestamp and its honest
+precision, refresh batch ID, row count, and SHA-256 hash. Historical imports
+with only a known date are labeled `snapshotDate`; future fetches record an
+exact UTC retrieval time. The build validates the manifest before computing
+site data, so missing, partially refreshed, or manually changed snapshots
+cannot silently ship.
 
 When `Win` is available on the source row, each emitted metric bucket also gains
 `mapWins`, `mapLosses`, and `mapWinRate`. Older source snapshots without `Win`

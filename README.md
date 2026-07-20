@@ -99,7 +99,7 @@ with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" ab
 - `champs_wins.json` — Call of Duty World Championship wins per player (2013+)
 - `team_participation.json` — every team result row at majors (validates the MW 2019 structural denominator in tests)
 - `player_stats_participants.json` — canonical Major/Premier map observations for player profiles, similarity, KOR, and validation; see [`docs/player-stats.md`](docs/player-stats.md)
-- `source_manifest.json` — provenance timestamp, scope, row count, and SHA-256 fingerprint for every source snapshot
+- `source_manifest.json` — timestamp with honest precision, refresh batch ID, query/schema version, scope, row count, and SHA-256 fingerprint for every source snapshot
 - `data_source_policy.json` / `source_conflicts.json` — per-entity authority and merge rules plus the conflict ledger
 
 `player_stats.json` is a deprecated broad audit snapshot and is not consumed by displayed metrics.

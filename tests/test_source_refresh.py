@@ -51,4 +51,8 @@ def test_refresh_transaction_promotes_all_sources_together(synthetic_sources):
 
     assert json.loads((root / "a.json").read_text()) == [{"value": "new-a"}]
     assert json.loads((root / "b.json").read_text()) == [{"value": "new-b"}]
-    source_model.validate_source_manifest(root, required={"a.json", "b.json"})
+    manifest = source_model.validate_source_manifest(root, required={"a.json", "b.json"})
+    entries = manifest["sources"]
+    assert entries["a.json"]["timestampPrecision"] == "second"
+    assert entries["a.json"]["refreshBatchId"] == entries["b.json"]["refreshBatchId"]
+    assert entries["a.json"]["refreshBatchId"] == manifest["latestRefreshBatchId"]

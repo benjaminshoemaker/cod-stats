@@ -100,13 +100,19 @@ def test_source_manifest_validates_hash_row_count_and_required_metadata(tmp_path
     (tmp_path / "facts.json").write_bytes(raw)
     digest = hashlib.sha256(raw).hexdigest()
     manifest = {
-        "schemaVersion": 1,
+        "schemaVersion": source_model.MANIFEST_SCHEMA_VERSION,
+        "generatedAt": "2026-07-19T01:02:03Z",
+        "latestRefreshBatchId": "test-batch",
         "sources": {
             "facts.json": {
                 "status": "canonical",
                 "source": "Example",
                 "provenanceTimestamp": "2026-07-19T00:00:00Z",
                 "timestampKind": "retrieved",
+                "timestampPrecision": "second",
+                "refreshBatchId": "test-batch",
+                "sourceSchemaVersion": 1,
+                "queryVersion": "test-query-v1",
                 "queryScope": "Synthetic facts",
                 "rowCount": 2,
                 "sha256": digest,
@@ -137,6 +143,12 @@ def test_committed_source_manifest_and_quarantine_are_current():
     )
     assert manifest["sources"]["player_stats_participants.json"]["status"] == "canonical"
     assert manifest["sources"]["player_stats.json"]["status"] == "deprecated"
+    assert manifest["schemaVersion"] == 2
+    assert {entry["timestampPrecision"] for entry in manifest["sources"].values()} == {"date"}
+    assert {entry["refreshBatchId"] for entry in manifest["sources"].values()} == {
+        "snapshot-2026-07-19-import"
+    }
+    assert all(entry["queryVersion"] for entry in manifest["sources"].values())
     report = source_model.validate_conflict_quarantine(source_model.ROOT)
     assert report["unresolved"] == []
 

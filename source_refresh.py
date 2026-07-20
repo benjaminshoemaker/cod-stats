@@ -5,7 +5,6 @@ import json
 import os
 import shutil
 import tempfile
-import time
 from pathlib import Path
 
 import source_model
@@ -24,6 +23,8 @@ class SourceRefreshTransaction:
         self.stage_root = Path(tempfile.mkdtemp(prefix="source-refresh-stage-", dir=self.root))
         self.backup_root = None
         self.updated_sources = set()
+        self.updated_timestamps = {}
+        self.batch_id = source_model.new_refresh_batch_id()
 
         for name in source_model.SOURCE_METADATA:
             source = self.root / name
@@ -39,18 +40,24 @@ class SourceRefreshTransaction:
         tmp.write_text(json.dumps(payload))
         os.replace(tmp, target)
         self.updated_sources.add(name)
+        self.updated_timestamps[name] = source_model.utc_now()
 
     def commit(self, validate=None, rollback_side_effects=()):
         if not self.updated_sources:
             self.close()
             return
-        timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
         previous = json.loads((self.root / source_model.MANIFEST_NAME).read_text())
+        # All files in one transaction share a batch ID. They use the commit
+        # time because that is the moment the staged snapshot becomes active.
+        timestamp = source_model.utc_now()
         manifest = source_model.build_source_manifest(
             self.stage_root,
             provenance_timestamp=timestamp,
             previous=previous,
             updated_sources=self.updated_sources,
+            refresh_batch_id=self.batch_id,
+            timestamp_kind="retrieved",
+            timestamp_precision="second",
         )
         (self.stage_root / source_model.MANIFEST_NAME).write_text(
             json.dumps(manifest, indent=2) + "\n"

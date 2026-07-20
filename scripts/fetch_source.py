@@ -38,7 +38,7 @@ import json, os, subprocess, sys, time, urllib.parse, urllib.request
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 
-from source_model import write_source_manifest
+from source_model import new_refresh_batch_id, write_source_manifest
 from source_refresh import SourceRefreshTransaction
 
 ACTIVE_TRANSACTION = None
@@ -111,7 +111,14 @@ def save(name, obj):
     with open(path, "w") as f:
         json.dump(obj, f)
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    write_source_manifest(HERE, timestamp, updated_sources={name})
+    write_source_manifest(
+        HERE,
+        timestamp,
+        updated_sources={name},
+        refresh_batch_id=new_refresh_batch_id(timestamp),
+        timestamp_kind="retrieved",
+        timestamp_precision="second",
+    )
     print(f"wrote {name} ({len(obj['cargoquery']) if isinstance(obj, dict) else len(obj)} rows)")
 
 
@@ -387,7 +394,8 @@ def _participant_stat_events(refresh=False):
     sys.path.insert(0, HERE)
     from build_data import DROP_EVENTS, DROP_GAMES, _played
 
-    cache_path = os.path.join(HERE, "player_stats_participants.events.json")
+    source_name = "player_stats_participants.events.json"
+    cache_path = os.path.join(HERE, source_name)
     if not refresh and os.path.exists(cache_path):
         return _load_json(cache_path, [])
 
@@ -411,10 +419,18 @@ def _participant_stat_events(refresh=False):
             continue
         seen.add(key)
         out.append({"event": event, "page": page, "game": game, "date": r.get("Date") or ""})
+    if ACTIVE_TRANSACTION is not None:
+        ACTIVE_TRANSACTION.stage_json(source_name, out)
+        return out
     _write_json(cache_path, out)
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     write_source_manifest(
-        HERE, timestamp, updated_sources={"player_stats_participants.events.json"}
+        HERE,
+        timestamp,
+        updated_sources={source_name},
+        refresh_batch_id=new_refresh_batch_id(timestamp),
+        timestamp_kind="retrieved",
+        timestamp_precision="second",
     )
     return out
 

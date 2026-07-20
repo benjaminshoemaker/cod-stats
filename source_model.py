@@ -10,6 +10,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import uuid
+from datetime import datetime, timezone
 from collections import defaultdict
 from pathlib import Path
 
@@ -18,7 +21,7 @@ ROOT = Path(__file__).resolve().parent
 MANIFEST_NAME = "source_manifest.json"
 POLICY_NAME = "data_source_policy.json"
 CONFLICTS_NAME = "source_conflicts.json"
-MANIFEST_SCHEMA_VERSION = 1
+MANIFEST_SCHEMA_VERSION = 2
 
 SOURCE_METADATA = {
     "major_events.json": ("canonical", "CoD Esports Wiki Cargo", "Major/Premier tournaments and first-place team"),
@@ -40,6 +43,27 @@ SOURCE_METADATA = {
     "validation/breaking-point-benchmarks.json": ("curated", "Breaking Point", "Live objective-stat benchmark definitions"),
     "source_conflict_resolutions.json": ("curated", "cod_stats source review", "Explicit reviewed decisions for otherwise ambiguous source conflicts"),
 }
+
+SOURCE_QUERY_VERSIONS = {
+    "major_events.json": "cargo-major-events-v1",
+    "player_event_wins.json": "cargo-player-major-wins-v1",
+    "champs_wins.json": "cargo-championship-wins-v1",
+    "player_participation.json": "cargo-player-participation-v1",
+    "team_participation.json": "cargo-team-participation-v1",
+    "player_accolades.json": "cargo-formal-accolades-v1",
+    "player_stats_participants.json": "cargo-major-event-player-stats-v2",
+    "player_stats_participants.events.json": "cargo-major-event-registry-v1",
+    "player_stats.json": "cargo-broad-player-stats-v1",
+}
+
+
+def utc_now():
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def new_refresh_batch_id(timestamp=None):
+    stamp = (timestamp or utc_now()).replace("-", "").replace(":", "")
+    return f"refresh-{stamp}-{uuid.uuid4().hex[:8]}"
 
 
 class SourceConflictError(RuntimeError):
@@ -68,7 +92,15 @@ def file_fingerprint(path):
     }
 
 
-def build_source_manifest(root=ROOT, provenance_timestamp=None, previous=None, updated_sources=None):
+def build_source_manifest(
+    root=ROOT,
+    provenance_timestamp=None,
+    previous=None,
+    updated_sources=None,
+    refresh_batch_id=None,
+    timestamp_kind=None,
+    timestamp_precision=None,
+):
     root = Path(root)
     previous_entries = (previous or {}).get("sources") or {}
     entries = {}
@@ -80,25 +112,61 @@ def build_source_manifest(root=ROOT, provenance_timestamp=None, previous=None, u
         use_new_timestamp = updated_sources is None or name in set(updated_sources)
         timestamp = provenance_timestamp if use_new_timestamp else prior.get("provenanceTimestamp")
         timestamp = timestamp or prior.get("provenanceTimestamp")
-        timestamp_kind = prior.get("timestampKind") or ("retrieved" if status in {"canonical", "deprecated", "supplemental"} else "curated")
+        default_kind = "retrieved" if status in {"canonical", "deprecated", "supplemental"} else "curatedReview"
+        entry_timestamp_kind = (
+            timestamp_kind if use_new_timestamp and timestamp_kind
+            else prior.get("timestampKind") or default_kind
+        )
+        entry_precision = (
+            timestamp_precision if use_new_timestamp and timestamp_precision
+            else prior.get("timestampPrecision")
+            or ("second" if timestamp and "T" in timestamp else "date")
+        )
+        entry_batch_id = (
+            refresh_batch_id if use_new_timestamp and refresh_batch_id
+            else prior.get("refreshBatchId")
+            or (previous or {}).get("latestRefreshBatchId")
+        )
         if not timestamp:
             raise RuntimeError(f"{name}: provenance timestamp is required")
+        if not entry_batch_id:
+            entry_batch_id = f"legacy-{str(timestamp)[:10]}"
         entries[name] = {
             "status": status,
             "source": source,
             "provenanceTimestamp": timestamp,
-            "timestampKind": timestamp_kind,
+            "timestampKind": entry_timestamp_kind,
+            "timestampPrecision": entry_precision,
+            "refreshBatchId": entry_batch_id,
+            "sourceSchemaVersion": 1,
+            "queryVersion": SOURCE_QUERY_VERSIONS.get(name, "curated-contract-v1"),
             "queryScope": query_scope,
             **file_fingerprint(path),
         }
-    return {"schemaVersion": MANIFEST_SCHEMA_VERSION, "sources": entries}
+    latest_batch = refresh_batch_id or (previous or {}).get("latestRefreshBatchId")
+    return {
+        "schemaVersion": MANIFEST_SCHEMA_VERSION,
+        "generatedAt": utc_now(),
+        "latestRefreshBatchId": latest_batch or next(iter(entries.values()))["refreshBatchId"],
+        "sources": entries,
+    }
 
 
-def write_source_manifest(root=ROOT, provenance_timestamp=None, updated_sources=None):
+def write_source_manifest(
+    root=ROOT,
+    provenance_timestamp=None,
+    updated_sources=None,
+    refresh_batch_id=None,
+    timestamp_kind=None,
+    timestamp_precision=None,
+):
     root = Path(root)
     path = root / MANIFEST_NAME
     previous = json.loads(path.read_text()) if path.exists() else None
-    manifest = build_source_manifest(root, provenance_timestamp, previous, updated_sources)
+    manifest = build_source_manifest(
+        root, provenance_timestamp, previous, updated_sources,
+        refresh_batch_id, timestamp_kind, timestamp_precision,
+    )
     tmp = path.with_name(path.name + f".{os.getpid()}.tmp")
     tmp.write_text(json.dumps(manifest, indent=2) + "\n")
     os.replace(tmp, path)
@@ -133,18 +201,33 @@ def validate_source_manifest(root=ROOT, required=None):
     manifest = json.loads(path.read_text())
     if manifest.get("schemaVersion") != MANIFEST_SCHEMA_VERSION:
         raise RuntimeError(f"unsupported source manifest schema: {manifest.get('schemaVersion')!r}")
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", manifest.get("generatedAt") or ""):
+        raise RuntimeError("source manifest generatedAt must be a seconds-precision UTC timestamp")
+    if not manifest.get("latestRefreshBatchId"):
+        raise RuntimeError("source manifest latestRefreshBatchId is required")
     entries = manifest.get("sources") or {}
     missing = sorted(set(required or ()) - set(entries))
     if missing:
         raise RuntimeError(f"source manifest missing required entries: {', '.join(missing)}")
     required_metadata = {
         "status", "source", "provenanceTimestamp", "timestampKind",
-        "queryScope", "rowCount", "sha256",
+        "timestampPrecision", "refreshBatchId", "sourceSchemaVersion",
+        "queryVersion", "queryScope", "rowCount", "sha256",
     }
     for name, entry in entries.items():
         absent = sorted(required_metadata - set(entry))
         if absent:
             raise RuntimeError(f"{name}: source manifest missing metadata: {', '.join(absent)}")
+        precision = entry["timestampPrecision"]
+        timestamp = entry["provenanceTimestamp"]
+        if precision == "second" and not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", timestamp):
+            raise RuntimeError(f"{name}: second-precision provenance timestamp is invalid")
+        if precision == "date" and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", timestamp):
+            raise RuntimeError(f"{name}: date-precision provenance timestamp is invalid")
+        if precision not in {"date", "second"}:
+            raise RuntimeError(f"{name}: unsupported timestamp precision {precision!r}")
+        if not entry["refreshBatchId"] or not entry["queryVersion"]:
+            raise RuntimeError(f"{name}: refresh batch and query version are required")
         source_path = root / name
         if not source_path.exists():
             raise RuntimeError(f"manifested source is missing: {source_path}")
