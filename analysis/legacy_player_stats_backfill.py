@@ -300,19 +300,12 @@ def parse_aw_row(cells: list[str]) -> dict | None:
 
 
 def load_current_rows() -> dict[tuple[str, str], dict[str, dict]]:
-    (
-        events_all,
-        _events,
-        pwins,
-        _champs_rows,
-        ppart,
-        _tpart,
-        accolades,
-        player_stats,
-        _player_stats_participants,
-        event_pages,
-    ) = build_data.load_sources()
-    registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, [], player_stats, accolades)
+    sources = build_data.load_source_bundle()
+    player_stats = sources.canonical_map_stats
+    registry = build_data.build_event_registry(
+        sources.events_all, sources.event_pages, sources.player_wins,
+        sources.player_participation, [], player_stats, sources.accolades,
+    )
     current = defaultdict(dict)
     for row in player_stats:
         player = row.get("Player")

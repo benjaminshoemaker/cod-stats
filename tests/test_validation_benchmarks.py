@@ -73,8 +73,8 @@ def test_breaking_point_season_kd_compares_live_source_to_local_rows(monkeypatch
 
     def fake_bp_rows(_url):
         return (
-            [{"season_id": 2024, "kills": 3891, "deaths": 3908}]
-            + [{"season_id": 2024, "kills": 0, "deaths": 0} for _ in range(221)]
+            [{"season_id": 2024, "kills": 1914, "deaths": 1893}]
+            + [{"season_id": 2024, "kills": 0, "deaths": 0} for _ in range(105)]
             + [{"season_id": 2023, "kills": 1, "deaths": 1}]
         )
 
@@ -93,5 +93,5 @@ def test_breaking_point_season_kd_compares_live_source_to_local_rows(monkeypatch
         "tolerance": 0.005,
     })
     assert result["ok"]
-    assert result["actual"]["local"]["maps"] == 222
-    assert result["actual"]["breakingPoint"] == {"kills": 3891, "deaths": 3908, "maps": 222, "kd": 0.996}
+    assert result["actual"]["local"]["maps"] == 106
+    assert result["actual"]["breakingPoint"] == {"kills": 1914, "deaths": 1893, "maps": 106, "kd": 1.011}

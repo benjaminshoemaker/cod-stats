@@ -11,49 +11,10 @@ test.describe('leaderboard', () => {
     await expect(page.locator('#table .tabulator-row')).toHaveCount(expected);
   });
 
-  test('era-adjusted Champs scenario widget only offers FaZe and OpTic', async ({ page }) => {
+  test('completed Champs what-if widget is removed', async ({ page }) => {
     await page.goto('/index.html');
-    const widget = page.locator('#stakes-banner');
-    await expect(widget).toBeVisible();
-    await expect(widget).toContainText('This week: Champs scenarios');
-    await expect(widget.getByRole('button', { name: 'Adj +◆' })).toHaveAttribute('aria-pressed', 'true');
-    await expect(widget.locator('[data-stake-team]')).toHaveCount(2);
-    expect(await widget.locator('[data-stake-team]').evaluateAll(buttons =>
-      buttons.map(button => button.getAttribute('data-stake-team')).sort(),
-    )).toEqual(['FaZe Vegas', 'OpTic Texas']);
-
-    await widget.locator('[data-stake-team="OpTic Texas"]').click();
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toHaveAttribute('aria-pressed', 'true');
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+25)');
-    await expect(widget).toContainText('OpTic Texas roster');
-    await expect(widget).toContainText('Shotzzy');
-    await expect(widget).toContainText('Biggest drops');
-    await expect(widget).toContainText('+3.42 Adj +◆ at ×3');
-
-    await page.locator('#ringw-range').evaluate((el, value) => {
-      (el as HTMLInputElement).value = String(value);
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-    }, 4);
-    await widget.locator('[data-stake-team="OpTic Texas"]').click();
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+22)');
-    await expect(widget).toContainText('+4.42 Adj +◆ at ×4');
-
-    await widget.getByRole('button', { name: 'Adjusted' }).click();
-    await expect(widget.getByRole('button', { name: 'Adjusted' })).toHaveAttribute('aria-pressed', 'true');
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+26)');
-    await expect(widget).toContainText('+1.42 Adjusted');
-
-    await page.locator('.eramenu .colmenu-btn').click();
-    await page.locator('.era-preset[data-preset="mlgcwl"]').click();
-    await expect(widget.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (0)');
-    await expect(widget).toContainText('Black Ops 7 excluded');
-  });
-
-  test('Champs scenario widget defaults to adjusted plus rings', async ({ page }) => {
-    await page.goto('/index.html?rings=1');
-    const widget = page.locator('#stakes-banner');
-    await expect(widget).toBeVisible();
-    await expect(widget.getByRole('button', { name: 'Adj +◆' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#stakes-banner')).toHaveCount(0);
+    await expect(page.getByText('This week: Champs scenarios')).toHaveCount(0);
   });
 
   test('columns are in the expected order', async ({ page }) => {
@@ -83,7 +44,7 @@ test.describe('leaderboard', () => {
     await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Scump' }).locator('.pill.role-smg')).toHaveText('SMG');
-    await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Shotzzy' }).locator('[tabulator-field="winConversion"]')).toHaveText('23%');
+    await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Shotzzy' }).locator('[tabulator-field="winConversion"]')).toHaveText('22%');
 
     await page.goto('/index.html?show=winConversion,eventsPlaced,avgPlace');
     const fields = await page.$$eval(
@@ -190,7 +151,7 @@ test.describe('era filter', () => {
     // With the default 3x ring weight, the CDL-era leader is Shotzzy (career #8),
     // i.e. a genuine recompute, not row-hiding.
     const first = page.locator('#table .tabulator-row').first();
-    await expect(first.locator('[tabulator-field="name"]')).toHaveText('Shotzzy');
+    await expect(first.locator('[tabulator-field="name"]')).toHaveText('Simp');
     // reload from the URL restores the CDL selection
     await page.goto('/index.html?eras=cdl');
     await expect(page.locator('.eramenu .colmenu-btn')).toContainText('CDL');
@@ -1145,11 +1106,11 @@ test.describe('pages', () => {
     await expect(page.locator('table.data img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
   });
 
-  test('exact ties share a leaderboard rank (aBeZy & Simp both #4)', async ({ page }) => {
+  test('exact ties share a leaderboard rank', async ({ page }) => {
     await page.goto('/index.html');
     const ranks = await page.$$eval('#table .tabulator-cell[tabulator-field="adjRank"]', els => els.map(e => e.textContent?.trim()));
-    expect(ranks.filter(r => r === '4')).toHaveLength(2);
-    expect(ranks).not.toContain('5'); // competition ranking: 1,2,3,4,4,6,…
+    expect(ranks.filter(r => r === '47')).toHaveLength(2);
+    expect(ranks).not.toContain('48'); // competition ranking: 47,47,49,…
   });
 
   test('changelog renders entries incl. the MW methodology change', async ({ page }) => {
@@ -1199,8 +1160,8 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Honors' })).toContainText('7');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Honors' })).toContainText('Season MVP');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Win conversion' })).toContainText('24%');
-    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Finals rate' })).toContainText('43%');
-    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Deep-run rate' })).toContainText('75%');
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Finals rate' })).toContainText('44%');
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Deep-run rate' })).toContainText('76%');
     await expect(page.locator('.compare-summary .summary-meter')).toHaveCount(22);
     // bars are proportional to the row's best value: the leader gets 100%, the
     // runner-up gets their actual share of it (not the 0% of min-max scaling)
@@ -1215,7 +1176,7 @@ test.describe('compare page', () => {
 
     const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
     await expect(bo7).toContainText('in progress');
-    await expect(bo7).toContainText('1 / 4');
+    await expect(bo7).toContainText('1 / 5');
     await expect(bo7.locator('td.season-heat')).toHaveCount(2);
     const bo7Heat = await bo7.locator('td.season-heat').first().evaluate(el => getComputedStyle(el).getPropertyValue('--heat').trim());
     expect(bo7Heat).toMatch(/%$/);
@@ -1279,10 +1240,13 @@ test.describe('compare page', () => {
 
   test('similar-player suggestions add players to the comparison', async ({ page }) => {
     await page.goto('/compare.html?p=Shotzzy&p=HyDra');
-    await expect(page.locator('.suggestion-btn[data-add="Simp"]')).toBeVisible();
-    await page.locator('.suggestion-btn[data-add="Simp"]').click();
-    await expect(page).toHaveURL(/p=Simp/);
-    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', 'Simp']);
+    const suggestion = page.locator('.suggestion-btn').first();
+    await expect(suggestion).toBeVisible();
+    const addedPlayer = await suggestion.getAttribute('data-add');
+    expect(addedPlayer).toBeTruthy();
+    await suggestion.click();
+    await expect(page).toHaveURL(new RegExp(`p=${encodeURIComponent(addedPlayer!)}`));
+    await expect(page.locator('.compare-summary thead th')).toContainText(['Metric', 'Shotzzy', 'HyDra', addedPlayer!]);
   });
 
   test('verdict strip names the adjusted-wins leader with a methodology link', async ({ page }) => {
@@ -1375,36 +1339,10 @@ test.describe('GOAT Builder', () => {
     expect(errors).toEqual([]);
   });
 
-  test('temporary Champs scenarios recompute movement from active GOAT settings', async ({ page }) => {
+  test('completed Champs what-if panel is removed from GOAT Builder', async ({ page }) => {
     await page.goto('/goat-builder.html');
-    await expect(page.locator('#goatStakes')).toBeVisible();
-    await expect(page.locator('#goatStakes')).toContainText('This week: Champs scenarios');
-    await expect(page.locator('#stakeIntro')).toContainText('Call of Duty League Championship 2026');
-
-    const stakes = page.locator('#goatStakes');
-    await expect(stakes.locator('[data-stake-team]')).toHaveCount(2);
-    expect(await stakes.locator('[data-stake-team]').evaluateAll(buttons =>
-      buttons.map(button => button.getAttribute('data-stake-team')).sort(),
-    )).toEqual(['FaZe Vegas', 'OpTic Texas']);
-    await page.getByRole('button', { name: 'OpTic Texas' }).click();
-    await expect(page.getByRole('button', { name: 'OpTic Texas' })).toHaveAttribute('aria-pressed', 'true');
-    await expect(stakes.locator('[data-stake-team="OpTic Texas"]')).toContainText('OpTic Texas (+24)');
-    await expect(page.getByRole('button', { name: 'Riyadh Falcons' })).toHaveCount(0);
-    const roster = stakes.locator('.gb-stakes-section', { hasText: 'OpTic Texas roster' });
-    await expect(roster.locator('tbody')).toContainText('Shotzzy');
-    await expect(roster.locator('tbody')).toContainText('Dashy');
-    await expect(stakes).toContainText('Biggest drops');
-    await expect(stakes.locator('.gb-stakes-section', { hasText: 'Biggest drops' }).locator('tbody tr')).toHaveCount(2);
-    await expect(stakes.locator('.gb-stakes-note')).toContainText('Movement is recalculated from your current weights');
-    const before = await roster.locator('tbody tr', { hasText: 'Shotzzy' }).textContent();
-
-    await page.locator('#ringWeight').evaluate((input: HTMLInputElement) => {
-      input.value = '5';
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-    const after = await roster.locator('tbody tr', { hasText: 'Shotzzy' }).textContent();
-    expect(after).not.toEqual(before);
-
+    await expect(page.locator('#goatStakes')).toHaveCount(0);
+    await expect(page.getByText('This week: Champs scenarios')).toHaveCount(0);
   });
 
   test('default GOAT Builder URL params canonicalize to the bare path', async ({ page }) => {
@@ -1521,7 +1459,7 @@ test.describe('GOAT Builder', () => {
 
     await page.locator('#goatTable .tabulator-col[tabulator-field="player"]').click();
     const firstPlayerSort = page.locator('#goatTable .tabulator-row').first();
-    await expect(firstPlayerSort.locator('.gb-name')).toHaveText('aBeZy');
+    await expect(firstPlayerSort.locator('.gb-name')).toHaveText('04');
   });
 
   test('ranking table contains columns and expanded details at default widths', async ({ page }) => {

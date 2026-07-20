@@ -7,8 +7,7 @@ Regenerates (in the repo root):
   * champs_wins.json       — CoD Championship winners (raw cargoquery format)
   * team_participation.json— every team result row at those tournaments
   * player_accolades.json  — individual award/accolade rows from the wiki Awards table
-  * player_stats.json      — slim map-level PlayerStats rows for the published leaderboard players
-  * player_stats_participants.json — slim map-level PlayerStats rows for all major participants
+  * player_stats_participants.json — canonical slim map observations for all major participants
 
 This is the "fix drift" tool: when scripts/check_live_source.py (or the daily
 source-check workflow) reports a mismatch, run this, then:
@@ -21,7 +20,7 @@ Dates use Tournaments.DateStart (aliased to Date), matching the original pull.
 The wiki rate-limits aggressively: requests are retried with backoff and paced
 with a courtesy sleep. PlayerStats pulls take longer and are checkpointed.
 
-player_stats.json is deliberately slimmed before commit. Cargo returns many
+player_stats_participants.json is deliberately slimmed before commit. Cargo returns many
 mode-specific columns, but the site currently aggregates only kills/deaths,
 interactions, K/D, map count, and S&D vs respawn splits. Keeping only the
 fields needed to reproduce those aggregates avoids committing a ~70 MB raw
@@ -29,8 +28,6 @@ Cargo blob while preserving the map-level audit trail.
 
 Run:  python3 scripts/fetch_source.py [--published] [--awards] [--player-stats]
       python3 scripts/fetch_source.py --player-stats-one
-      python3 scripts/fetch_source.py --player-stats-limit=N
-      python3 scripts/fetch_source.py --player-stats-chunks=N
       python3 scripts/fetch_source.py --player-stats-participants
       python3 scripts/fetch_source.py --player-stats-participants-one
       python3 scripts/fetch_source.py --player-stats-participants-limit=N
@@ -39,6 +36,9 @@ Run:  python3 scripts/fetch_source.py [--published] [--awards] [--player-stats]
 import json, os, sys, time, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, HERE)
+
+from source_model import write_source_manifest
 
 UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
@@ -46,7 +46,7 @@ PAGE = 500          # cargo API row cap per request
 PAUSE = 5           # courtesy sleep between successful requests (seconds)
 PLAYER_STATS_BATCH = 10
 PLAYER_STATS_FIELDS = (
-    "Player", "PlayerName", "PlayerLink", "Event", "EventId", "Game", "Mode", "Date",
+    "StatId", "Player", "PlayerName", "PlayerLink", "Event", "EventId", "Game", "Mode", "Date",
     "Team", "TeamVs", "Map", "SeriesId", "Win", "Kills", "Deaths",
 )
 
@@ -103,6 +103,8 @@ def save(name, obj):
     path = os.path.join(HERE, name)
     with open(path, "w") as f:
         json.dump(obj, f)
+    timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    write_source_manifest(HERE, timestamp, updated_sources={name})
     print(f"wrote {name} ({len(obj['cargoquery']) if isinstance(obj, dict) else len(obj)} rows)")
 
 
@@ -327,7 +329,7 @@ def fetch_player_stats(max_chunks=None):
         return {
         "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
         "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
-                   "TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
+                   "PS._ID=StatId,TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
                    "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
                    "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
                    "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
@@ -403,6 +405,10 @@ def _participant_stat_events(refresh=False):
         seen.add(key)
         out.append({"event": event, "page": page, "game": game, "date": r.get("Date") or ""})
     _write_json(cache_path, out)
+    timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    write_source_manifest(
+        HERE, timestamp, updated_sources={"player_stats_participants.events.json"}
+    )
     return out
 
 
@@ -427,7 +433,7 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
         return {
         "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
         "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
-                   "TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
+                   "PS._ID=StatId,TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
                    "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
                    "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
                    "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
@@ -481,7 +487,13 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
 
     all_done = {e["page"] for e in events} <= done
     if all_done:
-        save("player_stats_participants.json", slim_player_stat_rows(rows))
+        slim = slim_player_stat_rows(rows)
+        # Validation is deliberately separate from serialization: observation
+        # IDs are deterministic build-time fields, while this file remains a
+        # faithful slim source snapshot.
+        from source_model import canonicalize_map_observations
+        canonicalize_map_observations(slim)
+        save("player_stats_participants.json", slim)
         if os.path.exists(partial_path):
             os.remove(partial_path)
         if os.path.exists(progress_path):
@@ -511,7 +523,7 @@ def main():
     if "--awards" in sys.argv:
         return fetch_player_accolades()
     if "--player-stats-one" in sys.argv:
-        return fetch_player_stats(max_chunks=1)
+        return fetch_player_stats_participants(max_events=1)
     if "--player-stats-participants-one" in sys.argv:
         return fetch_player_stats_participants(
             max_events=1,
@@ -522,17 +534,18 @@ def main():
                 max_events=int(arg.split("=", 1)[1]),
                 refresh_events="--player-stats-participants-refresh-events" in sys.argv)
         if arg.startswith("--player-stats-limit="):
-            return fetch_player_stats(max_chunks=int(arg.split("=", 1)[1]))
+            return fetch_player_stats_participants(max_events=int(arg.split("=", 1)[1]))
         if arg.startswith("--player-stats-chunks="):
-            return fetch_player_stats(max_chunks=int(arg.split("=", 1)[1]))
+            raise SystemExit("--player-stats-chunks is retired; use --player-stats-limit for canonical event pages")
     if "--player-stats-participants" in sys.argv:
         return fetch_player_stats_participants(
             refresh_events="--player-stats-participants-refresh-events" in sys.argv)
     if "--player-stats" in sys.argv:
-        return fetch_player_stats()
+        return fetch_player_stats_participants(
+            refresh_events="--player-stats-participants-refresh-events" in sys.argv)
     for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins,
                  fetch_player_participation, fetch_team_participation,
-                 fetch_player_accolades, fetch_player_stats):
+                 fetch_player_accolades, fetch_player_stats_participants):
         step()
         time.sleep(PAUSE)
     print("\nNow: review `git diff`, update PUBLISHED/ASOF in build_data.py if needed,")

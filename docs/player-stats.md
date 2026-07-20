@@ -1,8 +1,14 @@
 # Player Stats Source
 
-`player_stats.json` is the committed source for objective individual-skill stats.
-It is pulled from the CoD Esports Wiki Cargo `PlayerStats` table for published
-leaderboard players, joined through `PlayerRedirects`.
+`player_stats_participants.json` is the single canonical source for objective
+individual-skill stats. It is pulled from the CoD Esports Wiki Cargo
+`PlayerStats` table one canonical Major/Premier event page at a time for every
+participant with usable rows. Player profiles, similarity, KOR, validation, and
+analysis all derive from this snapshot.
+
+The older `player_stats.json` player/title-wide pull remains only as a
+deprecated audit snapshot. It includes non-major events and cannot feed a
+displayed metric.
 
 ## Why The File Is Slim
 
@@ -19,11 +25,11 @@ the first full import. The site currently needs a smaller, stable first version:
 - respawn split, meaning every non-S&D mode
 
 For that reason, `scripts/fetch_source.py --player-stats` writes a slim
-`player_stats.json` instead of the full Cargo rows. It keeps map-level rows, but
+`player_stats_participants.json` instead of the full Cargo rows. It keeps map-level rows, but
 only the fields needed to reproduce the current aggregates:
 
 ```text
-Player, PlayerName, PlayerLink, Event, EventId, Game, Mode, Date,
+StatId (when exposed), Player, PlayerName, PlayerLink, Event, EventId, Game, Mode, Date,
 Team, TeamVs, Map, SeriesId, Win, Kills, Deaths
 ```
 
@@ -35,7 +41,7 @@ intentionally and update this document with the new use case.
 
 ## Runtime Impact
 
-The browser does not load `player_stats.json`. `build_data.py` aggregates the
+The browser does not load the canonical source file. `build_data.py` aggregates the
 source into runtime files:
 
 - `site/data.js` keeps career totals, S&D/respawn splits, and by-season stats so
@@ -44,12 +50,8 @@ source into runtime files:
 - `site/skill-events.json` keeps tournament-level stat rows and is lazy-loaded
   only by `player.html` when a profile needs the tournament drilldown.
 
-This split keeps the main site payload quick while still making tournament
-stats auditable. After adding season and tournament stats, `site/data.js` was
-862,834 bytes uncompressed / 112,020 bytes gzipped, and the lazy
-`site/skill-events.json` was 1,917,510 bytes uncompressed / 228,252 bytes
-gzipped. The committed `player_stats.json` source was 23.5 MB because it keeps
-81,773 reproducible map rows with numeric kills/deaths.
+This split keeps the main site payload quick while retaining the map-level audit
+trail needed to reproduce every aggregate.
 
 ## Coverage
 
@@ -59,11 +61,11 @@ source. Some early players also have blank or missing stat rows, so absence of
 `skillStats` means "no usable numeric PlayerStats rows in this source", not a
 true zero.
 
-As of the initial import, `skillStats` built for 85 of 91 published leaderboard
-players. Missing usable stats were:
+As of the 2026-07-19 canonical major-event snapshot, `skillStats` builds for 89
+of 93 published leaderboard players. Missing usable stats are:
 
 ```text
-Mak, DopedGoat, Jake, Methodz, Tobi, VeXeL
+Mak, DopedGoat, Tobi, VeXeL
 ```
 
 This coverage should be treated as source availability, not player evaluation.
@@ -82,9 +84,9 @@ season length, and career length drive those counts.
 
 ## Aggregation Contract
 
-`build_data.py` applies the same tournament universe as the rest of the site:
-console Major/Premier events, Warzone/Mobile excluded, explicit dropped events
-excluded, and rows after `ASOF` ignored.
+`build_data.py` requires every counted row's `eventId` to belong to the canonical
+played Major/Premier registry. Warzone/Mobile, explicit dropped events, unknown
+events, and rows after `ASOF` are excluded. KOR uses the same membership test.
 
 For each player it emits:
 
@@ -102,6 +104,26 @@ join key across participation, wins, and stats; `event` remains the display name
 
 `maps` means count of scored map rows in the source. `interactions` means
 `kills + deaths`.
+
+## Observation Identity and Conflicts
+
+When Cargo exposes a stable `StatId`, it is authoritative. Older rows without
+one receive a deterministic identity from player, event, date, series, map,
+mode, teams, and an occurrence number. The occurrence is necessary because a
+series can legitimately play the same map/mode more than once.
+
+Exact duplicate observations and conflicting facts for one upstream ID fail the
+build. They are never silently deduplicated or counted twice. Authority,
+fallback, and merge rules live in `data_source_policy.json`;
+`source_conflicts.json` records resolved collisions and blocks the build if an
+unresolved entry exists.
+
+## Provenance
+
+`source_manifest.json` records every source artifact's status, source, query
+scope, provenance timestamp, row count, and SHA-256 hash. The build validates
+the manifest before computing site data, so missing, partially refreshed, or
+manually changed snapshots cannot silently ship.
 
 When `Win` is available on the source row, each emitted metric bucket also gains
 `mapWins`, `mapLosses`, and `mapWinRate`. Older source snapshots without `Win`

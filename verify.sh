@@ -6,13 +6,21 @@ cd "$(dirname "$0")"
 echo "==> build data (reconstruction guard)"
 python3 build_data.py
 
-echo "==> committed site/data.js is up to date"
+echo "==> rebuild similarity artifacts from canonical data"
+PYTHON="python3"; [ -x .venv/bin/python ] && PYTHON=".venv/bin/python"
+$PYTHON analysis/path_features.py
+$PYTHON analysis/similarity.py >/dev/null
+$PYTHON analysis/cluster_map.py >/dev/null
+
+echo "==> committed generated artifacts are up to date"
 # diff against HEAD (not the index) so a stale-but-staged data.js still fails
-git diff --quiet HEAD -- site/data.js || { echo "  site/data.js changed — commit the regenerated file"; exit 1; }
+git diff --quiet HEAD -- site/data.js site/data.json site/skill-events.json site/kor.json site/kor-detail.json site/similarity.js site/clusters.js || {
+  echo "  generated artifacts changed — commit the regenerated files"; exit 1;
+}
 
 echo "==> pytest checks"
 PYTEST="python3 -m pytest"; [ -x .venv/bin/pytest ] && PYTEST=".venv/bin/pytest"
-$PYTEST tests/test_build_data.py tests/test_validation_benchmarks.py tests/test_vercel_cache_headers.py -q
+$PYTEST -q
 
 echo "==> browser/layout tests"
 npx playwright test

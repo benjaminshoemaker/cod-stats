@@ -28,7 +28,7 @@ Supported metrics:
 - `championship_wins`: World Championship wins through `asOf`
 - `overall_kd`: kills/deaths/maps/KD through `asOf`, with optional event, game,
   or mode filters
-- `breaking_point_season_kd`: compares local `player_stats.json` to a live
+- `breaking_point_season_kd`: compares local `player_stats_participants.json` to a live
   Breaking Point player-page aggregate. Live checks are skipped by default.
 
 BrianStats1 posts are useful benchmark fixtures because many are precise, dated

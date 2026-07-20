@@ -6,13 +6,21 @@ wiki total. Run directly (`python3 build_data.py`) to (re)write site/data.js.
 """
 import json, re, os
 from collections import defaultdict, Counter
+from dataclasses import dataclass
 from fractions import Fraction
 from types import SimpleNamespace
+
+from source_model import (
+    canonicalize_map_observations,
+    load_source_policy,
+    validate_conflict_quarantine,
+    validate_source_manifest,
+)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 def _p(*parts): return os.path.join(HERE, *parts)
 
-ASOF = '2026-06-29'              # only majors played on/before this count as wins; future-dated
+ASOF = '2026-07-19'              # only majors played on/before this count as wins; future-dated
                                  # events still count toward an in-progress season's denominator
 DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 
@@ -49,6 +57,22 @@ ACCOLADE_LABELS = {
     'cwl_all_star': 'CWL All-Star',
 }
 ACCOLADE_SOURCE_TIER = 2
+REQUIRED_CORE_SOURCE_FILES = {
+    'major_events.json',
+    'player_event_wins.json',
+    'champs_wins.json',
+    'player_participation.json',
+    'team_participation.json',
+    'player_accolades.json',
+    'player_stats_participants.json',
+    'player_stats_participants.events.json',
+    'legacy_player_event_stats.json',
+    'player_roles.json',
+    'team_logos.json',
+    'community_consensus_sources.json',
+    'community_consensus_ballots.json',
+    'player_authored_sources.json',
+}
 
 # A player's share divides by what a team *could win* that season, which is not
 # always the number of majors played so far:
@@ -68,9 +92,9 @@ STRUCTURAL_DENOM = {'Modern Warfare': 9}
 # every one of these exactly. Warzone/Mobile events (DROP_GAMES) and future-dated
 # events (> ASOF) are excluded, so counts are console majors played to date.
 PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19),("Clayster",18),
- ("TeeP",18),("aBeZy",14),("Simp",14),("Cellium",11),("Shotzzy",10),("Kenny",10),("MerK",10),
- ("JKap",9),("SlasheR",9),("Arcitys",9),("Envoy",9),("Octane",9),("Priestahh",9),("BigTymeR",9),
- ("Huke",8),("Enable",8),("Drazah",8),("HyDra",8),("Dashy",7),("John",7),("Attach",7),("Parasite",7),
+ ("TeeP",18),("Simp",15),("aBeZy",14),("Cellium",11),("Shotzzy",10),("Kenny",10),("MerK",10),
+ ("JKap",9),("SlasheR",9),("Arcitys",9),("Envoy",9),("Octane",9),("Priestahh",9),("BigTymeR",9),("Drazah",9),
+ ("Huke",8),("Enable",8),("HyDra",8),("Dashy",7),("John",7),("Attach",7),("Parasite",7),
  ("Skyz",7),("Jurd",6),("Apathy",6),("Tommey",6),("MadCat",6),("Joshh",6),("Slacked",6),("ZooMaa",6),
  ("Nadeshot",6),("Gunless",6),("Rambo",5),("ProoFy",5),("Swanny",5),("CleanX",5),("Accuracy",5),
  ("Scrap",5),("TJHaLy",5),("Classic",5),("Loony",5),("iLLeY",5),("KiSMET",5),("Bance",4),
@@ -78,7 +102,7 @@ PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19)
  ("MiRx",4),("NAMELESS",4),("Prestinni",4),("Saints",4),("XLNC",4),("Cammy",3),
  ("Crowder",3),("Frosty",3),("Ghosty",3),("Havok",3),("MajorManiak",3),("Mak",3),
  ("Mercules",3),("Pred",3),("Sib",3),("ASSASS1N",2),("Bissell",2),("Bobby",2),
- ("Cheen",2),("DopedGoat",2),("FEARS",2),("Jake",2),("Mack",2),("Methodz",2),
+ ("04",2),("Abuzah",2),("Cheen",2),("DopedGoat",2),("FEARS",2),("Jake",2),("Mack",2),("Methodz",2),
  ("MuTaTioN",2),("Owakening",2),("PHiZZURP",2),("Ricky",2),("SiLLY",2),("StaiNViLLe",2),
  ("Theory",2),("Tobi",2),("Vengeance",2),("VeXeL",2),("VintaGe",2)]
 
@@ -116,39 +140,84 @@ def _played(d): return (d or '0000') <= ASOF
 def _keep(x): return x['Game'] not in DROP_GAMES and x['Event'] not in DROP_EVENTS
 
 
+def validate_source_inputs():
+    """Fail closed when source provenance or conflict state is incomplete."""
+    load_source_policy(HERE)
+    validate_conflict_quarantine(HERE)
+    validate_source_manifest(HERE, required=REQUIRED_CORE_SOURCE_FILES)
+
+
 # --------------------------------------------------------------------------- #
 # Source loading + season math
 # --------------------------------------------------------------------------- #
-def load_sources():
-    """Load the four wiki source files, restricted to the console-major universe
-    (DROP_GAMES / DROP_EVENTS out; wins on/before ASOF). Returns
-    (events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats,
-    player_stats_participants, event_pages) — events_all keeps
-    future-dated scheduled majors for in-progress denominators; ppart is
-    filtered per-row later (it also needs the DNS/place rules)."""
+@dataclass(frozen=True)
+class SourceBundle:
+    events_all: list
+    events: list
+    player_wins: list
+    champs_wins: list
+    player_participation: list
+    team_participation: list
+    accolades: list
+    canonical_map_stats: list
+    event_pages: list
+    deprecated_player_stats: list
+
+
+def load_source_bundle():
+    """Load named source entities for the console-major universe.
+
+    ``events_all`` retains future scheduled majors for in-progress season
+    denominators. Participation rows are filtered later because their DNS and
+    placement rules are entity-specific. The deprecated broad PlayerStats
+    snapshot remains available only as an explicitly named audit source.
+    """
     events = json.load(open(_p('major_events.json')))        # [{Event,Game,Date,Winner,...}]
     pwins  = json.load(open(_p('player_event_wins.json')))   # [{Player,Event,Game,Date}]
     champs_rows = json.load(open(_p('champs_wins.json')))['cargoquery']  # [{Player,Event,Date}]
     ppart  = json.load(open(_p('player_participation.json')))  # [{Player,Event,Game,Date,Place,...}] ALL placements
     tpart  = json.load(open(_p('team_participation.json')))    # [{Team,Event,Game,Place}] ALL team placements
     apath = _p('player_accolades.json')
-    accolades = json.load(open(apath)) if os.path.exists(apath) else []
+    accolades = json.load(open(apath))
+    # Deprecated audit snapshot. It is returned for compatibility with analysis
+    # scripts but is never allowed to feed a displayed metric.
     spath = _p('player_stats.json')
     player_stats = json.load(open(spath)) if os.path.exists(spath) else []
     pspath = _p('player_stats_participants.json')
-    player_stats_participants = json.load(open(pspath)) if os.path.exists(pspath) else []
+    player_stats_participants = json.load(open(pspath))
     epath = _p('player_stats_participants.events.json')
-    event_pages = json.load(open(epath)) if os.path.exists(epath) else []
+    event_pages = json.load(open(epath))
 
     events_all = [e for e in events if _keep(e)]                         # incl. future-dated (scheduled)
     events = [e for e in events_all if _played(e.get('Date'))]
     pwins  = [r for r in pwins if _keep(r) and _played(r.get('Date'))]
-    return events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages
+    return SourceBundle(
+        events_all=events_all,
+        events=events,
+        player_wins=pwins,
+        champs_wins=champs_rows,
+        player_participation=ppart,
+        team_participation=tpart,
+        accolades=accolades,
+        canonical_map_stats=player_stats_participants,
+        event_pages=event_pages,
+        deprecated_player_stats=player_stats,
+    )
+
+
+def load_sources():
+    """Compatibility tuple for older analysis scripts; prefer load_source_bundle()."""
+    s = load_source_bundle()
+    return (
+        s.events_all, s.events, s.player_wins, s.champs_wins,
+        s.player_participation, s.team_participation, s.accolades,
+        s.deprecated_player_stats, s.canonical_map_stats, s.event_pages,
+    )
 
 
 def load_legacy_player_event_stats():
     path = _p('legacy_player_event_stats.json')
-    return json.load(open(path)) if os.path.exists(path) else []
+    return json.load(open(path))
 
 
 def build_event_registry(events_all, event_pages, *row_groups):
@@ -164,6 +233,21 @@ def build_event_registry(events_all, event_pages, *row_groups):
         game, event, event_id = str(game or ''), str(event or ''), str(event_id or '')
         if not game or not event or not event_id:
             return
+        # Explicitly excluded entities cannot influence canonical identity. Their
+        # raw rows remain auditable and their resolution is recorded in
+        # source_conflicts.json.
+        if game in DROP_GAMES or event in DROP_EVENTS:
+            return
+        old_id = by_name.get((game, event))
+        if old_id is not None and old_id != event_id:
+            raise RuntimeError(
+                f"conflicting event IDs for {game} / {event!r}: {old_id!r} vs {event_id!r}"
+            )
+        old_name = name_by_id.get((game, event_id))
+        if old_name is not None and old_name != event:
+            raise RuntimeError(
+                f"conflicting event names for {game} / {event_id!r}: {old_name!r} vs {event!r}"
+            )
         by_name[(game, event)] = event_id
         by_name[(game, event_id)] = event_id
         name_by_id[(game, event_id)] = event
@@ -187,6 +271,59 @@ def event_name_for(row, registry):
     event_id = event_id_for(row, registry)
     game = row.get('Game') or ''
     return registry['nameById'].get((game, event_id)) or row.get('Event') or event_id
+
+
+def validate_cross_source_consistency(events, pwins, champs_rows, ppart, tpart, registry):
+    """Reconcile independent winner/placement/championship representations."""
+    major_ids = {event_id_for(row, registry) for row in events}
+    event_by_id = {event_id_for(row, registry): row for row in events}
+    team_winners = defaultdict(set)
+    for row in tpart:
+        event_id = event_id_for(row, registry)
+        if event_id not in major_ids or str(row.get('Place') or '').strip() != '1':
+            continue
+        team = str(row.get('Team') or '').strip()
+        if team:
+            team_winners[event_id].add(team)
+    for event_id, event in event_by_id.items():
+        winners = team_winners.get(event_id, set())
+        if len(winners) != 1:
+            raise RuntimeError(f"{event_id}: expected exactly one authoritative team winner, got {sorted(winners)}")
+        event_winner = str(event.get('Winner') or '').strip()
+        if event_winner and compact_key(event_winner) not in {compact_key(team) for team in winners}:
+            raise RuntimeError(
+                f"{event_id}: event winner {event_winner!r} conflicts with team results {sorted(winners)}"
+            )
+
+    win_facts = {
+        (mkey(row.get('Player')), event_id_for(row, registry))
+        for row in pwins if event_id_for(row, registry) in major_ids
+    }
+    placement_wins = {
+        (mkey(row.get('Player')), event_id_for(row, registry))
+        for row in ppart
+        if event_id_for(row, registry) in major_ids
+        and str(row.get('PlaceNumber') or row.get('Place') or '').strip() == '1'
+    }
+    if win_facts != placement_wins:
+        raise RuntimeError(
+            "player-win sources conflict: "
+            f"wins-only={sorted(win_facts - placement_wins)[:5]}, "
+            f"placements-only={sorted(placement_wins - win_facts)[:5]}"
+        )
+
+    champs = set()
+    for row in champs_rows:
+        raw_player = str(row['title'].get('Player') or '').strip()
+        raw_key = raw_player.lower()
+        base_key = PLAYER_ALIASES.get(norm(raw_player).lower(), norm(raw_player).lower())
+        if raw_key not in PLAYER_ALIASES and base_key in {mkey(n) for n, _ in PUBLISHED} and norm(raw_player) != raw_player:
+            raise RuntimeError(f"ambiguous championship player needs review: {raw_player!r}")
+        champs.add((mkey(raw_player), row['title'].get('Event')))
+    named_wins = {(mkey(row.get('Player')), row.get('Event')) for row in pwins}
+    missing_champs = champs - named_wins
+    if missing_champs:
+        raise RuntimeError(f"championship sources conflict: champs-only={sorted(missing_champs)[:5]}")
 
 
 def season_context(events, events_all):
@@ -524,7 +661,7 @@ def _is_snd_mode(mode):
     return 'search' in text and 'destroy' in text
 
 
-def index_skill_stats(rows, top50_mkeys, S, event_registry):
+def index_skill_stats(rows, top50_mkeys, S, event_registry, major_event_ids):
     """Aggregate objective PlayerStats rows into simple, source-backed splits.
 
     The stable cross-era denominator is map rows with kills/deaths. S&D gets its
@@ -538,6 +675,8 @@ def index_skill_stats(rows, top50_mkeys, S, event_registry):
         if mk not in top50_mkeys:
             continue
         if not _keep(r) or not _played(r.get('Date')):
+            continue
+        if event_id_for(r, event_registry) not in major_event_ids:
             continue
         kills, deaths = _stat_int(r.get('Kills')), _stat_int(r.get('Deaths'))
         if kills is None or deaths is None:
@@ -1504,10 +1643,17 @@ def build_community_resume_wins():
 def build():
     """Compute the full APP_DATA dict. Raises RuntimeError if any player's
     reconstructed wins do not equal their published wiki total."""
-    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = load_sources()
+    validate_source_inputs()
+    sources = load_source_bundle()
+    events_all, events = sources.events_all, sources.events
+    pwins, champs_rows = sources.player_wins, sources.champs_wins
+    ppart, tpart, accolades = sources.player_participation, sources.team_participation, sources.accolades
+    event_pages = sources.event_pages
+    player_stats = canonicalize_map_observations(sources.canonical_map_stats)
     S = season_context(events, events_all)
     event_registry = build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
     major_event_ids = {event_id_for(e, event_registry) for e in events}
+    validate_cross_source_consistency(events, pwins, champs_rows, ppart, tpart, event_registry)
 
     top50_mkeys  = {mkey(n) for n, _ in PUBLISHED}
     disp_by_mkey = {mkey(n): n for n, _ in PUBLISHED}
@@ -1518,7 +1664,7 @@ def build():
         player_wins=player_wins, wiki_name=wiki_name,
         champs_by=index_champs(champs_rows, top50_mkeys, disp_by_mkey, player_wins),
         accolades_by=index_accolades(accolades, top50_mkeys),
-        skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S, event_registry),
+        skill_stats_by=index_skill_stats(player_stats, top50_mkeys, S, event_registry, major_event_ids),
         legacy_skill_stats_by=index_legacy_skill_stats(load_legacy_player_event_stats(), top50_mkeys, S, event_registry, major_event_ids),
         event_registry=event_registry,
         role_stints=index_role_stints(load_role_stints(), disp_by_mkey, S))
@@ -1535,11 +1681,10 @@ def build():
             'players': players_out,
             'games': build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_registry),
             'majors': dict(S.majors),
-            'stakes': build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_registry, disp_by_mkey),
             'teamLogos': build_team_logos(participation, load_team_logos()),
             '_participation': participation,
             '_kor': build_kor(
-                player_stats_participants,
+                player_stats,
                 tpart,
                 S,
                 event_registry,

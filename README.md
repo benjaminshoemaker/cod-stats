@@ -64,7 +64,7 @@ To refresh the cached JSON from the live wiki (e.g. after a drift alert):
 ```bash
 python3 scripts/fetch_source.py               # re-pulls all four source JSON files
 python3 scripts/fetch_source.py --published   # prints the live list (2+ wins) as a PUBLISHED literal
-python3 scripts/fetch_source.py --player-stats # resumable PlayerStats pull for objective skill stats
+python3 scripts/fetch_source.py --player-stats # resumable canonical major-event PlayerStats pull
 ```
 Then update `PUBLISHED`/`ASOF` in `build_data.py` if the wiki list moved, re-run the build, and commit.
 
@@ -98,6 +98,10 @@ with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" ab
 - `major_events.json` — every major event (name, game, date, winner, type, prize, location), including future-scheduled ones (used for in-progress season denominators; date-filtered for everything else)
 - `champs_wins.json` — Call of Duty World Championship wins per player (2013+)
 - `team_participation.json` — every team result row at majors (validates the MW 2019 structural denominator in tests)
-- `player_stats.json` — slim CoD Esports Wiki `PlayerStats` rows with map-level kills/deaths for objective skill stats; see [`docs/player-stats.md`](docs/player-stats.md)
+- `player_stats_participants.json` — canonical Major/Premier map observations for player profiles, similarity, KOR, and validation; see [`docs/player-stats.md`](docs/player-stats.md)
+- `source_manifest.json` — provenance timestamp, scope, row count, and SHA-256 fingerprint for every source snapshot
+- `data_source_policy.json` / `source_conflicts.json` — per-entity authority and merge rules plus the conflict ledger
+
+`player_stats.json` is a deprecated broad audit snapshot and is not consumed by displayed metrics.
 
 These are refreshed by `scripts/fetch_source.py`.

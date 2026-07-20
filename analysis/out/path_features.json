@@ -315,13 +315,13 @@
     "best_place": 4
   },
   "realize": {
-    "distinct_teams": 20,
-    "avg_tenure": 1.35,
-    "attendances": 27,
+    "distinct_teams": 14,
+    "avg_tenure": 1.29,
+    "attendances": 18,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.111,
+    "deep_run_rate": 0.056,
     "win_conversion": 0.0,
-    "best_place": 3
+    "best_place": 4
   },
   "riche": {
     "distinct_teams": 4,
@@ -864,11 +864,11 @@
     "best_place": 1
   },
   "melo": {
-    "distinct_teams": 12,
-    "avg_tenure": 1.33,
-    "attendances": 16,
-    "finals_rate": 0.062,
-    "deep_run_rate": 0.125,
+    "distinct_teams": 10,
+    "avg_tenure": 1.4,
+    "attendances": 14,
+    "finals_rate": 0.071,
+    "deep_run_rate": 0.143,
     "win_conversion": 0.0,
     "best_place": 2
   },
@@ -1602,8 +1602,8 @@
     "best_place": 1
   },
   "mosh": {
-    "distinct_teams": 12,
-    "avg_tenure": 1.5,
+    "distinct_teams": 13,
+    "avg_tenure": 1.38,
     "attendances": 18,
     "finals_rate": 0.0,
     "deep_run_rate": 0.0,
@@ -1674,12 +1674,12 @@
     "best_place": 1
   },
   "methodz": {
-    "distinct_teams": 21,
-    "avg_tenure": 3.05,
-    "attendances": 64,
-    "finals_rate": 0.047,
-    "deep_run_rate": 0.156,
-    "win_conversion": 0.031,
+    "distinct_teams": 17,
+    "avg_tenure": 3.35,
+    "attendances": 57,
+    "finals_rate": 0.053,
+    "deep_run_rate": 0.175,
+    "win_conversion": 0.035,
     "best_place": 1
   },
   "crowder": {
@@ -1872,13 +1872,13 @@
     "best_place": 3
   },
   "lucky": {
-    "distinct_teams": 5,
-    "avg_tenure": 5.2,
-    "attendances": 26,
-    "finals_rate": 0.038,
-    "deep_run_rate": 0.115,
-    "win_conversion": 0.038,
-    "best_place": 1
+    "distinct_teams": 3,
+    "avg_tenure": 7.33,
+    "attendances": 22,
+    "finals_rate": 0.0,
+    "deep_run_rate": 0.045,
+    "win_conversion": 0.0,
+    "best_place": 3
   },
   "lukman": {
     "distinct_teams": 2,
@@ -2195,6 +2195,15 @@
     "win_conversion": 0.0,
     "best_place": 4
   },
+  "toucan": {
+    "distinct_teams": 2,
+    "avg_tenure": 1.0,
+    "attendances": 2,
+    "finals_rate": 0.0,
+    "deep_run_rate": 0.0,
+    "win_conversion": 0.0,
+    "best_place": 17
+  },
   "unruly": {
     "distinct_teams": 3,
     "avg_tenure": 1.0,
@@ -2331,11 +2340,11 @@
     "best_place": 2
   },
   "vortex": {
-    "distinct_teams": 12,
-    "avg_tenure": 2.17,
-    "attendances": 26,
-    "finals_rate": 0.038,
-    "deep_run_rate": 0.077,
+    "distinct_teams": 11,
+    "avg_tenure": 2.0,
+    "attendances": 22,
+    "finals_rate": 0.045,
+    "deep_run_rate": 0.136,
     "win_conversion": 0.0,
     "best_place": 2
   },
@@ -2664,11 +2673,11 @@
     "best_place": 9
   },
   "afro": {
-    "distinct_teams": 6,
-    "avg_tenure": 3.17,
-    "attendances": 19,
+    "distinct_teams": 5,
+    "avg_tenure": 3.6,
+    "attendances": 18,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.105,
+    "deep_run_rate": 0.111,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -2845,11 +2854,11 @@
   },
   "huke": {
     "distinct_teams": 14,
-    "avg_tenure": 4.64,
-    "attendances": 65,
-    "finals_rate": 0.308,
-    "deep_run_rate": 0.477,
-    "win_conversion": 0.123,
+    "avg_tenure": 4.71,
+    "attendances": 66,
+    "finals_rate": 0.318,
+    "deep_run_rate": 0.485,
+    "win_conversion": 0.121,
     "best_place": 1
   },
   "tcm": {
@@ -3096,9 +3105,9 @@
     "best_place": 13
   },
   "dean": {
-    "distinct_teams": 4,
-    "avg_tenure": 2.0,
-    "attendances": 8,
+    "distinct_teams": 3,
+    "avg_tenure": 2.33,
+    "attendances": 7,
     "finals_rate": 0.0,
     "deep_run_rate": 0.0,
     "win_conversion": 0.0,
@@ -3258,9 +3267,9 @@
     "best_place": 9
   },
   "infamous": {
-    "distinct_teams": 4,
+    "distinct_teams": 3,
     "avg_tenure": 1.0,
-    "attendances": 4,
+    "attendances": 3,
     "finals_rate": 0.0,
     "deep_run_rate": 0.0,
     "win_conversion": 0.0,
@@ -3835,11 +3844,11 @@
   },
   "envoy": {
     "distinct_teams": 13,
-    "avg_tenure": 4.31,
-    "attendances": 56,
-    "finals_rate": 0.286,
-    "deep_run_rate": 0.536,
-    "win_conversion": 0.161,
+    "avg_tenure": 4.38,
+    "attendances": 57,
+    "finals_rate": 0.281,
+    "deep_run_rate": 0.526,
+    "win_conversion": 0.158,
     "best_place": 1
   },
   "hate": {
@@ -3906,8 +3915,8 @@
     "best_place": 13
   },
   "pemby": {
-    "distinct_teams": 9,
-    "avg_tenure": 2.0,
+    "distinct_teams": 10,
+    "avg_tenure": 1.8,
     "attendances": 18,
     "finals_rate": 0.0,
     "deep_run_rate": 0.0,
@@ -3915,8 +3924,8 @@
     "best_place": 7
   },
   "profeezy": {
-    "distinct_teams": 11,
-    "avg_tenure": 2.09,
+    "distinct_teams": 12,
+    "avg_tenure": 1.92,
     "attendances": 23,
     "finals_rate": 0.0,
     "deep_run_rate": 0.0,
@@ -4023,8 +4032,8 @@
     "best_place": 1
   },
   "gunless": {
-    "distinct_teams": 13,
-    "avg_tenure": 2.92,
+    "distinct_teams": 14,
+    "avg_tenure": 2.71,
     "attendances": 38,
     "finals_rate": 0.211,
     "deep_run_rate": 0.368,
@@ -4897,11 +4906,11 @@
   },
   "dashy": {
     "distinct_teams": 7,
-    "avg_tenure": 8.29,
-    "attendances": 58,
-    "finals_rate": 0.241,
-    "deep_run_rate": 0.517,
-    "win_conversion": 0.121,
+    "avg_tenure": 8.43,
+    "attendances": 59,
+    "finals_rate": 0.254,
+    "deep_run_rate": 0.525,
+    "win_conversion": 0.119,
     "best_place": 1
   },
   "hitmxn": {
@@ -5005,11 +5014,11 @@
   },
   "abezy": {
     "distinct_teams": 6,
-    "avg_tenure": 9.5,
-    "attendances": 57,
-    "finals_rate": 0.544,
-    "deep_run_rate": 0.702,
-    "win_conversion": 0.246,
+    "avg_tenure": 9.67,
+    "attendances": 58,
+    "finals_rate": 0.534,
+    "deep_run_rate": 0.69,
+    "win_conversion": 0.241,
     "best_place": 1
   },
   "atura": {
@@ -5221,11 +5230,11 @@
   },
   "skyz": {
     "distinct_teams": 13,
-    "avg_tenure": 3.92,
-    "attendances": 51,
-    "finals_rate": 0.176,
-    "deep_run_rate": 0.294,
-    "win_conversion": 0.137,
+    "avg_tenure": 4.0,
+    "attendances": 52,
+    "finals_rate": 0.173,
+    "deep_run_rate": 0.288,
+    "win_conversion": 0.135,
     "best_place": 1
   },
   "slg": {
@@ -5347,11 +5356,11 @@
   },
   "insight": {
     "distinct_teams": 7,
-    "avg_tenure": 5.43,
-    "attendances": 38,
-    "finals_rate": 0.211,
-    "deep_run_rate": 0.605,
-    "win_conversion": 0.105,
+    "avg_tenure": 5.57,
+    "attendances": 39,
+    "finals_rate": 0.205,
+    "deep_run_rate": 0.59,
+    "win_conversion": 0.103,
     "best_place": 1
   },
   "jaytex": {
@@ -5400,11 +5409,11 @@
     "best_place": 81
   },
   "super": {
-    "distinct_teams": 8,
-    "avg_tenure": 2.12,
-    "attendances": 17,
+    "distinct_teams": 3,
+    "avg_tenure": 3.33,
+    "attendances": 10,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.235,
+    "deep_run_rate": 0.4,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -5464,11 +5473,11 @@
   },
   "kismet": {
     "distinct_teams": 10,
-    "avg_tenure": 4.2,
-    "attendances": 42,
-    "finals_rate": 0.19,
-    "deep_run_rate": 0.31,
-    "win_conversion": 0.119,
+    "avg_tenure": 4.3,
+    "attendances": 43,
+    "finals_rate": 0.186,
+    "deep_run_rate": 0.326,
+    "win_conversion": 0.116,
     "best_place": 1
   },
   "natshay": {
@@ -6004,11 +6013,11 @@
   },
   "abuzah": {
     "distinct_teams": 5,
-    "avg_tenure": 3.6,
-    "attendances": 18,
-    "finals_rate": 0.278,
-    "deep_run_rate": 0.5,
-    "win_conversion": 0.056,
+    "avg_tenure": 3.8,
+    "attendances": 19,
+    "finals_rate": 0.316,
+    "deep_run_rate": 0.526,
+    "win_conversion": 0.105,
     "best_place": 1
   },
   "ahtract": {
@@ -6076,11 +6085,11 @@
   },
   "cleanx": {
     "distinct_teams": 4,
-    "avg_tenure": 10.25,
-    "attendances": 41,
-    "finals_rate": 0.22,
-    "deep_run_rate": 0.61,
-    "win_conversion": 0.122,
+    "avg_tenure": 10.5,
+    "attendances": 42,
+    "finals_rate": 0.214,
+    "deep_run_rate": 0.595,
+    "win_conversion": 0.119,
     "best_place": 1
   },
   "cobra": {
@@ -6265,10 +6274,10 @@
   },
   "mettalz": {
     "distinct_teams": 3,
-    "avg_tenure": 8.67,
-    "attendances": 26,
+    "avg_tenure": 9.0,
+    "attendances": 27,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.231,
+    "deep_run_rate": 0.222,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -6472,20 +6481,20 @@
   },
   "cellium": {
     "distinct_teams": 4,
-    "avg_tenure": 12.0,
-    "attendances": 48,
-    "finals_rate": 0.521,
-    "deep_run_rate": 0.729,
-    "win_conversion": 0.229,
+    "avg_tenure": 12.25,
+    "attendances": 49,
+    "finals_rate": 0.51,
+    "deep_run_rate": 0.735,
+    "win_conversion": 0.224,
     "best_place": 1
   },
   "simp": {
     "distinct_teams": 4,
-    "avg_tenure": 12.0,
-    "attendances": 48,
-    "finals_rate": 0.604,
-    "deep_run_rate": 0.833,
-    "win_conversion": 0.292,
+    "avg_tenure": 12.25,
+    "attendances": 49,
+    "finals_rate": 0.612,
+    "deep_run_rate": 0.837,
+    "win_conversion": 0.306,
     "best_place": 1
   },
   "bbconor": {
@@ -6562,10 +6571,10 @@
   },
   "nastie": {
     "distinct_teams": 7,
-    "avg_tenure": 3.86,
-    "attendances": 27,
-    "finals_rate": 0.185,
-    "deep_run_rate": 0.259,
+    "avg_tenure": 4.0,
+    "attendances": 28,
+    "finals_rate": 0.179,
+    "deep_run_rate": 0.25,
     "win_conversion": 0.0,
     "best_place": 2
   },
@@ -6607,11 +6616,11 @@
   },
   "shotzzy": {
     "distinct_teams": 3,
-    "avg_tenure": 14.67,
-    "attendances": 44,
-    "finals_rate": 0.432,
-    "deep_run_rate": 0.75,
-    "win_conversion": 0.227,
+    "avg_tenure": 15.0,
+    "attendances": 45,
+    "finals_rate": 0.444,
+    "deep_run_rate": 0.756,
+    "win_conversion": 0.222,
     "best_place": 1
   },
   "spart": {
@@ -6634,11 +6643,11 @@
   },
   "drazah": {
     "distinct_teams": 5,
-    "avg_tenure": 7.4,
-    "attendances": 37,
-    "finals_rate": 0.351,
-    "deep_run_rate": 0.541,
-    "win_conversion": 0.216,
+    "avg_tenure": 7.6,
+    "attendances": 38,
+    "finals_rate": 0.368,
+    "deep_run_rate": 0.553,
+    "win_conversion": 0.237,
     "best_place": 1
   },
   "fire": {
@@ -6688,11 +6697,11 @@
   },
   "hydra": {
     "distinct_teams": 4,
-    "avg_tenure": 8.25,
-    "attendances": 33,
-    "finals_rate": 0.394,
-    "deep_run_rate": 0.576,
-    "win_conversion": 0.242,
+    "avg_tenure": 8.5,
+    "attendances": 34,
+    "finals_rate": 0.382,
+    "deep_run_rate": 0.559,
+    "win_conversion": 0.235,
     "best_place": 1
   },
   "mental": {
@@ -6751,11 +6760,11 @@
   },
   "sib": {
     "distinct_teams": 5,
-    "avg_tenure": 5.6,
-    "attendances": 28,
-    "finals_rate": 0.214,
-    "deep_run_rate": 0.393,
-    "win_conversion": 0.107,
+    "avg_tenure": 5.8,
+    "attendances": 29,
+    "finals_rate": 0.207,
+    "deep_run_rate": 0.414,
+    "win_conversion": 0.103,
     "best_place": 1
   },
   "beans": {
@@ -6796,11 +6805,11 @@
   },
   "scrap": {
     "distinct_teams": 4,
-    "avg_tenure": 5.75,
-    "attendances": 23,
-    "finals_rate": 0.391,
-    "deep_run_rate": 0.696,
-    "win_conversion": 0.217,
+    "avg_tenure": 6.0,
+    "attendances": 24,
+    "finals_rate": 0.375,
+    "deep_run_rate": 0.667,
+    "win_conversion": 0.208,
     "best_place": 1
   },
   "vikul": {
@@ -6877,10 +6886,10 @@
   },
   "joedeceives": {
     "distinct_teams": 8,
-    "avg_tenure": 2.5,
-    "attendances": 20,
-    "finals_rate": 0.05,
-    "deep_run_rate": 0.4,
+    "avg_tenure": 2.62,
+    "attendances": 21,
+    "finals_rate": 0.048,
+    "deep_run_rate": 0.429,
     "win_conversion": 0.0,
     "best_place": 2
   },
@@ -6904,10 +6913,10 @@
   },
   "reeal": {
     "distinct_teams": 4,
-    "avg_tenure": 3.25,
-    "attendances": 13,
+    "avg_tenure": 3.5,
+    "attendances": 14,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.385,
+    "deep_run_rate": 0.357,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -6922,28 +6931,28 @@
   },
   "ghosty": {
     "distinct_teams": 4,
-    "avg_tenure": 5.0,
-    "attendances": 20,
-    "finals_rate": 0.35,
-    "deep_run_rate": 0.5,
-    "win_conversion": 0.15,
+    "avg_tenure": 5.25,
+    "attendances": 21,
+    "finals_rate": 0.333,
+    "deep_run_rate": 0.524,
+    "win_conversion": 0.143,
     "best_place": 1
   },
   "kremp": {
     "distinct_teams": 6,
-    "avg_tenure": 2.83,
-    "attendances": 17,
-    "finals_rate": 0.059,
-    "deep_run_rate": 0.176,
+    "avg_tenure": 3.0,
+    "attendances": 18,
+    "finals_rate": 0.056,
+    "deep_run_rate": 0.167,
     "win_conversion": 0.0,
     "best_place": 2
   },
   "estreal": {
     "distinct_teams": 5,
-    "avg_tenure": 3.0,
-    "attendances": 15,
+    "avg_tenure": 3.2,
+    "attendances": 16,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.2,
+    "deep_run_rate": 0.25,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -6985,11 +6994,11 @@
   },
   "04": {
     "distinct_teams": 3,
-    "avg_tenure": 4.67,
-    "attendances": 14,
-    "finals_rate": 0.357,
-    "deep_run_rate": 0.643,
-    "win_conversion": 0.071,
+    "avg_tenure": 5.0,
+    "attendances": 15,
+    "finals_rate": 0.4,
+    "deep_run_rate": 0.667,
+    "win_conversion": 0.133,
     "best_place": 1
   },
   "flames": {
@@ -7003,12 +7012,12 @@
   },
   "exnid": {
     "distinct_teams": 3,
-    "avg_tenure": 3.33,
-    "attendances": 10,
+    "avg_tenure": 3.67,
+    "attendances": 11,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.0,
+    "deep_run_rate": 0.091,
     "win_conversion": 0.0,
-    "best_place": 5
+    "best_place": 3
   },
   "khhx": {
     "distinct_teams": 2,
@@ -7057,10 +7066,10 @@
   },
   "renkor": {
     "distinct_teams": 2,
-    "avg_tenure": 5.0,
-    "attendances": 10,
+    "avg_tenure": 5.5,
+    "attendances": 11,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.5,
+    "deep_run_rate": 0.455,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -7084,19 +7093,19 @@
   },
   "mercules": {
     "distinct_teams": 3,
-    "avg_tenure": 2.67,
-    "attendances": 8,
-    "finals_rate": 0.75,
+    "avg_tenure": 3.0,
+    "attendances": 9,
+    "finals_rate": 0.778,
     "deep_run_rate": 1.0,
-    "win_conversion": 0.375,
+    "win_conversion": 0.333,
     "best_place": 1
   },
   "abe": {
     "distinct_teams": 3,
-    "avg_tenure": 1.0,
-    "attendances": 3,
+    "avg_tenure": 1.33,
+    "attendances": 4,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.333,
+    "deep_run_rate": 0.25,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -7138,11 +7147,11 @@
   },
   "nium": {
     "distinct_teams": 2,
-    "avg_tenure": 2.0,
-    "attendances": 4,
-    "finals_rate": 0.5,
-    "deep_run_rate": 0.75,
-    "win_conversion": 0.25,
+    "avg_tenure": 2.5,
+    "attendances": 5,
+    "finals_rate": 0.4,
+    "deep_run_rate": 0.6,
+    "win_conversion": 0.2,
     "best_place": 1
   },
   "lurqxx": {
@@ -7156,10 +7165,10 @@
   },
   "kips": {
     "distinct_teams": 1,
-    "avg_tenure": 3.0,
-    "attendances": 3,
+    "avg_tenure": 4.0,
+    "attendances": 4,
     "finals_rate": 0.0,
-    "deep_run_rate": 0.667,
+    "deep_run_rate": 0.5,
     "win_conversion": 0.0,
     "best_place": 3
   },
@@ -7261,5 +7270,14 @@
     "deep_run_rate": 0.0,
     "win_conversion": 0.0,
     "best_place": 9
+  },
+  "alluka": {
+    "distinct_teams": 1,
+    "avg_tenure": 1.0,
+    "attendances": 1,
+    "finals_rate": 0.0,
+    "deep_run_rate": 1.0,
+    "win_conversion": 0.0,
+    "best_place": 3
   }
 }

@@ -42,6 +42,21 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-19', tag:'Methodology', title:'Player statistics now use one major-only source',
+   body:`Player-page and comparison K/D, mode splits, map counts, and similarity features now use the same
+   <strong>Major/Premier event-scoped PlayerStats snapshot</strong> as KOR. The former profile-stat path also included
+   regular seasons, qualifiers, Challengers, and invitationals: 32,950 of its 82,076 rows were outside the site's major
+   universe. The correction changes on-record samples and some K/D values—for example Kenny moves from 0.992 over
+   1,666 rows to 1.017 over 931 major rows—and regenerates similarity results. Major-win and GOAT rankings are unchanged.
+   Source manifests, explicit authority rules, and a fail-closed conflict ledger now guard future refreshes.`},
+  {date:'2026-07-19', tag:'Changed', title:'Completed Champs what-if panels removed',
+   body:`The temporary “Who wins Champs?” panels have been removed from the leaderboard and GOAT Builder now that
+   Champs is complete. The resulting FaZe Vegas win is included directly in the rankings instead.`},
+  {date:'2026-07-19', tag:'Methodology', title:'Champs 2026 results and statistics added',
+   body:`The data snapshot now includes all <strong>14 series, 58 maps, and 464 player-map rows</strong> from Champs,
+   plus the final placements, FaZe Vegas winners, and Simp’s event MVP. Under the default <strong>Adj +◆ at ×3</strong>
+   view, Simp moves from #4 to #2 and Drazah from #18 to #10; 04 and Abuzah enter the two-win leaderboard tied at #47.
+   The largest corresponding drops are two places, caused by the two new entrants rather than a reduction in anyone’s score.`},
   {date:'2026-07-19', tag:'Changed', title:'Champs scenarios narrowed to FaZe and OpTic',
    body:`The “Who wins Champs?” scenario widgets on the leaderboard and GOAT Builder now show only
    <strong>FaZe Vegas</strong> and <strong>OpTic Texas</strong>. Scenario calculations and the main rankings are unchanged.`},

@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-07-19",
+  "unresolved": [],
+  "resolved": [
+    {
+      "id": "participation:cmplx:MLG Spring Championship 2013",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "CMPLX",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Curse NA",
+          "Place": "4",
+          "PlaceNumber": "4",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "CMPLX",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Twisted Method",
+          "Place": "17-24",
+          "PlaceNumber": "17",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "CMPLX",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Curse NA",
+          "Place": "4",
+          "PlaceNumber": "4",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:lewis:EGL 13 Blackpool",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Lewis",
+          "Event": "EGL 13 Blackpool",
+          "EventId": "EGL 13 Blackpool",
+          "Game": "Ghosts",
+          "Date": "2014-07-26",
+          "Team": "Total eCircuit",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Lewis",
+          "Event": "EGL 13 Blackpool",
+          "EventId": "EGL 13 Blackpool",
+          "Game": "Ghosts",
+          "Date": "2014-07-26",
+          "Team": "Barrage.Virtus",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Lewis",
+          "Event": "EGL 13 Blackpool",
+          "EventId": "EGL 13 Blackpool",
+          "Game": "Ghosts",
+          "Date": "2014-07-26",
+          "Team": "Total eCircuit",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:octane:MLG Columbus Open 2014",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Octane",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "Relapsed eSports",
+          "Place": "29-32",
+          "PlaceNumber": "29",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Octane",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "iSolation eSports",
+          "Place": "33-40",
+          "PlaceNumber": "33",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Octane",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "Relapsed eSports",
+          "Place": "29-32",
+          "PlaceNumber": "29",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:pluto:MLG Dallas 2011",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "PLuTo",
+          "Event": "MLG Dallas 2011",
+          "EventId": "MLG Dallas 2011",
+          "Game": "Black Ops",
+          "Date": "2011-04-01",
+          "Team": "Quantic Nex-TT-hreat",
+          "Place": "8",
+          "PlaceNumber": "8",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "PLuTo",
+          "Event": "MLG Dallas 2011",
+          "EventId": "MLG Dallas 2011",
+          "Game": "Black Ops",
+          "Date": "2011-04-01",
+          "Team": "Influence",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "PLuTo",
+          "Event": "MLG Dallas 2011",
+          "EventId": "MLG Dallas 2011",
+          "Game": "Black Ops",
+          "Date": "2011-04-01",
+          "Team": "Quantic Nex-TT-hreat",
+          "Place": "8",
+          "PlaceNumber": "8",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:reedy:EGL 12 Sheffield",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Reedy",
+          "Event": "EGL 12 Sheffield",
+          "EventId": "EGL 12 Sheffield",
+          "Game": "Ghosts",
+          "Date": "2014-05-03",
+          "Team": "Exertus eSports",
+          "Place": "5",
+          "PlaceNumber": "5",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Reedy",
+          "Event": "EGL 12 Sheffield",
+          "EventId": "EGL 12 Sheffield",
+          "Game": "Ghosts",
+          "Date": "2014-05-03",
+          "Team": "View.Spectrum",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Reedy",
+          "Event": "EGL 12 Sheffield",
+          "EventId": "EGL 12 Sheffield",
+          "Game": "Ghosts",
+          "Date": "2014-05-03",
+          "Team": "Exertus eSports",
+          "Place": "5",
+          "PlaceNumber": "5",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:saintt:MLG Spring Championship 2013",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Saintt",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Team Violent Apprehension",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Saintt",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "RNX Adversity",
+          "Place": "29-36",
+          "PlaceNumber": "29",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Saintt",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Team Violent Apprehension",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:schillez:UMG Dallas 2013",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Schillez",
+          "Event": "UMG Dallas 2013",
+          "EventId": "UMG Dallas 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-10-18",
+          "Team": "VanQuish Gaming",
+          "Place": "1",
+          "PlaceNumber": "1",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Schillez",
+          "Event": "UMG Dallas 2013",
+          "EventId": "UMG Dallas 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-10-18",
+          "Team": "Team JusTus",
+          "Place": "13-16",
+          "PlaceNumber": "13",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Schillez",
+          "Event": "UMG Dallas 2013",
+          "EventId": "UMG Dallas 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-10-18",
+          "Team": "VanQuish Gaming",
+          "Place": "1",
+          "PlaceNumber": "1",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:stringo:MLG Columbus Open 2014",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "Stringo",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "Relapsed eSports",
+          "Place": "29-32",
+          "PlaceNumber": "29",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "Stringo",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "iSolation eSports",
+          "Place": "33-40",
+          "PlaceNumber": "33",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "Stringo",
+          "Event": "MLG Columbus Open 2014",
+          "EventId": "MLG Columbus Open 2014",
+          "Game": "Advanced Warfare",
+          "Date": "2014-11-28",
+          "Team": "Relapsed eSports",
+          "Place": "29-32",
+          "PlaceNumber": "29",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    },
+    {
+      "id": "participation:tuquick:MLG Spring Championship 2013",
+      "entity": "participation",
+      "facts": [
+        {
+          "Player": "TuQuick",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Evil",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        },
+        {
+          "Player": "TuQuick",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Team Violent Apprehension",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      ],
+      "resolution": {
+        "rule": "bestPlacement",
+        "chosen": {
+          "Player": "TuQuick",
+          "Event": "MLG Spring Championship 2013",
+          "EventId": "MLG Spring Championship 2013",
+          "Game": "Black Ops 2",
+          "Date": "2013-06-28",
+          "Team": "Evil",
+          "Place": "9-12",
+          "PlaceNumber": "9",
+          "Date__precision": "1"
+        }
+      },
+      "policy": "data_source_policy.json#participation"
+    }
+  ]
+}

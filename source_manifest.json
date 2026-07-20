@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "major_events.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Major/Premier tournaments and first-place team",
+      "rowCount": 185,
+      "sha256": "9a6f6fb8bdc96eac608e2fbc8d068f7187a47113fef07fef202d84639a47f4c9"
+    },
+    "player_event_wins.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Major/Premier first-place player and substitute rows",
+      "rowCount": 726,
+      "sha256": "296a3506e86243a88b746b979ffaa308ee2ea000c3edd51f88c4b07cfe437567"
+    },
+    "champs_wins.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "World Championship first-place player rows",
+      "rowCount": 58,
+      "sha256": "b5e4eb52852b857907e561e9c2187d05cb3fcf28066ca75ed3b925137fb3ac60"
+    },
+    "player_participation.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "All player placements at Major/Premier tournaments",
+      "rowCount": 11231,
+      "sha256": "9f1e7c7a60c42b47ef97e540be186433176dd65a78f73fc5a4016e6f2a2a3736"
+    },
+    "team_participation.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "All team placements at Major/Premier tournaments",
+      "rowCount": 4185,
+      "sha256": "dfe3ef3666e144b881298a1724438f87de060500a4937a1cc87fcda7373211d7"
+    },
+    "player_accolades.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Supported formal award types joined to tournaments",
+      "rowCount": 157,
+      "sha256": "33dce8432ced8d78ffc6fccb9ff393ca643155222b45caf263d6dc17eb013298"
+    },
+    "player_stats_participants.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo PlayerStats",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Map observations fetched by canonical Major/Premier event page",
+      "rowCount": 86252,
+      "sha256": "6448d54d399dd3d3140600a75620de0c33b41571b4074d13f814a67acc10f6ef"
+    },
+    "player_stats_participants.events.json": {
+      "status": "canonical",
+      "source": "CoD Esports Wiki Cargo",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Canonical played Major/Premier event-page registry for PlayerStats",
+      "rowCount": 164,
+      "sha256": "08e1632498bbf341d9eed91859de3bc63e591ad1c65575d819bfe5b640ef283d"
+    },
+    "player_stats.json": {
+      "status": "deprecated",
+      "source": "CoD Esports Wiki Cargo PlayerStats",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Deprecated player/title-wide audit snapshot; never consumed by displayed metrics",
+      "rowCount": 82076,
+      "sha256": "fc1e590487bd25f1a43ff714c0b1e3206e1b25ee9cff360cc99a865997e759b7"
+    },
+    "legacy_player_event_stats.json": {
+      "status": "supplemental",
+      "source": "codcompstats legacy wiki pages",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Major-only event aggregate K/D coverage",
+      "rowCount": 305,
+      "sha256": "003c1258835349fdb459f36e54c58d803a83f24c66aafa6feb48e0f6397f6447"
+    },
+    "player_roles.json": {
+      "status": "curated",
+      "source": "cod_stats research",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Curated player role stints",
+      "rowCount": 80,
+      "sha256": "e7a63d8b236b790712b00cc8e6780817ec8eed8ea2fc18d6ff7a13286006b435"
+    },
+    "team_logos.json": {
+      "status": "supplemental",
+      "source": "CoD Esports Wiki assets",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "retrieved",
+      "queryScope": "Team display names and cached logo paths",
+      "rowCount": null,
+      "sha256": "d161f9d9a2507cc29f56ec3aac0f1f5806e0cc099495d0b46f2a76b6a740a026"
+    },
+    "community_consensus_sources.json": {
+      "status": "curated",
+      "source": "Public community sources",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Reviewed community-consensus source ledger",
+      "rowCount": 90,
+      "sha256": "b4a43d731b2f633875ae7c54d19a5379269089413ecc700f748bcdacda7a3ac2"
+    },
+    "community_consensus_ballots.json": {
+      "status": "curated",
+      "source": "Public community sources",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Atomic ballots extracted from scored community sources",
+      "rowCount": 206,
+      "sha256": "86ad6d2422389a13c6fc2a0cd9daebc2b31b0c0d26abfa08b8d0b25f6bd38b34"
+    },
+    "player_authored_sources.json": {
+      "status": "curated",
+      "source": "Public authored sources",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Source-first authored rankings and claims",
+      "rowCount": 21,
+      "sha256": "38abe2bc91c6e022b27eff646c2d5d77db307470113b1f73a8a1398b985a9d86"
+    },
+    "validation/benchmarks.json": {
+      "status": "curated",
+      "source": "External benchmark sources",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Dated external claims used as regression fixtures",
+      "rowCount": 3,
+      "sha256": "22b28d37f04a24300df8506072cd663aa38edd51fedae9fd76a09196d8e0a56a"
+    },
+    "validation/breaking-point-benchmarks.json": {
+      "status": "curated",
+      "source": "Breaking Point",
+      "provenanceTimestamp": "2026-07-19T00:00:00Z",
+      "timestampKind": "curated",
+      "queryScope": "Live objective-stat benchmark definitions",
+      "rowCount": 5,
+      "sha256": "c8bdbe3a216f40c326ad0beb1cad9b55ad5bee962cc638714c86b5f68ace2930"
+    }
+  }
+}

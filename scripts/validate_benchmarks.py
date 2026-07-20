@@ -106,7 +106,7 @@ def championship_wins(bench):
 def overall_kd(bench):
     as_of = _as_of(bench)
     kills = deaths = maps = 0
-    for row in _load_json("player_stats.json"):
+    for row in _load_json("player_stats_participants.json"):
         if not _same_player(row, bench["player"]):
             continue
         if _row_date(row) > as_of or not _matches_filters(row, bench.get("filters")):

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "entities": {
+    "majorEvent": {
+      "authority": "major_events.json",
+      "identity": ["Game", "EventId"],
+      "conflictAction": "fail"
+    },
+    "playerMajorWin": {
+      "authority": "player_event_wins.json",
+      "crossChecks": ["player_participation.json", "published leaderboard snapshot"],
+      "conflictAction": "fail"
+    },
+    "championshipWin": {
+      "authority": "champs_wins.json",
+      "crossChecks": ["player_event_wins.json"],
+      "conflictAction": "fail"
+    },
+    "participation": {
+      "authority": "player_participation.json",
+      "duplicateRule": "keep best placement and retain a resolved-conflict trace",
+      "conflictAction": "quarantine"
+    },
+    "eventWinner": {
+      "authority": "team_participation.json",
+      "fallbacks": ["major_events.json"],
+      "conflictAction": "fail"
+    },
+    "mapObservation": {
+      "authority": "player_stats_participants.json",
+      "deprecatedSources": ["player_stats.json"],
+      "identity": ["upstream StatId when available", "otherwise player-event-series-map-mode-team-matchup occurrence"],
+      "scope": "canonical Major/Premier event registry only",
+      "conflictAction": "fail"
+    },
+    "legacySkillAggregate": {
+      "authority": "legacy_player_event_stats.json",
+      "mergeRule": "never merge into map rows; display as a separately badged coverage lane",
+      "conflictAction": "keepSeparate"
+    },
+    "formalAccolade": {
+      "authority": "player_accolades.json",
+      "conflictAction": "fail"
+    },
+    "communityConsensus": {
+      "authority": "community_consensus_sources.json",
+      "supportingSources": ["community_consensus_ballots.json"],
+      "mergeRule": "source-kind-specific weighted aggregation with source contribution traces",
+      "conflictAction": "fail"
+    },
+    "authoredEvidence": {
+      "authority": "player_authored_sources.json",
+      "mergeRule": "preserve source identity; never treat authored claims as objective truth",
+      "conflictAction": "fail"
+    }
+  }
+}

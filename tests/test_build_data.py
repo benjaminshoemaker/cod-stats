@@ -9,6 +9,54 @@ import pytest
 import build_data
 
 
+def _copy_build_sources(tmp_path):
+    import shutil
+    for name in build_data.REQUIRED_CORE_SOURCE_FILES | {"player_stats.json"}:
+        source = build_data._p(name)
+        if build_data.os.path.exists(source):
+            target = tmp_path / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(source, target)
+
+
+def _write_canonical_stats(tmp_path, rows):
+    normalized = []
+    event_ids = {row.get("Event"): row.get("EventId") for row in rows if row.get("EventId")}
+    for index, source in enumerate(rows, 1):
+        row = dict(source)
+        row.setdefault("EventId", event_ids.get(row.get("Event")) or row.get("Event"))
+        row.setdefault("Team", "Synthetic Team")
+        row.setdefault("TeamVs", "Synthetic Opponent")
+        row.setdefault("Map", f"Synthetic Map {index}")
+        row.setdefault("SeriesId", f"synthetic-series-{index}")
+        normalized.append(row)
+    json.dump(normalized, open(tmp_path / "player_stats_participants.json", "w"))
+    events = json.load(open(tmp_path / "major_events.json"))
+    team_rows = json.load(open(tmp_path / "team_participation.json"))
+    known = {(row.get("Game"), row.get("EventId") or row.get("Event")) for row in events}
+    for row in normalized:
+        key = (row.get("Game"), row.get("EventId") or row.get("Event"))
+        if key in known:
+            continue
+        events.append({
+            "Event": row["Event"], "EventId": row["EventId"], "Game": row["Game"],
+            "Date": row.get("Date") or "", "Winner": "Synthetic Winner",
+        })
+        if build_data._played(row.get("Date")):
+            team_rows.append({
+                "Event": row["Event"], "EventId": row["EventId"], "Game": row["Game"],
+                "Team": "Synthetic Winner", "Place": "1",
+            })
+        known.add(key)
+    json.dump(events, open(tmp_path / "major_events.json", "w"))
+    json.dump(team_rows, open(tmp_path / "team_participation.json", "w"))
+
+
+def _use_tmp_sources(monkeypatch, tmp_path):
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    monkeypatch.setattr(build_data, "validate_source_inputs", lambda: None)
+
+
 @pytest.fixture(scope="module")
 def data():
     # build() raises if any player's reconstruction != published total, so this
@@ -51,10 +99,11 @@ def test_leaderboard_competition_ranks(data):
 
 
 def test_raw_rank_ties_share_min_rank(data):
-    # Clayster and TeeP both have 18 raw wins → both rank 6; next player is rank 8.
+    # Clayster and TeeP both have 18 raw wins → both rank 6; Simp is next at rank 8.
     lb = {r["name"]: r for r in data["leaderboard"]}
     assert lb["Clayster"]["rawRank"] == lb["TeeP"]["rawRank"] == 6
-    assert lb["aBeZy"]["rawRank"] == 8
+    assert lb["Simp"]["rawRank"] == 8
+    assert lb["aBeZy"]["rawRank"] == 9
 
 
 def test_adjusted_rank_uses_exact_shares(data):
@@ -84,8 +133,8 @@ def test_warzone_and_mobile_excluded(data):
 
 
 def test_black_ops_7_excludes_future_majors(data):
-    # 4 played majors as of ASOF, not the 3 future scheduled ones
-    assert data["majors"]["Black Ops 7"] == 4
+    # Champs is complete; EWC remains future-dated at this snapshot.
+    assert data["majors"]["Black Ops 7"] == 5
 
 
 def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
@@ -94,7 +143,7 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
     # winners are overstated. The mis-tiered Challengers Finals is excluded (DROP_EVENTS),
     # so this is 6, not the 7 the wiki's Majors portal lists.
     g = next(g for g in data["games"] if g["game"] == "Black Ops 7")
-    assert g["majors"] == 4          # played so far (event list length)
+    assert g["majors"] == 5          # played so far (event list length)
     assert g["denom"] == 6           # scheduled majors, Challengers Finals dropped
     assert g["weight"] == round(1 / 6, 4)
     bo7_players = [p for p in data["players"].values()
@@ -102,7 +151,7 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
     assert bo7_players
     for p in bo7_players:
         s = next(s for s in p["seasons"] if s["game"] == "Black Ops 7")
-        assert s["majors"] == 6 and s["held"] == 4
+        assert s["majors"] == 6 and s["held"] == 5
         assert s["share"] == round(s["wins"] / 6, 4)
 
 
@@ -155,87 +204,75 @@ def test_current_bo7_major_roster_has_participant_stat_rows():
     assert missing == []
 
 
-def test_stakes_uses_next_future_major_and_current_denominator(data):
-    stakes = data["stakes"]
-    event = stakes["event"]
-    bo7 = next(g for g in data["games"] if g["game"] == "Black Ops 7")
+def test_champs_2026_player_stats_are_complete():
+    event = "Call of Duty League Championship 2026"
+    rows = [
+        r for r in json.load(open(build_data._p("player_stats_participants.json")))
+        if r.get("Event") == event or r.get("EventId") == event
+    ]
 
-    assert event["event"] == "Call of Duty League Championship 2026"
-    assert event["game"] == "Black Ops 7"
-    assert event["date"] == "2026-07-16"
-    assert event["isChamps"] is True
-    assert event["denominator"] == bo7["denom"] == 6
-    assert event["playedMajors"] == bo7["majors"] == 4
-    assert event["winShareDelta"] == round(1 / bo7["denom"], 4)
-    assert event["adjustedDelta"] == round(data["meta"]["mbarAll"] / bo7["denom"], 2)
-
-
-def test_stakes_rosters_come_from_latest_played_title_major(data):
-    stakes = data["stakes"]
-    assert len(stakes["scenarios"]) == 12
-    assert sum(s["playerCount"] for s in stakes["scenarios"]) == 48
-
-    optic = next(s for s in stakes["scenarios"] if s["team"] == "OpTic Texas")
-    carolina = next(s for s in stakes["scenarios"] if s["team"] == "Carolina Royal Ravens")
-    cloud9 = next(s for s in stakes["scenarios"] if s["team"] == "Cloud9 New York")
-
-    assert optic["rosterAsOf"]["event"] == "Call of Duty League 2026 - Major 4"
-    assert optic["rosterAsOf"]["date"] == "2026-06-26"
-    assert {p["name"] for p in optic["players"]} == {"Dashy", "Huke", "Mercules", "Shotzzy"}
-    assert optic["rankedPlayerCount"] == 4
-    assert len(optic["drops"]) == 2
-    assert all(row["rankDelta"] < 0 for row in optic["drops"])
-    for row in optic["players"]:
-        assert row["ranked"] is True
-        assert row["rawAfter"] == row["rawBefore"] + 1
-        assert row["champsAfter"] == row["champsBefore"] + 1
-        assert row["adjustedDelta"] == stakes["event"]["adjustedDelta"]
-
-    assert {p["name"] for p in carolina["players"]} == {"Exceed", "Fire", "Lurqxx", "Standy"}
-    assert carolina["rankedPlayerCount"] == 0
-    assert carolina["entrantCount"] == 1
-    standy = next(p for p in carolina["players"] if p["name"] == "Standy")
-    assert standy["ranked"] is False
-    assert standy["entersLeaderboard"] is True
-    assert standy["rawBefore"] == 1
-    assert standy["rawAfter"] == 2
-    assert standy["rankBefore"] is None
-    assert standy["rankAfter"] >= 1
-    assert standy["seasonsBefore"]
-    assert sum(s["wins"] for s in standy["seasonsBefore"]) == standy["rawBefore"]
-    for p in carolina["players"]:
-        assert p["ranked"] is False
-        assert p["champsAfter"] == p["champsBefore"] + 1
-
-    riyadh = next(s for s in stakes["scenarios"] if s["team"] == "Riyadh Falcons")
-    exnid = next(p for p in riyadh["players"] if p["name"] == "Exnid")
-    assert exnid["ranked"] is False
-    assert exnid["entersLeaderboard"] is False
-    assert exnid["rawBefore"] == 0
-    assert exnid["rawAfter"] == 1
-
-    assert {p["name"] for p in cloud9["players"]} == {"Encourage", "Hide", "Nejra", "Wevy"}
-    assert "Mack" not in {p["name"] for p in cloud9["players"]}
+    assert len(rows) == 464
+    assert len({r["SeriesId"] for r in rows}) == 14
+    assert len({(r["SeriesId"], r["Map"], r["Mode"]) for r in rows}) == 58
+    assert len({build_data.mkey(r["Player"]) for r in rows}) == 32
+    assert all(isinstance(r.get("Kills"), int) and isinstance(r.get("Deaths"), int) for r in rows)
 
 
-def test_stakes_rank_after_uses_exact_fraction_shares(data):
-    from fractions import Fraction
+def test_skill_stats_use_the_canonical_major_map_source_only(data):
+    events_all, events, *rest = build_data.load_sources()
+    event_pages = rest[-1]
+    pwins, _champs, ppart, tpart, accolades, deprecated_stats, canonical_stats = rest[:-1]
+    registry = build_data.build_event_registry(
+        events_all, event_pages, pwins, ppart, tpart, canonical_stats, accolades
+    )
+    major_ids = {build_data.event_id_for(row, registry) for row in events}
+    published = {build_data.mkey(name) for name, _ in build_data.PUBLISHED}
+    expected_maps = sum(
+        1 for row in canonical_stats
+        if build_data.mkey(row.get("Player") or row.get("PlayerLink") or row.get("PlayerName")) in published
+        and build_data.event_id_for(row, registry) in major_ids
+        and build_data._played(row.get("Date"))
+    )
 
-    stakes = data["stakes"]
-    optic = next(s for s in stakes["scenarios"] if s["team"] == "OpTic Texas")
-    denom = stakes["event"]["denominator"]
-    shares = {}
-    for name, p in data["players"].items():
-        shares[name] = sum((Fraction(s["wins"], s["majors"]) for s in p["seasons"]), Fraction(0))
-    scenario_shares = dict(shares)
-    for row in optic["players"]:
-        assert row["ranked"] is True
-        scenario_shares[row["name"]] += Fraction(1, denom)
+    assert sum(player["skillStats"]["overall"]["maps"]
+               for player in data["players"].values() if player.get("skillStats")) == expected_maps
+    assert all(
+        event["eventId"] in major_ids
+        for player in data["players"].values()
+        for event in ((player.get("skillStats") or {}).get("byEvent") or [])
+    )
 
-    for row in optic["players"]:
-        expected_rank = 1 + sum(1 for v in scenario_shares.values() if v > scenario_shares[row["name"]])
-        assert row["rankBefore"] == 1 + sum(1 for v in shares.values() if v > shares[row["name"]])
-        assert row["rankAfter"] == expected_rank
+
+def test_deprecated_player_stats_snapshot_is_not_a_metric_input(monkeypatch, tmp_path):
+    import shutil
+    for name in build_data.REQUIRED_CORE_SOURCE_FILES:
+        if name in {"player_stats_participants.json", "source_manifest.json"}:
+            continue
+        shutil.copy(build_data._p(name), tmp_path / name)
+    canonical = [{
+        "Player": "Scump", "Event": "Call of Duty Championship 2013",
+        "EventId": "Call of Duty Championship 2013", "Game": "Black Ops 2",
+        "Date": "2013-04-07", "Mode": "Hardpoint", "Team": "OpTic Gaming",
+        "TeamVs": "Fariko Impact", "Map": "Yemen", "SeriesId": "one",
+        "Kills": 20, "Deaths": 10,
+    }]
+    deprecated = [{
+        **canonical[0], "Event": "Not A Major", "EventId": "Not/A/Major",
+        "Kills": 999, "Deaths": 1,
+    }]
+    json.dump(canonical, open(tmp_path / "player_stats_participants.json", "w"))
+    json.dump(deprecated, open(tmp_path / "player_stats.json", "w"))
+    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    monkeypatch.setattr(build_data, "validate_source_inputs", lambda: None)
+
+    stats = build_data.build()["players"]["Scump"]["skillStats"]
+    assert stats["overall"] == {
+        "kills": 20, "deaths": 10, "interactions": 30, "maps": 1, "kd": 2.0,
+    }
+
+
+def test_completed_champs_omits_temporary_stakes_payload(data):
+    assert "stakes" not in data
 
 
 def test_black_ops_4_excludes_pro_league_match_bonus_page(data):
@@ -271,7 +308,7 @@ def test_denominator_matches_event_count_per_season(data):
 def test_championships_known_values_and_all_modern(data):
     p = data["players"]
     expected = {"Crimsix": 3, "Karma": 3, "Clayster": 3, "Shotzzy": 3,
-                "aBeZy": 2, "Simp": 2, "BigTymeR": 0}
+                "Simp": 3, "aBeZy": 2, "BigTymeR": 0}
     for name, champs in expected.items():
         assert p[name]["champs"] == champs, f"{name} champs {p[name]['champs']} != {champs}"
     # championships only exist from 2013 onward
@@ -432,20 +469,12 @@ def test_participation_rows_include_roster_team_and_cached_logo(data):
 def test_game_events_include_full_winner_team_for_logos(data):
     bo7 = next(g for g in data["games"] if g["game"] == "Black Ops 7")
     major4 = next(e for e in bo7["events"] if e["event"] == "Call of Duty League 2026 - Major 4")
-    assert major4["winner"] == "OTX"
+    assert major4["winner"] == "OpTic Texas"
     assert major4["winnerTeam"] == "OpTic Texas"
 
 
 def test_skill_stats_aggregate_kills_deaths_snd_and_respawn(monkeypatch, tmp_path):
-    import shutil
-    for f in (
-        "major_events.json",
-        "player_event_wins.json",
-        "champs_wins.json",
-        "player_participation.json",
-        "team_participation.json",
-    ):
-        shutil.copy(build_data._p(f), tmp_path / f)
+    _copy_build_sources(tmp_path)
     rows = [
         {"Player": "Scump", "Event": "Synthetic Stats", "EventId": "Synthetic_Stats", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Search and Destroy", "Kills": "9", "Deaths": "6"},
@@ -460,8 +489,8 @@ def test_skill_stats_aggregate_kills_deaths_snd_and_respawn(monkeypatch, tmp_pat
         {"Player": "NotARealPlayer", "Event": "Synthetic Stats", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "99", "Deaths": "1"},
     ]
-    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
-    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    _write_canonical_stats(tmp_path, rows)
+    _use_tmp_sources(monkeypatch, tmp_path)
 
     built = build_data.build()
     stats = built["players"]["Scump"]["skillStats"]
@@ -662,15 +691,7 @@ def test_event_registry_adds_canonical_ids_to_participation_and_skill_rows(data)
 
 
 def test_legacy_player_event_stats_stay_separate_from_map_rows(monkeypatch, tmp_path):
-    import shutil
-    for f in (
-        "major_events.json",
-        "player_event_wins.json",
-        "champs_wins.json",
-        "player_participation.json",
-        "team_participation.json",
-    ):
-        shutil.copy(build_data._p(f), tmp_path / f)
+    _copy_build_sources(tmp_path)
     rows = [
         {"Player": "Scump", "Event": "Call of Duty Championship 2013", "Game": "Black Ops 2",
          "Date": "2013-04-05", "Mode": "Hardpoint", "Kills": "20", "Deaths": "10"},
@@ -689,10 +710,10 @@ def test_legacy_player_event_stats_stay_separate_from_map_rows(monkeypatch, tmp_
         {"Player": "Scump", "Event": "Not A Major", "Game": "Black Ops 2",
          "Date": "2013-06-28", "Maps": 99, "KD": 9.99},
     ]
-    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
+    _write_canonical_stats(tmp_path, rows)
     json.dump(legacy, open(tmp_path / "legacy_player_event_stats.json", "w"))
     (tmp_path / "site").mkdir()
-    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    _use_tmp_sources(monkeypatch, tmp_path)
 
     built = build_data.build()
     stats = built["players"]["Scump"]["skillStats"]
@@ -715,23 +736,15 @@ def test_legacy_player_event_stats_stay_separate_from_map_rows(monkeypatch, tmp_
 
 
 def test_skill_stats_emit_map_win_summaries_when_source_has_results(monkeypatch, tmp_path):
-    import shutil
-    for f in (
-        "major_events.json",
-        "player_event_wins.json",
-        "champs_wins.json",
-        "player_participation.json",
-        "team_participation.json",
-    ):
-        shutil.copy(build_data._p(f), tmp_path / f)
+    _copy_build_sources(tmp_path)
     rows = [
         {"Player": "Scump", "Event": "Synthetic Results", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Search and Destroy", "Kills": "9", "Deaths": "6", "Win": "1"},
         {"Player": "Scump", "Event": "Synthetic Results", "Game": "Black Ops 2",
          "Date": "2013-01-01", "Mode": "Hardpoint", "Kills": "24", "Deaths": "20", "Win": "0"},
     ]
-    json.dump(rows, open(tmp_path / "player_stats.json", "w"))
-    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    _write_canonical_stats(tmp_path, rows)
+    _use_tmp_sources(monkeypatch, tmp_path)
 
     stats = build_data.build()["players"]["Scump"]["skillStats"]
     assert stats["overall"]["mapWins"] == 1
@@ -849,9 +862,7 @@ def test_recent_curated_unknowns_now_have_roles(data):
 
 
 def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
-    import shutil
-    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json", "team_participation.json"):
-        shutil.copy(build_data._p(f), tmp_path / f)
+    _copy_build_sources(tmp_path)
     rows = json.load(open(tmp_path / "player_participation.json"))
     rows += [
         {"Player": "Scump", "Event": "Synthetic Dup", "Game": "Black Ops 2",
@@ -860,7 +871,7 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
          "Date": "2013-01-01", "Team": "Good", "Place": "3-4", "PlaceNumber": "3"},
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
-    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    _use_tmp_sources(monkeypatch, tmp_path)
     events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = build_data.load_sources()
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
     registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
@@ -948,13 +959,11 @@ def test_guard_raises_on_wrong_total(monkeypatch):
 
 def _build_with_champs(monkeypatch, tmp_path, mutate):
     """Copy the source JSON to a tmp dir, mutate the champs rows, and build from there."""
-    import shutil
-    for f in ("major_events.json", "player_event_wins.json", "champs_wins.json", "player_participation.json", "team_participation.json"):
-        shutil.copy(build_data._p(f), tmp_path / f)
+    _copy_build_sources(tmp_path)
     champs = json.load(open(tmp_path / "champs_wins.json"))
     mutate(champs["cargoquery"])
     json.dump(champs, open(tmp_path / "champs_wins.json", "w"))
-    monkeypatch.setattr(build_data, "HERE", str(tmp_path))
+    _use_tmp_sources(monkeypatch, tmp_path)
     return build_data.build()
 
 
