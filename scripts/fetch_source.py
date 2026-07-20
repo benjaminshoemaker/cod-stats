@@ -33,12 +33,15 @@ Run:  python3 scripts/fetch_source.py [--published] [--awards] [--player-stats]
       python3 scripts/fetch_source.py --player-stats-participants-limit=N
       python3 scripts/fetch_source.py --player-stats-participants-refresh-events
 """
-import json, os, sys, time, urllib.parse, urllib.request
+import json, os, subprocess, sys, time, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE)
 
 from source_model import write_source_manifest
+from source_refresh import SourceRefreshTransaction
+
+ACTIVE_TRANSACTION = None
 
 UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)"
 API = "https://cod-esports.fandom.com/api.php"
@@ -100,6 +103,10 @@ def flat(rows):
 
 
 def save(name, obj):
+    if ACTIVE_TRANSACTION is not None:
+        ACTIVE_TRANSACTION.stage_json(name, obj)
+        print(f"staged {name} ({len(obj['cargoquery']) if isinstance(obj, dict) else len(obj)} rows)")
+        return
     path = os.path.join(HERE, name)
     with open(path, "w") as f:
         json.dump(obj, f)
@@ -512,6 +519,7 @@ def print_published():
 
 
 def main():
+    global ACTIVE_TRANSACTION
     if "--published" in sys.argv:
         return print_published()
     if "--awards" in sys.argv:
@@ -537,11 +545,29 @@ def main():
     if "--player-stats" in sys.argv:
         return fetch_player_stats_participants(
             refresh_events="--player-stats-participants-refresh-events" in sys.argv)
-    for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins,
-                 fetch_player_participation, fetch_team_participation,
-                 fetch_player_accolades, fetch_player_stats_participants):
-        step()
-        time.sleep(PAUSE)
+    def validate_promoted_snapshot():
+        subprocess.run(
+            [sys.executable, os.path.join(HERE, "scripts", "build_source_conflicts.py")],
+            cwd=HERE,
+            check=True,
+        )
+        import build_data
+        build_data.build()
+
+    with SourceRefreshTransaction(HERE) as transaction:
+        ACTIVE_TRANSACTION = transaction
+        try:
+            for step in (fetch_major_events, fetch_player_event_wins, fetch_champs_wins,
+                         fetch_player_participation, fetch_team_participation,
+                         fetch_player_accolades, fetch_player_stats_participants):
+                step()
+                time.sleep(PAUSE)
+            transaction.commit(
+                validate=validate_promoted_snapshot,
+                rollback_side_effects=("source_conflicts.json",),
+            )
+        finally:
+            ACTIVE_TRANSACTION = None
     print("\nNow: review `git diff`, update PUBLISHED/ASOF in build_data.py if needed,")
     print("re-run `python3 build_data.py`, then `./verify.sh`.")
 
