@@ -125,6 +125,32 @@ def test_committed_source_manifest_and_quarantine_are_current():
 
 def test_committed_canonical_map_source_has_unique_observations():
     rows = json.loads((source_model.ROOT / "player_stats_participants.json").read_text())
+    assert rows
     observations = source_model.canonicalize_map_observations(rows)
     assert len(observations) == len(rows)
     assert len({row["observationId"] for row in observations}) == len(rows)
+
+
+def test_stat_id_backfill_checkpoint_is_complete_for_finished_event_pages():
+    partial_path = source_model.ROOT / "player_stats_participants.partial.json"
+    progress_path = source_model.ROOT / "player_stats_participants.progress.json"
+    if not partial_path.exists() and not progress_path.exists():
+        rows = json.loads(
+            (source_model.ROOT / "player_stats_participants.json").read_text()
+        )
+        assert rows
+        assert all(row.get("StatId") for row in rows)
+        return
+
+    assert partial_path.exists() and progress_path.exists()
+    rows = json.loads(partial_path.read_text())
+    progress = json.loads(progress_path.read_text())
+    completed = set(progress.get("completed") or [])
+    assert completed
+    assert not progress.get("failed")
+    assert {row.get("Event") for row in rows} <= completed
+    usable = [
+        row for row in rows
+        if row.get("Kills") not in (None, "") and row.get("Deaths") not in (None, "")
+    ]
+    assert all(row.get("StatId") for row in usable)

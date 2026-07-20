@@ -432,19 +432,13 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
     def params_for(event):
         return {
         "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
+        # Keep the live Cargo query aligned with PLAYER_STATS_FIELDS. Asking
+        # for unused mode-specific columns makes large event pages much more
+        # likely to time out and none of those columns survive slim_player_stat_rows().
         "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
-                   "PS._ID=StatId,TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
-                   "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
-                   "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
-                   "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
-                   "PS.SDFirstDeath=SDFirstDeath,PS.SDPlants=SDPlants,PS.SDDefuses=SDDefuses,"
-                   "PS.HPKills=HPKills,PS.HPDeaths=HPDeaths,PS.HPTime=HPTime,"
-                   "PS.ConKills=ConKills,PS.ConDeaths=ConDeaths,PS.ConCaptures=ConCaptures,"
-                   "PS.OVRKills=OVRKills,PS.OVRDeaths=OVRDeaths,PS.OVRCaps=OVRCaps,"
-                   "PS.CTFKills=CTFKills,PS.CTFDeaths=CTFDeaths,PS.CTFCaptures=CTFCaptures,"
-                   "PS.UPKills=UPKills,PS.UPDeaths=UPDeaths,"
-                   "PS.BLIKills=BLIKills,PS.BLIDeaths=BLIDeaths,PS.BLICaps=BLICaps,"
-                   "PS.DomKills=DomKills,PS.DomDeaths=DomDeaths,PS.DomCaptures=DomCaptures"),
+                   "PS._ID=StatId,TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,"
+                   "PS.Gamemode=Mode,PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,"
+                   "PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,PS.Kills=Kills,PS.Deaths=Deaths"),
         "where": (f"PS.TournamentPage={_quoted([event['page']])} "
                   f"AND PS.GameTitle={_quoted([event['game']])} "
                   f"AND PS.Date <= \"{ASOF}\""),
