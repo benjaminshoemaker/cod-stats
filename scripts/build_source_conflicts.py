@@ -14,7 +14,13 @@ from source_model import SourceConflictError, canonicalize_map_observations, loa
 
 def main():
     raw_events = json.load(open(os.path.join(ROOT, "major_events.json")))
-    events_all, events, pwins, champs, ppart, tpart, accolades, _deprecated, stats, event_pages = build_data.load_sources()
+    sources = build_data.load_source_bundle()
+    events_all, events = sources.events_all, sources.events
+    pwins, champs = sources.player_wins, sources.champs_wins
+    ppart, tpart, accolades = (
+        sources.player_participation, sources.team_participation, sources.accolades
+    )
+    stats, event_pages = sources.canonical_map_stats, sources.event_pages
     unresolved = []
     resolved = []
     resolutions = load_conflict_resolutions(ROOT)

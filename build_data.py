@@ -163,7 +163,6 @@ class SourceBundle:
     accolades: list
     canonical_map_stats: list
     event_pages: list
-    deprecated_player_stats: list
 
 
 def load_source_bundle():
@@ -181,10 +180,6 @@ def load_source_bundle():
     tpart  = json.load(open(_p('team_participation.json')))    # [{Team,Event,Game,Place}] ALL team placements
     apath = _p('player_accolades.json')
     accolades = json.load(open(apath))
-    # Deprecated audit snapshot. It is returned for compatibility with analysis
-    # scripts but is never allowed to feed a displayed metric.
-    spath = _p('player_stats.json')
-    player_stats = json.load(open(spath)) if os.path.exists(spath) else []
     pspath = _p('player_stats_participants.json')
     player_stats_participants = json.load(open(pspath))
     epath = _p('player_stats_participants.events.json')
@@ -203,17 +198,6 @@ def load_source_bundle():
         accolades=accolades,
         canonical_map_stats=player_stats_participants,
         event_pages=event_pages,
-        deprecated_player_stats=player_stats,
-    )
-
-
-def load_sources():
-    """Compatibility tuple for older analysis scripts; prefer load_source_bundle()."""
-    s = load_source_bundle()
-    return (
-        s.events_all, s.events, s.player_wins, s.champs_wins,
-        s.player_participation, s.team_participation, s.accolades,
-        s.deprecated_player_stats, s.canonical_map_stats, s.event_pages,
     )
 
 

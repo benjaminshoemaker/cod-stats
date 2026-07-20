@@ -11,7 +11,7 @@ import build_data
 
 def _copy_build_sources(tmp_path):
     import shutil
-    for name in build_data.REQUIRED_CORE_SOURCE_FILES | {"player_stats.json"}:
+    for name in build_data.REQUIRED_CORE_SOURCE_FILES:
         source = build_data._p(name)
         if build_data.os.path.exists(source):
             target = tmp_path / name
@@ -219,9 +219,11 @@ def test_champs_2026_player_stats_are_complete():
 
 
 def test_skill_stats_use_the_canonical_major_map_source_only(data):
-    events_all, events, *rest = build_data.load_sources()
-    event_pages = rest[-1]
-    pwins, _champs, ppart, tpart, accolades, deprecated_stats, canonical_stats = rest[:-1]
+    sources = build_data.load_source_bundle()
+    events_all, events = sources.events_all, sources.events
+    event_pages = sources.event_pages
+    pwins, ppart, tpart = sources.player_wins, sources.player_participation, sources.team_participation
+    accolades, canonical_stats = sources.accolades, sources.canonical_map_stats
     registry = build_data.build_event_registry(
         events_all, event_pages, pwins, ppart, tpart, canonical_stats, accolades
     )
@@ -243,7 +245,7 @@ def test_skill_stats_use_the_canonical_major_map_source_only(data):
     )
 
 
-def test_deprecated_player_stats_snapshot_is_not_a_metric_input(monkeypatch, tmp_path):
+def test_retired_broad_player_stats_snapshot_is_not_required(monkeypatch, tmp_path):
     import shutil
     for name in build_data.REQUIRED_CORE_SOURCE_FILES:
         if name in {"player_stats_participants.json", "source_manifest.json"}:
@@ -256,12 +258,7 @@ def test_deprecated_player_stats_snapshot_is_not_a_metric_input(monkeypatch, tmp
         "TeamVs": "Fariko Impact", "Map": "Yemen", "SeriesId": "one",
         "Kills": 20, "Deaths": 10,
     }]
-    deprecated = [{
-        **canonical[0], "Event": "Not A Major", "EventId": "Not/A/Major",
-        "Kills": 999, "Deaths": 1,
-    }]
     json.dump(canonical, open(tmp_path / "player_stats_participants.json", "w"))
-    json.dump(deprecated, open(tmp_path / "player_stats.json", "w"))
     monkeypatch.setattr(build_data, "HERE", str(tmp_path))
     monkeypatch.setattr(build_data, "validate_source_inputs", lambda: None)
 
@@ -785,8 +782,8 @@ def test_role_stints_support_game_bounded_switches(monkeypatch):
     ]
     monkeypatch.setattr(build_data, "load_role_stints", lambda: roles)
 
-    events_all, events, *_ = build_data.load_sources()
-    S = build_data.season_context(events, events_all)
+    sources = build_data.load_source_bundle()
+    S = build_data.season_context(sources.events, sources.events_all)
     stints = build_data.index_role_stints(
         build_data.load_role_stints(),
         {build_data.mkey(n): n for n, _ in build_data.PUBLISHED},
@@ -805,8 +802,8 @@ def test_role_stints_reject_overlapping_bounds(monkeypatch):
     ]
     monkeypatch.setattr(build_data, "load_role_stints", lambda: roles)
 
-    events_all, events, *_ = build_data.load_sources()
-    S = build_data.season_context(events, events_all)
+    sources = build_data.load_source_bundle()
+    S = build_data.season_context(sources.events, sources.events_all)
     with pytest.raises(RuntimeError, match="overlapping role stints"):
         build_data.index_role_stints(
             build_data.load_role_stints(),
@@ -872,9 +869,14 @@ def test_duplicate_player_event_keeps_best_placement(monkeypatch, tmp_path):
     ]
     json.dump(rows, open(tmp_path / "player_participation.json", "w"))
     _use_tmp_sources(monkeypatch, tmp_path)
-    events_all, events, pwins, champs_rows, ppart, tpart, accolades, player_stats, player_stats_participants, event_pages = build_data.load_sources()
+    sources = build_data.load_source_bundle()
+    events_all, ppart, tpart = sources.events_all, sources.player_participation, sources.team_participation
+    pwins, accolades, event_pages = sources.player_wins, sources.accolades, sources.event_pages
+    player_stats_participants = sources.canonical_map_stats
     top = {build_data.mkey(n) for n, _ in build_data.PUBLISHED}
-    registry = build_data.build_event_registry(events_all, event_pages, pwins, ppart, tpart, player_stats, accolades)
+    registry = build_data.build_event_registry(
+        events_all, event_pages, pwins, ppart, tpart, player_stats_participants, accolades
+    )
     _, part_rows = build_data.index_participation(
         ppart, top, registry, build_data.load_conflict_resolutions(tmp_path)
     )

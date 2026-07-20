@@ -102,6 +102,7 @@ with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" ab
 - `source_manifest.json` — timestamp with honest precision, refresh batch ID, query/schema version, scope, row count, and SHA-256 fingerprint for every source snapshot
 - `data_source_policy.json` / `source_conflicts.json` — per-entity authority and merge rules plus the conflict ledger
 
-`player_stats.json` is a deprecated broad audit snapshot and is not consumed by displayed metrics.
+The former broad `player_stats.json` snapshot was retired after the major-event
+source became canonical; it is neither fetched nor stored in the active repository.
 
 These are refreshed by `scripts/fetch_source.py`.

@@ -134,7 +134,7 @@ def test_source_policy_names_authority_and_conflict_action():
     map_policy = policy["entities"]["mapObservation"]
     assert map_policy["authority"] == "player_stats_participants.json"
     assert map_policy["conflictAction"] == "fail"
-    assert "player_stats.json" in map_policy["deprecatedSources"]
+    assert "player_stats.json" in map_policy["retiredSources"]
 
 
 def test_committed_source_manifest_and_quarantine_are_current():
@@ -142,7 +142,8 @@ def test_committed_source_manifest_and_quarantine_are_current():
         source_model.ROOT, required=build_data.REQUIRED_CORE_SOURCE_FILES
     )
     assert manifest["sources"]["player_stats_participants.json"]["status"] == "canonical"
-    assert manifest["sources"]["player_stats.json"]["status"] == "deprecated"
+    assert "player_stats.json" not in manifest["sources"]
+    assert not (source_model.ROOT / "player_stats.json").exists()
     assert manifest["schemaVersion"] == 2
     assert {entry["timestampPrecision"] for entry in manifest["sources"].values()} == {"date"}
     assert {entry["refreshBatchId"] for entry in manifest["sources"].values()} == {

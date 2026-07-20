@@ -6,9 +6,8 @@ individual-skill stats. It is pulled from the CoD Esports Wiki Cargo
 participant with usable rows. Player profiles, similarity, KOR, validation, and
 analysis all derive from this snapshot.
 
-The older `player_stats.json` player/title-wide pull remains only as a
-deprecated audit snapshot. It includes non-major events and cannot feed a
-displayed metric.
+The older `player_stats.json` player/title-wide pull was retired and removed.
+It included non-major events and no longer has an active fetch or storage path.
 
 ## Why The File Is Slim
 

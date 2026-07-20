@@ -32,7 +32,6 @@ SOURCE_METADATA = {
     "player_accolades.json": ("canonical", "CoD Esports Wiki Cargo", "Supported formal award types joined to tournaments"),
     "player_stats_participants.json": ("canonical", "CoD Esports Wiki Cargo PlayerStats", "Map observations fetched by canonical Major/Premier event page"),
     "player_stats_participants.events.json": ("canonical", "CoD Esports Wiki Cargo", "Canonical played Major/Premier event-page registry for PlayerStats"),
-    "player_stats.json": ("deprecated", "CoD Esports Wiki Cargo PlayerStats", "Deprecated player/title-wide audit snapshot; never consumed by displayed metrics"),
     "legacy_player_event_stats.json": ("supplemental", "codcompstats legacy wiki pages", "Major-only event aggregate K/D coverage"),
     "player_roles.json": ("curated", "cod_stats research", "Curated player role stints"),
     "team_logos.json": ("supplemental", "CoD Esports Wiki assets", "Team display names and cached logo paths"),
@@ -53,7 +52,6 @@ SOURCE_QUERY_VERSIONS = {
     "player_accolades.json": "cargo-formal-accolades-v1",
     "player_stats_participants.json": "cargo-major-event-player-stats-v2",
     "player_stats_participants.events.json": "cargo-major-event-registry-v1",
-    "player_stats.json": "cargo-broad-player-stats-v1",
 }
 
 

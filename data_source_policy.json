@@ -29,7 +29,7 @@
     },
     "mapObservation": {
       "authority": "player_stats_participants.json",
-      "deprecatedSources": ["player_stats.json"],
+      "retiredSources": ["player_stats.json"],
       "identity": ["upstream StatId when available", "otherwise player-event-series-map-mode-team-matchup occurrence"],
       "scope": "canonical Major/Premier event registry only",
       "conflictAction": "fail"

@@ -47,7 +47,6 @@ UA = "Mozilla/5.0 (compatible; cod-stats-source-fetch/1.0; +https://mapfive.app)
 API = "https://cod-esports.fandom.com/api.php"
 PAGE = 500          # cargo API row cap per request
 PAUSE = 5           # courtesy sleep between successful requests (seconds)
-PLAYER_STATS_BATCH = 10
 PLAYER_STATS_FIELDS = (
     "StatId", "Player", "PlayerName", "PlayerLink", "Event", "EventId", "Game", "Mode", "Date",
     "Team", "TeamVs", "Map", "SeriesId", "Win", "Kills", "Deaths",
@@ -218,61 +217,6 @@ def _write_json(path, obj):
     os.replace(tmp, path)
 
 
-def _active_skill_stat_games(players):
-    """Return published player-game pairs where the player was active."""
-    from build_data import ASOF, DROP_EVENTS, DROP_GAMES, _played, mkey
-
-    ppart = json.load(open(os.path.join(HERE, "player_participation.json")))
-    player_set = {mkey(p) for p in players}
-    display = {mkey(p): p for p in players}
-    active = {p: set() for p in players}
-    for r in ppart:
-        mk = mkey(r.get("Player") or "")
-        if mk not in player_set:
-            continue
-        if r.get("Game") in DROP_GAMES or r.get("Event") in DROP_EVENTS:
-            continue
-        if not _played(r.get("Date")):
-            continue
-        active[display[mk]].add(r.get("Game"))
-    return active
-
-
-def _skill_stat_chunks(players, season_order):
-    """Limit stat pulls to player-game chunks where the leaderboard player was active."""
-    active = _active_skill_stat_games(players)
-
-    order = {g: i for i, g in enumerate(season_order)}
-    chunks = []
-    for player in players:
-        for game in sorted(active[player], key=lambda g: order.get(g, 999)):
-            chunks.append({"player": player, "game": game, "key": f"{player}|{game}"})
-    return chunks
-
-
-def _skill_stat_game_chunks(players, season_order):
-    """Fetch stats by game/player batch while preserving player-game checkpoints."""
-    active = _active_skill_stat_games(players)
-    order = {g: i for i, g in enumerate(season_order)}
-    player_order = {p: i for i, p in enumerate(players)}
-    by_game = {}
-    for player, games in active.items():
-        for game in games:
-            by_game.setdefault(game, []).append(player)
-    chunks = []
-    for game in sorted(by_game, key=lambda g: order.get(g, 999)):
-        game_players = sorted(by_game[game], key=lambda p: player_order[p])
-        for start in range(0, len(game_players), PLAYER_STATS_BATCH):
-            batch = game_players[start:start + PLAYER_STATS_BATCH]
-            chunks.append({
-                "game": game,
-                "players": batch,
-                "keys": {f"{player}|{game}" for player in batch},
-                "batch": f"{start // PLAYER_STATS_BATCH + 1}/{(len(game_players) + PLAYER_STATS_BATCH - 1) // PLAYER_STATS_BATCH}",
-            })
-    return chunks
-
-
 def _stat_row_key(row):
     return tuple(row.get(k) or "" for k in PLAYER_STATS_FIELDS)
 
@@ -318,76 +262,6 @@ def slim_player_stat_rows(rows):
         out["Deaths"] = deaths
         slim.append(out)
     return slim
-
-
-def _completed_chunks_from_rows(rows):
-    return {f"{r.get('Player')}|{r.get('Game')}" for r in rows if r.get("Player") and r.get("Game")}
-
-
-def fetch_player_stats(max_chunks=None):
-    sys.path.insert(0, HERE)
-    from build_data import ASOF, PUBLISHED, load_sources, season_context
-
-    players = [name for name, _ in PUBLISHED]
-    partial_path = os.path.join(HERE, "player_stats.partial.json")
-    progress_path = os.path.join(HERE, "player_stats.progress.json")
-    rows = _load_json(partial_path, [])
-    progress = _load_json(progress_path, {"schema": 1, "completed": []})
-    done = set(progress.get("completed", [])) | _completed_chunks_from_rows(rows)
-    events_all, events, *_ = load_sources()
-    season_order = season_context(events, events_all).order
-    player_game_chunks = _skill_stat_chunks(players, season_order)
-    game_chunks = _skill_stat_game_chunks(players, season_order)
-
-    def params_for(players_for_game, game):
-        return {
-        "tables": "PlayerStats=PS,PlayerRedirects=PR,Tournaments=TO",
-        "fields": ("PR.OverviewPage=Player,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
-                   "PS._ID=StatId,TO.Name=Event,PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
-                   "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Kills=Kills,"
-                   "PS.Deaths=Deaths,PS.KDRatio=KDRatio,PS.Map=Map,PS.SeriesId=SeriesId,PS.Win=Win,"
-                   "PS.SDKills=SDKills,PS.SDDeaths=SDDeaths,PS.SDFirstKill=SDFirstKill,"
-                   "PS.SDFirstDeath=SDFirstDeath,PS.SDPlants=SDPlants,PS.SDDefuses=SDDefuses,"
-                   "PS.HPKills=HPKills,PS.HPDeaths=HPDeaths,PS.HPTime=HPTime,"
-                   "PS.ConKills=ConKills,PS.ConDeaths=ConDeaths,PS.ConCaptures=ConCaptures,"
-                   "PS.OVRKills=OVRKills,PS.OVRDeaths=OVRDeaths,PS.OVRCaps=OVRCaps,"
-                   "PS.CTFKills=CTFKills,PS.CTFDeaths=CTFDeaths,PS.CTFCaptures=CTFCaptures,"
-                   "PS.UPKills=UPKills,PS.UPDeaths=UPDeaths,"
-                   "PS.BLIKills=BLIKills,PS.BLIDeaths=BLIDeaths,PS.BLICaps=BLICaps,"
-                   "PS.DomKills=DomKills,PS.DomDeaths=DomDeaths,PS.DomCaptures=DomCaptures"),
-        "where": (f"PR.OverviewPage IN({_quoted(players_for_game)}) AND PS.GameTitle IS NOT NULL "
-                  f"AND PS.GameTitle={_quoted([game])} "
-                  f"AND PS.Date <= \"{ASOF}\""),
-        "join_on": "PS.PlayerLink=PR.AllName,PS.TournamentPage=TO.OverviewPage",
-        "order_by": "PS.Date,PS.TournamentPage,PR.OverviewPage,PS.Gamemode",
-        }
-
-    for i, chunk in enumerate(game_chunks, 1):
-        remaining_keys = chunk["keys"] - done
-        if not remaining_keys:
-            print(f"[{i}/{len(game_chunks)}] skipping {chunk['game']} batch {chunk['batch']} (already in partial)")
-            continue
-        if max_chunks is not None and max_chunks <= 0:
-            break
-        print(f"[{i}/{len(game_chunks)}] fetching {chunk['game']} batch {chunk['batch']} ({len(remaining_keys)} player-game chunks)")
-        rows = _merge_stat_rows(rows, flat(cargo_all(params_for(chunk["players"], chunk["game"]))))
-        done |= chunk["keys"]
-        _write_json(partial_path, rows)
-        progress = {"schema": 1, "completed": sorted(done)}
-        _write_json(progress_path, progress)
-        if max_chunks is not None:
-            max_chunks -= 1
-        time.sleep(PAUSE)
-
-    all_done = {c["key"] for c in player_game_chunks} <= done
-    if all_done:
-        save("player_stats.json", slim_player_stat_rows(rows))
-        if os.path.exists(partial_path):
-            os.remove(partial_path)
-        if os.path.exists(progress_path):
-            os.remove(progress_path)
-    else:
-        print(f"checkpointed {len(rows)} rows for {len(done)}/{len(player_game_chunks)} chunks in player_stats.partial.json")
 
 
 def _participant_stat_events(refresh=False):

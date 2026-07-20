@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-07-20T04:49:40Z",
+  "generatedAt": "2026-07-20T05:00:46Z",
   "latestRefreshBatchId": "snapshot-2026-07-19-import",
   "sources": {
     "major_events.json": {
@@ -106,19 +106,6 @@
       "queryScope": "Canonical played Major/Premier event-page registry for PlayerStats",
       "rowCount": 164,
       "sha256": "08e1632498bbf341d9eed91859de3bc63e591ad1c65575d819bfe5b640ef283d"
-    },
-    "player_stats.json": {
-      "status": "deprecated",
-      "source": "CoD Esports Wiki Cargo PlayerStats",
-      "provenanceTimestamp": "2026-07-19",
-      "timestampKind": "snapshotDate",
-      "timestampPrecision": "date",
-      "refreshBatchId": "snapshot-2026-07-19-import",
-      "sourceSchemaVersion": 1,
-      "queryVersion": "cargo-broad-player-stats-v1",
-      "queryScope": "Deprecated player/title-wide audit snapshot; never consumed by displayed metrics",
-      "rowCount": 82076,
-      "sha256": "fc1e590487bd25f1a43ff714c0b1e3206e1b25ee9cff360cc99a865997e759b7"
     },
     "legacy_player_event_stats.json": {
       "status": "supplemental",
