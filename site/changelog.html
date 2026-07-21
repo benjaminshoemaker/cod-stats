@@ -42,6 +42,13 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-07-20', tag:'Methodology', title:'KOR rebuilt from the complete major-stat snapshot',
+   body:`Kills Over Replacement and player skill samples now use the completed upstream-ID backfill across all
+   <strong>164 registered event pages</strong>, replacing the earlier partial PlayerStats snapshot. The canonical file
+   contains 86,290 unique player-map rows, each tied to its upstream StatId. Added historical coverage changes some
+   title/mode baselines and ranks: for example, Black Ops 2 respawn replacement K/map moves from 24.24 to 24.27 while
+   Scump remains #1, and the largest shared-player rank movement is SiLLY's Infinite Warfare S&amp;D rank from #41 to
+   #34. Major-win and GOAT rankings are unchanged.`},
   {date:'2026-07-19', tag:'Methodology', title:'Player statistics now use one major-only source',
    body:`Player-page and comparison K/D, mode splits, map counts, and similarity features now use the same
    <strong>Major/Premier event-scoped PlayerStats snapshot</strong> as KOR. The former profile-stat path also included

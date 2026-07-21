@@ -174,10 +174,10 @@ def test_current_bo7_major_roster_has_participant_stat_rows():
         return build_data.mkey(name or "")
 
     stat_players = {
-        (r.get("Event"), r.get("Team"), key(r.get("Player") or r.get("PlayerName")))
+        (r.get("EventId"), r.get("Team"), key(r.get("Player") or r.get("PlayerName")))
         for r in stats
         if r.get("Game") == "Black Ops 7"
-        and r.get("Event") in {roster_event, stat_event_page}
+        and r.get("EventId") == stat_event_page
     }
     roster_rows = [
         r for r in participation
@@ -567,15 +567,15 @@ def test_kills_over_replacement_is_title_and_mode_specific(data):
     assert set(kor["meta"]["splits"]) == {"respawn", "snd"}
 
     bo2 = kor["games"]["Black Ops 2"]["splits"]
-    assert bo2["respawn"]["replacementKpm"] == 24.24
-    assert bo2["snd"]["replacementKpm"] == 5.69
+    assert bo2["respawn"]["replacementKpm"] == 24.27
+    assert bo2["snd"]["replacementKpm"] == 5.5
     assert bo2["respawn"]["rows"][0]["player"] == "Scump"
     assert bo2["respawn"]["rows"][0]["rank"] == 1
-    assert bo2["respawn"]["rows"][0]["korPerMap"] == 5.036
+    assert bo2["respawn"]["rows"][0]["korPerMap"] == 5.161
 
     xlnc = next(r for r in bo2["snd"]["rows"] if r["player"] == "XLNC")
     assert xlnc["rank"] == 1
-    assert xlnc["korPerMap"] == 3.391
+    assert xlnc["korPerMap"] == 3.583
     assert xlnc["medianOpponentPlace"] == 7.0
     assert xlnc["top8OpponentPct"] == 0.667
 

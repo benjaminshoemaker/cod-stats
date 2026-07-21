@@ -145,8 +145,15 @@ def test_committed_source_manifest_and_quarantine_are_current():
     assert "player_stats.json" not in manifest["sources"]
     assert not (source_model.ROOT / "player_stats.json").exists()
     assert manifest["schemaVersion"] == 2
-    assert {entry["timestampPrecision"] for entry in manifest["sources"].values()} == {"date"}
-    assert {entry["refreshBatchId"] for entry in manifest["sources"].values()} == {
+    refreshed = manifest["sources"]["player_stats_participants.json"]
+    assert refreshed["timestampPrecision"] == "second"
+    assert refreshed["refreshBatchId"].startswith("refresh-")
+    imported = {
+        name: entry for name, entry in manifest["sources"].items()
+        if name != "player_stats_participants.json"
+    }
+    assert {entry["timestampPrecision"] for entry in imported.values()} == {"date"}
+    assert {entry["refreshBatchId"] for entry in imported.values()} == {
         "snapshot-2026-07-19-import"
     }
     assert all(entry["queryVersion"] for entry in manifest["sources"].values())

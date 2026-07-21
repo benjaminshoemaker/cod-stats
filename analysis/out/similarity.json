@@ -33,13 +33,13 @@
   },
   "best_k": 2,
   "silhouette": {
-    "2": 0.35317808037498577,
-    "3": 0.18039883253990424,
-    "4": 0.17719092849847262,
-    "5": 0.18725554770252228,
-    "6": 0.14955558227825333,
-    "7": 0.14278746866790148,
-    "8": 0.13701668251974317
+    "2": 0.3531760702277304,
+    "3": 0.18040009861171352,
+    "4": 0.17706183810886095,
+    "5": 0.1871564128073207,
+    "6": 0.1497977187622811,
+    "7": 0.14307896817358592,
+    "8": 0.1373431729967896
   },
   "comps": {
     "Crimsix": [
@@ -121,7 +121,7 @@
       },
       {
         "name": "Cellium",
-        "score": 77.9,
+        "score": 78.0,
         "drivers": [
           [
             "Win conversion",
@@ -148,7 +148,7 @@
           ],
           [
             "Win conversion",
-            0.229
+            0.23
           ],
           [
             "Peak season value",
@@ -192,7 +192,7 @@
           ],
           [
             "Career span (yrs)",
-            0.147
+            0.146
           ]
         ],
         "cowin": 0.0
@@ -203,11 +203,11 @@
         "drivers": [
           [
             "World Championships",
-            0.222
+            0.221
           ],
           [
             "Peak season value",
-            0.18
+            0.179
           ],
           [
             "Finals rate (top-2)",
@@ -277,11 +277,11 @@
     "Karma": [
       {
         "name": "ACHES",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Primary role",
-            0.29
+            0.291
           ],
           [
             "Win conversion",
@@ -308,7 +308,7 @@
           ],
           [
             "Peak season value",
-            0.119
+            0.12
           ]
         ],
         "cowin": 0.38
@@ -323,11 +323,11 @@
           ],
           [
             "World Championships",
-            0.232
+            0.231
           ],
           [
             "Era-adjusted wins",
-            0.102
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -372,7 +372,7 @@
       },
       {
         "name": "Kenny",
-        "score": 84.7,
+        "score": 84.8,
         "drivers": [
           [
             "Win conversion",
@@ -405,7 +405,7 @@
           ],
           [
             "Peak season value",
-            0.119
+            0.12
           ]
         ],
         "cowin": 0.38
@@ -416,7 +416,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.207
+            0.208
           ],
           [
             "Avg tenure (yrs/team)",
@@ -566,11 +566,11 @@
       },
       {
         "name": "Karma",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Primary role",
-            0.29
+            0.291
           ],
           [
             "Win conversion",
@@ -637,14 +637,14 @@
           ],
           [
             "Win conversion",
-            0.168
+            0.169
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Kenny",
-        "score": 87.0,
+        "score": 86.9,
         "drivers": [
           [
             "Primary role",
@@ -675,7 +675,7 @@
           ],
           [
             "World Championships",
-            0.093
+            0.092
           ]
         ],
         "cowin": 0.08
@@ -713,7 +713,7 @@
           ],
           [
             "Teams played for",
-            0.128
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -724,7 +724,7 @@
         "drivers": [
           [
             "World Championships",
-            0.212
+            0.213
           ],
           [
             "Peak season value",
@@ -764,7 +764,7 @@
         "drivers": [
           [
             "Primary role",
-            0.224
+            0.225
           ],
           [
             "World Championships",
@@ -772,7 +772,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.106
+            0.107
           ]
         ],
         "cowin": 0.14
@@ -857,11 +857,11 @@
     "Simp": [
       {
         "name": "aBeZy",
-        "score": 91.8,
+        "score": 91.7,
         "drivers": [
           [
             "Win conversion",
-            0.223
+            0.222
           ],
           [
             "World Championships",
@@ -880,11 +880,11 @@
         "drivers": [
           [
             "World Championships",
-            0.222
+            0.221
           ],
           [
             "Peak season value",
-            0.18
+            0.179
           ],
           [
             "Finals rate (top-2)",
@@ -895,11 +895,11 @@
       },
       {
         "name": "Shotzzy",
-        "score": 84.8,
+        "score": 84.7,
         "drivers": [
           [
             "Peak season value",
-            0.341
+            0.34
           ],
           [
             "Win conversion",
@@ -914,19 +914,19 @@
       },
       {
         "name": "BigTymeR",
-        "score": 83.1,
+        "score": 82.9,
         "drivers": [
           [
             "World Championships",
-            0.383
+            0.38
           ],
           [
             "Era-adjusted wins",
-            0.119
+            0.118
           ],
           [
             "Avg tenure (yrs/team)",
-            0.102
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -973,11 +973,11 @@
     "aBeZy": [
       {
         "name": "Simp",
-        "score": 91.8,
+        "score": 91.7,
         "drivers": [
           [
             "Win conversion",
-            0.223
+            0.222
           ],
           [
             "World Championships",
@@ -1093,7 +1093,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.207
+            0.208
           ],
           [
             "Avg tenure (yrs/team)",
@@ -1120,26 +1120,26 @@
           ],
           [
             "World Championships",
-            0.116
+            0.117
           ]
         ],
         "cowin": 0.25
       },
       {
         "name": "BigTymeR",
-        "score": 84.3,
+        "score": 84.2,
         "drivers": [
           [
             "Win conversion",
-            0.236
+            0.234
           ],
           [
             "World Championships",
-            0.207
+            0.205
           ],
           [
             "Respawn K/D",
-            0.113
+            0.114
           ]
         ],
         "cowin": 0.0
@@ -1158,7 +1158,7 @@
           ],
           [
             "On-record K/D",
-            0.11
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -1224,7 +1224,7 @@
       },
       {
         "name": "iLLeY",
-        "score": 86.8,
+        "score": 86.9,
         "drivers": [
           [
             "World Championships",
@@ -1243,7 +1243,7 @@
       },
       {
         "name": "Drazah",
-        "score": 86.7,
+        "score": 86.8,
         "drivers": [
           [
             "Primary role",
@@ -1300,11 +1300,11 @@
       },
       {
         "name": "Simp",
-        "score": 84.8,
+        "score": 84.7,
         "drivers": [
           [
             "Peak season value",
-            0.341
+            0.34
           ],
           [
             "Win conversion",
@@ -1390,7 +1390,7 @@
           ],
           [
             "On-record K/D",
-            0.08
+            0.079
           ]
         ],
         "cowin": 0.13
@@ -1437,11 +1437,11 @@
     "MerK": [
       {
         "name": "BigTymeR",
-        "score": 90.4,
+        "score": 90.3,
         "drivers": [
           [
             "Win conversion",
-            0.362
+            0.36
           ],
           [
             "S&D K/D",
@@ -1506,7 +1506,7 @@
           ],
           [
             "On-record K/D",
-            0.11
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -1517,7 +1517,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.509
+            0.51
           ],
           [
             "S&D K/D",
@@ -1557,15 +1557,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.28
+            0.281
           ],
           [
             "S&D K/D",
             0.121
           ],
           [
-            "On-record K/D",
-            0.111
+            "Era-adjusted wins",
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -1576,7 +1576,7 @@
         "drivers": [
           [
             "World Championships",
-            0.41
+            0.411
           ],
           [
             "Avg tenure (yrs/team)",
@@ -1622,7 +1622,7 @@
           ],
           [
             "Teams played for",
-            0.064
+            0.065
           ]
         ],
         "cowin": 0.0
@@ -1660,7 +1660,7 @@
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ]
         ],
         "cowin": 0.12
@@ -1669,7 +1669,7 @@
     "SlasheR": [
       {
         "name": "Octane",
-        "score": 95.6,
+        "score": 95.5,
         "drivers": [
           [
             "Career span (yrs)",
@@ -1677,7 +1677,7 @@
           ],
           [
             "Teams played for",
-            0.145
+            0.144
           ],
           [
             "Win conversion",
@@ -1688,7 +1688,7 @@
       },
       {
         "name": "Dashy",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -1753,7 +1753,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Distinct titles won",
@@ -1776,7 +1776,7 @@
           ],
           [
             "Win conversion",
-            0.168
+            0.169
           ]
         ],
         "cowin": 0.0
@@ -1789,7 +1789,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.331
+            0.332
           ],
           [
             "World Championships",
@@ -1854,7 +1854,7 @@
           ],
           [
             "World Championships",
-            0.093
+            0.092
           ]
         ],
         "cowin": 0.08
@@ -1873,7 +1873,7 @@
           ],
           [
             "World Championships",
-            0.116
+            0.117
           ]
         ],
         "cowin": 0.25
@@ -1884,7 +1884,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.513
+            0.512
           ],
           [
             "Avg tenure (yrs/team)",
@@ -1943,7 +1943,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.309
+            0.31
           ],
           [
             "Era-adjusted wins",
@@ -1962,7 +1962,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.365
+            0.366
           ],
           [
             "Primary role",
@@ -1970,7 +1970,7 @@
           ],
           [
             "Interactions per map",
-            0.069
+            0.068
           ]
         ],
         "cowin": 0.0
@@ -2017,7 +2017,7 @@
     "Octane": [
       {
         "name": "SlasheR",
-        "score": 95.6,
+        "score": 95.5,
         "drivers": [
           [
             "Career span (yrs)",
@@ -2025,7 +2025,7 @@
           ],
           [
             "Teams played for",
-            0.145
+            0.144
           ],
           [
             "Win conversion",
@@ -2044,7 +2044,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.209
+            0.208
           ],
           [
             "Teams played for",
@@ -2055,11 +2055,11 @@
       },
       {
         "name": "Skyz",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Peak season value",
-            0.373
+            0.374
           ],
           [
             "Distinct titles won",
@@ -2101,7 +2101,7 @@
           ],
           [
             "Teams played for",
-            0.128
+            0.129
           ],
           [
             "Avg tenure (yrs/team)",
@@ -2124,7 +2124,7 @@
           ],
           [
             "Respawn K/D",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.12
@@ -2156,7 +2156,7 @@
         "drivers": [
           [
             "Primary role",
-            0.361
+            0.362
           ],
           [
             "Interactions per map",
@@ -2175,7 +2175,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.365
+            0.366
           ],
           [
             "Primary role",
@@ -2183,7 +2183,7 @@
           ],
           [
             "Interactions per map",
-            0.069
+            0.068
           ]
         ],
         "cowin": 0.0
@@ -2194,15 +2194,15 @@
         "drivers": [
           [
             "Primary role",
-            0.312
+            0.313
           ],
           [
             "Era-adjusted wins",
-            0.13
+            0.131
           ],
           [
             "Win conversion",
-            0.085
+            0.086
           ]
         ],
         "cowin": 0.27
@@ -2213,7 +2213,7 @@
         "drivers": [
           [
             "Primary role",
-            0.3
+            0.301
           ],
           [
             "World Championships",
@@ -2240,7 +2240,7 @@
           ],
           [
             "Respawn K/D",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.12
@@ -2249,11 +2249,11 @@
     "BigTymeR": [
       {
         "name": "MerK",
-        "score": 90.4,
+        "score": 90.3,
         "drivers": [
           [
             "Win conversion",
-            0.362
+            0.36
           ],
           [
             "S&D K/D",
@@ -2268,19 +2268,19 @@
       },
       {
         "name": "Cellium",
-        "score": 84.3,
+        "score": 84.2,
         "drivers": [
           [
             "Win conversion",
-            0.236
+            0.234
           ],
           [
             "World Championships",
-            0.207
+            0.205
           ],
           [
             "Respawn K/D",
-            0.113
+            0.114
           ]
         ],
         "cowin": 0.0
@@ -2324,25 +2324,6 @@
         "cowin": 0.0
       },
       {
-        "name": "Simp",
-        "score": 83.1,
-        "drivers": [
-          [
-            "World Championships",
-            0.383
-          ],
-          [
-            "Era-adjusted wins",
-            0.119
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.102
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
         "name": "HyDra",
         "score": 83.0,
         "drivers": [
@@ -2357,6 +2338,25 @@
           [
             "World Championships",
             0.19
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Simp",
+        "score": 82.9,
+        "drivers": [
+          [
+            "World Championships",
+            0.38
+          ],
+          [
+            "Era-adjusted wins",
+            0.118
+          ],
+          [
+            "Avg tenure (yrs/team)",
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -2407,7 +2407,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.299
+            0.3
           ],
           [
             "Primary role",
@@ -2441,7 +2441,7 @@
       },
       {
         "name": "Shotzzy",
-        "score": 86.7,
+        "score": 86.8,
         "drivers": [
           [
             "Primary role",
@@ -2542,7 +2542,7 @@
         "drivers": [
           [
             "Primary role",
-            0.3
+            0.301
           ],
           [
             "World Championships",
@@ -2616,11 +2616,11 @@
       },
       {
         "name": "Fero",
-        "score": 92.4,
+        "score": 92.3,
         "drivers": [
           [
             "Era-adjusted wins",
-            0.196
+            0.195
           ],
           [
             "Career span (yrs)",
@@ -2628,7 +2628,7 @@
           ],
           [
             "Win conversion",
-            0.155
+            0.154
           ]
         ],
         "cowin": 0.09
@@ -2639,15 +2639,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.301
+            0.3
           ],
           [
             "Career span (yrs)",
-            0.179
+            0.178
           ],
           [
             "Era-adjusted wins",
-            0.154
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -2658,30 +2658,30 @@
         "drivers": [
           [
             "Primary role",
-            0.359
+            0.357
           ],
           [
             "Peak season value",
-            0.099
+            0.098
           ],
           [
             "S&D K/D",
-            0.08
+            0.083
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "ProoFy",
-        "score": 91.6,
+        "score": 91.5,
         "drivers": [
           [
             "Primary role",
-            0.414
+            0.413
           ],
           [
             "Win conversion",
-            0.18
+            0.179
           ],
           [
             "Career span (yrs)",
@@ -2732,7 +2732,7 @@
       },
       {
         "name": "iLLeY",
-        "score": 87.5,
+        "score": 87.6,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -2755,7 +2755,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.299
+            0.3
           ],
           [
             "Primary role",
@@ -2782,7 +2782,7 @@
           ],
           [
             "Career span (yrs)",
-            0.147
+            0.146
           ]
         ],
         "cowin": 0.0
@@ -2812,7 +2812,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.259
+            0.26
           ],
           [
             "Win conversion",
@@ -2837,7 +2837,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.209
+            0.208
           ],
           [
             "Teams played for",
@@ -2848,7 +2848,7 @@
       },
       {
         "name": "SlasheR",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -2871,15 +2871,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.28
+            0.281
           ],
           [
             "S&D K/D",
             0.121
           ],
           [
-            "On-record K/D",
-            0.111
+            "Era-adjusted wins",
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -2898,7 +2898,7 @@
           ],
           [
             "On-record K/D",
-            0.08
+            0.079
           ]
         ],
         "cowin": 0.13
@@ -2932,7 +2932,7 @@
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ],
           [
             "Respawn K/D",
@@ -2949,7 +2949,7 @@
         "drivers": [
           [
             "World Championships",
-            0.305
+            0.306
           ],
           [
             "Era-adjusted wins",
@@ -2957,7 +2957,7 @@
           ],
           [
             "Win conversion",
-            0.092
+            0.093
           ]
         ],
         "cowin": 0.18
@@ -2972,7 +2972,7 @@
           ],
           [
             "Interactions per map",
-            0.136
+            0.135
           ],
           [
             "Deep-run rate (top-4)",
@@ -2991,11 +2991,11 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.155
+            0.156
           ],
           [
             "Interactions per map",
-            0.107
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -3006,7 +3006,7 @@
         "drivers": [
           [
             "World Championships",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -3025,7 +3025,7 @@
         "drivers": [
           [
             "World Championships",
-            0.343
+            0.344
           ],
           [
             "Teams played for",
@@ -3069,11 +3069,11 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.155
+            0.156
           ],
           [
             "Interactions per map",
-            0.107
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -3122,7 +3122,7 @@
         "drivers": [
           [
             "World Championships",
-            0.322
+            0.323
           ],
           [
             "Career span (yrs)",
@@ -3130,7 +3130,7 @@
           ],
           [
             "Peak season value",
-            0.126
+            0.127
           ]
         ],
         "cowin": 0.0
@@ -3177,7 +3177,7 @@
     "Parasite": [
       {
         "name": "ProoFy",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "World Championships",
@@ -3200,7 +3200,7 @@
         "drivers": [
           [
             "World Championships",
-            0.331
+            0.332
           ],
           [
             "Teams played for",
@@ -3261,7 +3261,7 @@
           ],
           [
             "Peak season value",
-            0.252
+            0.253
           ],
           [
             "Era-adjusted wins",
@@ -3297,7 +3297,7 @@
         "drivers": [
           [
             "Primary role",
-            0.361
+            0.362
           ],
           [
             "Interactions per map",
@@ -3312,11 +3312,11 @@
       },
       {
         "name": "Octane",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Peak season value",
-            0.373
+            0.374
           ],
           [
             "Distinct titles won",
@@ -3339,7 +3339,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Distinct titles won",
@@ -3354,7 +3354,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.331
+            0.332
           ],
           [
             "World Championships",
@@ -3392,7 +3392,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.361
+            0.362
           ],
           [
             "Era-adjusted wins",
@@ -3466,19 +3466,19 @@
       },
       {
         "name": "ZooMaa",
-        "score": 94.9,
+        "score": 95.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.277
+            0.279
           ],
           [
             "Interactions per map",
-            0.22
+            0.217
           ],
           [
             "Teams played for",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -3508,11 +3508,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.307
+            0.306
           ],
           [
             "Deep-run rate (top-4)",
-            0.133
+            0.132
           ],
           [
             "Career span (yrs)",
@@ -3529,7 +3529,7 @@
         "drivers": [
           [
             "World Championships",
-            0.305
+            0.306
           ],
           [
             "Era-adjusted wins",
@@ -3537,7 +3537,7 @@
           ],
           [
             "Win conversion",
-            0.092
+            0.093
           ]
         ],
         "cowin": 0.18
@@ -3582,11 +3582,11 @@
       },
       {
         "name": "Slacked",
-        "score": 90.8,
+        "score": 90.7,
         "drivers": [
           [
             "World Championships",
-            0.517
+            0.516
           ],
           [
             "Deep-run rate (top-4)",
@@ -3594,7 +3594,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.088
+            0.087
           ]
         ],
         "cowin": 0.0
@@ -3620,7 +3620,7 @@
       },
       {
         "name": "Bance",
-        "score": 88.9,
+        "score": 89.0,
         "drivers": [
           [
             "World Championships",
@@ -3664,7 +3664,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.161
+            0.16
           ],
           [
             "Deep-run rate (top-4)",
@@ -3702,7 +3702,7 @@
         "drivers": [
           [
             "World Championships",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -3717,19 +3717,19 @@
       },
       {
         "name": "Nadeshot",
-        "score": 92.0,
+        "score": 92.1,
         "drivers": [
           [
             "Teams played for",
-            0.201
+            0.202
           ],
           [
             "Win conversion",
-            0.173
+            0.174
           ],
           [
             "Deep-run rate (top-4)",
-            0.156
+            0.157
           ]
         ],
         "cowin": 0.0
@@ -3795,7 +3795,7 @@
       },
       {
         "name": "Dedo",
-        "score": 91.9,
+        "score": 92.0,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -3803,7 +3803,7 @@
           ],
           [
             "Interactions per map",
-            0.141
+            0.135
           ],
           [
             "Distinct titles won",
@@ -3822,7 +3822,7 @@
           ],
           [
             "Distinct titles won",
-            0.159
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -3864,7 +3864,7 @@
           ],
           [
             "Interactions per map",
-            0.112
+            0.111
           ]
         ],
         "cowin": 0.0
@@ -3877,14 +3877,14 @@
         "drivers": [
           [
             "Primary role",
-            0.462
+            0.463
           ],
           [
             "Peak season value",
             0.092
           ],
           [
-            "On-record K/D",
+            "Win conversion",
             0.074
           ]
         ],
@@ -3900,18 +3900,18 @@
           ],
           [
             "Teams played for",
-            0.154
+            0.155
           ],
           [
             "Avg tenure (yrs/team)",
-            0.119
+            0.12
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Sib",
-        "score": 90.1,
+        "score": 90.2,
         "drivers": [
           [
             "Teams played for",
@@ -3923,7 +3923,7 @@
           ],
           [
             "Respawn K/D",
-            0.128
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -3934,7 +3934,7 @@
         "drivers": [
           [
             "Primary role",
-            0.314
+            0.315
           ],
           [
             "Respawn K/D",
@@ -3942,7 +3942,7 @@
           ],
           [
             "On-record K/D",
-            0.144
+            0.143
           ]
         ],
         "cowin": 0.2
@@ -4031,7 +4031,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.161
+            0.16
           ],
           [
             "Deep-run rate (top-4)",
@@ -4054,7 +4054,7 @@
           ],
           [
             "Interactions per map",
-            0.136
+            0.135
           ],
           [
             "Deep-run rate (top-4)",
@@ -4064,12 +4064,31 @@
         "cowin": 0.3
       },
       {
+        "name": "ZooMaa",
+        "score": 92.0,
+        "drivers": [
+          [
+            "Avg tenure (yrs/team)",
+            0.25
+          ],
+          [
+            "Teams played for",
+            0.19
+          ],
+          [
+            "Interactions per map",
+            0.161
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Loony",
         "score": 92.0,
         "drivers": [
           [
             "Peak season value",
-            0.294
+            0.293
           ],
           [
             "Teams played for",
@@ -4081,43 +4100,24 @@
           ]
         ],
         "cowin": 0.1
-      },
-      {
-        "name": "ZooMaa",
-        "score": 92.0,
-        "drivers": [
-          [
-            "Avg tenure (yrs/team)",
-            0.249
-          ],
-          [
-            "Teams played for",
-            0.189
-          ],
-          [
-            "Interactions per map",
-            0.163
-          ]
-        ],
-        "cowin": 0.0
       }
     ],
     "ZooMaa": [
       {
         "name": "Jurd",
-        "score": 94.9,
+        "score": 95.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.277
+            0.279
           ],
           [
             "Interactions per map",
-            0.22
+            0.217
           ],
           [
             "Teams played for",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -4128,11 +4128,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.315
+            0.317
           ],
           [
             "Career span (yrs)",
-            0.239
+            0.241
           ],
           [
             "Peak season value",
@@ -4147,14 +4147,14 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.15
-          ],
-          [
-            "Interactions per map",
-            0.138
+            0.151
           ],
           [
             "Win conversion",
+            0.137
+          ],
+          [
+            "Interactions per map",
             0.136
           ]
         ],
@@ -4166,15 +4166,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.37
+            0.372
           ],
           [
             "Avg tenure (yrs/team)",
-            0.148
+            0.149
           ],
           [
             "Interactions per map",
-            0.145
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -4204,15 +4204,15 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.249
+            0.25
           ],
           [
             "Teams played for",
-            0.189
+            0.19
           ],
           [
             "Interactions per map",
-            0.163
+            0.161
           ]
         ],
         "cowin": 0.0
@@ -4225,11 +4225,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.307
+            0.306
           ],
           [
             "Deep-run rate (top-4)",
-            0.133
+            0.132
           ],
           [
             "Career span (yrs)",
@@ -4240,19 +4240,19 @@
       },
       {
         "name": "Tommey",
-        "score": 92.0,
+        "score": 92.1,
         "drivers": [
           [
             "Teams played for",
-            0.201
+            0.202
           ],
           [
             "Win conversion",
-            0.173
+            0.174
           ],
           [
             "Deep-run rate (top-4)",
-            0.156
+            0.157
           ]
         ],
         "cowin": 0.0
@@ -4263,15 +4263,15 @@
         "drivers": [
           [
             "Win conversion",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
-            0.186
+            0.187
           ],
           [
             "Interactions per map",
-            0.124
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -4282,11 +4282,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.234
+            0.233
           ],
           [
             "Interactions per map",
-            0.164
+            0.167
           ],
           [
             "Avg tenure (yrs/team)",
@@ -4301,11 +4301,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.32
+            0.321
           ],
           [
             "Career span (yrs)",
-            0.153
+            0.154
           ],
           [
             "Deep-run rate (top-4)",
@@ -4320,7 +4320,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.331
+            0.332
           ],
           [
             "Deep-run rate (top-4)",
@@ -4328,7 +4328,7 @@
           ],
           [
             "Finals rate (top-2)",
-            0.1
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -4341,7 +4341,7 @@
         "drivers": [
           [
             "Respawn K/D",
-            0.18
+            0.181
           ],
           [
             "Career span (yrs)",
@@ -4349,7 +4349,7 @@
           ],
           [
             "Win conversion",
-            0.152
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -4360,15 +4360,15 @@
         "drivers": [
           [
             "Primary role",
-            0.359
+            0.357
           ],
           [
             "Peak season value",
-            0.099
+            0.098
           ],
           [
             "S&D K/D",
-            0.08
+            0.083
           ]
         ],
         "cowin": 0.0
@@ -4398,7 +4398,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.265
+            0.266
           ],
           [
             "Era-adjusted wins",
@@ -4425,7 +4425,7 @@
           ],
           [
             "Interactions per map",
-            0.076
+            0.075
           ]
         ],
         "cowin": 0.09
@@ -4480,11 +4480,11 @@
           ],
           [
             "Interactions per map",
-            0.167
+            0.166
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ]
         ],
         "cowin": 0.0
@@ -4510,7 +4510,7 @@
       },
       {
         "name": "iLLeY",
-        "score": 85.8,
+        "score": 85.9,
         "drivers": [
           [
             "World Championships",
@@ -4552,11 +4552,11 @@
         "drivers": [
           [
             "World Championships",
-            0.226
+            0.227
           ],
           [
             "Interactions per map",
-            0.154
+            0.153
           ],
           [
             "Win conversion",
@@ -4581,7 +4581,7 @@
           ],
           [
             "On-record K/D",
-            0.126
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -4614,11 +4614,11 @@
             0.157
           ],
           [
-            "On-record K/D",
-            0.124
+            "Win conversion",
+            0.123
           ],
           [
-            "Win conversion",
+            "On-record K/D",
             0.123
           ]
         ],
@@ -4626,7 +4626,7 @@
       },
       {
         "name": "Parasite",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "World Championships",
@@ -4645,34 +4645,34 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 91.8,
+        "score": 91.6,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.358
+            0.347
           ],
           [
             "Teams played for",
-            0.271
+            0.262
           ],
           [
             "Era-adjusted wins",
-            0.165
+            0.16
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Enable",
-        "score": 91.6,
+        "score": 91.5,
         "drivers": [
           [
             "Primary role",
-            0.414
+            0.413
           ],
           [
             "Win conversion",
-            0.18
+            0.179
           ],
           [
             "Career span (yrs)",
@@ -4704,37 +4704,37 @@
       },
       {
         "name": "Dedo",
-        "score": 92.9,
+        "score": 93.0,
         "drivers": [
           [
             "Interactions per map",
-            0.215
+            0.211
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ],
           [
             "Peak season value",
-            0.109
+            0.11
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "MajorManiak",
-        "score": 91.5,
+        "score": 91.6,
         "drivers": [
           [
             "Win conversion",
             0.147
           ],
           [
-            "On-record K/D",
-            0.125
+            "Respawn K/D",
+            0.124
           ],
           [
-            "Respawn K/D",
+            "On-record K/D",
             0.124
           ]
         ],
@@ -4792,7 +4792,7 @@
           ],
           [
             "On-record K/D",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -4832,7 +4832,7 @@
           ],
           [
             "Interactions per map",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
@@ -4881,11 +4881,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.322
+            0.323
           ],
           [
             "Win conversion",
-            0.119
+            0.12
           ],
           [
             "Era-adjusted wins",
@@ -4929,7 +4929,7 @@
           ],
           [
             "On-record K/D",
-            0.126
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -4959,14 +4959,14 @@
         "drivers": [
           [
             "Peak season value",
-            0.364
-          ],
-          [
-            "Interactions per map",
-            0.141
+            0.365
           ],
           [
             "Era-adjusted wins",
+            0.141
+          ],
+          [
+            "Interactions per map",
             0.14
           ]
         ],
@@ -4978,7 +4978,7 @@
         "drivers": [
           [
             "World Championships",
-            0.331
+            0.332
           ],
           [
             "Teams played for",
@@ -5001,7 +5001,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.115
+            0.116
           ],
           [
             "Deep-run rate (top-4)",
@@ -5020,7 +5020,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Finals rate (top-2)",
@@ -5083,7 +5083,7 @@
           ],
           [
             "On-record K/D",
-            0.124
+            0.123
           ]
         ],
         "cowin": 0.0
@@ -5128,7 +5128,7 @@
       },
       {
         "name": "Ghosty",
-        "score": 87.4,
+        "score": 87.5,
         "drivers": [
           [
             "Primary role",
@@ -5176,7 +5176,7 @@
           ],
           [
             "Interactions per map",
-            0.173
+            0.172
           ],
           [
             "Finals rate (top-2)",
@@ -5187,11 +5187,11 @@
       },
       {
         "name": "Bance",
-        "score": 92.1,
+        "score": 92.2,
         "drivers": [
           [
             "Peak season value",
-            0.395
+            0.396
           ],
           [
             "Interactions per map",
@@ -5218,7 +5218,7 @@
           ],
           [
             "Interactions per map",
-            0.123
+            0.122
           ]
         ],
         "cowin": 0.0
@@ -5237,7 +5237,7 @@
           ],
           [
             "Finals rate (top-2)",
-            0.105
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -5288,11 +5288,11 @@
         "drivers": [
           [
             "Primary role",
-            0.483
+            0.484
           ],
           [
             "Avg tenure (yrs/team)",
-            0.159
+            0.16
           ],
           [
             "Teams played for",
@@ -5438,19 +5438,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 93.3,
+        "score": 93.1,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.219
+            0.213
           ],
           [
             "Teams played for",
-            0.137
+            0.133
           ],
           [
             "Peak season value",
-            0.131
+            0.128
           ]
         ],
         "cowin": 0.0
@@ -5461,15 +5461,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.37
+            0.372
           ],
           [
             "Avg tenure (yrs/team)",
-            0.148
+            0.149
           ],
           [
             "Interactions per map",
-            0.145
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -5497,7 +5497,7 @@
     "iLLeY": [
       {
         "name": "Prestinni",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Win conversion",
@@ -5516,7 +5516,7 @@
       },
       {
         "name": "HyDra",
-        "score": 87.5,
+        "score": 87.6,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -5535,7 +5535,7 @@
       },
       {
         "name": "Shotzzy",
-        "score": 86.8,
+        "score": 86.9,
         "drivers": [
           [
             "World Championships",
@@ -5573,7 +5573,7 @@
       },
       {
         "name": "Rambo",
-        "score": 85.8,
+        "score": 85.9,
         "drivers": [
           [
             "World Championships",
@@ -5617,7 +5617,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.461
+            0.46
           ],
           [
             "Era-adjusted wins",
@@ -5655,15 +5655,15 @@
         "drivers": [
           [
             "Primary role",
-            0.312
+            0.313
           ],
           [
             "Era-adjusted wins",
-            0.13
+            0.131
           ],
           [
             "Win conversion",
-            0.085
+            0.086
           ]
         ],
         "cowin": 0.27
@@ -5681,7 +5681,7 @@
             0.118
           ],
           [
-            "On-record K/D",
+            "Respawn K/D",
             0.104
           ]
         ],
@@ -5701,7 +5701,7 @@
           ],
           [
             "Career span (yrs)",
-            0.076
+            0.075
           ]
         ],
         "cowin": 0.0
@@ -5790,14 +5790,14 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.15
-          ],
-          [
-            "Interactions per map",
-            0.138
+            0.151
           ],
           [
             "Win conversion",
+            0.137
+          ],
+          [
+            "Interactions per map",
             0.136
           ]
         ],
@@ -5828,11 +5828,11 @@
         "drivers": [
           [
             "Primary role",
-            0.483
+            0.484
           ],
           [
             "Avg tenure (yrs/team)",
-            0.159
+            0.16
           ],
           [
             "Teams played for",
@@ -5910,30 +5910,30 @@
           ],
           [
             "S&D K/D",
-            0.151
+            0.152
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.14
       },
       {
         "name": "Theory",
-        "score": 90.6,
+        "score": 90.7,
         "drivers": [
           [
             "Win conversion",
-            0.264
+            0.266
           ],
           [
             "Peak season value",
-            0.201
+            0.203
           ],
           [
             "Interactions per map",
-            0.103
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -5944,7 +5944,7 @@
         "drivers": [
           [
             "On-record K/D",
-            0.161
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -5965,14 +5965,14 @@
         "drivers": [
           [
             "Win conversion",
-            0.194
-          ],
-          [
-            "On-record K/D",
-            0.181
+            0.195
           ],
           [
             "S&D K/D",
+            0.188
+          ],
+          [
+            "On-record K/D",
             0.18
           ]
         ],
@@ -5980,26 +5980,26 @@
       },
       {
         "name": "Swanny",
-        "score": 92.9,
+        "score": 93.0,
         "drivers": [
           [
             "Interactions per map",
-            0.215
+            0.211
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ],
           [
             "Peak season value",
-            0.109
+            0.11
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "MadCat",
-        "score": 91.9,
+        "score": 92.0,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -6007,7 +6007,7 @@
           ],
           [
             "Interactions per map",
-            0.141
+            0.135
           ],
           [
             "Distinct titles won",
@@ -6026,7 +6026,7 @@
           ],
           [
             "On-record K/D",
-            0.142
+            0.141
           ],
           [
             "Respawn K/D",
@@ -6037,19 +6037,19 @@
       },
       {
         "name": "Sib",
-        "score": 91.2,
+        "score": 91.1,
         "drivers": [
           [
             "Teams played for",
-            0.292
+            0.289
           ],
           [
             "Avg tenure (yrs/team)",
-            0.169
+            0.167
           ],
           [
             "Career span (yrs)",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -6153,11 +6153,11 @@
       },
       {
         "name": "Enable",
-        "score": 92.4,
+        "score": 92.3,
         "drivers": [
           [
             "Era-adjusted wins",
-            0.196
+            0.195
           ],
           [
             "Career span (yrs)",
@@ -6165,7 +6165,7 @@
           ],
           [
             "Win conversion",
-            0.155
+            0.154
           ]
         ],
         "cowin": 0.09
@@ -6197,7 +6197,7 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.258
+            0.259
           ],
           [
             "Win conversion",
@@ -6258,7 +6258,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.115
+            0.116
           ],
           [
             "Deep-run rate (top-4)",
@@ -6273,7 +6273,7 @@
         "drivers": [
           [
             "Primary role",
-            0.369
+            0.368
           ],
           [
             "Avg tenure (yrs/team)",
@@ -6313,7 +6313,7 @@
         "drivers": [
           [
             "Interactions per map",
-            0.266
+            0.265
           ],
           [
             "Career span (yrs)",
@@ -6321,7 +6321,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -6332,11 +6332,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.234
+            0.233
           ],
           [
             "Interactions per map",
-            0.164
+            0.167
           ],
           [
             "Avg tenure (yrs/team)",
@@ -6393,7 +6393,7 @@
           ],
           [
             "Interactions per map",
-            0.114
+            0.113
           ],
           [
             "Win conversion",
@@ -6412,7 +6412,7 @@
           ],
           [
             "Interactions per map",
-            0.136
+            0.135
           ],
           [
             "Deep-run rate (top-4)",
@@ -6429,22 +6429,22 @@
         "drivers": [
           [
             "Interactions per map",
-            0.187
+            0.184
           ],
           [
             "Respawn K/D",
-            0.159
+            0.161
           ],
           [
             "On-record K/D",
-            0.128
+            0.127
           ]
         ],
         "cowin": 1.0
       },
       {
         "name": "Theory",
-        "score": 89.0,
+        "score": 89.1,
         "drivers": [
           [
             "World Championships",
@@ -6452,7 +6452,7 @@
           ],
           [
             "Teams played for",
-            0.142
+            0.143
           ],
           [
             "Win conversion",
@@ -6467,7 +6467,7 @@
         "drivers": [
           [
             "World Championships",
-            0.294
+            0.295
           ],
           [
             "Deep-run rate (top-4)",
@@ -6475,7 +6475,7 @@
           ],
           [
             "Win conversion",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.0
@@ -6486,15 +6486,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.227
+            0.226
           ],
           [
             "Avg tenure (yrs/team)",
-            0.141
+            0.14
           ],
           [
             "Career span (yrs)",
-            0.114
+            0.113
           ]
         ],
         "cowin": 0.0
@@ -6519,20 +6519,20 @@
         "cowin": 0.0
       },
       {
-        "name": "Crowder",
+        "name": "John",
         "score": 87.9,
         "drivers": [
           [
-            "Peak season value",
-            0.28
+            "Era-adjusted wins",
+            0.233
           ],
           [
-            "Teams played for",
-            0.179
+            "Distinct titles won",
+            0.142
           ],
           [
-            "Avg tenure (yrs/team)",
-            0.094
+            "Career span (yrs)",
+            0.107
           ]
         ],
         "cowin": 0.0
@@ -6545,15 +6545,15 @@
         "drivers": [
           [
             "Interactions per map",
-            0.187
+            0.184
           ],
           [
             "Respawn K/D",
-            0.159
+            0.161
           ],
           [
             "On-record K/D",
-            0.128
+            0.127
           ]
         ],
         "cowin": 1.0
@@ -6602,7 +6602,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.233
+            0.232
           ],
           [
             "Career span (yrs)",
@@ -6610,7 +6610,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.135
           ]
         ],
         "cowin": 0.0
@@ -6621,7 +6621,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.246
+            0.245
           ],
           [
             "Distinct titles won",
@@ -6629,14 +6629,14 @@
           ],
           [
             "Career span (yrs)",
-            0.141
+            0.14
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Apathy",
-        "score": 88.5,
+        "score": 88.4,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -6661,14 +6661,14 @@
         "drivers": [
           [
             "Win conversion",
-            0.194
-          ],
-          [
-            "On-record K/D",
-            0.181
+            0.195
           ],
           [
             "S&D K/D",
+            0.188
+          ],
+          [
+            "On-record K/D",
             0.18
           ]
         ],
@@ -6688,7 +6688,7 @@
           ],
           [
             "Interactions per map",
-            0.131
+            0.13
           ]
         ],
         "cowin": 0.2
@@ -6718,15 +6718,15 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.176
+            0.174
           ],
           [
             "Win conversion",
-            0.127
+            0.126
           ],
           [
             "Distinct titles won",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
@@ -6756,14 +6756,14 @@
         "drivers": [
           [
             "Peak season value",
-            0.364
-          ],
-          [
-            "Interactions per map",
-            0.141
+            0.365
           ],
           [
             "Era-adjusted wins",
+            0.141
+          ],
+          [
+            "Interactions per map",
             0.14
           ]
         ],
@@ -6781,11 +6781,11 @@
           ],
           [
             "On-record K/D",
-            0.206
+            0.204
           ],
           [
             "Interactions per map",
-            0.107
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -6796,7 +6796,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.461
+            0.46
           ],
           [
             "Era-adjusted wins",
@@ -6815,7 +6815,7 @@
         "drivers": [
           [
             "World Championships",
-            0.345
+            0.346
           ],
           [
             "Career span (yrs)",
@@ -6868,11 +6868,11 @@
       },
       {
         "name": "Ghosty",
-        "score": 90.2,
+        "score": 90.3,
         "drivers": [
           [
             "World Championships",
-            0.332
+            0.333
           ],
           [
             "Win conversion",
@@ -6897,7 +6897,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.182
+            0.183
           ],
           [
             "Peak season value",
@@ -6935,11 +6935,11 @@
           ],
           [
             "S&D K/D",
-            0.151
+            0.152
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.14
@@ -6954,7 +6954,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.146
+            0.147
           ],
           [
             "Era-adjusted wins",
@@ -7047,7 +7047,7 @@
         "drivers": [
           [
             "Respawn K/D",
-            0.18
+            0.181
           ],
           [
             "Career span (yrs)",
@@ -7055,7 +7055,7 @@
           ],
           [
             "Win conversion",
-            0.152
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -7066,7 +7066,7 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.258
+            0.259
           ],
           [
             "Win conversion",
@@ -7177,6 +7177,25 @@
         "cowin": 0.0
       },
       {
+        "name": "Nadeshot",
+        "score": 91.2,
+        "drivers": [
+          [
+            "Win conversion",
+            0.332
+          ],
+          [
+            "Deep-run rate (top-4)",
+            0.138
+          ],
+          [
+            "Finals rate (top-2)",
+            0.101
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Jurd",
         "score": 91.2,
         "drivers": [
@@ -7191,25 +7210,6 @@
           [
             "Win conversion",
             0.099
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
-        "name": "Nadeshot",
-        "score": 91.2,
-        "drivers": [
-          [
-            "Win conversion",
-            0.331
-          ],
-          [
-            "Deep-run rate (top-4)",
-            0.138
-          ],
-          [
-            "Finals rate (top-2)",
-            0.1
           ]
         ],
         "cowin": 0.0
@@ -7237,19 +7237,19 @@
     "Crowder": [
       {
         "name": "SiLLY",
-        "score": 92.3,
+        "score": 92.4,
         "drivers": [
           [
             "Career span (yrs)",
-            0.271
+            0.273
           ],
           [
             "Teams played for",
-            0.141
+            0.142
           ],
           [
             "Deep-run rate (top-4)",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -7275,19 +7275,19 @@
       },
       {
         "name": "Censor",
-        "score": 89.4,
+        "score": 89.5,
         "drivers": [
           [
             "World Championships",
-            0.306
+            0.308
           ],
           [
             "Win conversion",
-            0.146
+            0.147
           ],
           [
             "S&D K/D",
-            0.105
+            0.103
           ]
         ],
         "cowin": 0.0
@@ -7298,15 +7298,15 @@
         "drivers": [
           [
             "World Championships",
-            0.298
+            0.296
           ],
           [
             "Peak season value",
-            0.155
+            0.154
           ],
           [
             "Era-adjusted wins",
-            0.149
+            0.148
           ]
         ],
         "cowin": 0.0
@@ -7344,7 +7344,7 @@
           ],
           [
             "Interactions per map",
-            0.128
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -7530,15 +7530,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.301
+            0.3
           ],
           [
             "Career span (yrs)",
-            0.179
+            0.178
           ],
           [
             "Era-adjusted wins",
-            0.154
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -7654,7 +7654,7 @@
           ],
           [
             "Interactions per map",
-            0.123
+            0.122
           ]
         ],
         "cowin": 0.0
@@ -7665,7 +7665,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -7680,19 +7680,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.5,
+        "score": 90.8,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.259
+            0.265
           ],
           [
             "Teams played for",
-            0.165
+            0.169
           ],
           [
             "Win conversion",
-            0.122
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -7709,7 +7709,7 @@
           ],
           [
             "Distinct titles won",
-            0.159
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -7720,18 +7720,18 @@
       },
       {
         "name": "Swanny",
-        "score": 91.5,
+        "score": 91.6,
         "drivers": [
           [
             "Win conversion",
             0.147
           ],
           [
-            "On-record K/D",
-            0.125
+            "Respawn K/D",
+            0.124
           ],
           [
-            "Respawn K/D",
+            "On-record K/D",
             0.124
           ]
         ],
@@ -7804,7 +7804,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Finals rate (top-2)",
@@ -8057,11 +8057,11 @@
           ],
           [
             "On-record K/D",
-            0.206
+            0.204
           ],
           [
             "Interactions per map",
-            0.107
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -8086,25 +8086,6 @@
         "cowin": 0.0
       },
       {
-        "name": "ASSASS1N",
-        "score": 90.3,
-        "drivers": [
-          [
-            "World Championships",
-            0.353
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.274
-          ],
-          [
-            "Career span (yrs)",
-            0.113
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
         "name": "Fero",
         "score": 90.3,
         "drivers": [
@@ -8124,12 +8105,31 @@
         "cowin": 0.0
       },
       {
+        "name": "ASSASS1N",
+        "score": 90.1,
+        "drivers": [
+          [
+            "World Championships",
+            0.345
+          ],
+          [
+            "Avg tenure (yrs/team)",
+            0.268
+          ],
+          [
+            "Interactions per map",
+            0.127
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Abuzah",
         "score": 90.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.319
+            0.32
           ],
           [
             "Career span (yrs)",
@@ -8169,11 +8169,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.315
+            0.317
           ],
           [
             "Career span (yrs)",
-            0.239
+            0.241
           ],
           [
             "Peak season value",
@@ -8226,7 +8226,7 @@
         "drivers": [
           [
             "Interactions per map",
-            0.266
+            0.265
           ],
           [
             "Career span (yrs)",
@@ -8234,7 +8234,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -8260,44 +8260,25 @@
       },
       {
         "name": "Dedo",
-        "score": 91.2,
+        "score": 91.1,
         "drivers": [
           [
             "Teams played for",
-            0.292
+            0.289
           ],
           [
             "Avg tenure (yrs/team)",
-            0.169
+            0.167
           ],
           [
             "Career span (yrs)",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
       }
     ],
     "ASSASS1N": [
-      {
-        "name": "Loony",
-        "score": 93.3,
-        "drivers": [
-          [
-            "Avg tenure (yrs/team)",
-            0.219
-          ],
-          [
-            "Teams played for",
-            0.137
-          ],
-          [
-            "Peak season value",
-            0.131
-          ]
-        ],
-        "cowin": 0.0
-      },
       {
         "name": "MuTaTioN",
         "score": 93.3,
@@ -8318,77 +8299,96 @@
         "cowin": 0.0
       },
       {
-        "name": "ProoFy",
-        "score": 91.8,
+        "name": "Loony",
+        "score": 93.1,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.358
+            0.213
           ],
           [
             "Teams played for",
-            0.271
+            0.133
           ],
           [
-            "Era-adjusted wins",
-            0.165
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
-        "name": "Abuzah",
-        "score": 91.6,
-        "drivers": [
-          [
-            "World Championships",
-            0.41
-          ],
-          [
-            "Deep-run rate (top-4)",
-            0.119
-          ],
-          [
-            "Finals rate (top-2)",
-            0.099
+            "Peak season value",
+            0.128
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "StaiNViLLe",
-        "score": 91.5,
+        "score": 91.7,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.245
+            0.252
           ],
           [
             "Teams played for",
-            0.205
+            0.211
           ],
           [
             "Win conversion",
-            0.148
+            0.152
           ]
         ],
         "cowin": 0.0
       },
       {
-        "name": "ZooMaa",
-        "score": 91.4,
+        "name": "ProoFy",
+        "score": 91.6,
         "drivers": [
           [
-            "Peak season value",
-            0.452
+            "Avg tenure (yrs/team)",
+            0.347
           ],
           [
-            "Interactions per map",
-            0.128
+            "Teams played for",
+            0.262
           ],
           [
-            "Distinct titles won",
-            0.114
+            "Era-adjusted wins",
+            0.16
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Abuzah",
+        "score": 91.3,
+        "drivers": [
+          [
+            "World Championships",
+            0.394
+          ],
+          [
+            "Deep-run rate (top-4)",
+            0.115
+          ],
+          [
+            "Finals rate (top-2)",
+            0.095
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Ghosty",
+        "score": 91.1,
+        "drivers": [
+          [
+            "Avg tenure (yrs/team)",
+            0.267
+          ],
+          [
+            "Career span (yrs)",
+            0.165
+          ],
+          [
+            "Win conversion",
+            0.155
           ]
         ],
         "cowin": 0.0
@@ -8458,7 +8458,7 @@
         "drivers": [
           [
             "On-record K/D",
-            0.161
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -8492,7 +8492,7 @@
       },
       {
         "name": "PHiZZURP",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Win conversion",
@@ -8500,11 +8500,11 @@
           ],
           [
             "On-record K/D",
-            0.216
+            0.215
           ],
           [
             "Finals rate (top-2)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -8679,14 +8679,14 @@
           ],
           [
             "Interactions per map",
-            0.127
+            0.128
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Abuzah",
-        "score": 89.2,
+        "score": 89.3,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -8709,11 +8709,11 @@
         "drivers": [
           [
             "World Championships",
-            0.288
+            0.289
           ],
           [
             "Win conversion",
-            0.218
+            0.219
           ],
           [
             "Interactions per map",
@@ -8745,19 +8745,19 @@
     "Abuzah": [
       {
         "name": "ASSASS1N",
-        "score": 91.6,
+        "score": 91.3,
         "drivers": [
           [
             "World Championships",
-            0.41
+            0.394
           ],
           [
             "Deep-run rate (top-4)",
-            0.119
+            0.115
           ],
           [
             "Finals rate (top-2)",
-            0.099
+            0.095
           ]
         ],
         "cowin": 0.0
@@ -8787,7 +8787,7 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.319
+            0.32
           ],
           [
             "Career span (yrs)",
@@ -8802,7 +8802,7 @@
       },
       {
         "name": "04",
-        "score": 89.2,
+        "score": 89.3,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -8833,7 +8833,7 @@
           ],
           [
             "Career span (yrs)",
-            0.141
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -8861,19 +8861,19 @@
     "Cheen": [
       {
         "name": "Theory",
-        "score": 96.0,
+        "score": 95.9,
         "drivers": [
           [
             "Teams played for",
-            0.214
+            0.211
           ],
           [
             "Career span (yrs)",
-            0.173
+            0.17
           ],
           [
             "S&D K/D",
-            0.113
+            0.121
           ]
         ],
         "cowin": 1.0
@@ -8892,7 +8892,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.129
+            0.13
           ]
         ],
         "cowin": 0.0
@@ -8922,7 +8922,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.277
+            0.278
           ],
           [
             "Era-adjusted wins",
@@ -8945,7 +8945,7 @@
           ],
           [
             "Peak season value",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
@@ -8960,7 +8960,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.255
+            0.256
           ],
           [
             "Interactions per map",
@@ -9139,7 +9139,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.182
+            0.183
           ],
           [
             "Peak season value",
@@ -9154,15 +9154,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.264
+            0.265
           ],
           [
             "Respawn K/D",
-            0.137
+            0.138
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -9367,11 +9367,11 @@
         "drivers": [
           [
             "Primary role",
-            0.392
+            0.393
           ],
           [
             "Peak season value",
-            0.209
+            0.21
           ],
           [
             "Deep-run rate (top-4)",
@@ -9401,19 +9401,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.1,
+        "score": 89.8,
         "drivers": [
           [
             "Peak season value",
-            0.513
+            0.495
           ],
           [
             "Era-adjusted wins",
-            0.138
+            0.134
           ],
           [
             "Win conversion",
-            0.113
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -9483,7 +9483,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.255
+            0.256
           ],
           [
             "Interactions per map",
@@ -9529,7 +9529,7 @@
           ],
           [
             "Interactions per map",
-            0.138
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -9548,7 +9548,7 @@
           ],
           [
             "On-record K/D",
-            0.142
+            0.141
           ]
         ],
         "cowin": 0.0
@@ -9677,11 +9677,11 @@
         "drivers": [
           [
             "Primary role",
-            0.392
+            0.393
           ],
           [
             "Peak season value",
-            0.209
+            0.21
           ],
           [
             "Deep-run rate (top-4)",
@@ -9692,19 +9692,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.1,
+        "score": 90.3,
         "drivers": [
           [
             "Peak season value",
-            0.298
+            0.304
           ],
           [
             "Era-adjusted wins",
-            0.173
+            0.177
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -9719,7 +9719,7 @@
           ],
           [
             "Teams played for",
-            0.179
+            0.178
           ],
           [
             "Respawn K/D",
@@ -9757,7 +9757,7 @@
           ],
           [
             "Teams played for",
-            0.239
+            0.24
           ],
           [
             "Career span (yrs)",
@@ -9808,7 +9808,7 @@
       },
       {
         "name": "Ricky",
-        "score": 91.6,
+        "score": 91.7,
         "drivers": [
           [
             "S&D K/D",
@@ -9917,7 +9917,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.129
+            0.13
           ]
         ],
         "cowin": 0.0
@@ -9936,7 +9936,7 @@
           ],
           [
             "Interactions per map",
-            0.131
+            0.13
           ]
         ],
         "cowin": 0.2
@@ -9947,15 +9947,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.205
+            0.204
           ],
           [
             "Avg tenure (yrs/team)",
-            0.17
+            0.169
           ],
           [
             "Peak season value",
-            0.132
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -9966,15 +9966,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.264
+            0.265
           ],
           [
             "Respawn K/D",
-            0.137
+            0.138
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -10000,7 +10000,7 @@
       },
       {
         "name": "PHiZZURP",
-        "score": 91.6,
+        "score": 91.7,
         "drivers": [
           [
             "S&D K/D",
@@ -10021,19 +10021,19 @@
     "SiLLY": [
       {
         "name": "Crowder",
-        "score": 92.3,
+        "score": 92.4,
         "drivers": [
           [
             "Career span (yrs)",
-            0.271
+            0.273
           ],
           [
             "Teams played for",
-            0.141
+            0.142
           ],
           [
             "Deep-run rate (top-4)",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -10048,7 +10048,7 @@
           ],
           [
             "Peak season value",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
@@ -10078,11 +10078,11 @@
       },
       {
         "name": "Theory",
-        "score": 89.1,
+        "score": 89.0,
         "drivers": [
           [
             "World Championships",
-            0.297
+            0.296
           ],
           [
             "Peak season value",
@@ -10115,20 +10115,20 @@
         "cowin": 0.0
       },
       {
-        "name": "MiRx",
+        "name": "John",
         "score": 88.9,
         "drivers": [
           [
+            "Era-adjusted wins",
+            0.264
+          ],
+          [
+            "Win conversion",
+            0.163
+          ],
+          [
             "Peak season value",
-            0.233
-          ],
-          [
-            "Career span (yrs)",
-            0.145
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.136
+            0.159
           ]
         ],
         "cowin": 0.0
@@ -10183,7 +10183,7 @@
           ],
           [
             "Interactions per map",
-            0.173
+            0.172
           ],
           [
             "Finals rate (top-2)",
@@ -10206,7 +10206,7 @@
           ],
           [
             "Peak season value",
-            0.103
+            0.104
           ]
         ],
         "cowin": 0.0
@@ -10220,11 +10220,11 @@
             0.157
           ],
           [
-            "On-record K/D",
-            0.124
+            "Win conversion",
+            0.123
           ],
           [
-            "Win conversion",
+            "On-record K/D",
             0.123
           ]
         ],
@@ -10232,19 +10232,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 91.5,
+        "score": 91.7,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.245
+            0.252
           ],
           [
             "Teams played for",
-            0.205
+            0.211
           ],
           [
             "Win conversion",
-            0.148
+            0.152
           ]
         ],
         "cowin": 0.0
@@ -10253,19 +10253,19 @@
     "Theory": [
       {
         "name": "Cheen",
-        "score": 96.0,
+        "score": 95.9,
         "drivers": [
           [
             "Teams played for",
-            0.214
+            0.211
           ],
           [
             "Career span (yrs)",
-            0.173
+            0.17
           ],
           [
             "S&D K/D",
-            0.113
+            0.121
           ]
         ],
         "cowin": 1.0
@@ -10276,15 +10276,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.205
+            0.204
           ],
           [
             "Avg tenure (yrs/team)",
-            0.17
+            0.169
           ],
           [
             "Peak season value",
-            0.132
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -10295,34 +10295,34 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.176
+            0.174
           ],
           [
             "Win conversion",
-            0.127
+            0.126
           ],
           [
             "Distinct titles won",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Censor",
-        "score": 90.6,
+        "score": 90.7,
         "drivers": [
           [
             "Win conversion",
-            0.264
+            0.266
           ],
           [
             "Peak season value",
-            0.201
+            0.203
           ],
           [
             "Interactions per map",
-            0.103
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -10360,7 +10360,7 @@
           ],
           [
             "S&D K/D",
-            0.095
+            0.099
           ]
         ],
         "cowin": 0.0
@@ -10854,7 +10854,7 @@
       },
       {
         "name": "Cellium",
-        "score": 77.9,
+        "score": 78.0,
         "drivers": [
           [
             "Win conversion",
@@ -10881,7 +10881,7 @@
           ],
           [
             "Win conversion",
-            0.229
+            0.23
           ],
           [
             "Peak season value",
@@ -10892,7 +10892,7 @@
       },
       {
         "name": "Shotzzy",
-        "score": 75.4,
+        "score": 75.5,
         "drivers": [
           [
             "Primary role",
@@ -10982,7 +10982,7 @@
           ],
           [
             "Career span (yrs)",
-            0.147
+            0.146
           ]
         ],
         "cowin": 0.0
@@ -10993,11 +10993,11 @@
         "drivers": [
           [
             "World Championships",
-            0.222
+            0.221
           ],
           [
             "Peak season value",
-            0.18
+            0.179
           ],
           [
             "Finals rate (top-2)",
@@ -11067,11 +11067,11 @@
     "Karma": [
       {
         "name": "ACHES",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Primary role",
-            0.29
+            0.291
           ],
           [
             "Win conversion",
@@ -11094,11 +11094,11 @@
           ],
           [
             "World Championships",
-            0.232
+            0.231
           ],
           [
             "Era-adjusted wins",
-            0.102
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -11143,7 +11143,7 @@
       },
       {
         "name": "Kenny",
-        "score": 84.7,
+        "score": 84.8,
         "drivers": [
           [
             "Win conversion",
@@ -11166,7 +11166,7 @@
         "drivers": [
           [
             "Primary role",
-            0.224
+            0.225
           ],
           [
             "World Championships",
@@ -11174,7 +11174,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.106
+            0.107
           ]
         ],
         "cowin": 0.14
@@ -11187,7 +11187,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.207
+            0.208
           ],
           [
             "Avg tenure (yrs/team)",
@@ -11263,7 +11263,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.221
+            0.222
           ],
           [
             "World Championships",
@@ -11337,11 +11337,11 @@
       },
       {
         "name": "Karma",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Primary role",
-            0.29
+            0.291
           ],
           [
             "Win conversion",
@@ -11427,14 +11427,14 @@
           ],
           [
             "Win conversion",
-            0.168
+            0.169
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Kenny",
-        "score": 87.0,
+        "score": 86.9,
         "drivers": [
           [
             "Primary role",
@@ -11465,7 +11465,7 @@
           ],
           [
             "World Championships",
-            0.093
+            0.092
           ]
         ],
         "cowin": 0.08
@@ -11503,7 +11503,7 @@
           ],
           [
             "Teams played for",
-            0.128
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -11514,7 +11514,7 @@
         "drivers": [
           [
             "World Championships",
-            0.212
+            0.213
           ],
           [
             "Peak season value",
@@ -11535,7 +11535,7 @@
         "drivers": [
           [
             "Primary role",
-            0.224
+            0.225
           ],
           [
             "World Championships",
@@ -11543,7 +11543,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.106
+            0.107
           ]
         ],
         "cowin": 0.14
@@ -11651,11 +11651,11 @@
         "drivers": [
           [
             "World Championships",
-            0.222
+            0.221
           ],
           [
             "Peak season value",
-            0.18
+            0.179
           ],
           [
             "Finals rate (top-2)",
@@ -11666,11 +11666,11 @@
       },
       {
         "name": "Shotzzy",
-        "score": 84.8,
+        "score": 84.7,
         "drivers": [
           [
             "Peak season value",
-            0.341
+            0.34
           ],
           [
             "Win conversion",
@@ -11685,19 +11685,19 @@
       },
       {
         "name": "BigTymeR",
-        "score": 83.1,
+        "score": 82.9,
         "drivers": [
           [
             "World Championships",
-            0.383
+            0.38
           ],
           [
             "Era-adjusted wins",
-            0.119
+            0.118
           ],
           [
             "Avg tenure (yrs/team)",
-            0.102
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -11883,7 +11883,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.207
+            0.208
           ],
           [
             "Avg tenure (yrs/team)",
@@ -11898,19 +11898,19 @@
       },
       {
         "name": "BigTymeR",
-        "score": 84.3,
+        "score": 84.2,
         "drivers": [
           [
             "Win conversion",
-            0.236
+            0.234
           ],
           [
             "World Championships",
-            0.207
+            0.205
           ],
           [
             "Respawn K/D",
-            0.113
+            0.114
           ]
         ],
         "cowin": 0.0
@@ -11929,7 +11929,7 @@
           ],
           [
             "On-record K/D",
-            0.11
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -11955,7 +11955,7 @@
       },
       {
         "name": "Dashy",
-        "score": 78.9,
+        "score": 78.8,
         "drivers": [
           [
             "Peak season value",
@@ -11974,7 +11974,7 @@
       },
       {
         "name": "Skyz",
-        "score": 78.6,
+        "score": 78.7,
         "drivers": [
           [
             "Peak season value",
@@ -12014,7 +12014,7 @@
       },
       {
         "name": "Drazah",
-        "score": 86.7,
+        "score": 86.8,
         "drivers": [
           [
             "Primary role",
@@ -12071,11 +12071,11 @@
       },
       {
         "name": "Simp",
-        "score": 84.8,
+        "score": 84.7,
         "drivers": [
           [
             "Peak season value",
-            0.341
+            0.34
           ],
           [
             "Win conversion",
@@ -12142,7 +12142,7 @@
           ],
           [
             "On-record K/D",
-            0.08
+            0.079
           ]
         ],
         "cowin": 0.13
@@ -12168,7 +12168,7 @@
       },
       {
         "name": "Clayster",
-        "score": 87.0,
+        "score": 86.9,
         "drivers": [
           [
             "Primary role",
@@ -12277,7 +12277,7 @@
           ],
           [
             "On-record K/D",
-            0.11
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -12288,7 +12288,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.509
+            0.51
           ],
           [
             "S&D K/D",
@@ -12330,7 +12330,7 @@
           ],
           [
             "World Championships",
-            0.191
+            0.192
           ],
           [
             "S&D K/D",
@@ -12347,15 +12347,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.28
+            0.281
           ],
           [
             "S&D K/D",
             0.121
           ],
           [
-            "On-record K/D",
-            0.111
+            "Era-adjusted wins",
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -12366,7 +12366,7 @@
         "drivers": [
           [
             "World Championships",
-            0.41
+            0.411
           ],
           [
             "Avg tenure (yrs/team)",
@@ -12412,7 +12412,7 @@
           ],
           [
             "Teams played for",
-            0.064
+            0.065
           ]
         ],
         "cowin": 0.0
@@ -12450,7 +12450,7 @@
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ]
         ],
         "cowin": 0.12
@@ -12459,7 +12459,7 @@
     "SlasheR": [
       {
         "name": "Octane",
-        "score": 95.6,
+        "score": 95.5,
         "drivers": [
           [
             "Career span (yrs)",
@@ -12467,7 +12467,7 @@
           ],
           [
             "Teams played for",
-            0.145
+            0.144
           ],
           [
             "Win conversion",
@@ -12478,7 +12478,7 @@
       },
       {
         "name": "Dashy",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -12543,7 +12543,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Distinct titles won",
@@ -12566,7 +12566,7 @@
           ],
           [
             "Win conversion",
-            0.168
+            0.169
           ]
         ],
         "cowin": 0.0
@@ -12579,7 +12579,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.331
+            0.332
           ],
           [
             "World Championships",
@@ -12644,7 +12644,7 @@
           ],
           [
             "World Championships",
-            0.093
+            0.092
           ]
         ],
         "cowin": 0.08
@@ -12655,7 +12655,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.513
+            0.512
           ],
           [
             "Avg tenure (yrs/team)",
@@ -12682,7 +12682,7 @@
           ],
           [
             "Interactions per map",
-            0.079
+            0.08
           ]
         ],
         "cowin": 0.0
@@ -12714,7 +12714,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.309
+            0.31
           ],
           [
             "Era-adjusted wins",
@@ -12733,7 +12733,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.365
+            0.366
           ],
           [
             "Primary role",
@@ -12741,7 +12741,7 @@
           ],
           [
             "Interactions per map",
-            0.069
+            0.068
           ]
         ],
         "cowin": 0.0
@@ -12807,7 +12807,7 @@
     "Octane": [
       {
         "name": "SlasheR",
-        "score": 95.6,
+        "score": 95.5,
         "drivers": [
           [
             "Career span (yrs)",
@@ -12815,7 +12815,7 @@
           ],
           [
             "Teams played for",
-            0.145
+            0.144
           ],
           [
             "Win conversion",
@@ -12834,7 +12834,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.209
+            0.208
           ],
           [
             "Teams played for",
@@ -12845,11 +12845,11 @@
       },
       {
         "name": "Skyz",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Peak season value",
-            0.373
+            0.374
           ],
           [
             "Distinct titles won",
@@ -12891,7 +12891,7 @@
           ],
           [
             "Teams played for",
-            0.128
+            0.129
           ],
           [
             "Avg tenure (yrs/team)",
@@ -12914,7 +12914,7 @@
           ],
           [
             "Respawn K/D",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.12
@@ -12946,7 +12946,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.365
+            0.366
           ],
           [
             "Primary role",
@@ -12954,7 +12954,7 @@
           ],
           [
             "Interactions per map",
-            0.069
+            0.068
           ]
         ],
         "cowin": 0.0
@@ -12965,7 +12965,7 @@
         "drivers": [
           [
             "Primary role",
-            0.3
+            0.301
           ],
           [
             "World Championships",
@@ -12992,7 +12992,7 @@
           ],
           [
             "Respawn K/D",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.12
@@ -13039,19 +13039,19 @@
     "BigTymeR": [
       {
         "name": "Cellium",
-        "score": 84.3,
+        "score": 84.2,
         "drivers": [
           [
             "Win conversion",
-            0.236
+            0.234
           ],
           [
             "World Championships",
-            0.207
+            0.205
           ],
           [
             "Respawn K/D",
-            0.113
+            0.114
           ]
         ],
         "cowin": 0.0
@@ -13095,25 +13095,6 @@
         "cowin": 0.0
       },
       {
-        "name": "Simp",
-        "score": 83.1,
-        "drivers": [
-          [
-            "World Championships",
-            0.383
-          ],
-          [
-            "Era-adjusted wins",
-            0.119
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.102
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
         "name": "HyDra",
         "score": 83.0,
         "drivers": [
@@ -13133,12 +13114,31 @@
         "cowin": 0.0
       },
       {
+        "name": "Simp",
+        "score": 82.9,
+        "drivers": [
+          [
+            "World Championships",
+            0.38
+          ],
+          [
+            "Era-adjusted wins",
+            0.118
+          ],
+          [
+            "Avg tenure (yrs/team)",
+            0.101
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "iLLeY",
         "score": 80.3,
         "drivers": [
           [
             "Peak season value",
-            0.283
+            0.284
           ],
           [
             "Win conversion",
@@ -13146,7 +13146,7 @@
           ],
           [
             "World Championships",
-            0.164
+            0.165
           ]
         ],
         "cowin": 0.0
@@ -13178,7 +13178,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.299
+            0.3
           ],
           [
             "Primary role",
@@ -13212,7 +13212,7 @@
       },
       {
         "name": "Shotzzy",
-        "score": 86.7,
+        "score": 86.8,
         "drivers": [
           [
             "Primary role",
@@ -13332,7 +13332,7 @@
         "drivers": [
           [
             "Primary role",
-            0.3
+            0.301
           ],
           [
             "World Championships",
@@ -13406,11 +13406,11 @@
       },
       {
         "name": "Fero",
-        "score": 92.4,
+        "score": 92.3,
         "drivers": [
           [
             "Era-adjusted wins",
-            0.196
+            0.195
           ],
           [
             "Career span (yrs)",
@@ -13418,7 +13418,7 @@
           ],
           [
             "Win conversion",
-            0.155
+            0.154
           ]
         ],
         "cowin": 0.09
@@ -13429,15 +13429,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.301
+            0.3
           ],
           [
             "Career span (yrs)",
-            0.179
+            0.178
           ],
           [
             "Era-adjusted wins",
-            0.154
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -13448,30 +13448,30 @@
         "drivers": [
           [
             "Primary role",
-            0.359
+            0.357
           ],
           [
             "Peak season value",
-            0.099
+            0.098
           ],
           [
             "S&D K/D",
-            0.08
+            0.083
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "ProoFy",
-        "score": 91.6,
+        "score": 91.5,
         "drivers": [
           [
             "Primary role",
-            0.414
+            0.413
           ],
           [
             "Win conversion",
-            0.18
+            0.179
           ],
           [
             "Career span (yrs)",
@@ -13522,7 +13522,7 @@
       },
       {
         "name": "iLLeY",
-        "score": 87.5,
+        "score": 87.6,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -13545,7 +13545,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.299
+            0.3
           ],
           [
             "Primary role",
@@ -13572,7 +13572,7 @@
           ],
           [
             "Career span (yrs)",
-            0.147
+            0.146
           ]
         ],
         "cowin": 0.0
@@ -13602,7 +13602,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.259
+            0.26
           ],
           [
             "Win conversion",
@@ -13627,7 +13627,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.209
+            0.208
           ],
           [
             "Teams played for",
@@ -13638,7 +13638,7 @@
       },
       {
         "name": "SlasheR",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
@@ -13661,15 +13661,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.28
+            0.281
           ],
           [
             "S&D K/D",
             0.121
           ],
           [
-            "On-record K/D",
-            0.111
+            "Era-adjusted wins",
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -13688,7 +13688,7 @@
           ],
           [
             "On-record K/D",
-            0.08
+            0.079
           ]
         ],
         "cowin": 0.13
@@ -13722,7 +13722,7 @@
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ],
           [
             "Respawn K/D",
@@ -13743,11 +13743,11 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.155
+            0.156
           ],
           [
             "Interactions per map",
-            0.107
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -13758,7 +13758,7 @@
         "drivers": [
           [
             "World Championships",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -13777,7 +13777,7 @@
         "drivers": [
           [
             "World Championships",
-            0.343
+            0.344
           ],
           [
             "Teams played for",
@@ -13815,7 +13815,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.309
+            0.31
           ],
           [
             "Era-adjusted wins",
@@ -13834,15 +13834,15 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.263
+            0.264
           ],
           [
             "Win conversion",
-            0.162
+            0.163
           ],
           [
             "Peak season value",
-            0.158
+            0.159
           ]
         ],
         "cowin": 0.0
@@ -13859,11 +13859,11 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.155
+            0.156
           ],
           [
             "Interactions per map",
-            0.107
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -13912,7 +13912,7 @@
         "drivers": [
           [
             "World Championships",
-            0.322
+            0.323
           ],
           [
             "Career span (yrs)",
@@ -13920,7 +13920,7 @@
           ],
           [
             "Peak season value",
-            0.126
+            0.127
           ]
         ],
         "cowin": 0.0
@@ -13967,7 +13967,7 @@
     "Parasite": [
       {
         "name": "ProoFy",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "World Championships",
@@ -13990,7 +13990,7 @@
         "drivers": [
           [
             "World Championships",
-            0.331
+            0.332
           ],
           [
             "Teams played for",
@@ -14051,7 +14051,7 @@
           ],
           [
             "Peak season value",
-            0.252
+            0.253
           ],
           [
             "Era-adjusted wins",
@@ -14083,11 +14083,11 @@
     "Skyz": [
       {
         "name": "Octane",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Peak season value",
-            0.373
+            0.374
           ],
           [
             "Distinct titles won",
@@ -14110,7 +14110,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Distinct titles won",
@@ -14125,7 +14125,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.331
+            0.332
           ],
           [
             "World Championships",
@@ -14163,7 +14163,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.361
+            0.362
           ],
           [
             "Era-adjusted wins",
@@ -14237,19 +14237,19 @@
       },
       {
         "name": "ZooMaa",
-        "score": 94.9,
+        "score": 95.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.277
+            0.279
           ],
           [
             "Interactions per map",
-            0.22
+            0.217
           ],
           [
             "Teams played for",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -14279,11 +14279,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.307
+            0.306
           ],
           [
             "Deep-run rate (top-4)",
-            0.133
+            0.132
           ],
           [
             "Career span (yrs)",
@@ -14353,11 +14353,11 @@
       },
       {
         "name": "Slacked",
-        "score": 90.8,
+        "score": 90.7,
         "drivers": [
           [
             "World Championships",
-            0.517
+            0.516
           ],
           [
             "Deep-run rate (top-4)",
@@ -14365,7 +14365,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.088
+            0.087
           ]
         ],
         "cowin": 0.0
@@ -14391,7 +14391,7 @@
       },
       {
         "name": "Bance",
-        "score": 88.9,
+        "score": 89.0,
         "drivers": [
           [
             "World Championships",
@@ -14435,7 +14435,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.161
+            0.16
           ],
           [
             "Deep-run rate (top-4)",
@@ -14473,7 +14473,7 @@
         "drivers": [
           [
             "World Championships",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -14488,19 +14488,19 @@
       },
       {
         "name": "Nadeshot",
-        "score": 92.0,
+        "score": 92.1,
         "drivers": [
           [
             "Teams played for",
-            0.201
+            0.202
           ],
           [
             "Win conversion",
-            0.173
+            0.174
           ],
           [
             "Deep-run rate (top-4)",
-            0.156
+            0.157
           ]
         ],
         "cowin": 0.0
@@ -14530,7 +14530,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.277
+            0.278
           ],
           [
             "Era-adjusted wins",
@@ -14566,7 +14566,7 @@
       },
       {
         "name": "Dedo",
-        "score": 91.9,
+        "score": 92.0,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -14574,7 +14574,7 @@
           ],
           [
             "Interactions per map",
-            0.141
+            0.135
           ],
           [
             "Distinct titles won",
@@ -14593,7 +14593,7 @@
           ],
           [
             "Distinct titles won",
-            0.159
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -14635,7 +14635,7 @@
           ],
           [
             "Interactions per map",
-            0.112
+            0.111
           ]
         ],
         "cowin": 0.0
@@ -14671,18 +14671,18 @@
           ],
           [
             "Teams played for",
-            0.154
+            0.155
           ],
           [
             "Avg tenure (yrs/team)",
-            0.119
+            0.12
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Sib",
-        "score": 90.1,
+        "score": 90.2,
         "drivers": [
           [
             "Teams played for",
@@ -14694,7 +14694,7 @@
           ],
           [
             "Respawn K/D",
-            0.128
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -14743,7 +14743,7 @@
         "drivers": [
           [
             "Interactions per map",
-            0.206
+            0.205
           ],
           [
             "Win conversion",
@@ -14751,7 +14751,7 @@
           ],
           [
             "Peak season value",
-            0.12
+            0.121
           ]
         ],
         "cowin": 0.0
@@ -14766,7 +14766,7 @@
           ],
           [
             "Win conversion",
-            0.184
+            0.185
           ],
           [
             "Finals rate (top-2)",
@@ -14821,7 +14821,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.161
+            0.16
           ],
           [
             "Deep-run rate (top-4)",
@@ -14835,12 +14835,31 @@
         "cowin": 0.0
       },
       {
+        "name": "ZooMaa",
+        "score": 92.0,
+        "drivers": [
+          [
+            "Avg tenure (yrs/team)",
+            0.25
+          ],
+          [
+            "Teams played for",
+            0.19
+          ],
+          [
+            "Interactions per map",
+            0.161
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Loony",
         "score": 92.0,
         "drivers": [
           [
             "Peak season value",
-            0.294
+            0.293
           ],
           [
             "Teams played for",
@@ -14852,25 +14871,6 @@
           ]
         ],
         "cowin": 0.1
-      },
-      {
-        "name": "ZooMaa",
-        "score": 92.0,
-        "drivers": [
-          [
-            "Avg tenure (yrs/team)",
-            0.249
-          ],
-          [
-            "Teams played for",
-            0.189
-          ],
-          [
-            "Interactions per map",
-            0.163
-          ]
-        ],
-        "cowin": 0.0
       },
       {
         "name": "Attach",
@@ -14895,19 +14895,19 @@
     "ZooMaa": [
       {
         "name": "Jurd",
-        "score": 94.9,
+        "score": 95.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.277
+            0.279
           ],
           [
             "Interactions per map",
-            0.22
+            0.217
           ],
           [
             "Teams played for",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -14918,11 +14918,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.315
+            0.317
           ],
           [
             "Career span (yrs)",
-            0.239
+            0.241
           ],
           [
             "Peak season value",
@@ -14937,14 +14937,14 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.15
-          ],
-          [
-            "Interactions per map",
-            0.138
+            0.151
           ],
           [
             "Win conversion",
+            0.137
+          ],
+          [
+            "Interactions per map",
             0.136
           ]
         ],
@@ -14956,15 +14956,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.37
+            0.372
           ],
           [
             "Avg tenure (yrs/team)",
-            0.148
+            0.149
           ],
           [
             "Interactions per map",
-            0.145
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -14994,15 +14994,15 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.249
+            0.25
           ],
           [
             "Teams played for",
-            0.189
+            0.19
           ],
           [
             "Interactions per map",
-            0.163
+            0.161
           ]
         ],
         "cowin": 0.0
@@ -15015,11 +15015,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.307
+            0.306
           ],
           [
             "Deep-run rate (top-4)",
-            0.133
+            0.132
           ],
           [
             "Career span (yrs)",
@@ -15030,19 +15030,19 @@
       },
       {
         "name": "Tommey",
-        "score": 92.0,
+        "score": 92.1,
         "drivers": [
           [
             "Teams played for",
-            0.201
+            0.202
           ],
           [
             "Win conversion",
-            0.173
+            0.174
           ],
           [
             "Deep-run rate (top-4)",
-            0.156
+            0.157
           ]
         ],
         "cowin": 0.0
@@ -15053,15 +15053,15 @@
         "drivers": [
           [
             "Win conversion",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
-            0.186
+            0.187
           ],
           [
             "Interactions per map",
-            0.124
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -15072,11 +15072,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.234
+            0.233
           ],
           [
             "Interactions per map",
-            0.164
+            0.167
           ],
           [
             "Avg tenure (yrs/team)",
@@ -15091,11 +15091,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.32
+            0.321
           ],
           [
             "Career span (yrs)",
-            0.153
+            0.154
           ],
           [
             "Deep-run rate (top-4)",
@@ -15110,7 +15110,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.331
+            0.332
           ],
           [
             "Deep-run rate (top-4)",
@@ -15118,7 +15118,7 @@
           ],
           [
             "Finals rate (top-2)",
-            0.1
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -15131,7 +15131,7 @@
         "drivers": [
           [
             "Respawn K/D",
-            0.18
+            0.181
           ],
           [
             "Career span (yrs)",
@@ -15139,7 +15139,7 @@
           ],
           [
             "Win conversion",
-            0.152
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -15150,15 +15150,15 @@
         "drivers": [
           [
             "Primary role",
-            0.359
+            0.357
           ],
           [
             "Peak season value",
-            0.099
+            0.098
           ],
           [
             "S&D K/D",
-            0.08
+            0.083
           ]
         ],
         "cowin": 0.0
@@ -15169,7 +15169,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.265
+            0.266
           ],
           [
             "Era-adjusted wins",
@@ -15196,7 +15196,7 @@
           ],
           [
             "Interactions per map",
-            0.076
+            0.075
           ]
         ],
         "cowin": 0.09
@@ -15270,11 +15270,11 @@
           ],
           [
             "Interactions per map",
-            0.167
+            0.166
           ],
           [
             "On-record K/D",
-            0.121
+            0.12
           ]
         ],
         "cowin": 0.0
@@ -15300,7 +15300,7 @@
       },
       {
         "name": "iLLeY",
-        "score": 85.8,
+        "score": 85.9,
         "drivers": [
           [
             "World Championships",
@@ -15342,11 +15342,11 @@
         "drivers": [
           [
             "World Championships",
-            0.226
+            0.227
           ],
           [
             "Interactions per map",
-            0.154
+            0.153
           ],
           [
             "Win conversion",
@@ -15371,7 +15371,7 @@
           ],
           [
             "On-record K/D",
-            0.126
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -15397,7 +15397,7 @@
       },
       {
         "name": "Parasite",
-        "score": 91.8,
+        "score": 91.9,
         "drivers": [
           [
             "World Championships",
@@ -15416,34 +15416,34 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 91.8,
+        "score": 91.6,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.358
+            0.347
           ],
           [
             "Teams played for",
-            0.271
+            0.262
           ],
           [
             "Era-adjusted wins",
-            0.165
+            0.16
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Enable",
-        "score": 91.6,
+        "score": 91.5,
         "drivers": [
           [
             "Primary role",
-            0.414
+            0.413
           ],
           [
             "Win conversion",
-            0.18
+            0.179
           ],
           [
             "Career span (yrs)",
@@ -15475,37 +15475,37 @@
     "Swanny": [
       {
         "name": "Dedo",
-        "score": 92.9,
+        "score": 93.0,
         "drivers": [
           [
             "Interactions per map",
-            0.215
+            0.211
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ],
           [
             "Peak season value",
-            0.109
+            0.11
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "MajorManiak",
-        "score": 91.5,
+        "score": 91.6,
         "drivers": [
           [
             "Win conversion",
             0.147
           ],
           [
-            "On-record K/D",
-            0.125
+            "Respawn K/D",
+            0.124
           ],
           [
-            "Respawn K/D",
+            "On-record K/D",
             0.124
           ]
         ],
@@ -15563,7 +15563,7 @@
           ],
           [
             "On-record K/D",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -15622,7 +15622,7 @@
           ],
           [
             "Interactions per map",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
@@ -15652,11 +15652,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.322
+            0.323
           ],
           [
             "Win conversion",
-            0.119
+            0.12
           ],
           [
             "Era-adjusted wins",
@@ -15719,7 +15719,7 @@
           ],
           [
             "On-record K/D",
-            0.126
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -15749,14 +15749,14 @@
         "drivers": [
           [
             "Peak season value",
-            0.364
-          ],
-          [
-            "Interactions per map",
-            0.141
+            0.365
           ],
           [
             "Era-adjusted wins",
+            0.141
+          ],
+          [
+            "Interactions per map",
             0.14
           ]
         ],
@@ -15768,7 +15768,7 @@
         "drivers": [
           [
             "World Championships",
-            0.331
+            0.332
           ],
           [
             "Teams played for",
@@ -15791,7 +15791,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.115
+            0.116
           ],
           [
             "Deep-run rate (top-4)",
@@ -15810,7 +15810,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Finals rate (top-2)",
@@ -15873,7 +15873,7 @@
           ],
           [
             "On-record K/D",
-            0.124
+            0.123
           ]
         ],
         "cowin": 0.0
@@ -15922,7 +15922,7 @@
         "drivers": [
           [
             "Teams played for",
-            0.179
+            0.178
           ],
           [
             "Win conversion",
@@ -15947,7 +15947,7 @@
           ],
           [
             "Interactions per map",
-            0.173
+            0.172
           ],
           [
             "Finals rate (top-2)",
@@ -15958,11 +15958,11 @@
       },
       {
         "name": "Bance",
-        "score": 92.1,
+        "score": 92.2,
         "drivers": [
           [
             "Peak season value",
-            0.395
+            0.396
           ],
           [
             "Interactions per map",
@@ -15989,7 +15989,7 @@
           ],
           [
             "Interactions per map",
-            0.123
+            0.122
           ]
         ],
         "cowin": 0.0
@@ -16008,7 +16008,7 @@
           ],
           [
             "Finals rate (top-2)",
-            0.105
+            0.106
           ]
         ],
         "cowin": 0.0
@@ -16042,7 +16042,7 @@
           ],
           [
             "Interactions per map",
-            0.109
+            0.11
           ],
           [
             "Distinct titles won",
@@ -16078,11 +16078,11 @@
         "drivers": [
           [
             "Primary role",
-            0.483
+            0.484
           ],
           [
             "Avg tenure (yrs/team)",
-            0.159
+            0.16
           ],
           [
             "Teams played for",
@@ -16209,19 +16209,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 93.3,
+        "score": 93.1,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.219
+            0.213
           ],
           [
             "Teams played for",
-            0.137
+            0.133
           ],
           [
             "Peak season value",
-            0.131
+            0.128
           ]
         ],
         "cowin": 0.0
@@ -16232,15 +16232,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.37
+            0.372
           ],
           [
             "Avg tenure (yrs/team)",
-            0.148
+            0.149
           ],
           [
             "Interactions per map",
-            0.145
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -16270,7 +16270,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.294
+            0.293
           ],
           [
             "Teams played for",
@@ -16287,7 +16287,7 @@
     "iLLeY": [
       {
         "name": "Prestinni",
-        "score": 87.9,
+        "score": 88.0,
         "drivers": [
           [
             "Win conversion",
@@ -16306,7 +16306,7 @@
       },
       {
         "name": "HyDra",
-        "score": 87.5,
+        "score": 87.6,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -16344,7 +16344,7 @@
       },
       {
         "name": "Rambo",
-        "score": 85.8,
+        "score": 85.9,
         "drivers": [
           [
             "World Championships",
@@ -16407,7 +16407,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.461
+            0.46
           ],
           [
             "Era-adjusted wins",
@@ -16452,7 +16452,7 @@
             0.118
           ],
           [
-            "On-record K/D",
+            "Respawn K/D",
             0.104
           ]
         ],
@@ -16472,7 +16472,7 @@
           ],
           [
             "Career span (yrs)",
-            0.076
+            0.075
           ]
         ],
         "cowin": 0.0
@@ -16580,14 +16580,14 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.15
-          ],
-          [
-            "Interactions per map",
-            0.138
+            0.151
           ],
           [
             "Win conversion",
+            0.137
+          ],
+          [
+            "Interactions per map",
             0.136
           ]
         ],
@@ -16618,11 +16618,11 @@
         "drivers": [
           [
             "Primary role",
-            0.483
+            0.484
           ],
           [
             "Avg tenure (yrs/team)",
-            0.159
+            0.16
           ],
           [
             "Teams played for",
@@ -16681,30 +16681,30 @@
           ],
           [
             "S&D K/D",
-            0.151
+            0.152
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.14
       },
       {
         "name": "Theory",
-        "score": 90.6,
+        "score": 90.7,
         "drivers": [
           [
             "Win conversion",
-            0.264
+            0.266
           ],
           [
             "Peak season value",
-            0.201
+            0.203
           ],
           [
             "Interactions per map",
-            0.103
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -16715,7 +16715,7 @@
         "drivers": [
           [
             "On-record K/D",
-            0.161
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -16755,14 +16755,14 @@
         "drivers": [
           [
             "Win conversion",
-            0.194
-          ],
-          [
-            "On-record K/D",
-            0.181
+            0.195
           ],
           [
             "S&D K/D",
+            0.188
+          ],
+          [
+            "On-record K/D",
             0.18
           ]
         ],
@@ -16770,26 +16770,26 @@
       },
       {
         "name": "Swanny",
-        "score": 92.9,
+        "score": 93.0,
         "drivers": [
           [
             "Interactions per map",
-            0.215
+            0.211
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ],
           [
             "Peak season value",
-            0.109
+            0.11
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "MadCat",
-        "score": 91.9,
+        "score": 92.0,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -16797,7 +16797,7 @@
           ],
           [
             "Interactions per map",
-            0.141
+            0.135
           ],
           [
             "Distinct titles won",
@@ -16816,7 +16816,7 @@
           ],
           [
             "On-record K/D",
-            0.142
+            0.141
           ],
           [
             "Respawn K/D",
@@ -16827,19 +16827,19 @@
       },
       {
         "name": "Sib",
-        "score": 91.2,
+        "score": 91.1,
         "drivers": [
           [
             "Teams played for",
-            0.292
+            0.289
           ],
           [
             "Avg tenure (yrs/team)",
-            0.169
+            0.167
           ],
           [
             "Career span (yrs)",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
@@ -16943,11 +16943,11 @@
       },
       {
         "name": "Enable",
-        "score": 92.4,
+        "score": 92.3,
         "drivers": [
           [
             "Era-adjusted wins",
-            0.196
+            0.195
           ],
           [
             "Career span (yrs)",
@@ -16955,7 +16955,7 @@
           ],
           [
             "Win conversion",
-            0.155
+            0.154
           ]
         ],
         "cowin": 0.09
@@ -17029,7 +17029,7 @@
           ],
           [
             "Era-adjusted wins",
-            0.115
+            0.116
           ],
           [
             "Deep-run rate (top-4)",
@@ -17044,7 +17044,7 @@
         "drivers": [
           [
             "Primary role",
-            0.369
+            0.368
           ],
           [
             "Avg tenure (yrs/team)",
@@ -17103,7 +17103,7 @@
         "drivers": [
           [
             "Interactions per map",
-            0.266
+            0.265
           ],
           [
             "Career span (yrs)",
@@ -17111,7 +17111,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -17122,11 +17122,11 @@
         "drivers": [
           [
             "Win conversion",
-            0.234
+            0.233
           ],
           [
             "Interactions per map",
-            0.164
+            0.167
           ],
           [
             "Avg tenure (yrs/team)",
@@ -17183,7 +17183,7 @@
           ],
           [
             "Interactions per map",
-            0.114
+            0.113
           ],
           [
             "Win conversion",
@@ -17202,7 +17202,7 @@
           ],
           [
             "Interactions per map",
-            0.158
+            0.157
           ],
           [
             "Teams played for",
@@ -17215,7 +17215,7 @@
     "KiLLa": [
       {
         "name": "Theory",
-        "score": 89.0,
+        "score": 89.1,
         "drivers": [
           [
             "World Championships",
@@ -17223,7 +17223,7 @@
           ],
           [
             "Teams played for",
-            0.142
+            0.143
           ],
           [
             "Win conversion",
@@ -17238,7 +17238,7 @@
         "drivers": [
           [
             "World Championships",
-            0.294
+            0.295
           ],
           [
             "Deep-run rate (top-4)",
@@ -17246,7 +17246,7 @@
           ],
           [
             "Win conversion",
-            0.107
+            0.108
           ]
         ],
         "cowin": 0.0
@@ -17257,15 +17257,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.227
+            0.226
           ],
           [
             "Avg tenure (yrs/team)",
-            0.141
+            0.14
           ],
           [
             "Career span (yrs)",
-            0.114
+            0.113
           ]
         ],
         "cowin": 0.0
@@ -17290,8 +17290,27 @@
         "cowin": 0.0
       },
       {
-        "name": "Crowder",
+        "name": "John",
         "score": 87.9,
+        "drivers": [
+          [
+            "Era-adjusted wins",
+            0.233
+          ],
+          [
+            "Distinct titles won",
+            0.142
+          ],
+          [
+            "Career span (yrs)",
+            0.107
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Crowder",
+        "score": 87.8,
         "drivers": [
           [
             "Peak season value",
@@ -17304,25 +17323,6 @@
           [
             "Avg tenure (yrs/team)",
             0.094
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
-        "name": "John",
-        "score": 87.8,
-        "drivers": [
-          [
-            "Era-adjusted wins",
-            0.232
-          ],
-          [
-            "Distinct titles won",
-            0.142
-          ],
-          [
-            "Career span (yrs)",
-            0.106
           ]
         ],
         "cowin": 0.0
@@ -17373,7 +17373,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.233
+            0.232
           ],
           [
             "Career span (yrs)",
@@ -17381,7 +17381,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.135
           ]
         ],
         "cowin": 0.0
@@ -17392,7 +17392,7 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.246
+            0.245
           ],
           [
             "Distinct titles won",
@@ -17400,14 +17400,14 @@
           ],
           [
             "Career span (yrs)",
-            0.141
+            0.14
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Apathy",
-        "score": 88.5,
+        "score": 88.4,
         "drivers": [
           [
             "Era-adjusted wins",
@@ -17438,7 +17438,7 @@
           ],
           [
             "Interactions per map",
-            0.128
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -17451,14 +17451,14 @@
         "drivers": [
           [
             "Win conversion",
-            0.194
-          ],
-          [
-            "On-record K/D",
-            0.181
+            0.195
           ],
           [
             "S&D K/D",
+            0.188
+          ],
+          [
+            "On-record K/D",
             0.18
           ]
         ],
@@ -17489,15 +17489,15 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.176
+            0.174
           ],
           [
             "Win conversion",
-            0.127
+            0.126
           ],
           [
             "Distinct titles won",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
@@ -17527,14 +17527,14 @@
         "drivers": [
           [
             "Peak season value",
-            0.364
-          ],
-          [
-            "Interactions per map",
-            0.141
+            0.365
           ],
           [
             "Era-adjusted wins",
+            0.141
+          ],
+          [
+            "Interactions per map",
             0.14
           ]
         ],
@@ -17571,11 +17571,11 @@
           ],
           [
             "On-record K/D",
-            0.206
+            0.204
           ],
           [
             "Interactions per map",
-            0.107
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -17586,7 +17586,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.461
+            0.46
           ],
           [
             "Era-adjusted wins",
@@ -17605,7 +17605,7 @@
         "drivers": [
           [
             "World Championships",
-            0.345
+            0.346
           ],
           [
             "Career span (yrs)",
@@ -17658,11 +17658,11 @@
       },
       {
         "name": "Ghosty",
-        "score": 90.2,
+        "score": 90.3,
         "drivers": [
           [
             "World Championships",
-            0.332
+            0.333
           ],
           [
             "Win conversion",
@@ -17687,7 +17687,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.182
+            0.183
           ],
           [
             "Peak season value",
@@ -17725,11 +17725,11 @@
           ],
           [
             "S&D K/D",
-            0.151
+            0.152
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.14
@@ -17744,7 +17744,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.146
+            0.147
           ],
           [
             "Era-adjusted wins",
@@ -17837,7 +17837,7 @@
         "drivers": [
           [
             "Respawn K/D",
-            0.18
+            0.181
           ],
           [
             "Career span (yrs)",
@@ -17845,7 +17845,7 @@
           ],
           [
             "Win conversion",
-            0.152
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -17948,6 +17948,25 @@
         "cowin": 0.0
       },
       {
+        "name": "Nadeshot",
+        "score": 91.2,
+        "drivers": [
+          [
+            "Win conversion",
+            0.332
+          ],
+          [
+            "Deep-run rate (top-4)",
+            0.138
+          ],
+          [
+            "Finals rate (top-2)",
+            0.101
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Jurd",
         "score": 91.2,
         "drivers": [
@@ -17962,25 +17981,6 @@
           [
             "Win conversion",
             0.099
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
-        "name": "Nadeshot",
-        "score": 91.2,
-        "drivers": [
-          [
-            "Win conversion",
-            0.331
-          ],
-          [
-            "Deep-run rate (top-4)",
-            0.138
-          ],
-          [
-            "Finals rate (top-2)",
-            0.1
           ]
         ],
         "cowin": 0.0
@@ -18027,19 +18027,19 @@
     "Crowder": [
       {
         "name": "SiLLY",
-        "score": 92.3,
+        "score": 92.4,
         "drivers": [
           [
             "Career span (yrs)",
-            0.271
+            0.273
           ],
           [
             "Teams played for",
-            0.141
+            0.142
           ],
           [
             "Deep-run rate (top-4)",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -18065,19 +18065,19 @@
       },
       {
         "name": "Censor",
-        "score": 89.4,
+        "score": 89.5,
         "drivers": [
           [
             "World Championships",
-            0.306
+            0.308
           ],
           [
             "Win conversion",
-            0.146
+            0.147
           ],
           [
             "S&D K/D",
-            0.105
+            0.103
           ]
         ],
         "cowin": 0.0
@@ -18088,15 +18088,15 @@
         "drivers": [
           [
             "World Championships",
-            0.298
+            0.296
           ],
           [
             "Peak season value",
-            0.155
+            0.154
           ],
           [
             "Era-adjusted wins",
-            0.149
+            0.148
           ]
         ],
         "cowin": 0.0
@@ -18134,7 +18134,7 @@
           ],
           [
             "Interactions per map",
-            0.128
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -18320,15 +18320,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.301
+            0.3
           ],
           [
             "Career span (yrs)",
-            0.179
+            0.178
           ],
           [
             "Era-adjusted wins",
-            0.154
+            0.153
           ]
         ],
         "cowin": 0.0
@@ -18444,7 +18444,7 @@
           ],
           [
             "Interactions per map",
-            0.123
+            0.122
           ]
         ],
         "cowin": 0.0
@@ -18455,7 +18455,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -18470,19 +18470,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.5,
+        "score": 90.8,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.259
+            0.265
           ],
           [
             "Teams played for",
-            0.165
+            0.169
           ],
           [
             "Win conversion",
-            0.122
+            0.125
           ]
         ],
         "cowin": 0.0
@@ -18499,7 +18499,7 @@
           ],
           [
             "Distinct titles won",
-            0.159
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -18510,18 +18510,18 @@
       },
       {
         "name": "Swanny",
-        "score": 91.5,
+        "score": 91.6,
         "drivers": [
           [
             "Win conversion",
             0.147
           ],
           [
-            "On-record K/D",
-            0.125
+            "Respawn K/D",
+            0.124
           ],
           [
-            "Respawn K/D",
+            "On-record K/D",
             0.124
           ]
         ],
@@ -18594,7 +18594,7 @@
           ],
           [
             "Interactions per map",
-            0.125
+            0.124
           ],
           [
             "Finals rate (top-2)",
@@ -18847,11 +18847,11 @@
           ],
           [
             "On-record K/D",
-            0.206
+            0.204
           ],
           [
             "Interactions per map",
-            0.107
+            0.109
           ]
         ],
         "cowin": 0.0
@@ -18876,25 +18876,6 @@
         "cowin": 0.0
       },
       {
-        "name": "ASSASS1N",
-        "score": 90.3,
-        "drivers": [
-          [
-            "World Championships",
-            0.353
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.274
-          ],
-          [
-            "Career span (yrs)",
-            0.113
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
         "name": "Fero",
         "score": 90.3,
         "drivers": [
@@ -18914,12 +18895,31 @@
         "cowin": 0.0
       },
       {
+        "name": "ASSASS1N",
+        "score": 90.1,
+        "drivers": [
+          [
+            "World Championships",
+            0.345
+          ],
+          [
+            "Avg tenure (yrs/team)",
+            0.268
+          ],
+          [
+            "Interactions per map",
+            0.127
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
         "name": "Abuzah",
         "score": 90.0,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.319
+            0.32
           ],
           [
             "Career span (yrs)",
@@ -18959,11 +18959,11 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.315
+            0.317
           ],
           [
             "Career span (yrs)",
-            0.239
+            0.241
           ],
           [
             "Peak season value",
@@ -19016,7 +19016,7 @@
         "drivers": [
           [
             "Interactions per map",
-            0.266
+            0.265
           ],
           [
             "Career span (yrs)",
@@ -19024,7 +19024,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -19050,44 +19050,25 @@
       },
       {
         "name": "Dedo",
-        "score": 91.2,
+        "score": 91.1,
         "drivers": [
           [
             "Teams played for",
-            0.292
+            0.289
           ],
           [
             "Avg tenure (yrs/team)",
-            0.169
+            0.167
           ],
           [
             "Career span (yrs)",
-            0.119
+            0.118
           ]
         ],
         "cowin": 0.0
       }
     ],
     "ASSASS1N": [
-      {
-        "name": "Loony",
-        "score": 93.3,
-        "drivers": [
-          [
-            "Avg tenure (yrs/team)",
-            0.219
-          ],
-          [
-            "Teams played for",
-            0.137
-          ],
-          [
-            "Peak season value",
-            0.131
-          ]
-        ],
-        "cowin": 0.0
-      },
       {
         "name": "MuTaTioN",
         "score": 93.3,
@@ -19108,77 +19089,96 @@
         "cowin": 0.0
       },
       {
-        "name": "ProoFy",
-        "score": 91.8,
+        "name": "Loony",
+        "score": 93.1,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.358
+            0.213
           ],
           [
             "Teams played for",
-            0.271
+            0.133
           ],
           [
-            "Era-adjusted wins",
-            0.165
-          ]
-        ],
-        "cowin": 0.0
-      },
-      {
-        "name": "Abuzah",
-        "score": 91.6,
-        "drivers": [
-          [
-            "World Championships",
-            0.41
-          ],
-          [
-            "Deep-run rate (top-4)",
-            0.119
-          ],
-          [
-            "Finals rate (top-2)",
-            0.099
+            "Peak season value",
+            0.128
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "StaiNViLLe",
-        "score": 91.5,
+        "score": 91.7,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.245
+            0.252
           ],
           [
             "Teams played for",
-            0.205
+            0.211
           ],
           [
             "Win conversion",
-            0.148
+            0.152
           ]
         ],
         "cowin": 0.0
       },
       {
-        "name": "ZooMaa",
-        "score": 91.4,
+        "name": "ProoFy",
+        "score": 91.6,
         "drivers": [
           [
-            "Peak season value",
-            0.452
+            "Avg tenure (yrs/team)",
+            0.347
           ],
           [
-            "Interactions per map",
-            0.128
+            "Teams played for",
+            0.262
           ],
           [
-            "Distinct titles won",
-            0.114
+            "Era-adjusted wins",
+            0.16
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Abuzah",
+        "score": 91.3,
+        "drivers": [
+          [
+            "World Championships",
+            0.394
+          ],
+          [
+            "Deep-run rate (top-4)",
+            0.115
+          ],
+          [
+            "Finals rate (top-2)",
+            0.095
+          ]
+        ],
+        "cowin": 0.0
+      },
+      {
+        "name": "Ghosty",
+        "score": 91.1,
+        "drivers": [
+          [
+            "Avg tenure (yrs/team)",
+            0.267
+          ],
+          [
+            "Career span (yrs)",
+            0.165
+          ],
+          [
+            "Win conversion",
+            0.155
           ]
         ],
         "cowin": 0.0
@@ -19248,7 +19248,7 @@
         "drivers": [
           [
             "On-record K/D",
-            0.161
+            0.16
           ],
           [
             "Era-adjusted wins",
@@ -19282,7 +19282,7 @@
       },
       {
         "name": "PHiZZURP",
-        "score": 89.5,
+        "score": 89.6,
         "drivers": [
           [
             "Win conversion",
@@ -19290,11 +19290,11 @@
           ],
           [
             "On-record K/D",
-            0.216
+            0.215
           ],
           [
             "Finals rate (top-2)",
-            0.136
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -19469,7 +19469,7 @@
           ],
           [
             "Interactions per map",
-            0.127
+            0.128
           ]
         ],
         "cowin": 0.0
@@ -19480,11 +19480,11 @@
         "drivers": [
           [
             "World Championships",
-            0.288
+            0.289
           ],
           [
             "Win conversion",
-            0.218
+            0.219
           ],
           [
             "Interactions per map",
@@ -19535,19 +19535,19 @@
     "Abuzah": [
       {
         "name": "ASSASS1N",
-        "score": 91.6,
+        "score": 91.3,
         "drivers": [
           [
             "World Championships",
-            0.41
+            0.394
           ],
           [
             "Deep-run rate (top-4)",
-            0.119
+            0.115
           ],
           [
             "Finals rate (top-2)",
-            0.099
+            0.095
           ]
         ],
         "cowin": 0.0
@@ -19577,7 +19577,7 @@
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.319
+            0.32
           ],
           [
             "Career span (yrs)",
@@ -19604,7 +19604,7 @@
           ],
           [
             "Career span (yrs)",
-            0.141
+            0.142
           ]
         ],
         "cowin": 0.0
@@ -19634,7 +19634,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.277
+            0.278
           ],
           [
             "World Championships",
@@ -19663,7 +19663,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.129
+            0.13
           ]
         ],
         "cowin": 0.0
@@ -19693,7 +19693,7 @@
         "drivers": [
           [
             "Win conversion",
-            0.277
+            0.278
           ],
           [
             "Era-adjusted wins",
@@ -19716,7 +19716,7 @@
           ],
           [
             "Peak season value",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
@@ -19731,7 +19731,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.255
+            0.256
           ],
           [
             "Interactions per map",
@@ -19750,7 +19750,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.379
+            0.38
           ],
           [
             "Era-adjusted wins",
@@ -19929,7 +19929,7 @@
           ],
           [
             "Deep-run rate (top-4)",
-            0.182
+            0.183
           ],
           [
             "Peak season value",
@@ -19944,15 +19944,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.264
+            0.265
           ],
           [
             "Respawn K/D",
-            0.137
+            0.138
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -20157,11 +20157,11 @@
         "drivers": [
           [
             "Primary role",
-            0.392
+            0.393
           ],
           [
             "Peak season value",
-            0.209
+            0.21
           ],
           [
             "Deep-run rate (top-4)",
@@ -20191,19 +20191,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.1,
+        "score": 89.8,
         "drivers": [
           [
             "Peak season value",
-            0.513
+            0.495
           ],
           [
             "Era-adjusted wins",
-            0.138
+            0.134
           ],
           [
             "Win conversion",
-            0.113
+            0.11
           ]
         ],
         "cowin": 0.0
@@ -20273,7 +20273,7 @@
         "drivers": [
           [
             "Peak season value",
-            0.255
+            0.256
           ],
           [
             "Interactions per map",
@@ -20319,7 +20319,7 @@
           ],
           [
             "Interactions per map",
-            0.138
+            0.137
           ]
         ],
         "cowin": 0.0
@@ -20338,7 +20338,7 @@
           ],
           [
             "On-record K/D",
-            0.142
+            0.141
           ]
         ],
         "cowin": 0.0
@@ -20467,11 +20467,11 @@
         "drivers": [
           [
             "Primary role",
-            0.392
+            0.393
           ],
           [
             "Peak season value",
-            0.209
+            0.21
           ],
           [
             "Deep-run rate (top-4)",
@@ -20482,19 +20482,19 @@
       },
       {
         "name": "ASSASS1N",
-        "score": 90.1,
+        "score": 90.3,
         "drivers": [
           [
             "Peak season value",
-            0.298
+            0.304
           ],
           [
             "Era-adjusted wins",
-            0.173
+            0.177
           ],
           [
             "Win conversion",
-            0.127
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -20509,7 +20509,7 @@
           ],
           [
             "Teams played for",
-            0.179
+            0.178
           ],
           [
             "Respawn K/D",
@@ -20547,7 +20547,7 @@
           ],
           [
             "Teams played for",
-            0.239
+            0.24
           ],
           [
             "Career span (yrs)",
@@ -20598,7 +20598,7 @@
       },
       {
         "name": "Ricky",
-        "score": 91.6,
+        "score": 91.7,
         "drivers": [
           [
             "S&D K/D",
@@ -20707,7 +20707,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.129
+            0.13
           ]
         ],
         "cowin": 0.0
@@ -20718,15 +20718,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.205
+            0.204
           ],
           [
             "Avg tenure (yrs/team)",
-            0.17
+            0.169
           ],
           [
             "Peak season value",
-            0.132
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -20737,15 +20737,15 @@
         "drivers": [
           [
             "Peak season value",
-            0.264
+            0.265
           ],
           [
             "Respawn K/D",
-            0.137
+            0.138
           ],
           [
             "On-record K/D",
-            0.13
+            0.129
           ]
         ],
         "cowin": 0.0
@@ -20771,7 +20771,7 @@
       },
       {
         "name": "PHiZZURP",
-        "score": 91.6,
+        "score": 91.7,
         "drivers": [
           [
             "S&D K/D",
@@ -20798,7 +20798,7 @@
           ],
           [
             "On-record K/D",
-            0.142
+            0.141
           ],
           [
             "Respawn K/D",
@@ -20811,19 +20811,19 @@
     "SiLLY": [
       {
         "name": "Crowder",
-        "score": 92.3,
+        "score": 92.4,
         "drivers": [
           [
             "Career span (yrs)",
-            0.271
+            0.273
           ],
           [
             "Teams played for",
-            0.141
+            0.142
           ],
           [
             "Deep-run rate (top-4)",
-            0.139
+            0.14
           ]
         ],
         "cowin": 0.0
@@ -20838,7 +20838,7 @@
           ],
           [
             "Peak season value",
-            0.215
+            0.216
           ],
           [
             "Avg tenure (yrs/team)",
@@ -20868,11 +20868,11 @@
       },
       {
         "name": "Theory",
-        "score": 89.1,
+        "score": 89.0,
         "drivers": [
           [
             "World Championships",
-            0.297
+            0.296
           ],
           [
             "Peak season value",
@@ -20905,20 +20905,20 @@
         "cowin": 0.0
       },
       {
-        "name": "MiRx",
+        "name": "John",
         "score": 88.9,
         "drivers": [
           [
+            "Era-adjusted wins",
+            0.264
+          ],
+          [
+            "Win conversion",
+            0.163
+          ],
+          [
             "Peak season value",
-            0.233
-          ],
-          [
-            "Career span (yrs)",
-            0.145
-          ],
-          [
-            "Avg tenure (yrs/team)",
-            0.136
+            0.159
           ]
         ],
         "cowin": 0.0
@@ -20973,7 +20973,7 @@
           ],
           [
             "Interactions per map",
-            0.173
+            0.172
           ],
           [
             "Finals rate (top-2)",
@@ -20996,26 +20996,26 @@
           ],
           [
             "Peak season value",
-            0.103
+            0.104
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "ASSASS1N",
-        "score": 91.5,
+        "score": 91.7,
         "drivers": [
           [
             "Avg tenure (yrs/team)",
-            0.245
+            0.252
           ],
           [
             "Teams played for",
-            0.205
+            0.211
           ],
           [
             "Win conversion",
-            0.148
+            0.152
           ]
         ],
         "cowin": 0.0
@@ -21047,15 +21047,15 @@
         "drivers": [
           [
             "Teams played for",
-            0.205
+            0.204
           ],
           [
             "Avg tenure (yrs/team)",
-            0.17
+            0.169
           ],
           [
             "Peak season value",
-            0.132
+            0.131
           ]
         ],
         "cowin": 0.0
@@ -21066,34 +21066,34 @@
         "drivers": [
           [
             "Era-adjusted wins",
-            0.176
+            0.174
           ],
           [
             "Win conversion",
-            0.127
+            0.126
           ],
           [
             "Distinct titles won",
-            0.118
+            0.117
           ]
         ],
         "cowin": 0.0
       },
       {
         "name": "Censor",
-        "score": 90.6,
+        "score": 90.7,
         "drivers": [
           [
             "Win conversion",
-            0.264
+            0.266
           ],
           [
             "Peak season value",
-            0.201
+            0.203
           ],
           [
             "Interactions per map",
-            0.103
+            0.101
           ]
         ],
         "cowin": 0.0
@@ -21131,7 +21131,7 @@
           ],
           [
             "S&D K/D",
-            0.095
+            0.099
           ]
         ],
         "cowin": 0.0
@@ -21146,7 +21146,7 @@
           ],
           [
             "Avg tenure (yrs/team)",
-            0.123
+            0.122
           ],
           [
             "Win conversion",
@@ -21625,7 +21625,7 @@
     {
       "archetype": "Jurd",
       "size": 64,
-      "stability": 0.866,
+      "stability": 0.867,
       "mean_cowin": 0.018,
       "profile": "low peak season value, low era-adjusted wins, low finals rate (top-2)",
       "members": [
@@ -21698,7 +21698,7 @@
     {
       "archetype": "Drazah",
       "size": 29,
-      "stability": 0.748,
+      "stability": 0.75,
       "mean_cowin": 0.05,
       "profile": "high world championships, high win conversion, high deep-run rate (top-4)",
       "members": [
@@ -21738,13 +21738,13 @@
     [
       29.0,
       49.0,
-      0.23396604437221377,
+      0.2338492972868544,
       2.0
     ],
     [
       76.0,
       88.0,
-      0.2715886762547648,
+      0.27610050913759293,
       2.0
     ],
     [
@@ -21756,91 +21756,91 @@
     [
       52.0,
       67.0,
-      0.2937798802212371,
+      0.2938711042747087,
       2.0
     ],
     [
       14.0,
       17.0,
-      0.2984834443803929,
+      0.29898908382110606,
       2.0
     ],
     [
       31.0,
       33.0,
-      0.3052387159037773,
+      0.30446643750288743,
       2.0
     ],
     [
       42.0,
       87.0,
-      0.30854691194336914,
+      0.30842328158439547,
       2.0
     ],
     [
       51.0,
       59.0,
-      0.3103944431390976,
+      0.3101051180742648,
       2.0
     ],
     [
       22.0,
       39.0,
-      0.3104697749252242,
+      0.31129850352676086,
       2.0
     ],
     [
       25.0,
       30.0,
-      0.3124717766388682,
+      0.3116238454182431,
       2.0
     ],
     [
       11.0,
       16.0,
-      0.31541826942541473,
+      0.31536579023278527,
       2.0
     ],
     [
       61.0,
       93.0,
-      0.31669375836704117,
+      0.31665590103287733,
       3.0
     ],
     [
       32.0,
       34.0,
-      0.318224445104003,
+      0.31770491463447154,
       2.0
     ],
     [
       55.0,
       56.0,
-      0.3253301590592986,
+      0.3239631182486425,
       2.0
     ],
     [
       37.0,
       101.0,
-      0.325685018483722,
+      0.32746107678004616,
       3.0
     ],
     [
       80.0,
       83.0,
-      0.33851053520909796,
+      0.3382051146159442,
       2.0
     ],
     [
       57.0,
       85.0,
-      0.3402582735624887,
+      0.3397437760608413,
       2.0
     ],
     [
       46.0,
-      71.0,
-      0.3591934490627031,
+      53.0,
+      0.3624028312237502,
       2.0
     ],
     [
@@ -21852,193 +21852,199 @@
     [
       78.0,
       81.0,
-      0.36842557763507944,
+      0.3681187665842971,
       2.0
     ],
     [
       45.0,
       104.0,
-      0.38252906153174426,
+      0.3823716553053411,
       4.0
     ],
     [
       2.0,
       4.0,
-      0.3830799332514967,
+      0.3826997817857452,
       2.0
     ],
     [
       94.0,
       109.0,
-      0.3890172359745294,
+      0.38967737421321313,
       4.0
     ],
     [
       35.0,
       70.0,
-      0.40133738830556615,
+      0.4004114734969058,
       2.0
     ],
     [
       18.0,
       21.0,
-      0.40964387010935865,
+      0.4093024100460167,
       2.0
     ],
     [
       65.0,
       82.0,
-      0.4347652846217356,
+      0.4344800296013688,
       2.0
     ],
     [
       27.0,
       102.0,
-      0.44344804179524017,
+      0.4427715454234536,
       3.0
     ],
     [
       7.0,
       8.0,
-      0.4483528188669232,
+      0.45083433185322924,
       2.0
     ],
     [
       60.0,
       96.0,
-      0.4532237913044346,
+      0.45319324319702203,
       3.0
     ],
     [
       63.0,
       64.0,
-      0.4624496835528515,
+      0.46222113422151156,
       2.0
     ],
     [
       54.0,
       66.0,
-      0.46257493607538563,
+      0.4624363030653647,
       2.0
     ],
     [
       26.0,
       119.0,
-      0.4702591253010441,
+      0.4699638623433118,
       4.0
-    ],
-    [
-      53.0,
-      58.0,
-      0.4728233279753002,
-      2.0
     ],
     [
       62.0,
       86.0,
-      0.483506850888075,
+      0.4833893997231214,
+      2.0
+    ],
+    [
+      71.0,
+      75.0,
+      0.49765473666768834,
       2.0
     ],
     [
       48.0,
       117.0,
-      0.49964744581353804,
+      0.498993942489282,
       3.0
     ],
     [
-      44.0,
       99.0,
-      0.5125875249059085,
-      3.0
+      110.0,
+      0.5060533503157276,
+      4.0
+    ],
+    [
+      44.0,
+      128.0,
+      0.5133437937389822,
+      5.0
     ],
     [
       24.0,
       97.0,
-      0.5188293613037117,
+      0.5187421590621897,
       3.0
     ],
     [
       36.0,
       98.0,
-      0.5305158852982244,
+      0.5289788284989396,
       3.0
     ],
     [
-      110.0,
-      118.0,
-      0.5310297704645373,
-      4.0
+      58.0,
+      69.0,
+      0.5444456240362049,
+      2.0
     ],
     [
       13.0,
       124.0,
-      0.552530253375607,
+      0.5516382144078036,
       5.0
     ],
     [
       3.0,
       23.0,
-      0.5591010851485521,
+      0.5589951385446194,
       2.0
     ],
     [
       40.0,
       105.0,
-      0.5652291486583441,
+      0.564039110621756,
       3.0
     ],
     [
       12.0,
       38.0,
-      0.5691472708082561,
+      0.568530164657186,
       2.0
     ],
     [
       50.0,
       115.0,
-      0.5717939394051197,
+      0.5689070561967483,
       5.0
     ],
     [
       20.0,
       103.0,
-      0.5800248973554625,
+      0.5799816446514041,
       3.0
     ],
     [
       15.0,
       28.0,
-      0.5922485138410922,
-      2.0
-    ],
-    [
-      69.0,
-      74.0,
-      0.6119404778571331,
+      0.5919196586464613,
       2.0
     ],
     [
       113.0,
-      130.0,
-      0.6142947687600054,
+      131.0,
+      0.6147200840730823,
       7.0
+    ],
+    [
+      74.0,
+      132.0,
+      0.6249836690375891,
+      3.0
     ],
     [
       5.0,
       114.0,
-      0.6380645516139443,
+      0.6389253625654537,
       3.0
     ],
     [
       100.0,
-      134.0,
-      0.6457159332757789,
+      135.0,
+      0.6398198407451057,
       5.0
     ],
     [
       9.0,
       120.0,
-      0.6680976616083285,
+      0.6672996651870466,
       3.0
     ],
     [
@@ -22048,33 +22054,27 @@
       4.0
     ],
     [
-      0.0,
-      1.0,
-      0.6894050790920835,
-      2.0
-    ],
-    [
-      128.0,
-      131.0,
-      0.6911989347505468,
+      118.0,
+      129.0,
+      0.6865550527500371,
       7.0
     ],
     [
-      47.0,
-      75.0,
-      0.6960288617048555,
+      0.0,
+      1.0,
+      0.6896342742028013,
       2.0
     ],
     [
       108.0,
       116.0,
-      0.6961342935353465,
+      0.6934809426793971,
       4.0
     ],
     [
       121.0,
       122.0,
-      0.699060507322884,
+      0.6986015726963655,
       5.0
     ],
     [
@@ -22084,207 +22084,207 @@
       2.0
     ],
     [
-      125.0,
-      146.0,
-      0.7234185717756324,
-      9.0
-    ],
-    [
-      43.0,
-      139.0,
-      0.7600865983892662,
-      3.0
+      10.0,
+      47.0,
+      0.7302757425008896,
+      2.0
     ],
     [
       72.0,
-      144.0,
-      0.7626504701485227,
+      145.0,
+      0.757582841002814,
       5.0
     ],
     [
-      126.0,
-      136.0,
-      0.7650522862614592,
+      125.0,
+      137.0,
+      0.7656995945112568,
       7.0
+    ],
+    [
+      43.0,
+      149.0,
+      0.769108519170692,
+      6.0
     ],
     [
       84.0,
       112.0,
-      0.7750009742403086,
+      0.7741288099563217,
       3.0
     ],
     [
+      107.0,
+      146.0,
+      0.7862371048910135,
+      10.0
+    ],
+    [
       127.0,
-      138.0,
-      0.7911833248926903,
+      139.0,
+      0.7913357856040593,
       5.0
     ],
     [
       41.0,
       148.0,
-      0.7994081044698994,
+      0.799609050538409,
       5.0
+    ],
+    [
+      126.0,
+      158.0,
+      0.8335861280630801,
+      7.0
     ],
     [
       106.0,
-      154.0,
-      0.8318210864935405,
+      153.0,
+      0.8360733531039183,
       9.0
     ],
     [
-      129.0,
-      137.0,
-      0.8407180657374808,
+      130.0,
+      138.0,
+      0.8388147279219441,
       6.0
     ],
     [
-      107.0,
-      151.0,
-      0.8434869699160777,
-      12.0
-    ],
-    [
       19.0,
-      135.0,
-      0.8481842431636699,
+      136.0,
+      0.8517668341666147,
       3.0
     ],
     [
-      147.0,
-      152.0,
-      0.8482459641237595,
-      5.0
-    ],
-    [
       6.0,
-      141.0,
-      0.8654482966892079,
+      142.0,
+      0.8662043835614622,
       4.0
     ],
     [
       123.0,
       140.0,
-      0.8771468362697555,
+      0.8756529007344785,
       9.0
     ],
     [
-      10.0,
-      143.0,
-      0.9036401064043158,
-      4.0
-    ],
-    [
-      133.0,
-      165.0,
-      0.9606829929468201,
-      6.0
+      134.0,
+      144.0,
+      0.9688691455536802,
+      5.0
     ],
     [
       68.0,
       150.0,
-      0.9735131838098979,
+      0.9735117735384375,
       3.0
     ],
     [
-      142.0,
+      143.0,
       155.0,
-      1.0069530674107388,
+      1.0061900106998685,
       8.0
     ],
     [
-      92.0,
-      153.0,
-      1.0416610432841922,
-      6.0
-    ],
-    [
-      145.0,
-      166.0,
-      1.0804731376663326,
-      8.0
-    ],
-    [
-      149.0,
-      162.0,
-      1.210991430514675,
-      10.0
-    ],
-    [
-      160.0,
-      164.0,
-      1.2207687786337398,
-      21.0
-    ],
-    [
-      132.0,
-      159.0,
-      1.2803112632774822,
-      11.0
-    ],
-    [
-      156.0,
-      163.0,
-      1.3829040976708242,
+      141.0,
+      154.0,
+      1.0124558451348482,
       9.0
     ],
     [
-      158.0,
-      168.0,
-      1.4556389624356139,
-      17.0
+      92.0,
+      152.0,
+      1.0415069514823623,
+      6.0
+    ],
+    [
+      147.0,
+      165.0,
+      1.0839528116438186,
+      7.0
+    ],
+    [
+      156.0,
+      164.0,
+      1.1629476994248955,
+      19.0
+    ],
+    [
+      133.0,
+      161.0,
+      1.2798880366096568,
+      11.0
+    ],
+    [
+      151.0,
+      162.0,
+      1.2813651114561477,
+      5.0
     ],
     [
       157.0,
-      172.0,
-      1.4790975056687061,
+      163.0,
+      1.3830382472603526,
+      9.0
+    ],
+    [
+      160.0,
+      167.0,
+      1.4570812979756835,
+      17.0
+    ],
+    [
+      159.0,
+      171.0,
+      1.6109555856024402,
       26.0
     ],
     [
-      161.0,
-      174.0,
-      1.6968030211047815,
-      12.0
+      168.0,
+      169.0,
+      1.6687032181764005,
+      15.0
     ],
     [
-      169.0,
-      171.0,
-      1.7778430494621937,
-      16.0
+      173.0,
+      174.0,
+      1.7202154011337627,
+      14.0
     ],
     [
       175.0,
       176.0,
-      2.022149515027272,
+      2.0505774436344715,
       43.0
     ],
     [
-      167.0,
-      178.0,
-      2.1879148430023223,
-      19.0
+      166.0,
+      177.0,
+      2.2018969558619137,
+      18.0
     ],
     [
       170.0,
-      177.0,
-      2.336395588117409,
-      20.0
+      178.0,
+      2.2202000288444816,
+      21.0
     ],
     [
-      173.0,
+      172.0,
       179.0,
-      2.6044969104353393,
+      2.5992939902081704,
       54.0
     ],
     [
       180.0,
       182.0,
-      3.411391061892144,
-      73.0
+      3.347401624785455,
+      72.0
     ],
     [
       181.0,
       183.0,
-      6.040484386084554,
+      6.097270422589952,
       93.0
     ]
   ],
