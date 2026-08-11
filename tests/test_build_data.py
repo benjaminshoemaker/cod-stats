@@ -154,6 +154,22 @@ def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
         assert s["share"] == round(s["wins"] / 6, 4)
 
 
+def test_ewc_2026_has_complete_canonical_map_stats():
+    event_id = "Esports World Cup 2026/Black Ops 7"
+    rows = [row for row in json.load(open(build_data._p("player_stats_participants.json")))
+            if row.get("EventId") == event_id]
+    assert len(rows) == 920
+    assert len({row["StatId"] for row in rows}) == len(rows)
+    assert len({row["Player"] for row in rows}) == 64
+    assert len({row["SeriesId"] for row in rows}) == 28
+    assert {row["Mode"] for row in rows} == {"Hardpoint", "Search and Destroy", "Overload"}
+    for row in rows:
+        assert all(row.get(field) not in (None, "") for field in (
+            "StatId", "Player", "Event", "Game", "Mode", "Date", "Team", "TeamVs",
+            "Map", "SeriesId", "Win", "Kills", "Deaths",
+        ))
+
+
 def test_current_bo7_major_roster_has_participant_stat_rows():
     # The stakes/current-roster work needs stat coverage for all current CDL
     # players, including players outside the published 2+ win leaderboard. The

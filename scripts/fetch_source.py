@@ -32,6 +32,7 @@ Run:  python3 scripts/fetch_source.py [--published] [--awards] [--player-stats]
       python3 scripts/fetch_source.py --player-stats-participants-one
       python3 scripts/fetch_source.py --player-stats-participants-limit=N
       python3 scripts/fetch_source.py --player-stats-participants-refresh-events
+      python3 scripts/fetch_source.py --player-stats-participants-event=EVENT_PAGE
 """
 import json, os, subprocess, sys, time, urllib.parse, urllib.request
 
@@ -67,9 +68,9 @@ CHAMPS_WHERE = (f'{MAJOR_WHERE} AND '
                 'TO.Name LIKE "Call of Duty League Championship 20__")')
 
 
-def cargo(params, offset):
+def cargo(params, offset, page_size=PAGE):
     q = dict(params, **{"action": "cargoquery", "format": "json",
-                        "limit": str(PAGE), "offset": str(offset)})
+                        "limit": str(page_size), "offset": str(offset)})
     url = API + "?" + urllib.parse.urlencode(q, quote_via=urllib.parse.quote)
     for attempt in range(6):
         try:
@@ -85,15 +86,15 @@ def cargo(params, offset):
     raise SystemExit("giving up: wiki unreachable / rate-limited — try again later")
 
 
-def cargo_all(params):
+def cargo_all(params, page_size=PAGE):
     """Fetch every row of a cargo query, paginating past the 500-row cap."""
     rows, offset = [], 0
     while True:
-        batch = cargo(params, offset)
+        batch = cargo(params, offset, page_size)
         rows += batch
-        if len(batch) < PAGE:
+        if len(batch) < page_size:
             return rows
-        offset += PAGE
+        offset += page_size
         time.sleep(PAUSE)
 
 
@@ -313,7 +314,7 @@ def _completed_event_pages_from_rows(rows):
     return {r.get("EventId") for r in rows if r.get("EventId")}
 
 
-def fetch_player_stats_participants(max_events=None, refresh_events=False):
+def fetch_player_stats_participants(max_events=None, refresh_events=False, event_pages=None):
     """Fetch PlayerStats by major-event page for replacement/VOR baselines."""
     sys.path.insert(0, HERE)
     from build_data import ASOF
@@ -321,8 +322,26 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
     partial_path = os.path.join(HERE, "player_stats_participants.partial.json")
     progress_path = os.path.join(HERE, "player_stats_participants.progress.json")
     rows = _load_json(partial_path, [])
+    if event_pages and not rows:
+        # A targeted event refresh augments the promoted snapshot; an empty
+        # checkpoint would otherwise replace all older event observations.
+        rows = _load_json(os.path.join(HERE, "player_stats_participants.json"), [])
     progress = _load_json(progress_path, {"schema": 1, "completed": [], "failed": {}})
     events = _participant_stat_events(refresh=refresh_events)
+    if event_pages:
+        by_page = {event["page"]: event for event in events}
+        # The event cache can be behind ASOF. Resolve requested pages from the
+        # refreshed tournament source without requiring another broad Cargo query.
+        for row in _load_json(os.path.join(HERE, "major_events.json"), []):
+            page = row.get("EventId")
+            if page in event_pages and page not in by_page:
+                by_page[page] = {
+                    "event": row["Event"], "page": page, "game": row["Game"],
+                    "date": row.get("Date") or "",
+                }
+        events = [by_page[page] for page in event_pages if page in by_page]
+        if not events:
+            raise SystemExit("no participant-stat event matched the requested page")
     expected_pages = {event["page"] for event in events}
     done = (
         set(progress.get("completed", [])) | _completed_event_pages_from_rows(rows)
@@ -349,6 +368,21 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
         "order_by": "PS.Date,PS.TournamentPage,PR.OverviewPage,PS.Gamemode",
         }
 
+    def fallback_params_for(event):
+        # This avoids the broad PlayerStats/redirect/tournament join, which can
+        # intermittently fail on the wiki even when the event's map rows exist.
+        return {
+            "tables": "PlayerStats=PS",
+            "fields": ("PS._ID=StatId,PS.PlayerName=PlayerName,PS.PlayerLink=PlayerLink,"
+                       "PS.TournamentPage=EventId,PS.GameTitle=Game,PS.Gamemode=Mode,"
+                       "PS.Date=Date,PS.Team=Team,PS.TeamVs=TeamVs,PS.Map=Map,"
+                       "PS.SeriesId=SeriesId,PS.Win=Win,PS.Kills=Kills,PS.Deaths=Deaths"),
+            "where": (f"PS.TournamentPage={_quoted([event['page']])} "
+                      f"AND PS.GameTitle={_quoted([event['game']])} "
+                      f"AND PS.Date <= \"{ASOF}\""),
+            "order_by": "PS._ID",
+        }
+
     for i, event in enumerate(events, 1):
         if event["page"] in done:
             print(f"[{i}/{len(events)}] skipping {event['event']} (already in partial)")
@@ -357,7 +391,24 @@ def fetch_player_stats_participants(max_events=None, refresh_events=False):
             break
         print(f"[{i}/{len(events)}] fetching {event['event']} ({event['page']})")
         try:
-            rows = _merge_stat_rows(rows, flat(cargo_all(params_for(event))))
+            try:
+                fetched = flat(cargo_all(params_for(event)))
+            except SystemExit:
+                # Start with modest requests, then shrink again if Cargo is
+                # still rejecting the event query.  StatId remains the stable
+                # identity whether the joined or direct query supplied the row.
+                fetched = None
+                for page_size in (100, 25, 5):
+                    try:
+                        fetched = flat(cargo_all(fallback_params_for(event), page_size))
+                        break
+                    except SystemExit:
+                        continue
+                if fetched is None:
+                    raise SystemExit("wiki rejected joined and direct PlayerStats queries")
+            for row in fetched:
+                row.setdefault("Event", event["event"])
+            rows = _merge_stat_rows(rows, fetched)
         except SystemExit as e:
             prior = failed.get(event["page"], {})
             failed[event["page"]] = {
@@ -427,6 +478,9 @@ def main():
             max_events=1,
             refresh_events="--player-stats-participants-refresh-events" in sys.argv)
     for arg in sys.argv:
+        if arg.startswith("--player-stats-participants-event="):
+            return fetch_player_stats_participants(
+                event_pages={arg.split("=", 1)[1]})
         if arg.startswith("--player-stats-participants-limit="):
             return fetch_player_stats_participants(
                 max_events=int(arg.split("=", 1)[1]),

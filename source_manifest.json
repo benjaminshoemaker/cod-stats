@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-11T17:10:06Z",
-  "latestRefreshBatchId": "refresh-20260811T171006Z-727e425b",
+  "generatedAt": "2026-08-11T17:19:24Z",
+  "latestRefreshBatchId": "refresh-20260811T171924Z-b159bc10",
   "sources": {
     "major_events.json": {
       "status": "canonical",
@@ -84,10 +84,10 @@
     "player_stats_participants.json": {
       "status": "canonical",
       "source": "CoD Esports Wiki Cargo PlayerStats",
-      "provenanceTimestamp": "2026-08-11T17:10:06Z",
+      "provenanceTimestamp": "2026-08-11T17:19:24Z",
       "timestampKind": "retrieved",
       "timestampPrecision": "second",
-      "refreshBatchId": "refresh-20260811T171006Z-727e425b",
+      "refreshBatchId": "refresh-20260811T171924Z-b159bc10",
       "sourceSchemaVersion": 1,
       "queryVersion": "cargo-major-event-player-stats-v2",
       "queryScope": "Map observations fetched by canonical Major/Premier event page",
