@@ -132,26 +132,25 @@ def test_warzone_and_mobile_excluded(data):
         assert g not in data["meta"]["seasonOrder"]
 
 
-def test_black_ops_7_excludes_future_majors(data):
-    # Champs is complete; EWC remains future-dated at this snapshot.
-    assert data["majors"]["Black Ops 7"] == 5
+def test_black_ops_7_includes_completed_ewc(data):
+    # EWC completed on August 9 and is now part of the played major record.
+    assert data["majors"]["Black Ops 7"] == 6
 
 
 def test_black_ops_7_in_progress_uses_scheduled_denominator(data):
-    # The season is in progress: 4 majors played, 6 scheduled (4 CDL Majors + Champs +
-    # EWC). Shares must divide by the 6 every team will be able to play, or current
-    # winners are overstated. The mis-tiered Challengers Finals is excluded (DROP_EVENTS),
-    # so this is 6, not the 7 the wiki's Majors portal lists.
+    # The completed season has six qualifying majors (four CDL Majors, Champs, and
+    # EWC). The mis-tiered Challengers Finals is excluded (DROP_EVENTS), so this is
+    # six, not the seven the wiki's Majors portal lists.
     g = next(g for g in data["games"] if g["game"] == "Black Ops 7")
-    assert g["majors"] == 5          # played so far (event list length)
-    assert g["denom"] == 6           # scheduled majors, Challengers Finals dropped
+    assert g["majors"] == 6          # completed event list length
+    assert g["denom"] == 6           # qualifying majors, Challengers Finals dropped
     assert g["weight"] == round(1 / 6, 4)
     bo7_players = [p for p in data["players"].values()
                    if any(s["game"] == "Black Ops 7" for s in p["seasons"])]
     assert bo7_players
     for p in bo7_players:
         s = next(s for s in p["seasons"] if s["game"] == "Black Ops 7")
-        assert s["majors"] == 6 and s["held"] == 5
+        assert s["majors"] == 6 and s["held"] == 6
         assert s["share"] == round(s["wins"] / 6, 4)
 
 

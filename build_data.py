@@ -21,7 +21,7 @@ from source_model import (
 HERE = os.path.dirname(os.path.abspath(__file__))
 def _p(*parts): return os.path.join(HERE, *parts)
 
-ASOF = '2026-07-19'              # only majors played on/before this count as wins; future-dated
+ASOF = '2026-08-09'              # only majors played on/before this count as wins; future-dated
                                  # events still count toward an in-progress season's denominator
 DROP_GAMES = {'Warzone', 'Mobile'}   # separate ecosystems — excluded entirely
 
@@ -94,16 +94,16 @@ STRUCTURAL_DENOM = {'Modern Warfare': 9}
 # every one of these exactly. Warzone/Mobile events (DROP_GAMES) and future-dated
 # events (> ASOF) are excluded, so counts are console majors played to date.
 PUBLISHED = [("Crimsix",38),("Scump",28),("Karma",24),("FormaL",23),("ACHES",19),("Clayster",18),
- ("TeeP",18),("Simp",15),("aBeZy",14),("Cellium",11),("Shotzzy",10),("Kenny",10),("MerK",10),
+ ("TeeP",18),("Simp",15),("aBeZy",14),("Shotzzy",11),("Cellium",11),("Kenny",10),("MerK",10),
  ("JKap",9),("SlasheR",9),("Arcitys",9),("Envoy",9),("Octane",9),("Priestahh",9),("BigTymeR",9),("Drazah",9),
- ("Huke",8),("Enable",8),("HyDra",8),("Dashy",7),("John",7),("Attach",7),("Parasite",7),
+ ("Huke",9),("Dashy",8),("Enable",8),("HyDra",8),("John",7),("Attach",7),("Parasite",7),
  ("Skyz",7),("Jurd",6),("Apathy",6),("Tommey",6),("MadCat",6),("Joshh",6),("Slacked",6),("ZooMaa",6),
  ("Nadeshot",6),("Gunless",6),("Rambo",5),("ProoFy",5),("Swanny",5),("CleanX",5),("Accuracy",5),
  ("Scrap",5),("TJHaLy",5),("Classic",5),("Loony",5),("iLLeY",5),("KiSMET",5),("Bance",4),
  ("Censor",4),("Dedo",4),("Fero",4),("GunShy",4),("Insight",4),("KiLLa",4),
  ("MiRx",4),("NAMELESS",4),("Prestinni",4),("Saints",4),("XLNC",4),("Cammy",3),
  ("Crowder",3),("Frosty",3),("Ghosty",3),("Havok",3),("MajorManiak",3),("Mak",3),
- ("Mercules",3),("Pred",3),("Sib",3),("ASSASS1N",2),("Bissell",2),("Bobby",2),
+ ("Mercules",4),("Pred",3),("Sib",3),("ASSASS1N",2),("Bissell",2),("Bobby",2),
  ("04",2),("Abuzah",2),("Cheen",2),("DopedGoat",2),("FEARS",2),("Jake",2),("Mack",2),("Methodz",2),
  ("MuTaTioN",2),("Owakening",2),("PHiZZURP",2),("Ricky",2),("SiLLY",2),("StaiNViLLe",2),
  ("Theory",2),("Tobi",2),("Vengeance",2),("VeXeL",2),("VintaGe",2)]

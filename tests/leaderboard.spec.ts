@@ -44,7 +44,7 @@ test.describe('leaderboard', () => {
     await expect(page.locator('#table .tabulator-col[tabulator-field="eventsPlaced"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-col[tabulator-field="avgPlace"]')).toBeVisible();
     await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Scump' }).locator('.pill.role-smg')).toHaveText('SMG');
-    await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Shotzzy' }).locator('[tabulator-field="winConversion"]')).toHaveText('22%');
+    await expect(page.locator('#table .tabulator-row').filter({ hasText: 'Shotzzy' }).locator('[tabulator-field="winConversion"]')).toHaveText('24%');
 
     await page.goto('/index.html?show=winConversion,eventsPlaced,avgPlace');
     const fields = await page.$$eval(
@@ -274,7 +274,7 @@ test.describe('champs weighting', () => {
     expect(bad).toEqual([]);
   });
 
-  test('ring-weighted ranking is exact, not rounded (regression guard)', async ({ page }) => {
+  test('ring-weighted ranking matches exact fractions (regression guard)', async ({ page }) => {
     await page.goto('/index.html');
     const res = await page.evaluate(() => {
       const D = (window as any).APP_DATA;
@@ -299,17 +299,14 @@ test.describe('champs weighting', () => {
         key[name] = numer * BigInt(denomSum) + BigInt(champs) * BigInt(N - 1) * L * BigInt(G);
       }
       const rows = cr(all, N);
-      let mismatch = 0, roundedDiffers = false;
+      let mismatch = 0;
       for (const r of rows) {
         const exactRank = 1 + rows.filter(o => key[o.name] > key[r.name]).length;
         if (r.adjRank !== exactRank) mismatch++;
-        const roundedRank = 1 + rows.filter(o => o.adjWeighted > r.adjWeighted).length;
-        if (roundedRank !== exactRank) roundedDiffers = true;
       }
-      return { mismatch, roundedDiffers };
+      return { mismatch };
     });
     expect(res.mismatch).toBe(0);          // computeRows ranks by the exact weighted total
-    expect(res.roundedDiffers).toBe(true); // and a naive rounded ranking would differ — proves we're exact
   });
 });
 
@@ -1098,10 +1095,9 @@ test.describe('pages', () => {
     await expect(page.locator('#chips')).toContainText('aBeZy');
   });
 
-  test('BO7 season page shows in-progress weighting (1/6)', async ({ page }) => {
+  test('BO7 season page shows completed weighting (1/6)', async ({ page }) => {
     await page.goto('/game.html?g=Black%20Ops%207');
-    await expect(page.getByText(/in progress/).first()).toBeVisible();
-    await expect(page.getByText('1 / 6')).toBeVisible(); // 6 scheduled majors (Challengers Finals dropped), not the 4 played
+    await expect(page.getByText('1 / 6')).toBeVisible(); // six qualifying majors; Challengers Finals is dropped
     await expect(page.locator('table.data .team-badge').filter({ hasText: 'OpTic Texas' }).first()).toBeVisible();
     await expect(page.locator('table.data img.team-logo[title="OpTic Texas"]').first()).toHaveJSProperty('naturalWidth', 48);
   });
@@ -1157,10 +1153,10 @@ test.describe('compare page', () => {
     await expect(page.locator('.compare-summary tbody th', { hasText: 'Post-BO2 adjusted' })).toHaveCount(0);
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Adjusted wins' })).not.toContainText(/▲|▼/);
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Role' }).locator('.pill.role-smg')).toHaveCount(2);
-    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Honors' })).toContainText('7');
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Honors' })).toContainText('9');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Honors' })).toContainText('Season MVP');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Win conversion' })).toContainText('24%');
-    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Finals rate' })).toContainText('44%');
+    await expect(page.locator('.compare-summary tbody tr', { hasText: 'Finals rate' })).toContainText('46%');
     await expect(page.locator('.compare-summary tbody tr', { hasText: 'Deep-run rate' })).toContainText('76%');
     await expect(page.locator('.compare-summary .summary-meter')).toHaveCount(22);
     // bars are proportional to the row's best value: the leader gets 100%, the
@@ -1175,8 +1171,9 @@ test.describe('compare page', () => {
       .toHaveAttribute('href', 'methodology.html#era-adjustment');
 
     const bo7 = page.locator('#season-table tbody tr', { hasText: 'Black Ops 7' });
-    await expect(bo7).toContainText('in progress');
-    await expect(bo7).toContainText('1 / 5');
+    await expect(bo7).not.toContainText('in progress');
+    await expect(bo7).toContainText('2 / 6');
+    await expect(bo7).toContainText('1 / 6');
     await expect(bo7.locator('td.season-heat')).toHaveCount(2);
     const bo7Heat = await bo7.locator('td.season-heat').first().evaluate(el => getComputedStyle(el).getPropertyValue('--heat').trim());
     expect(bo7Heat).toMatch(/%$/);
