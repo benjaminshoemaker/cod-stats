@@ -26,6 +26,23 @@ test.describe('leaderboard', () => {
     expect(fields).toEqual(COLUMN_ORDER);
   });
 
+  test('rank tooltip explains when championship weighting determines rank', async ({ page }) => {
+    await page.goto('/index.html?rings=2');
+    const rankHeader = page.locator('#table .tabulator-col[tabulator-field="adjRank"]');
+    await rankHeader.hover();
+    await expect(page.locator('.tabulator-tooltip')).toHaveText(
+      'Ranked by Adj +◆: adjusted wins plus 1 extra major-win unit per Championship (×2 ring weight).',
+    );
+    await page.locator('#ringw-range').evaluate((el: HTMLInputElement) => {
+      el.value = '3';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await rankHeader.hover();
+    await expect(page.locator('.tabulator-tooltip')).toHaveText(
+      'Ranked by Adj +◆: adjusted wins plus 2 extra major-win units per Championship (×3 ring weight).',
+    );
+  });
+
   test('placement columns are opt-in and shareable', async ({ page }) => {
     await page.goto('/index.html');
     await expect(page.locator('#table .tabulator-col[tabulator-field="primaryRole"]')).toBeHidden();

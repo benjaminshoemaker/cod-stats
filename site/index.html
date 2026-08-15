@@ -329,6 +329,11 @@ const startSort = VALID.has(params.get('sort')) ? params.get('sort') : 'adjRank'
 const startDir  = params.get('dir')==='desc' ? 'desc' : 'asc';
 let compareMode = false;
 let compareNames = new Set();
+function rankTooltip(){
+  return ringN > 1
+    ? `Ranked by Adj +◆: adjusted wins plus ${ringN - 1} extra major-win unit${ringN === 2 ? '' : 's'} per Championship (×${ringN} ring weight).`
+    : 'Ranked by Adjusted wins (no Championship weighting).';
+}
 
 // Column selector: these are toggleable; "Player" stays fixed as the row label.
 // Hidden columns are read from the URL (?hide=field,field) or saved prefs, default none.
@@ -380,7 +385,8 @@ const buildColumns = M => [
     {title:"", field:"__compare", width:44, minWidth:44, hozAlign:"center", headerSort:false,
       visible:compareMode, formatter:compareFmt, cssClass:"compare-select-cell"},
     {title:M?"#":"Rank", field:"adjRank", ...colSize(M,50,84,.65), hozAlign:"right", headerHozAlign:"right",
-      cssClass:"tabnum", sorter:"number", headerTooltip:"Adjusted rank"},
+      cssClass:"tabnum", sorter:"number",
+      headerTooltip:rankTooltip},
     M ? {title:"Player", field:"name", width:112, minWidth:112, sorter:"string", formatter:playerFmt}
       : {title:"Player", field:"name", ...colSize(M,112,128,1.7), sorter:"string", formatter:playerFmt},
     {title:M?"Adj":"Adjusted", field:"adjusted", ...colSize(M,76,112,1.15), hozAlign:"right", headerHozAlign:"right",
