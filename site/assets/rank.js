@@ -63,9 +63,9 @@ export function computeRows(D, selected, ringWeight, bonuses){
   const DENOM = {}; D.games.forEach(g => { DENOM[g.game] = g.denom; });
   const games = ORDER.filter(g => selected.has(g));
   if(!games.length) return [];
-  const denomSum = games.reduce((a, g) => a + DENOM[g], 0);
-  const G = games.length;
-  const MBAR = denomSum / G;
+  // Fixed scale: values mean wins in a 10-major season.  Unlike the former
+  // selected-title average, this cannot rescale unrelated players.
+  const REFERENCE = D.meta.referenceMajors || 10;
   const L = games.reduce((acc, g) => lcm(acc, BigInt(DENOM[g])), 1n);
   const Lnum = Number(L);
   const rows = [];
@@ -90,7 +90,7 @@ export function computeRows(D, selected, ringWeight, bonuses){
     if(raw === 0) continue;
     const bonusNumer = applyBonus ? BigInt(bonus.wins || 0) * (L / BigInt(DENOM[bonus.game])) : 0n;
     const numer = sel.reduce((a, s) => a + BigInt(s.wins) * (L / BigInt(s.majors)), 0n) + bonusNumer;
-    const adjusted = Math.round(Number(numer) / Lnum * MBAR * 100) / 100;
+    const adjusted = Math.round(Number(numer) / Lnum * REFERENCE * 100) / 100;
     let best = sel[0] || null;
     for(const s of sel){ if(s.wins * best.majors > best.wins * s.majors) best = s; }
     if(applyBonus && bonus.wins){
@@ -116,17 +116,17 @@ export function computeRows(D, selected, ringWeight, bonuses){
       avgPlace: avgPlaceFromX2(placeX2Sum, eventsPlaced),
       winConversion: rate(placementWins, eventsPlaced),
       peak: best.wins / best.majors,
-      peakInfo: { adj: Math.round(best.wins / best.majors * MBAR * 100) / 100, season: best.game, wins: best.wins, majors: best.majors },
+      peakInfo: { adj: Math.round(best.wins / best.majors * REFERENCE * 100) / 100, season: best.game, wins: best.wins, majors: best.majors },
       eras: sel.length + (applyBonus && !sel.some(s => s.game === bonus.game) ? 1 : 0),
       firstYear: yrs.length ? Math.min(...yrs) : null,
       lastYear:  yrs.length ? Math.max(...yrs) : null,
     });
   }
   const weighted = N > 1;
-  const bExtra = BigInt(N - 1), bSum = BigInt(denomSum), bG = BigInt(G);
+  const bExtra = BigInt(N - 1), bReference = BigInt(REFERENCE);
   for(const r of rows){
     r.adjWeighted = Math.round((r.adjusted + r.champs * (N - 1)) * 100) / 100;   // display
-    r._wnumer = r._numer * bSum + BigInt(r.champs) * bExtra * L * bG;             // exact ranking key
+    r._wnumer = r._numer * bReference + BigInt(r.champs) * bExtra * L;             // exact ranking key
   }
   for(const r of rows){
     r.adjRank = weighted

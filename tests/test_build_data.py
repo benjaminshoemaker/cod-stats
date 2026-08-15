@@ -398,20 +398,21 @@ def test_abezy_and_illey_not_zeroed(data):
     assert data["players"]["aBeZy"]["champs"] == 2
 
 
-def test_adjusted_equals_share_times_mbar(data):
-    mbar = data["meta"]["mbarAll"]
+def test_adjusted_equals_share_times_fixed_reference(data):
+    reference = data["meta"]["referenceMajors"]
+    assert reference == build_data.REFERENCE_MAJORS == 10
     for name in ("Crimsix", "Simp", "HyDra"):
         pl = data["players"][name]
-        assert abs(pl["adj_all"] - round(pl["share_all"] * mbar, 2)) <= 0.05
+        assert abs(pl["adj_all"] - round(pl["share_all"] * reference, 2)) <= 0.05
 
 
 def test_peak_and_longevity(data):
     p = data["players"]
-    mbar = data["meta"]["mbarAll"]
-    # peak = best single season's share, rescaled by mbar
+    reference = data["meta"]["referenceMajors"]
+    # peak = best single season's share, rescaled to the fixed reference season.
     for name, pl in p.items():
         if pl["seasons"]:
-            expected = round(max(s["share"] for s in pl["seasons"]) * mbar, 2)
+            expected = round(max(s["share"] for s in pl["seasons"]) * reference, 2)
             assert abs(pl["peak_all"]["adj"] - expected) <= 0.05, name
     # known peak detail + longevity counts
     assert p["aBeZy"]["peak_all"]["season"] == "Black Ops Cold War"

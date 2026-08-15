@@ -41,7 +41,8 @@ export function goatContext(D){
     preBo2: allGames.filter(g => gameInfo.get(g)?.preBo2),
   };
   const players = Object.values(D.players);
-  return {allGames, gameInfo, eventGame, ERA_PRESETS, players};
+  return {allGames, gameInfo, eventGame, ERA_PRESETS, players,
+    referenceMajors: D.meta.referenceMajors || 10};
 }
 
 // consensus payload → Map(playerKey → ranked rows with precomputed points)
@@ -143,9 +144,7 @@ export function computeGoat(ctx, consensusByPlayer, config){
   const bonuses = config.bonuses || new Map();
   const bonusFor = name => bonuses instanceof Map ? bonuses.get(name) : bonuses[name];
   const selectedList = ctx.allGames.filter(g => selectedGames.has(g));
-  const mbar = selectedList.length
-    ? selectedList.reduce((sum,g) => sum + (ctx.gameInfo.get(g)?.denom || 0), 0) / selectedList.length
-    : 0;
+  const mbar = ctx.referenceMajors;
 
   const consensusFor = p => {
     const rows = (consensusByPlayer.get(playerKey(p.name)) || []).filter(r => selectedGames.has(r.game));

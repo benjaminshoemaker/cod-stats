@@ -350,6 +350,10 @@ def season_context(events, events_all):
 # for SiLLY and NAMELESS, but the guard survives a re-pull.)
 NONPLAY = {'DNS', 'DNP', 'DQ', '', None}
 
+# A fixed, human-readable reference scale for adjusted wins.  It deliberately
+# does not depend on which title filter a visitor has selected.
+REFERENCE_MAJORS = 10
+
 
 def place_x2(r):
     """Return 2x the numeric placement so tied ranges keep exact .5 midpoints."""
@@ -1268,7 +1272,7 @@ def build_player(n, pub, S, idx):
     # Peak (best single season's share, rescaled to a wins-like number) + Longevity
     # (distinct titles won, plus career span in years). Computed for both modes.
     seasons_post = [s for s in seasons if not s['pre_bo2']]
-    pk_all, pk_post = peak_of(seasons, S.mbar_all), peak_of(seasons_post, S.mbar_post)
+    pk_all, pk_post = peak_of(seasons, REFERENCE_MAJORS), peak_of(seasons_post, REFERENCE_MAJORS)
     span_all, first_all, last_all = span_of(seasons)
     span_post, first_post, last_post = span_of(seasons_post)
     first_played, last_played, career_span, majors_played, first_pdate, last_pdate = \
@@ -1294,8 +1298,8 @@ def build_player(n, pub, S, idx):
 
     rec = {'name': n, 'raw': pub, 'seasons': seasons,
            'wiki': idx.wiki_name.get(mk, n),
-           'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * S.mbar_all, 2),
-           'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * S.mbar_post, 2),
+           'share_all': round(float(share_all), 4), 'adj_all': round(float(share_all) * REFERENCE_MAJORS, 2),
+           'share_post': round(float(share_post), 4), 'adj_post': round(float(share_post) * REFERENCE_MAJORS, 2),
            'champs': len(idx.champs_by.get(mk, [])), 'champ_events': idx.champs_by.get(mk, []),
            'peak_all': pk_all, 'peak_post': pk_post,
            'titles_all': len(seasons), 'titles_post': len(seasons_post),
@@ -1397,7 +1401,8 @@ def build_games(events, pwins, tpart, S, top50_mkeys, disp_by_mkey, event_regist
 
 
 def build_meta(S, events):
-    return {'mbarAll': round(S.mbar_all, 4), 'mbarPost': round(S.mbar_post, 4), 'asOf': ASOF,
+    return {'referenceMajors': REFERENCE_MAJORS,
+            'mbarAll': round(S.mbar_all, 4), 'mbarPost': round(S.mbar_post, 4), 'asOf': ASOF,
             'consoleSeasons': len(S.order), 'preBo2': sorted(S.pre_bo2, key=lambda g: S.order_idx[g]),
             'seasonOrder': S.order, 'totalMajors': sum(S.majors.values()),
             'consoleMajors': sum(S.majors[g] for g in S.order), 'numEvents': len(events)}
@@ -1421,7 +1426,7 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
     game = event['Game']
     denom = S.denom[game]
     win_delta = Fraction(1, denom)
-    adjusted_delta = round(float(win_delta) * S.mbar_all, 2)
+    adjusted_delta = round(float(win_delta) * REFERENCE_MAJORS, 2)
     before_ranks = crank({n: s[0] for n, s in exact_share.items()})
     is_champs = is_champs_event(event_name_for(event, event_registry))
 
@@ -1513,8 +1518,8 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
                     'rankBefore': before_ranks[name],
                     'rankAfter': after_ranks[name],
                     'rankDelta': before_ranks[name] - after_ranks[name],
-                    'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
-                    'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
+                    'adjustedBefore': round(float(before_share) * REFERENCE_MAJORS, 2),
+                    'adjustedAfter': round(float(after_share) * REFERENCE_MAJORS, 2),
                     'adjustedDelta': adjusted_delta,
                 })
             elif name in entrant_names:
@@ -1522,8 +1527,8 @@ def build_stakes(events_all, ppart, pwins, players_out, exact_share, S, event_re
                     'rankBefore': None,
                     'rankAfter': after_ranks[name],
                     'rankDelta': None,
-                    'adjustedBefore': round(float(before_share) * S.mbar_all, 2),
-                    'adjustedAfter': round(float(after_share) * S.mbar_all, 2),
+                    'adjustedBefore': round(float(before_share) * REFERENCE_MAJORS, 2),
+                    'adjustedAfter': round(float(after_share) * REFERENCE_MAJORS, 2),
                     'adjustedDelta': adjusted_delta,
                     'seasonsBefore': [
                         {'game': g, 'wins': wins, 'majors': S.denom[g]}

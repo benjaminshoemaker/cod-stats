@@ -42,6 +42,8 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-08-14', tag:'Methodology', title:'Adjusted wins now use a fixed 10-major reference season',
+   body:`Adjusted wins now equal <strong>season-share × 10</strong>, rather than using the average number of majors in the currently selected titles. This makes a custom title filter stable: removing a title no longer rescales players with no wins in it. The leaderboard now describes the result directly as tournament wins if every title had 10 tournaments. All neutral adjusted totals and peak values are rescaled from the former 8.50-major all-time average to the 10-major reference; unweighted adjusted ordering is unchanged.`},
   {date:'2026-08-11', tag:'Methodology', title:'EWC 2026 results added',
    body:`The completed <strong>Esports World Cup 2026 – Black Ops 7</strong> is now included as a Premier event:
    OpTic Gaming won the 16-team tournament, with final placements, 64 player-participation rows, and

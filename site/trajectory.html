@@ -82,7 +82,7 @@ const { eraOf } = eraContext(D);
 const ORDER = D.meta.seasonOrder;
 const IDX = Object.fromEntries(ORDER.map((g,i)=>[g,i]));
 const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
-const MBAR = D.meta.mbarAll;
+const MBAR = D.meta.referenceMajors || 10;
 const ABBR = Object.fromEntries(ORDER.map(g=>[g, window.GAME_ABBR[g]||g]));
 const ERALAB = {prebo2:'Pre-BO2', mlgcwl:'MLG–CWL', cdl:'CDL era'};
 // validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 17.9)

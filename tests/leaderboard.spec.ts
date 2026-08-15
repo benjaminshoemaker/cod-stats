@@ -284,7 +284,7 @@ test.describe('champs weighting', () => {
       // independent exact weighted key (BigInt), derived straight from D.players
       const denom: Record<string, number> = {}; D.games.forEach((g: any) => denom[g.game] = g.denom);
       const games = D.meta.seasonOrder as string[];
-      const denomSum = games.reduce((a, g) => a + denom[g], 0), G = games.length;
+      const reference = BigInt(D.meta.referenceMajors || 10);
       const gcd = (a: bigint, b: bigint): bigint => { a = a < 0n ? -a : a; b = b < 0n ? -b : b; while (b) { const t = a % b; a = b; b = t; } return a; };
       const lcm = (a: bigint, b: bigint) => a / gcd(a, b) * b;
       const L = games.reduce((acc, g) => lcm(acc, BigInt(denom[g])), 1n);
@@ -296,7 +296,7 @@ test.describe('champs weighting', () => {
         const numer = sel.reduce((a: bigint, s: any) => a + BigInt(s.wins) * (L / BigInt(s.majors)), 0n);
         const won = new Set<string>(); sel.forEach((s: any) => s.events.forEach((e: any) => won.add(e.event)));
         const champs = (p.champ_events || []).filter((c: any) => won.has(c.event)).length;
-        key[name] = numer * BigInt(denomSum) + BigInt(champs) * BigInt(N - 1) * L * BigInt(G);
+        key[name] = numer * reference + BigInt(champs) * BigInt(N - 1) * L;
       }
       const rows = cr(all, N);
       let mismatch = 0;
@@ -1105,8 +1105,9 @@ test.describe('pages', () => {
   test('exact ties share a leaderboard rank', async ({ page }) => {
     await page.goto('/index.html');
     const ranks = await page.$$eval('#table .tabulator-cell[tabulator-field="adjRank"]', els => els.map(e => e.textContent?.trim()));
-    expect(ranks.filter(r => r === '47')).toHaveLength(2);
-    expect(ranks).not.toContain('48'); // competition ranking: 47,47,49,…
+    const duplicated = [...new Set(ranks)].map(Number).find(rank => ranks.filter(r => r === String(rank)).length > 1);
+    expect(duplicated).toBeDefined();
+    expect(ranks).not.toContain(String(duplicated! + 1)); // competition ranking: n,n,n+2,…
   });
 
   test('changelog renders entries incl. the MW methodology change', async ({ page }) => {
@@ -1411,8 +1412,8 @@ test.describe('GOAT Builder', () => {
       return {crim: pick('Crimsix'), scump: pick('Scump')};
     });
 
-    expect(comparison.crim.resumeInput).toBeGreaterThan(32);
-    expect(comparison.scump.resumeInput).toBeLessThan(26);
+    expect(comparison.crim.resumeInput).toBeGreaterThan(37);
+    expect(comparison.scump.resumeInput).toBeGreaterThan(29);
     expect(comparison.crim.resumeScore - comparison.scump.resumeScore).toBeGreaterThan(20);
     expect(comparison.scump.skillInput).toBeGreaterThan(comparison.crim.skillInput);
     expect(comparison.scump.skillScore - comparison.crim.skillScore).toBeGreaterThan(35);
@@ -1699,7 +1700,7 @@ test.describe('comprehension fixes', () => {
     await expect(detail).toBeVisible();
     await expect(detail).toContainText('Crimsix — adjusted wins, season by season');
     await expect(detail).toContainText('season-share');
-    await expect(detail).toContainText('= 26.9 adjusted wins');
+    await expect(detail).toContainText('= 31.7 adjusted wins');
     await page.locator('#table .tabulator-row', { hasText: 'Crimsix' }).first().locator('.adjmath').click();
     await expect(page.locator('#table .adjmath-detail')).toHaveCount(0);
     await expect(page.locator('.colkey')).toContainText('Peak = best season');
@@ -1743,7 +1744,7 @@ test.describe('comprehension fixes', () => {
     await row.click();
     const detail = page.locator('#goatTable .gb-row-detail');
     await expect(detail).toBeVisible();
-    await expect(detail).toContainText('Era leader: Crimsix (32.9)');
+    await expect(detail).toContainText('Era leader: Crimsix (37.7)');
     await expect(detail).toContainText('Era leader: Scump (7.64)');
     await expect(detail).toContainText('Fan-ranked in 13 of the 15 selected titles');
     await expect(detail).toContainText('Winning half');

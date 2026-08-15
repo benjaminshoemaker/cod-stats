@@ -29,9 +29,10 @@
 <script src="assets/nav.js"></script>
 <main class="wrap wide" id="root" tabindex="-1">
   <h1>Era-Adjusted Major Tournament Wins</h1>
-  <p class="lede">Call of Duty had far more majors in its early years, so a win was easier to come by.
+  <p class="lede"><strong>Tournament wins if every title had 10 tournaments.</strong></p>
+  <p class="small muted">Call of Duty had far more majors in its early years, so a win was easier to come by.
   This leaderboard treats <strong>every season as equal weight</strong>: a win counts as a share of that
-  season's majors, then is rescaled back to a familiar "wins" number.
+  season's majors, then is expressed on a fixed 10-tournament scale.
   <a href="methodology.html">Methodology &amp; source rules &rarr;</a></p>
   <div class="controls">
     <input id="search" class="search" type="text" placeholder="Search player…" autocomplete="off" aria-label="Search players">
@@ -64,7 +65,7 @@
   <div id="table"></div>
 
   <div class="legend">
-    <span><span class="sw" style="background:var(--accent)"></span>Adjusted = season-share &times; avg majors/season</span>
+    <span><span class="sw" style="background:var(--accent)"></span>Adjusted = season-share &times; 10 reference majors</span>
     <span><span class="sw" style="background:var(--pos)"></span>▲ gained vs raw (wins or rank)</span>
     <span><span class="sw" style="background:var(--neg)"></span>▼ lost vs raw</span>
     <span><span class="sw" style="background:#b8860b"></span>◆ Ring weight is a preference, not a measurement — the ×3 default adds two extra major-win units per ring</span>
@@ -440,7 +441,7 @@ function toggleAdjMath(name){
 }
 function adjMathHtml(d){
   const games = ORDER.filter(g=>selected.has(g));
-  const mbar = games.reduce((a,g)=>a+DENOM[g],0)/(games.length||1);
+  const reference = D.meta.referenceMajors || 10;
   const seasons = (D.players[d.name]?.seasons||[]).filter(s=>selected.has(s.game)&&s.wins>0);
   const share = seasons.reduce((a,s)=>a+s.wins/s.majors,0);
   const body = seasons.map(s=>`<tr><th scope="row">${esc(s.game)}</th><td class="n">won ${s.wins} of ${s.majors} majors</td><td class="n">${(s.wins/s.majors).toFixed(3)}</td></tr>`).join('');
@@ -457,7 +458,7 @@ function adjMathHtml(d){
       <thead><tr><th scope="col">Season</th><th scope="col" class="n">Wins</th><th scope="col" class="n">Season-share</th></tr></thead>
       <tbody>${body}</tbody>
     </table>
-    <p class="small"><strong>Total ${share.toFixed(3)} season-share &times; ${mbar.toFixed(2)} avg majors/season = ${d.adjusted.toFixed(1)} adjusted wins.</strong></p>
+    <p class="small"><strong>Total ${share.toFixed(3)} season-share &times; ${reference} reference majors = ${d.adjusted.toFixed(1)} adjusted wins.</strong></p>
     ${ringLine}`;
 }
 
@@ -537,10 +538,10 @@ const note=document.getElementById("modenote");
 const PRESET_LABEL={all:'all seasons',post:'post-BO2 seasons',prebo2:'pre-BO2 seasons',mlgcwl:'the MLG–CWL era (BO2–BO4)',cdl:'the CDL era'};
 function setNote(sel){
   const games = ORDER.filter(g=>sel.has(g));
-  const mbar = games.reduce((a,g)=>a+DENOM[g],0)/games.length;
+  const reference = D.meta.referenceMajors || 10;
   const what = PRESET_LABEL[selectionToken(sel)] || `${games.length} selected titles`;
-  note.innerHTML = `Showing <strong>${esc(what)}</strong>. Adjusted = season-share &times; ${mbar.toFixed(2)} `
-    + `(avg majors across the ${games.length} selected ${games.length===1?'season':'seasons'}).`
+  note.innerHTML = `Showing <strong>${esc(what)}</strong>. Adjusted = season-share &times; ${reference} `
+    + `(a fixed ${reference}-major reference season).`
     + (ringN>1 ? ` Championships weighted: <strong>Adj +◆</strong> counts each ring as ${ringN} majors.` : '');
 }
 

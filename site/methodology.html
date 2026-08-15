@@ -73,6 +73,7 @@ mountPageNav('methodology.html');
 const root=document.getElementById('root');
 const C=D.players['Crimsix'], S=D.players['Simp'], SC=D.players['Scump'];
 const avg=D.meta.mbarAll;
+const reference=D.meta.referenceMajors || 10;
 const games=D.games.slice().sort((a,b)=>a.order-b.order);
 const maxM=Math.max(...games.map(g=>g.denom));
 
@@ -115,7 +116,7 @@ root.innerHTML=`
     <a class="method-card" href="#era-adjustment">
       <span class="pill tag">Core leaderboard</span>
       <h2>Era-adjusted wins</h2>
-      <p>Major denominators, season share, rescaling, ring weighting, placement stats, and tournament inclusion rules.</p>
+      <p>Major denominators, season share, a fixed 10-major reference scale, ring weighting, placement stats, and tournament inclusion rules.</p>
     </a>
     <a class="method-card" href="#community-consensus">
       <span class="pill tag">Community evidence</span>
@@ -176,8 +177,8 @@ root.innerHTML=`
       <p class="small">Sum of season shares.</p><div class="formula">Σ wins ÷ majors</div>
       <p class="small muted">Opportunity-normalized: each season caps at 1.0, so era no longer inflates totals. But the numbers are small and unintuitive (a legend scores ~3).</p></div>
     <div class="opt pick"><h3>Option 3 ✓</h3><div class="pill up small">chosen</div>
-      <p class="small">Share, rescaled to a wins-like number.</p><div class="formula">(Σ wins ÷ majors) × ${avg.toFixed(2)}</div>
-      <p class="small muted">Identical ranking to Option 2, but multiplied by the average majors-per-season so it reads on the familiar "wins" scale.</p></div>
+      <p class="small">Share, rescaled to a wins-like number.</p><div class="formula">(Σ wins ÷ majors) × ${reference}</div>
+      <p class="small muted">Identical ranking to Option 2, but multiplied by a fixed ${reference}-major reference season so it reads on a familiar wins scale without changing when you filter titles.</p></div>
   </div>
   <p class="small muted">We deliberately <em>didn't</em> weight by prize money or field size. Those are noisier and more subjective
   than a plain count of how many majors existed that year.</p>

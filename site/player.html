@@ -192,7 +192,7 @@ if(!p || !lb){
       <div class="grid cols-2">
         <div>
           <h3>Season-share buildup</h3>
-          <p class="small muted">Each win is worth <span class="num">1 ÷ (majors that season)</span>. Sum those across seasons to get the season-share, then &times; the average majors/season for the adjusted total.</p>
+          <p class="small muted">Each win is worth <span class="num">1 ÷ (majors that season)</span>. Sum those across seasons to get the season-share, then &times; the fixed 10-major reference for the adjusted total.</p>
           <div id="buildup"></div>
         </div>
         <div>
@@ -239,7 +239,7 @@ if(!p || !lb){
   function render(){
     const shown = p.seasons;
     const maxMajorsForChart = Math.max(1, ...shown.map(s=>s.majors || 0));
-    const mbar  = D.meta.mbarAll;
+    const mbar  = D.meta.referenceMajors || 10;
     const share = p.share_all;
     const adj   = p.adj_all;
 
