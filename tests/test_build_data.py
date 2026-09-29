@@ -578,132 +578,6 @@ def test_player_stats_source_is_slimmed_to_reproducible_kill_death_rows():
     }]
 
 
-def test_kills_over_replacement_is_title_and_mode_specific(data):
-    kor = data["_kor"]
-    assert set(kor["meta"]["splits"]) == {"respawn", "snd"}
-
-    bo2 = kor["games"]["Black Ops 2"]["splits"]
-    assert bo2["respawn"]["replacementKpm"] == 24.27
-    assert bo2["snd"]["replacementKpm"] == 5.5
-    assert bo2["respawn"]["rows"][0]["player"] == "Scump"
-    assert bo2["respawn"]["rows"][0]["rank"] == 1
-    assert bo2["respawn"]["rows"][0]["korPerMap"] == 5.161
-
-    xlnc = next(r for r in bo2["snd"]["rows"] if r["player"] == "XLNC")
-    assert xlnc["rank"] == 1
-    assert xlnc["korPerMap"] == 3.583
-    assert xlnc["medianOpponentPlace"] == 7.0
-    assert xlnc["top8OpponentPct"] == 0.667
-
-    aw = kor["games"]["Advanced Warfare"]["splits"]
-    assert aw["respawn"]["rows"][0]["player"] == "Scump"
-    assert aw["snd"]["rows"][0]["player"] == "ZooMaa"
-    assert aw["respawn"]["rows"][0]["opponentMaps"] == aw["respawn"]["rows"][0]["maps"]
-
-    bo6 = kor["games"]["Black Ops 6"]["splits"]["respawn"]
-    assert bo6["qualified"] == 36
-    assert bo6["playersWithMaps"] == 77
-    assert bo6["minMaps"] == 28
-
-    wwii_snd = kor["games"]["World War II"]["splits"]["snd"]["rows"]
-    assert any(r["player"] == "Methodz" for r in wwii_snd)
-    assert any(r["player"] == "MethodZ (Jorge Bancells)" for r in wwii_snd)
-    assert not any(r["player"] == "Methodz (Anthony Zinni)" for r in wwii_snd)
-
-
-def test_kor_detail_reconciles_with_kor_rows(data):
-    # Every qualified KOR row gets an event-by-event trace whose kills/maps
-    # sum back to the row's aggregates — the drilldown must prove the number.
-    kor = data["_kor"]
-    detail = kor["_detail"]["players"]
-    row_index = {}
-    for game, gd in kor["games"].items():
-        for split, score in gd["splits"].items():
-            for r in score["rows"]:
-                row_index[(r["player"], game, split)] = r
-
-    detail_keys = {(p, g, s) for p, games in detail.items()
-                   for g, splits in games.items() for s in splits}
-    assert detail_keys == set(row_index), "detail must cover exactly the qualified rows"
-
-    for (player, game, split), events in (
-            (k, detail[k[0]][k[1]][k[2]]) for k in row_index):
-        r = row_index[(player, game, split)]
-        assert sum(e["maps"] for e in events) == r["maps"]
-        assert len(events) == r["events"]
-        kpm = sum(e["kills"] for e in events) / sum(e["maps"] for e in events)
-        assert abs(kpm - r["kpm"]) < 0.005
-        dates = [e["date"] for e in events]
-        assert dates == sorted(dates), "events must be chronological"
-
-    # spot-check a famous season: Scump's BO2 respawn trace has 5 events and
-    # at least one event he won (place 1) so the UI can show the ◆
-    scump = detail["Scump"]["Black Ops 2"]["respawn"]
-    assert len(scump) == 5
-    assert any(e.get("place") == 1 for e in scump)
-    assert all(e["kills"] > 0 and e["deaths"] > 0 and e["maps"] > 0 for e in scump)
-    assert all(e["id"] for e in scump)
-
-
-def test_kor_map_shards_reconcile_with_event_traces(data):
-    # Map-level rows ship per title; a trace event's kills/deaths/maps must equal
-    # the sum of its split's map rows, and every map row keeps its real stats.
-    kor = data["_kor"]
-    maps_by_game = kor["_detail"]["mapsByGame"]
-    detail = kor["_detail"]["players"]
-    assert set(maps_by_game) <= set(kor["games"])
-    assert "Black Ops 2" in maps_by_game
-
-    for player, game in (("Scump", "Black Ops 2"), ("Clayster", "World War II")):
-        per_event = maps_by_game[game][player]
-        for split in detail[player][game]:
-            for e in detail[player][game][split]:
-                rows = [m for m in per_event[e["id"]] if m["snd"] == (split == "snd")]
-                assert len(rows) == e["maps"], (player, game, split, e["event"])
-                assert sum(m["k"] for m in rows) == e["kills"]
-                assert sum(m["d"] for m in rows) == e["deaths"]
-                assert all(m["map"] and m["mode"] and m["vs"] for m in rows)
-
-    # shards only carry qualified player+title pairs (keeps the files slim)
-    for game, players in maps_by_game.items():
-        qualified = {r["player"] for s in kor["games"][game]["splits"].values() for r in s["rows"]}
-        assert set(players) <= qualified, game
-
-
-def test_kills_over_replacement_excludes_non_major_stat_rows():
-    from types import SimpleNamespace
-
-    rows = []
-    for i in range(28):
-        rows.append({
-            "Player": "Scump", "Event": "Synthetic Major", "EventId": "major", "Game": "Black Ops 2",
-            "Date": "2013-01-01", "Mode": "Hardpoint", "TeamVs": "Major Opp",
-            "Kills": 20, "Deaths": 20,
-        })
-        rows.append({
-            "Player": "Scump", "Event": "Synthetic Minor", "EventId": "minor", "Game": "Black Ops 2",
-            "Date": "2013-01-02", "Mode": "Hardpoint", "TeamVs": "Minor Opp",
-            "Kills": 40, "Deaths": 20,
-        })
-    tpart = [
-        {"Event": "Synthetic Major", "EventId": "major", "Game": "Black Ops 2", "Team": "Major Opp", "Place": "1"},
-        {"Event": "Synthetic Minor", "EventId": "minor", "Game": "Black Ops 2", "Team": "Minor Opp", "Place": "1"},
-    ]
-    S = SimpleNamespace(order=["Black Ops 2"], order_idx={"Black Ops 2": 0})
-    kor = build_data.build_kor(
-        rows,
-        tpart,
-        S,
-        {"byName": {}, "nameById": {}},
-        {"major"},
-    )
-    scump = kor["games"]["Black Ops 2"]["splits"]["respawn"]["rows"][0]
-    assert scump["maps"] == 28
-    assert scump["kpm"] == 20
-    assert scump["role"] == "Unknown"
-    assert scump["opponentMaps"] == 28
-
-
 def test_event_registry_adds_canonical_ids_to_participation_and_skill_rows(data):
     simp_part = data["_participation"]["Simp"]
     assert any(r["event"] == "CWL London 2019"
@@ -1025,3 +899,19 @@ def test_write_emits_valid_appdata(tmp_path, data):
     assert text.startswith("window.APP_DATA=") and text.rstrip().endswith(";")
     parsed = json.loads(text[len("window.APP_DATA="):].rstrip().rstrip(";"))
     assert parsed["leaderboard"][0]["name"] in {p[0] for p in build_data.PUBLISHED}
+
+
+def test_retired_kor_is_not_built_or_written(data, tmp_path, monkeypatch):
+    import copy
+    assert "_kor" not in data
+    original_path = build_data._p
+    site = tmp_path / "site"
+    site.mkdir()
+    monkeypatch.setattr(build_data, "_p", lambda *parts: str(tmp_path.joinpath(*parts))
+                        if parts and parts[0] == "site" else original_path(*parts))
+    build_data.write(copy.deepcopy(data))
+    assert not list(site.glob("kor*"))
+    assert (site / "skill-events.json").exists()
+    assert (site / "participation.json").exists()
+    payload = json.loads((site / "data.json").read_text())
+    assert payload["players"]["Scump"]["skillStats"]["overall"]["maps"] > 0

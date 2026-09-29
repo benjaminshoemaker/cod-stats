@@ -29,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
 # Co-win Jaccard above this = "basically teammates" — used everywhere a comp list
-# skips teammates (here, cluster_map.py, and mirrored in site/player.html's `mate`).
+# skips teammates (here and mirrored in site/player.html's `mate`).
 TEAMMATE_COWIN_THR = 0.15
 MIN_SKILL_MAPS = 25
 
@@ -254,7 +254,7 @@ class FeatureSpace:
 # --------------------------------------------------------------------------- #
 def nearest(D, i, C=None, exclude_teammates=False, teammate_thr=TEAMMATE_COWIN_THR):
     """Yield (index, cowin) over the players nearest to i — the one walk order
-    every comp list (this report, similarity.js, clusters.js) shares, so the
+    every comp list (this report and similarity.js) shares, so the
     self-skip and teammate-skip rules can't drift between consumers."""
     for j in np.argsort(D[i]):
         if j == i:
@@ -481,9 +481,7 @@ def describe_cluster(fs, members):
 
 def build_space():
     """The one shared recipe for constructing the feature space plus its
-    distance and co-win matrices. Both entry points (this report and
-    cluster_map.py) go through it, so similarity.js and clusters.js can never
-    be built from differently-assembled inputs."""
+    distance and co-win matrices for the report and player-page comparisons."""
     players = load_players()
     players, hit = merge_path_features(players)
     fs = FeatureSpace(players, load_registry())

@@ -98,7 +98,7 @@ with `scripts/fetch_source.py` and update `PUBLISHED` (see "Rebuild the data" ab
 - `major_events.json` — every major event (name, game, date, winner, type, prize, location), including future-scheduled ones (used for in-progress season denominators; date-filtered for everything else)
 - `champs_wins.json` — Call of Duty World Championship wins per player (2013+)
 - `team_participation.json` — every team result row at majors (validates the MW 2019 structural denominator in tests)
-- `player_stats_participants.json` — canonical Major/Premier map observations for player profiles, similarity, KOR, and validation; see [`docs/player-stats.md`](docs/player-stats.md)
+- `player_stats_participants.json` — canonical Major/Premier map observations for player profiles, similarity, and validation; see [`docs/player-stats.md`](docs/player-stats.md)
 - `source_manifest.json` — timestamp with honest precision, refresh batch ID, query/schema version, scope, row count, and SHA-256 fingerprint for every source snapshot
 - `data_source_policy.json` / `source_conflicts.json` — per-entity authority and merge rules plus the conflict ledger
 

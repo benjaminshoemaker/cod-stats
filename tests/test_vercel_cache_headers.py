@@ -28,7 +28,6 @@ def test_pages_revalidate_before_reuse():
         "/trajectory.html",
         "/heatmap.html",
         "/signatures.html",
-        "/map.html",
         "/compare.html",
         "/styleguide.html",
         "/changelog.html",
@@ -50,7 +49,6 @@ def test_runtime_assets_revalidate_before_reuse():
         "/data.json",
         "/participation.json",
         "/similarity.js",
-        "/clusters.js",
     ]
 
     for path in paths:

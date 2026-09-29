@@ -3,7 +3,7 @@
 `player_stats_participants.json` is the single canonical source for objective
 individual-skill stats. It is pulled from the CoD Esports Wiki Cargo
 `PlayerStats` table one canonical Major/Premier event page at a time for every
-participant with usable rows. Player profiles, similarity, KOR, validation, and
+participant with usable rows. Player profiles, similarity, validation, and
 analysis all derive from this snapshot.
 
 The older `player_stats.json` player/title-wide pull was retired and removed.
@@ -85,7 +85,7 @@ season length, and career length drive those counts.
 
 `build_data.py` requires every counted row's `eventId` to belong to the canonical
 played Major/Premier registry. Warzone/Mobile, explicit dropped events, unknown
-events, and rows after `ASOF` are excluded. KOR uses the same membership test.
+events, and rows after `ASOF` are excluded.
 
 For each player it emits:
 
@@ -141,7 +141,7 @@ broader K/D coverage than the committed map rows, but they do not include
 per-map kills/deaths, opponents, series IDs, or map results.
 
 `build_data.py` keeps this source out of `skillStats` career totals, similarity
-features, KOR, same-map validation, and map-win reconstruction. It emits a
+features, same-map validation, and map-win reconstruction. It emits a
 lightweight `legacySkillStats` summary in `site/data.js` and attaches legacy
 aggregate details only to the lazy `site/skill-events.json` player drilldown.
 The player page labels those rows as `Legacy aggregate` and keeps `Map rows`

@@ -526,7 +526,7 @@ test.describe('pages', () => {
     await expect(page.locator('table.data th[scope="col"]')).toHaveCount(6);
     await page.goto('/methodology.html');
     await expect(page.getByRole('heading', { name: 'Methodology' })).toBeVisible();
-    await expect(page.getByText('The site separates wins, community opinion, KOR, and formal awards')).toBeVisible();
+    await expect(page.getByText('The site separates wins, community opinion, player stats, and formal awards')).toBeVisible();
     await expect(page.locator('.method-hub .method-card', { hasText: 'Era-adjusted wins' })).toHaveAttribute('href', '#era-adjustment');
     await expect(page.locator('.method-hub .method-card', { hasText: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
     await expect(page.getByText('rank 30 rounds to 0.000')).toBeVisible();
@@ -542,33 +542,31 @@ test.describe('pages', () => {
     await expect(page.getByRole('heading', { name: 'Community Consensus' })).toBeVisible();
   });
 
-  test('styleguide documents KOR and data-surface patterns', async ({ page }) => {
+  test('styleguide documents data-surface patterns', async ({ page }) => {
     await page.goto('/styleguide.html');
     await expect(page.getByRole('heading', { name: 'Design System' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Data surfaces' })).toHaveAttribute('href', '#data-surfaces');
-    await expect(page.getByRole('link', { name: 'KOR widget' })).toHaveAttribute('href', '#kor-widget');
     await expect(page.getByRole('region', { name: 'Example analytical table' })).toBeVisible();
     await expect(page.getByRole('region', { name: 'Overflowing table-surface example' })).toBeVisible();
     await expect(page.locator('#data-surfaces table.data caption').first()).toContainText('Example analytical table with sample context');
     await expect(page.locator('#table-overflow-example .scrollhint')).toContainText('Scroll sideways');
     await expect(page.locator('#pills .pill.role-smg')).toHaveText('SMG');
-    await expect(page.locator('#kor-widget .kor-bar-row')).toHaveCount(2);
   });
 
   test('reference pages expose stable section anchors and direct hash links', async ({ page }) => {
     await page.goto('/methodology.html');
     const methodToc = page.getByRole('navigation', { name: 'On this page' });
     await expect(methodToc.getByRole('link', { name: 'Community consensus' })).toHaveAttribute('href', '#community-consensus');
-    await expect(methodToc.getByRole('link', { name: 'Kills Over Replacement' })).toHaveAttribute('href', '#kills-over-replacement');
+    await expect(methodToc.getByRole('link', { name: 'On-record stats' })).toHaveAttribute('href', '#on-record-stats');
     await expect(methodToc.getByRole('link', { name: 'Formal accolades' })).toHaveAttribute('href', '#formal-accolades');
     await expect(methodToc.getByRole('link', { name: 'Tournament rules' })).toHaveAttribute('href', '#tournaments');
     await expect(page.locator('#community-consensus .anchor-link')).toHaveAttribute('href', '#community-consensus');
-    await expect(page.locator('#kills-over-replacement .anchor-link')).toHaveAttribute('href', '#kills-over-replacement');
+    await expect(page.locator('#on-record-stats .anchor-link')).toHaveAttribute('href', '#on-record-stats');
     await expect(page.locator('#formal-accolades .anchor-link')).toHaveAttribute('href', '#formal-accolades');
     await expect(page.locator('#tournaments .anchor-link')).toHaveAttribute('href', '#tournaments');
 
-    await page.goto('/methodology.html#kills-over-replacement');
-    await expect(page.locator('#kills-over-replacement')).toBeInViewport();
+    await page.goto('/methodology.html#on-record-stats');
+    await expect(page.locator('#on-record-stats')).toBeInViewport();
 
     await page.goto('/methodology.html#community-consensus');
     await expect(page.locator('#community-consensus')).toBeInViewport();
@@ -625,145 +623,11 @@ test.describe('pages', () => {
     await page.click('.navdrop-btn');
     await expect(page.locator('.navdrop-btn')).toHaveAttribute('aria-controls', 'insights-menu');
     const links = await page.$$eval('.navdrop-menu a', as => as.map(a => (a as HTMLAnchorElement).getAttribute('href')));
-    expect(links).toEqual(['kor.html', 'authored-vs-community.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'map.html', 'signatures.html']);
+    expect(links).toEqual(['authored-vs-community.html', 'scatter.html', 'heatmap.html', 'trajectory.html', 'signatures.html']);
 
     await page.goto('/scatter.html');
     await page.click('.navdrop-btn');
     await expect(page.locator('#insights-menu a[href="scatter.html"]')).toHaveAttribute('aria-current', 'page');
-  });
-
-  test('Kills Over Replacement page renders all-time and title splits', async ({ page }) => {
-    await page.goto('/kor.html');
-    await expect(page.getByRole('heading', { name: 'Kills Over Replacement' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Top 10 · All-time Respawn KOR\/map/ })).toBeVisible();
-    await expect(page).toHaveURL(/\/kor\.html$/);
-    await expect(page.locator('.kor-method a')).toHaveAttribute('href', 'methodology.html#kills-over-replacement');
-    await expect(page.locator('.kor-method')).toContainText('Read it as');
-    await expect(page.locator('.kor-coverage')).toContainText('no per-map kill data');
-    // Modern Warfare 3 qualifies no one; it must not be a dead dropdown option
-    await expect(page.locator('#kor-game option[value="Modern Warfare 3"]')).toHaveCount(0);
-    await expect(page.locator('#kor-game option[value="Black Ops 2"]')).toHaveCount(1);
-
-    const rows = page.locator('#kor-table .tabulator-row');
-    await expect(page.locator('#kor-table .tabulator-col:visible').filter({ hasText: 'Role' })).toBeVisible();
-    await expect(page.locator('#kor-table .tabulator-col:visible')).toHaveCount(11);
-    await expect(page.locator('#kor-table .tabulator-tableholder')).toHaveAttribute('aria-label', 'All-time Respawn KOR/map leaderboard table');
-    await expect(rows.first()).toContainText('HyDra');
-    await expect(rows.first()).toContainText('Modern Warfare III');
-    await expect(rows).toHaveCount(100);
-
-    // rank and player are frozen so they stay pinned when the table scrolls sideways (phone regression guard)
-    await expect(rows.first().locator('.tabulator-cell.tabulator-frozen')).toHaveCount(2);
-    const holder = page.locator('#kor-table .tabulator-tableholder');
-    const overflow = await holder.evaluate(el => el.scrollWidth - el.clientWidth);
-    if (overflow > 0) {
-      await holder.evaluate(el => { el.scrollLeft = el.scrollWidth; });
-      const playerCell = rows.first().locator('.tabulator-cell.tabulator-frozen').nth(1);
-      await expect(playerCell).toBeVisible();
-      await expect(playerCell).toContainText('HyDra');
-      const box = await playerCell.boundingBox();
-      expect(box!.x).toBeLessThan(200);
-      await holder.evaluate(el => { el.scrollLeft = 0; });
-    }
-
-    // headers sort and expose aria-sort
-    const kpmHeader = page.locator('#kor-table .tabulator-col[tabulator-field="kpm"]');
-    await kpmHeader.click();
-    await expect(kpmHeader).toHaveAttribute('aria-sort', 'ascending');
-    await kpmHeader.click();
-    await expect(kpmHeader).toHaveAttribute('aria-sort', 'descending');
-    await page.locator('#kor-table .tabulator-col[tabulator-field="korPerMap"]').click();
-
-    // show-all toggle keeps focus and can collapse back
-    await expect(page.locator('.kor-row-limit')).toContainText(/Showing top 100 of \d+/);
-    await page.getByRole('button', { name: 'Show all rows' }).click();
-    expect(await rows.count()).toBeGreaterThan(100);
-    await expect(page.locator('.kor-row-limit')).toContainText(/Showing all \d+ rows/);
-    await expect(page.locator('#kor-row-toggle')).toBeFocused();
-    await page.getByRole('button', { name: 'Show top 100' }).click();
-    await expect(rows).toHaveCount(100);
-
-    const splitMinHeight = await page.locator('#kor-split button').first().evaluate(el => Number.parseFloat(getComputedStyle(el).minHeight));
-    expect(splitMinHeight).toBeGreaterThanOrEqual(44);
-
-    await page.locator('#kor-game').selectOption('Advanced Warfare');
-    await expect(page).toHaveURL(/g=Advanced(\+|%20)Warfare/);
-    await expect(page.getByRole('heading', { name: 'Advanced Warfare Respawn KOR/map', exact: true })).toBeVisible();
-    await expect(page.locator('#kor-table .tabulator-row').first()).toContainText('Scump');
-    // single-title views drop the constant Role/Title/Replacement columns
-    await expect(page.locator('#kor-table .tabulator-col:visible')).toHaveCount(8);
-    await expect(page.locator('#kor-table .pill.role-smg:visible')).toHaveCount(0);
-    // the baseline sorts in as a real row at KOR/map 0
-    const baseline = page.locator('#kor-table .kor-baseline-row');
-    await expect(baseline).toContainText('Replacement baseline');
-    await expect(baseline).toHaveAttribute('title', /25th percentile K\/map of \d+ qualified players/);
-
-    // clicking a row lazy-loads and expands its event-by-event trace
-    const scumpRow = page.locator('#kor-table .tabulator-row').first();
-    await scumpRow.click();
-    const detail = page.locator('#kor-table .kor-row-detail');
-    await expect(detail).toBeVisible();
-    await expect(detail).toContainText('event by event vs the');
-    expect(await detail.locator('.kor-event-row').count()).toBeGreaterThan(1);
-    await expect(detail.locator('.kor-event-row .strong').first()).toHaveText(/^[+-]\d/);
-    // real kills–deaths shown per event alongside the derived KOR
-    await expect(detail.locator('.kor-event-row').first()).toContainText(/\d+–\d+/);
-    await expect(scumpRow).toHaveAttribute('aria-expanded', 'true');
-
-    // an event expands further into match-level maps (lazy per-title shard);
-    // the whole event line is a click target, not just the chevron
-    await detail.locator('.kor-event-row').first().click();
-    const maps = detail.locator('.kor-event-maps');
-    await expect(maps).toBeVisible();
-    await expect(maps.locator('.kor-maps-head .pill.tag')).toContainText('Respawn counted');
-    await expect(maps.locator('.kor-series-head').first()).toContainText('vs ');
-    expect(await maps.locator('.kor-map-row').count()).toBeGreaterThan(0);
-    await expect(maps.locator('.kor-map-row .n').first()).toHaveText(/\d+–\d+/);
-    // counted maps carry accent mode pills; other-mode maps sit on a grey
-    // surface with grey pills and an up-front explanation
-    await expect(maps.locator('.kor-map-row .pill.tag').first()).toBeVisible();
-    await expect(maps.locator('.kor-map-row.off-split').first()).toBeVisible();
-    await expect(maps.locator('.kor-map-row.off-split .pill.flat').first()).toContainText('S&D');
-    await expect(maps.locator('.kor-maps-legend')).toContainText(/count on the S&D board/);
-    // collapse restores the compact trace; on desktop the toggle keeps focus
-    // (touch taps don't focus buttons, so the focus check is desktop-only)
-    await detail.locator('.kor-event-toggle').first().click();
-    await expect(detail.locator('.kor-event-maps')).toHaveCount(0);
-    if (test.info().project.name === 'desktop') {
-      await expect(detail.locator('.kor-event-toggle').first()).toBeFocused();
-    }
-    // the trace stays inside the viewport even though the table can scroll sideways
-    const dbox = (await detail.boundingBox())!;
-    const vp = page.viewportSize()!;
-    expect(dbox.x).toBeGreaterThanOrEqual(0);
-    expect(dbox.x + dbox.width).toBeLessThanOrEqual(vp.width + 1);
-    // Enter on the focused row collapses it again; the baseline row never expands
-    await scumpRow.press('Enter');
-    await expect(page.locator('#kor-table .kor-row-detail')).toHaveCount(0);
-    await baseline.click();
-    await expect(page.locator('#kor-table .kor-row-detail')).toHaveCount(0);
-
-    // a tiny qualified pool is flagged, not silent (BO2 respawn qualifies only 13 players)
-    await page.locator('#kor-game').selectOption('Black Ops 2');
-    await expect(page.locator('.kor-pool-note')).toContainText(/Only \d+ players qualify/);
-    await expect(page.locator('.kor-summary')).toContainText('small pool');
-
-    await page.locator('#kor-split button[data-split="snd"]').click();
-    await expect(page).toHaveURL(/split=snd/);
-    await expect(page.getByRole('heading', { name: 'Black Ops 2 S&D KOR/map', exact: true })).toBeVisible();
-
-    await page.goto('/kor.html?g=Black+Ops+7&split=respawn');
-    const abezy = page.locator('#kor-table .tabulator-row').filter({ hasText: 'aBeZy' }).first();
-    await expect(abezy.getByRole('link', { name: 'aBeZy' })).toHaveAttribute('href', 'player.html?p=aBeZy');
-
-    await page.goto('/kor.html?g=World+War+II&split=snd');
-    const methodzDisambiguated = page.locator('#kor-table .tabulator-row').filter({ hasText: 'MethodZ (Jorge Bancells)' }).first();
-    await expect(methodzDisambiguated).toContainText('MethodZ (Jorge Bancells)');
-    await expect(methodzDisambiguated.getByRole('link', { name: /Methodz/i })).toHaveCount(0);
-
-    // an unavailable title in the URL falls back to the all-titles view
-    await page.goto('/kor.html?g=Modern+Warfare+3');
-    await expect(page.getByRole('heading', { name: /All-time Respawn KOR\/map/ }).first()).toBeVisible();
   });
 
   test('Community Consensus page renders title rankings and source traces', async ({ page }) => {
@@ -928,7 +792,6 @@ test.describe('pages', () => {
     for (const [file, sel, heading] of [
       ['heatmap.html', 'svg.hm rect.cell', /Dominance heatmap/],
       ['trajectory.html', 'svg.tj path.vis', /Career trajectories/],
-      ['map.html', 'svg#map circle.node', /map of CoD careers/],
     ] as [string, string, RegExp][]) {
       await page.goto('/' + file);
       await expect(page.getByRole('heading', { name: heading })).toBeVisible();
@@ -1733,18 +1596,6 @@ test.describe('comprehension fixes', () => {
     await expect(page.locator('#table .adjmath-detail')).toContainText(`= ${cellValue} adjusted wins`);
   });
 
-  test('KOR states its qualification bar and uses one opponent-place format', async ({ page }) => {
-    await page.goto('/kor.html');
-    await expect(page.locator('#kor-table .tabulator-row').first()).toBeVisible();
-    await expect(page.locator('.kor-summary .stat', { hasText: 'Qualified seasons' })).toContainText('maps to qualify');
-    await expect(page.locator('.kor-panel', { hasText: 'Read this as' }))
-      .toContainText('taken over everyone who qualifies');
-    const cells = await page.locator('#kor-table .tabulator-cell[tabulator-field="medianOpponentPlace"]')
-      .evaluateAll(els => els.map(e => (e.textContent || '').trim()).filter(t => t && t !== '–'));
-    expect(cells.length).toBeGreaterThan(5);
-    for (const c of cells.slice(0, 30)) expect(c).toMatch(/^\d+\.\d$/);
-  });
-
   test('community overall explains career-total vs average rank', async ({ page }) => {
     await page.goto('/community.html?view=overall&p=Scump');
     await expect(page.locator('h2', { hasText: 'Overall Ranking' }).locator('..')).toContainText('career total');
@@ -2022,4 +1873,75 @@ test.describe('Peak comparison improvements', () => {
     expect(result.short).toBeNull();
     expect(result.last).toBe(15);
   });
+});
+
+test.describe('Signatures context', () => {
+  test('Champs context counts appearances, excludes qualifiers, and opens results', async ({ page }) => {
+    await page.goto('/signatures.html');
+    const row = page.locator('#merchants .sigrow', { has: page.getByRole('link', { name: 'Apathy', exact: true }) });
+    await expect(row).toContainText('2 rings');
+    await expect(row).toContainText('8 Champs appearances');
+    await expect(row).toContainText('25% won');
+    await row.locator('summary', { hasText: 'Champs results' }).click();
+    await expect(row.getByRole('table')).toContainText('Championship 2017');
+    await expect(row.getByRole('table')).not.toContainText('Regional');
+    await expect(page.locator('#uncrowned')).toContainText('best finish');
+    await expect(page.locator('#rings')).toContainText('index');
+  });
+
+  test('career and peak rates are separate, shareable measures', async ({ page }) => {
+    await page.goto('/signatures.html');
+    await expect(page.getByLabel('Winning rate')).toHaveValue('active');
+    await expect(page.locator('#density-rows')).toContainText('active seasons');
+    await page.getByLabel('Winning rate').selectOption('peak');
+    await expect(page).toHaveURL(/rate=peak/);
+    await expect(page.locator('#density-note')).toContainText('zero-win');
+    await expect(page.locator('#density-rows')).toContainText('3 consecutive titles');
+    await page.reload();
+    await expect(page.getByLabel('Winning rate')).toHaveValue('peak');
+    await page.getByLabel('Winning rate').selectOption('elapsed');
+    await expect(page.locator('#density-rows')).toContainText('elapsed years');
+  });
+
+  test('career context, shared ranks, top seasons and mobile layout', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto('/signatures.html');
+    await expect(page.getByRole('heading', { name: 'Early-winning / late-winning careers' })).toBeVisible();
+    await expect(page.locator('#timing')).toContainText('provisional');
+    await expect(page.locator('#careers')).toContainText('active seasons');
+    await expect(page.locator('#careers')).toContainText('without recorded participation');
+    const rows = await page.locator('#career-rows .sigrow').evaluateAll(els => els.map(el => ({
+      rank: Number(el.querySelector('.sigrk')!.textContent), value: el.querySelector('.sigvalue')!.textContent
+    })));
+    rows.forEach((r, i) => expect(r.rank).toBe(rows.findIndex(x => x.value === r.value) + 1));
+    await expect(page.locator('#season-records')).toContainText('4 of 6 majors won');
+    await expect(page.locator('#season-records')).toContainText('67%');
+    await expect(page.locator('#season-records')).toContainText('Atlanta FaZe');
+    await page.getByText('More top seasons', { exact: true }).click();
+    await expect(page.locator('#more-seasons .season-record').first()).toBeVisible();
+    expect(await page.locator('.season-record').count()).toBeGreaterThan(3);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    expect(errors).toEqual([]);
+  });
+
+  test('missing Champs details do not erase other signatures or imply zero appearances', async ({ page }) => {
+    await page.route('**/participation.json', route => route.abort());
+    await page.goto('/signatures.html');
+    await expect(page.locator('#champs-status')).toContainText('Champs results unavailable');
+    await expect(page.locator('#merchants')).not.toContainText('0 Champs appearances');
+    await expect(page.locator('#density-rows .sigrow').first()).toBeVisible();
+    await expect(page.locator('#season-records')).toContainText('majors won');
+  });
+});
+
+
+test('retired Insights have no links and player stats remain available', async ({ page }) => {
+  for (const url of ['/index.html', '/player.html?p=Scump', '/methodology.html', '/styleguide.html', '/changelog.html']) {
+    await page.goto(url);
+    await expect(page.locator('a[href*="kor.html"], a[href*="kills-over-replacement"], a[href="map.html"]')).toHaveCount(0);
+  }
+  await page.goto('/player.html?p=Scump');
+  await expect(page.locator('#stats-on-record')).toContainText('K/D');
+  await expect(page.locator('#stats-on-record')).not.toContainText('Kills Over Replacement');
 });

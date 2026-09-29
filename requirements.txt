@@ -3,13 +3,13 @@
 # only thing they need.
 pytest
 
-# The analysis pipeline (analysis/similarity.py, analysis/cluster_map.py,
+# The analysis pipeline (analysis/similarity.py,
 # analysis/path_features.py) additionally needs the scientific stack. These are
-# only required when REGENERATING site/similarity.js / site/clusters.js — the
+# only required when REGENERATING site/similarity.js — the
 # site itself serves the committed artifacts. On a PEP 668 (externally managed)
 # Python, install into a venv:
 #   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-#   .venv/bin/python analysis/similarity.py && .venv/bin/python analysis/cluster_map.py
+#   .venv/bin/python analysis/similarity.py
 numpy
 scipy
 

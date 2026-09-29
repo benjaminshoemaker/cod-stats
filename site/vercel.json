@@ -145,15 +145,6 @@
       ]
     },
     {
-      "source": "/map.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
       "source": "/compare.html",
       "headers": [
         {
@@ -263,15 +254,6 @@
     },
     {
       "source": "/similarity.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/clusters.js",
       "headers": [
         {
           "key": "Cache-Control",

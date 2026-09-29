@@ -55,7 +55,6 @@
     <a href="#pills">Pills &amp; deltas</a>
     <a href="#bars">Bars</a>
     <a href="#controls">Controls</a>
-    <a href="#kor-widget">KOR widget</a>
     <a href="#anchors">Anchor nav</a>
     <a href="#misc">Notes &amp; legend</a>
   </nav>
@@ -73,7 +72,7 @@
     so text and pills use the darker <span class="num">--pos-ink</span> / <span class="num">--neg-ink</span> /
     <span class="num">--amber-ink</span> variants (all ≥ 4.5:1 on white and on their soft backgrounds).</p>
     <p class="sg-note">Still intentionally local: the validated categorical chart palettes in
-    <span class="num">map.html</span> / <span class="num">trajectory.html</span> (self-contained,
+    <span class="num">trajectory.html</span> (self-contained,
     CVD-checked sets) and bare <span class="num">#fff</span> fills in SVG chart chrome.</p>
   </section>
 
@@ -260,44 +259,7 @@
         <button type="button" aria-pressed="false">Solo</button>
       </div>
     </div>
-    <p class="sg-code">.seg › button[aria-pressed] (44px minimum target; used in similar players, player stats, and KOR)</p>
-  </section>
-
-  <!-- ============ KOR WIDGET ============ -->
-  <section class="sg-sec" id="kor-widget">
-    <h2>KOR widget</h2>
-    <p class="sg-note">Kills Over Replacement uses the standard control and data-surface primitives:
-    field labels, segmented split controls, stat tiles, compact ranking bars, contextual notes, and the
-    accessible <span class="num">table.data</span> contract.</p>
-    <div class="kor-controls" style="margin-top:var(--space-4)">
-      <label class="field-label">Title
-        <select class="select" aria-label="Demo KOR title">
-          <option>All titles</option>
-          <option>Advanced Warfare</option>
-        </select>
-      </label>
-      <div class="seg" role="group" aria-label="Demo KOR split">
-        <button type="button" aria-pressed="true">Respawn</button>
-        <button type="button" aria-pressed="false">S&amp;D</button>
-      </div>
-    </div>
-    <div class="kor-summary">
-      <div class="stat"><div class="k">Leader</div><div class="v sm">HyDra</div><div class="small faint">MWIII · +3.15 KOR/map</div></div>
-      <div class="stat"><div class="k">Qualified rows</div><div class="v">214</div><div class="small faint">Respawn · all titles</div></div>
-      <div class="stat"><div class="k">Replacement</div><div class="v sm">per title</div><div class="small faint">25th percentile qualified player</div></div>
-    </div>
-    <div class="kor-grid">
-      <div class="kor-panel">
-        <h2>Top 10</h2>
-        <div class="kor-bar-row"><div class="rank">1</div><div class="bar-name">HyDra <span>Modern Warfare III</span></div><div class="bar-track"><div class="bar-fill" style="width:92%"></div></div><div class="bar-value">+3.15</div></div>
-        <div class="kor-bar-row"><div class="rank">2</div><div class="bar-name">Scump <span>Advanced Warfare</span></div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-value">+2.68</div></div>
-      </div>
-      <div class="kor-panel">
-        <h2>Read this as</h2>
-        <p class="small muted">KOR is a kill-production rate. It needs sample and opponent context beside the score, not hidden behind a tooltip.</p>
-      </div>
-    </div>
-    <p class="sg-code">.kor-controls · .field-label + .select · .kor-summary · .kor-grid · .kor-panel · .kor-bar-row · .kor-table</p>
+    <p class="sg-code">.seg › button[aria-pressed] (44px minimum target; used in similar players and player stats)</p>
   </section>
 
   <!-- ============ ANCHOR NAVIGATION ============ -->
@@ -386,15 +348,15 @@ document.getElementById('table-surface-example').innerHTML = TableSurface.dataTa
   caption:'Example analytical table with sample context',
   hint:'Swipe the table sideways to see sample and context.',
   head:'<thead><tr><th scope="col">Metric</th><th scope="col" class="n">Value</th><th scope="col">Context</th></tr></thead>',
-  rows:'<tr><th scope="row">KOR/map</th><td class="n">+2.41</td><td><span class="pill tag">title split</span></td></tr><tr><th scope="row">Maps</th><td class="n">102</td><td><span class="pill flat">qualified</span></td></tr>'
+  rows:'<tr><th scope="row">K/D</th><td class="n">1.21</td><td><span class="pill tag">title split</span></td></tr><tr><th scope="row">Maps</th><td class="n">102</td><td><span class="pill flat">qualified</span></td></tr>'
 });
 document.getElementById('table-overflow-example').innerHTML = TableSurface.dataTable({
   label:'Overflowing table-surface example',
   caption:'Overflowing table-surface example with scroll hint and edge states',
   tableAttrs:{style:'min-width:760px'},
   hint:'Scroll sideways to see the full overflow example.',
-  head:'<thead><tr><th scope="col">Player</th><th scope="col">Title</th><th scope="col">Role</th><th scope="col" class="n">KOR/map</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col">Context</th></tr></thead>',
-  rows:'<tr><th scope="row">Player A</th><td>Black Ops 6</td><td><span class="pill tag">SMG</span></td><td class="n">+2.41</td><td class="n">102</td><td class="n">5</td><td>Wide example column</td></tr><tr><th scope="row">Player B</th><td>Modern Warfare III</td><td><span class="pill flat">AR</span></td><td class="n">+1.84</td><td class="n">88</td><td class="n">4</td><td>Overflow remains keyboard-scrollable</td></tr>'
+  head:'<thead><tr><th scope="col">Player</th><th scope="col">Title</th><th scope="col">Role</th><th scope="col" class="n">K/D</th><th scope="col" class="n">Maps</th><th scope="col" class="n">Events</th><th scope="col">Context</th></tr></thead>',
+  rows:'<tr><th scope="row">Player A</th><td>Black Ops 6</td><td><span class="pill tag">SMG</span></td><td class="n">1.21</td><td class="n">102</td><td class="n">5</td><td>Wide example column</td></tr><tr><th scope="row">Player B</th><td>Modern Warfare III</td><td><span class="pill flat">AR</span></td><td class="n">1.14</td><td class="n">88</td><td class="n">4</td><td>Overflow remains keyboard-scrollable</td></tr>'
 });
 
 TableSurface.mountTabulator('#demo-table', {

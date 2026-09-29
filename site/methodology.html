@@ -6,11 +6,11 @@
 <title>Methodology · Map Five</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://mapfive.app/methodology.html">
-<meta name="description" content="How the era-adjustment works, how community consensus and Kills Over Replacement are computed, which tournaments count, and why Scump shows 28 not 30.">
+<meta name="description" content="How the era-adjustment works, how community consensus is computed and player stats are sourced, which tournaments count, and why Scump shows 28 not 30.">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Map Five">
-<meta property="og:title" content="Methodology: adjusted wins, community consensus, KOR, and tournament counts">
-<meta property="og:description" content="How adjusted wins, community consensus, and Kills Over Replacement work; which tournaments count; and why we mirror the wiki's Major Wins list.">
+<meta property="og:title" content="Methodology: adjusted wins, community consensus, player stats, and tournament counts">
+<meta property="og:description" content="How adjusted wins, community consensus, and player stats work; which tournaments count; and why we mirror the wiki's Major Wins list.">
 <meta property="og:url" content="https://mapfive.app/methodology.html">
 <meta property="og:image" content="https://mapfive.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -111,7 +111,7 @@ const bo2=D.majors['Black Ops 2'], small=6;
 
 root.innerHTML=`
   <h1>Methodology</h1>
-  <p class="lede">The site separates wins, community opinion, KOR, and formal awards. Start with the piece you care about, then use the detailed sections below to see what is measured, what is excluded, and how to reproduce the numbers.</p>
+  <p class="lede">The site separates wins, community opinion, player stats, and formal awards. Start with the piece you care about, then use the detailed sections below to see what is measured, what is excluded, and how to reproduce the numbers.</p>
   <div class="method-hub" aria-label="Methodology areas">
     <a class="method-card" href="#era-adjustment">
       <span class="pill tag">Core leaderboard</span>
@@ -123,10 +123,10 @@ root.innerHTML=`
       <h2>Community consensus</h2>
       <p>Fan/community source collection, source weighting, title rankings, career rollups, and source traceability.</p>
     </a>
-    <a class="method-card" href="#kills-over-replacement">
+    <a class="method-card" href="#on-record-stats">
       <span class="pill flat">Objective stats</span>
-      <h2>Kills Over Replacement</h2>
-      <p>Major-event kill production, respawn/S&amp;D splits, replacement baselines, qualification filters, and caveats.</p>
+      <h2>On-record stats</h2>
+      <p>Recorded kills, deaths, mode splits, and source coverage.</p>
     </a>
     <a class="method-card" href="#formal-accolades">
       <span class="pill flat">Formal recognition</span>
@@ -140,7 +140,7 @@ root.innerHTML=`
     ['scoring-options','Scoring options'],
     ['crimsix-simp','Crimsix vs. Simp'],
     ['placement','Placement stats'],
-    ['kills-over-replacement','Kills Over Replacement'],
+    ['on-record-stats','On-record stats'],
     ['community-consensus','Community consensus'],
     ['formal-accolades','Formal accolades'],
     ['tournaments','Tournament rules']
@@ -240,39 +240,16 @@ root.innerHTML=`
   inputs. They are useful for comparing consistency and conversion, but top-2/top-4 rates are not fully field-size-normalized:
   a top 4 in an 8-team playoff is not identical to a top 4 in a large open bracket.</p>
 
-  <h2 id="kills-over-replacement">6. Kills Over Replacement ${anchorLink('kills-over-replacement','Kills Over Replacement')}</h2>
-  <p><strong>Kills Over Replacement</strong> is a rate stat for the on-record map database. It asks:
-  how many more kills per map did this player produce than a replacement-level qualified player in the same title and mode?
-  The public leaderboard shows two separate splits because the kill environment is different:
-  <strong>Respawn KOR/map</strong> and <strong>S&amp;D KOR/map</strong>.</p>
-  <p>The formula is intentionally simple:</p>
-  <div class="formula">KOR/map = player kills per map − replacement kills per map</div>
-  <p><strong>Replacement</strong> is the 25th percentile kills per map among qualified players in that title and mode split.
-  In other words, it is not a universal number. Black Ops 4 Respawn has its own baseline, Advanced Warfare S&amp;D has its
-  own baseline, and the all-time view compares each player to the replacement baseline from their own title/mode row.</p>
-  <p>The qualification filters are there to keep tiny samples from driving the board: <strong>28+ Respawn maps</strong>
-  or <strong>10+ S&amp;D maps</strong> in a title. Rows with relatively small qualified samples are still shown, but marked
-  as fragile context. The score is built from major-event maps only, using kills and maps from the objective-stat source
-  coverage available for that title.</p>
-  <p>Opponent context is shown beside the score but is not baked into it. <strong>Median opponent placement</strong> is the
-  median event finish of the teams a player faced in those maps. <strong>Top-8 opponent map share</strong> is the share of
-  maps against teams that placed top 8 at that event. Those fields help identify easier or harder paths, but we do not yet
-  adjust the KOR number for opponent strength.</p>
-  <p><strong>How to read it:</strong> KOR is a contextualized kill-production rate, not a full WAR-style value model.
-  It does not include damage, objective work, trading, comms, role, team system, or map wins. It is most useful as a cleaner
-  version of kills per map: title-adjusted, mode-split, and sample-aware. It should sit beside resume metrics, not replace them.
-  <a href="kor.html">Open the KOR leaderboard →</a></p>
-
-  <h3 id="on-record-stats">On-record K/D and per-mode stats ${anchorLink('on-record-stats','On-record stats')}</h3>
+  <h2 id="on-record-stats">6. On-record K/D and per-mode stats ${anchorLink('on-record-stats','On-record stats')}</h2>
   <p>The <strong>K/D, kills, deaths, interactions, and maps</strong> rows on the compare page and player pages are plain
-  on-record totals from the same major-event map database KOR uses — no era adjustment, no replacement baseline.
+  on-record totals from the major-event map database.
   <strong>Respawn K/D</strong> and <strong>S&amp;D K/D</strong> split the same records by mode. <strong>Events with
   stats</strong> shows how much of a career the map database actually covers: older titles have thinner stat coverage, so a
   low number usually means missing records, not missed events. Cross-era K/D comparisons inherit each era's kill
-  environment — for a title-adjusted view, use KOR above.</p>
+  environment; compare within a title and mode for clearer context.</p>
 
   <h2 id="community-consensus">7. Community consensus ${anchorLink('community-consensus','Community consensus')}</h2>
-  <p>The <a href="community.html">Community Consensus</a> page is separate from era-adjusted wins, KOR, formal honors, and authored/media rankings. It answers one narrower question: <strong>what did the available community ranking evidence say about the best players in each title?</strong> It is not an author ranking and it does not use event wins as a scoring input.</p>
+  <p>The <a href="community.html">Community Consensus</a> page is separate from era-adjusted wins, player stats, formal honors, and authored/media rankings. It answers one narrower question: <strong>what did the available community ranking evidence say about the best players in each title?</strong> It is not an author ranking and it does not use event wins as a scoring input.</p>
   <p>Each title starts with ranked community evidence: aggregate survey results where available, thread clusters with extractable ranked ballots, and rare single community ballots when they are the only usable source.</p>
   <p>A player's ballot points are normalized by list size. Source contributions are then weighted by source type, sample size, timing, season coverage, and bounded Reddit-score signals, then summed within that title.</p>
   <p>Older titles usually do not have one clean end-of-title aggregate poll. They are rebuilt from smaller preserved Reddit threads, archived discussions, and other extractable community lists, so those tables show <strong>Consensus strength</strong> instead of pretending there is one clean vote margin. It reflects how consistently a player appears high across independent scored sources after source weighting.</p>
@@ -306,7 +283,7 @@ root.innerHTML=`
   <p><strong>How to read it:</strong> community rankings help capture title-level opinions, especially where raw wins miss the story. They should sit beside resume, stats, honors, and source caveats. A blank or low score means the current source inventory did not capture support, not that no support existed.</p>
 
   <h2 id="formal-accolades">8. Formal accolades ${anchorLink('formal-accolades','Formal accolades')}</h2>
-  <p><strong>Formal accolades</strong> are profile context, not an input to adjusted wins, community consensus, or Kills Over Replacement. Player pages and compare rows surface official recognition rows from the CoD Esports Wiki awards table: Champs MVPs, Event MVPs, Grand Finals MVPs, Season MVP, Rookie of the Year, CDL First/Second Team, and CWL All-Star selections.</p>
+  <p><strong>Formal accolades</strong> are profile context, not an input to adjusted wins or community consensus. Player pages and compare rows surface official recognition rows from the CoD Esports Wiki awards table: Champs MVPs, Event MVPs, Grand Finals MVPs, Season MVP, Rookie of the Year, CDL First/Second Team, and CWL All-Star selections.</p>
   <p>The build keeps this lane intentionally narrow. Media rankings, Breaking Point lists, Reddit/community rankings, eye-test arguments, role-adjusted skill claims, and performance stats do not enter this honors section. Those belong in community consensus or objective-stat lanes when they are usable there.</p>
   <p>Coverage is uneven by era. CDL-era awards are more standardized; early-era awards are sparse and sometimes do not exist in the current source table. A blank honors list therefore means <em>no row in the current formal-awards source set</em>, not proof that the player never received contemporaneous recognition.</p>
 

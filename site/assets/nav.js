@@ -8,7 +8,7 @@
 function mountNav(active){
   if(document.querySelector('.site-head')) return;   // already mounted at parse time
   // "Insights" groups the charts and the derived-signature page in a dropdown.
-  const VIZ=[['kor.html','Kills Over Replacement'],['authored-vs-community.html','Authored-list check'],['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['map.html','Similarity map'],['signatures.html','Signatures']];
+  const VIZ=[['authored-vs-community.html','Authored-list check'],['scatter.html','Peak vs Longevity'],['heatmap.html','Dominance heatmap'],['trajectory.html','Career trajectories'],['signatures.html','Signatures']];
   const vizActive=VIZ.some(([h])=>h===active);
   const activeAttrs=h=>h===active?' class="active" aria-current="page"':'';
   const drop=`<div class="navdrop${vizActive?' active':''}">
