@@ -42,6 +42,10 @@ mountPageNav('changelog.html');
 
 // Newest first. Tags: Methodology (moves the numbers) | New | Improved | Changed | Fixed.
 const ENTRIES = [
+  {date:'2026-09-29', tag:'Improved', title:'Career comparisons show participation, peaks, and shared points',
+   body:`<a href="scatter.html">Peak vs. Longevity</a> now fits the full chart on phones, reveals every player at a shared point, and lets you highlight up to four players. Optional axes show titles competed in and the best average across three consecutive titles, with zero-win titles included. Selections and measures are shareable in the URL.
+   The <a href="heatmap.html">dominance heatmap</a> distinguishes played-without-winning from no recorded participation, uses a fixed 0–100% color scale, and opens each player's season results when a cell is selected.
+   <a href="trajectory.html">Career trajectories</a> retain winless seasons and mark participation gaps. You can align by historical title or recorded career season, start with four highlighted players, and optionally show the field. The CDL stars preset now selects by wins earned in CDL titles; all lines still show full careers. Player selections, alignment, and field visibility are saved in the URL.`},
   {date:'2026-08-14', tag:'Methodology', title:'Adjusted wins now use a fixed 10-major reference season',
    body:`Adjusted wins now equal <strong>season-share × 10</strong>, rather than using the average number of majors in the currently selected titles. This makes a custom title filter stable: removing a title no longer rescales players with no wins in it. The leaderboard now describes the result directly as tournament wins if every title had 10 tournaments. All neutral adjusted totals and peak values are rescaled from the former 8.50-major all-time average to the 10-major reference; unweighted adjusted ordering is unchanged.`},
   {date:'2026-08-14', tag:'Improved', title:'Leaderboard Rank tooltip explains ring weighting',

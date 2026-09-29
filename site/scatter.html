@@ -22,21 +22,36 @@
 <script src="https://browser.sentry-cdn.com/10.62.0/bundle.feedback.min.js"
   integrity="sha384-Osd4ws6GMOft3r45orGjXi52w62BlTXpUzyK7/1Uk4v9xe0hhJD5rFJKDjFpM5Pv" crossorigin="anonymous"></script>
 <style>
-  .scatter-wrap{overflow-x:auto}
-  /* min-width matches the viewBox width so in-SVG text never renders below authored size */
-  svg.scatter{display:block;min-width:900px;width:100%;height:auto;font-family:var(--sans)}
-  svg.scatter .axis{stroke:var(--line-2);stroke-width:1}
-  svg.scatter .grid{stroke:var(--line);stroke-width:1}
+  .scatter-wrap{position:relative}
+  svg.scatter{display:block;width:100%;height:auto;font-family:var(--sans);overflow:visible}
+  svg.scatter .grid{stroke:var(--line)}
   svg.scatter .tick{fill:var(--muted);font-size:12px}
-  svg.scatter .axlabel{fill:var(--ink);font-size:13px;font-weight:600}
-  svg.scatter .quad{fill:var(--faint);font-size:12px;font-weight:600;opacity:.7}
-  svg.scatter .dot{fill:var(--accent);fill-opacity:.55;stroke:#fff;stroke-width:1;cursor:pointer}
-  svg.scatter .dot:hover,svg.scatter a:hover .dot,svg.scatter a:focus-visible .dot{fill-opacity:.9}
-  svg.scatter a:focus-visible .dot{stroke:var(--ink);stroke-width:2}
-  svg.scatter .dot.champ{fill:var(--gold);fill-opacity:.6}
-  svg.scatter .hit{fill:transparent;stroke:none}
-  svg.scatter .lbl{fill:var(--ink);font-size:12px;pointer-events:none}
+  svg.scatter .axlabel{fill:var(--ink);font-size:12px;font-weight:600}
+  svg.scatter .dot{fill:var(--accent);fill-opacity:.65;stroke:#fff;stroke-width:1.5}
+  svg.scatter .dot.champ{fill:var(--gold)}
+  svg.scatter .hit{fill:transparent}
   svg.scatter a{cursor:pointer}
+  svg.scatter a:focus-visible{outline:none}
+  svg.scatter a:focus-visible .dot,svg.scatter a.selected .dot{stroke:var(--ink);stroke-width:3;fill-opacity:1}
+  svg.scatter a.dim{opacity:.2}
+  svg.scatter .lbl{fill:var(--ink);font-size:12px;pointer-events:none}
+  svg.scatter .count{fill:var(--ink);font-size:10px;font-weight:700;pointer-events:none}
+  .scatter-controls{display:flex;flex-wrap:wrap;align-items:end;gap:var(--space-3);margin:var(--space-4) 0}
+  .scatter-controls label{display:flex;flex-direction:column;gap:var(--space-1);font-size:var(--text-sm);font-weight:600}
+  .scatter-controls button,.scatter-actions button,.scatter-person button{min-height:44px}
+  .scatter-search{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .scatter-search input{min-width:0;flex:1}
+  .scatter-panel{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-4);margin:var(--space-4) 0;scroll-margin-top:calc(var(--navh) + 16px)}
+  .scatter-panel h2{margin-top:0}
+  .scatter-person{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-2) 0;border-top:1px solid var(--line)}
+  .scatter-person p{margin:var(--space-1) 0;font-size:var(--text-sm);color:var(--muted)}
+  .scatter-person>div{min-width:0}
+  .scatter-person button{flex:none;width:auto;min-width:100px}
+  .scatter-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);margin-top:var(--space-3)}
+  .scatter-chip{display:inline-flex;align-items:center;gap:var(--space-1);border:1px solid var(--line);border-radius:24px;padding-left:var(--space-3);background:var(--accent-soft)}
+  .scatter-chip button{border:0;background:none;border-radius:50%;min-width:44px;min-height:44px;cursor:pointer}
+  #selection-status:empty{display:none}
+  @media(max-width:600px){.scatter-controls label{flex:1;min-width:140px}.scatter-controls select{width:100%}.scatter-person{align-items:flex-start}.scatter-panel{padding:var(--space-3)}}
 </style>
 </head>
 <body>
@@ -44,143 +59,187 @@
 <main class="wrap" id="root" tabindex="-1"></main>
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
-<script>
+<script type="module">
+import { careerSeasons, careerPeak } from './assets/career.js';
 mountPageNav('scatter.html');
 const root=document.getElementById('root');
-
+const D=window.APP_DATA;
+const byName=Object.fromEntries(D.leaderboard.map(r=>[r.name,r]));
+const careers=Object.fromEntries(D.leaderboard.map(r=>[r.name,careerSeasons(D,r.name)]));
+const params=new URLSearchParams(location.search);
+let longevity=params.get('longevity')==='played'?'played':'won';
+let peakMode=params.get('peak')==='three'?'three':'single';
+const selected=new Set(params.getAll('p').map(canonicalPlayerName).filter(n=>byName[n]).slice(0,4));
+let inspected=[], groups=[], geometry;
+const short=g=>window.GAME_ABBR[g] || g;
+const pct=v=>`${(v*100).toFixed(1).replace(/\.0$/,'')}%`;
+function pointFor(name){
+  const r=byName[name], seasons=careers[name], peak=careerPeak(seasons,peakMode==='three'?3:1);
+  return {name,peak, x:longevity==='played'?seasons.filter(s=>s.played).length:r.titlesAll,
+    adj:r.adjAll,champs:r.champs};
+}
+function peakText(p){
+  if(!p.peak) return 'Fewer than three titles in the recorded career';
+  const ss=p.peak.seasons;
+  if(ss.length===1){
+    const source=D.players[p.name].seasons.find(s=>s.game===ss[0].season);
+    return `${pct(p.peak.share)} · ${source.wins}/${source.majors} in ${short(ss[0].season)}`;
+  }
+  return `${pct(p.peak.share)} average · ${short(ss[0].season)}–${short(ss[2].season)}`;
+}
 root.innerHTML=`
   <h1>Peak vs. Longevity</h1>
-  <p class="lede">Two players can share an adjusted total and have completely different résumés. This splits it into two
-  axes, both measured by <strong>winning</strong> (tournament wins, not individual stats).
-  <strong>Peak</strong> = your most dominant <em>title-winning</em> season (the biggest share of that season's majors you took);
-  <strong>longevity</strong> = how many different CoD titles you kept winning majors across.
-  Shares divide by the majors a team could win that season. <a href="methodology.html">How the season share works →</a></p>
-  <div class="controls">
-    <span class="small muted">Hover or tap a dot for detail; click it (tap again on touch) to open the player.</span>
+  <p class="lede">Who won big, who kept winning, and who did both? Compare a player's best season with the number of titles they won across. Select a point to see everyone there.</p>
+  <div class="scatter-controls">
+    <label>Longevity <select id="longevity" class="select" aria-label="Longevity measure"><option value="won">Titles won</option><option value="played">Titles competed in</option></select></label>
+    <label>Peak <select id="peak" class="select" aria-label="Peak measure"><option value="single">Best single season</option><option value="three">3-title average</option></select></label>
   </div>
+  <form class="scatter-search" id="player-search">
+    <input class="search" id="search" list="allplayers" placeholder="Find a player…" aria-label="Find a player" autocomplete="off">
+    <datalist id="allplayers">${D.leaderboard.map(r=>`<option value="${esc(r.name)}">`).join('')}</datalist>
+    <button class="select" type="submit">Add player</button>
+  </form>
+  <p class="small muted" id="selection-status" role="status"></p>
+  <div id="comparison"></div>
   <div class="legend">
-    <span><span class="sw" style="background:var(--gold);border-radius:50%"></span>won a World Championship</span>
-    <span><span class="sw" style="background:var(--accent);border-radius:50%;opacity:.6"></span>no Championship</span>
-    <span>bubble size = total adjusted wins</span>
+    <span><span class="sw" style="background:var(--gold);border-radius:50%"></span>includes a World Champion</span>
+    <span><span class="sw" style="background:var(--accent);border-radius:50%"></span>no World Champion</span>
+    <span>Bubble area = adjusted wins of the largest career at that point; a number counts players sharing it.</span>
   </div>
-  <p class="scrollhint small faint">Swipe the chart sideways →</p>
   <div class="scatter-wrap"><div id="chart"></div></div>
-  <p class="small muted" style="margin-top:var(--space-4)"><strong>How to read it:</strong> top-right = won big <em>and</em> kept winning
-  (the all-time résumés). Top-left = a huge winning season over a short window. Bottom-right = long careers built on steady
-  winning rather than one dominant season.</p>
-`;
-
-const W=900, H=560, mL=58, mR=26, mT=28, mB=52;
-const plotW=W-mL-mR, plotH=H-mT-mB;
-
+  <p class="small muted" id="peak-note"></p>
+  <p class="small muted">Upper right = higher peak and more titles. Peak measures major wins, not individual performance. <a href="methodology.html#era-adjustment">How season shares work →</a></p>
+  <section id="point-details" class="scatter-panel" aria-labelledby="point-title" hidden></section>`;
+const chart=document.getElementById('chart');
+const details=document.getElementById('point-details');
+const tip=document.createElement('div');tip.className='charttip fixed';document.body.appendChild(tip);
+function syncUrl(){
+  const url=new URL(location.href);
+  url.searchParams.delete('p');selected.forEach(n=>url.searchParams.append('p',n));
+  for(const [key,value,base] of [['longevity',longevity,'won'],['peak',peakMode,'single']]){
+    if(value===base) url.searchParams.delete(key);else url.searchParams.set(key,value);
+  }
+  history.replaceState(null,'',url);
+}
+function renderComparison(){
+  const names=[...selected];
+  const query=names.map(n=>`p=${encodeURIComponent(n)}`).join('&');
+  document.getElementById('comparison').innerHTML=names.length?`<div class="scatter-panel">
+    <strong>Highlighted players · ${names.length}/4</strong>
+    <div class="scatter-actions">${names.map(n=>`<span class="scatter-chip">${esc(n)}<button type="button" data-remove="${esc(n)}" aria-label="Remove ${esc(n)}">×</button></span>`).join('')}</div>
+    ${names.map(n=>{const p=pointFor(n);return `<p class="small"><strong>${esc(n)}</strong> · ${peakText(p)} · ${p.x} titles ${longevity==='played'?'competed in':'won'} · ${p.adj.toFixed(1)} adjusted wins</p>`;}).join('')}
+    <div class="scatter-actions">${names.length>=2?`<a href="compare.html?${query}">Compare full résumés →</a>`:''}<a href="trajectory.html?${query}">Compare trajectories →</a></div>
+  </div>`:'';
+}
+function renderDetails(){
+  details.hidden=!inspected.length;
+  if(!inspected.length) return;
+  const players=inspected.map(pointFor);
+  details.innerHTML=`<h2 id="point-title" tabindex="-1">${players.length>1?`${players.length} players share this point`:esc(players[0].name)}</h2>
+    ${players.map(p=>`<div class="scatter-person"><div><a href="player.html?p=${encodeURIComponent(p.name)}"><strong>${esc(p.name)}</strong></a><p>${peakText(p)} · ${p.x} titles ${longevity==='played'?'competed in':'won'}</p><p>${p.adj.toFixed(1)} adjusted wins · ${p.champs} championship${p.champs===1?'':'s'}</p></div><button type="button" class="select" data-pin="${esc(p.name)}" aria-pressed="${selected.has(p.name)}">${selected.has(p.name)?'Remove':'Highlight'}</button></div>`).join('')}`;
+}
+function renderChart(){
+  tip.classList.remove('on');
+  const W=Math.max(280,Math.round(chart.clientWidth)), mobile=W<600, H=mobile?390:520;
+  const m={l:46,r:24,t:26,b:58}, pw=W-m.l-m.r, ph=H-m.t-m.b;
+  const points=D.leaderboard.map(r=>pointFor(r.name)).filter(p=>p.peak);
+  const xMax=Math.max(...points.map(p=>p.x));
+  const yMax=Math.min(1,Math.ceil((Math.max(...points.map(p=>p.peak.share))+.04)/.2)*.2);
+  const X=x=>m.l+(x-1)/Math.max(1,xMax-1)*pw;
+  const Y=y=>m.t+ph-y/yMax*ph;
+  const maxAdj=Math.max(...points.map(p=>p.adj));
+  const grouped=new Map();
+  for(const p of points){const key=`${p.x}|${p.peak.share.toFixed(12)}`;if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(p);}
+  groups=[...grouped.values()].map(players=>({players,x:X(players[0].x),y:Y(players[0].peak.share)}));
+  geometry={W,H};
+  let svg='';
+  const step=mobile?2:1;
+  for(let x=1;x<=xMax;x++){
+    if(x!==1 && x!==xMax && x%step!==0) continue;
+    svg+=`<line class="grid" x1="${X(x)}" x2="${X(x)}" y1="${m.t}" y2="${m.t+ph}"/><text class="tick" x="${X(x)}" y="${m.t+ph+20}" text-anchor="middle">${x}</text>`;
+  }
+  for(let y=0;y<=yMax+.001;y+=.2)svg+=`<line class="grid" x1="${m.l}" x2="${W-m.r}" y1="${Y(y)}" y2="${Y(y)}"/><text class="tick" x="${m.l-8}" y="${Y(y)+4}" text-anchor="end">${Math.round(y*100)}%</text>`;
+  svg+=`<text class="axlabel" x="${m.l+pw/2}" y="${H-10}" text-anchor="middle">${longevity==='played'?'Titles competed in':'Titles with a major win'} →</text>`;
+  svg+=`<text class="axlabel" transform="translate(12,${m.t+ph/2}) rotate(-90)" text-anchor="middle">${peakMode==='three'?'Best 3-title average':'Best season share'} →</text>`;
+  const labels=[];
+  groups.forEach((g,i)=>{
+    const names=g.players.map(p=>p.name), pinned=names.some(n=>selected.has(n));
+    const largest=Math.max(...g.players.map(p=>p.adj));
+    const radius=Math.sqrt(largest/maxAdj)*15;
+    const summary=`${names.join(', ')}: ${pct(g.players[0].peak.share)} peak, ${g.players[0].x} titles. Select for details.`;
+    svg+=`<a href="#point-details" role="button" tabindex="0" aria-controls="point-details" data-group="${i}" data-members="${esc(JSON.stringify(names))}" aria-label="${esc(summary)}" class="${pinned?'selected':selected.size?'dim':''}">
+      <circle class="dot ${g.players.some(p=>p.champs)?'champ':''}" cx="${g.x}" cy="${g.y}" r="${radius}"/>
+      <circle class="hit" cx="${g.x}" cy="${g.y}" r="22"/>
+      ${names.length>1?`<text class="count" x="${g.x}" y="${g.y+3}" text-anchor="middle">${names.length}</text>`:''}</a>`;
+    const candidate=pinned?names.filter(n=>selected.has(n)).join(' / '):g.players.reduce((a,b)=>a.adj>b.adj?a:b).name;
+    labels.push({text:candidate,x:g.x,y:g.y,r:radius,weight:pinned?1000:largest});
+  });
+  const placed=[];
+  for(const l of labels.sort((a,b)=>b.weight-a.weight).slice(0,selected.size?selected.size:mobile?3:8)){
+    const left=l.x>W*.65;
+    const textWidth=l.text.length*6.4;
+    const lx=Math.max(m.l,Math.min(W-m.r-textWidth,left?l.x-l.r-6-textWidth:l.x+l.r+6));
+    let ly=l.y-8;
+    while(placed.some(q=>Math.abs(q.y-ly)<15 && lx<q.x+q.w && lx+textWidth>q.x))ly+=16;
+    ly=Math.max(14,Math.min(H-m.b,ly));placed.push({x:lx,y:ly,w:textWidth});
+    svg+=`<text class="lbl" x="${lx}" y="${ly}">${esc(l.text)}</text>`;
+  }
+  chart.innerHTML=`<svg class="scatter" viewBox="0 0 ${W} ${H}" role="group" aria-label="Peak versus longevity: select a point for player details">${svg}</svg>`;
+  document.getElementById('peak-note').textContent=peakMode==='three'
+    ? `Peak is the mean share of available majors won across three consecutive game titles, including zero-win titles and gaps within the recorded career. ${D.leaderboard.length-points.length} players with fewer than three titles in their career span are omitted. Each title has equal weight.`
+    : 'Peak is the share of available majors won in the best single title. Split-format seasons use winnable majors (for example, 9 in MW19); incomplete seasons use the full schedule.';
+}
 function render(){
-  const rows=D.leaderboard.map(r=>{
-    const info = r.peakInfoAll;
-    return {
-      name:r.name,
-      peak: (info && info.majors) ? info.wins/info.majors : 0,   // share of best season's majors
-      eras: r.titlesAll,
-      adj:  r.adjAll,
-      champs:r.champs, info,
-    };
-  }).filter(p=>p.eras>0 && p.peak>0);
-
-  const xMax=Math.max(...rows.map(p=>p.eras));
-  const maxShare=Math.max(...rows.map(p=>p.peak));
-  const yMax=Math.min(1, Math.ceil((maxShare+0.04)/0.2)*0.2);   // round up to a 0.2 step
-  const maxAdj=Math.max(...rows.map(p=>p.adj));
-  const xS=e=>mL+((e-1)/(Math.max(1,xMax-1)))*plotW;
-  const yS=p=>mT+plotH-(p/yMax)*plotH;
-  const rS=a=>4+Math.sqrt(a/maxAdj)*11;   // area ∝ adjusted wins, so big careers don't overwhelm
-
-  // label the notable ones: top 16 by adjusted, plus the peak and longevity leaders
-  const byAdj=[...rows].sort((a,b)=>b.adj-a.adj);
-  const labelSet=new Set(byAdj.slice(0,16).map(p=>p.name));
-  labelSet.add([...rows].sort((a,b)=>b.peak-a.peak)[0].name);
-  labelSet.add([...rows].sort((a,b)=>b.eras-a.eras)[0].name);
-
-  // grid + ticks
-  let g='';
-  for(let e=1;e<=xMax;e++){const x=xS(e);g+=`<line class="grid" x1="${x}" y1="${mT}" x2="${x}" y2="${mT+plotH}"/><text class="tick" x="${x}" y="${mT+plotH+18}" text-anchor="middle">${e}</text>`;}
-  for(let p=0;p<=yMax+1e-9;p+=0.2){const y=yS(p);g+=`<line class="grid" x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}"/><text class="tick" x="${mL-8}" y="${y+4}" text-anchor="end">${Math.round(p*100)}%</text>`;}
-  // axes
-  g+=`<line class="axis" x1="${mL}" y1="${mT+plotH}" x2="${mL+plotW}" y2="${mT+plotH}"/><line class="axis" x1="${mL}" y1="${mT}" x2="${mL}" y2="${mT+plotH}"/>`;
-  // axis labels
-  g+=`<text class="axlabel" x="${mL+plotW/2}" y="${H-12}" text-anchor="middle">Longevity →  distinct CoD titles won</text>`;
-  g+=`<text class="axlabel" transform="translate(16,${mT+plotH/2}) rotate(-90)" text-anchor="middle">Peak →  % of best season's majors won</text>`;
-  // quadrant hints
-  g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+16}" text-anchor="end">peak + longevity</text>`;
-  g+=`<text class="quad" x="${mL+6}" y="${mT+16}" text-anchor="start">huge peak, short window</text>`;
-  g+=`<text class="quad" x="${mL+plotW-6}" y="${mT+plotH-8}" text-anchor="end">long career, lower peak</text>`;
-
-  // dots, plotted at exact (longevity, peak); smallest first so big ones draw on top
-  const GAMES=Object.fromEntries(D.games.map(g=>[g.game,g]));
-  const sorted=[...rows].sort((a,b)=>a.adj-b.adj);
-  let dots='';
-  for(const p of sorted){
-    const x=xS(p.eras), y=yS(p.peak), r=rS(p.adj);
-    // where a season's scoring denominator differs from the events held (MW19's
-    // split format, an in-progress season), say so instead of looking miscounted
-    const held=GAMES[p.info.season]?.majors;
-    const denomNote=(held && held!==p.info.majors)?` winnable (${held} held)`:'';
-    const tip=`${p.name}: best season ${p.info.wins} of ${p.info.majors}${denomNote} in ${p.info.season} (${(p.peak*100).toFixed(0)}%), ${p.eras} titles, ${p.adj.toFixed(1)} adjusted`;
-    dots+=`<a href="player.html?p=${encodeURIComponent(p.name)}" aria-label="${esc(tip)}">
-      <circle class="dot ${p.champs?'champ':''}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" data-tip="${esc(tip)}"></circle>
-      <circle class="hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${Math.max(23,r+8).toFixed(1)}" data-tip="${esc(tip)}"></circle>
-    </a>`;
-  }
-
-  // labels in a separate layer; nudge down to avoid overlap (dots stay on their exact spot)
-  const labels=[...rows].filter(p=>labelSet.has(p.name))
-    .map(p=>({name:p.name, x:xS(p.eras), y:yS(p.peak), r:rS(p.adj)}))
-    .sort((a,b)=> a.x-b.x || a.y-b.y);
-  const placed=[]; let lbl='';
-  for(const L of labels){
-    const right = L.x > mL+plotW*0.72;                 // flip left near the right edge so labels don't clip
-    let ly = L.y + 4;
-    for(const q of placed){ if(Math.abs(q.x-L.x)<60 && Math.abs(q.ly-ly)<13) ly=q.ly+13; }
-    placed.push({x:L.x, ly});
-    const lx = right ? (L.x-L.r-4) : (L.x+L.r+4);
-    lbl+=`<text class="lbl" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${right?'end':'start'}">${esc(L.name)}</text>`;
-  }
-
-  document.getElementById('chart').innerHTML=`<svg class="scatter" viewBox="0 0 ${W} ${H}" role="img" aria-label="Peak vs longevity scatter">${g}${dots}${lbl}</svg>`;
+  document.getElementById('longevity').value=longevity;
+  document.getElementById('peak').value=peakMode;
+  syncUrl();renderComparison();renderChart();renderDetails();
 }
-
-render();
-
-// styled HTML tooltip on hover, tap AND keyboard focus (the dots are links, so
-// they're tabbable); replaces the slow, mouse-only native <title>
-const chartEl = document.getElementById('chart');
-const tipEl = document.createElement('div');
-tipEl.className = 'charttip fixed'; document.body.appendChild(tipEl);
-function showDotTip(c){
-  tipEl.textContent = c.dataset.tip; tipEl.classList.add('on');
-  const r = c.getBoundingClientRect();
-  let x = r.left + r.width/2 - tipEl.offsetWidth/2;
-  x = Math.max(8, Math.min(x, innerWidth - tipEl.offsetWidth - 8));
-  let y = r.top - tipEl.offsetHeight - 8;
-  if(y < 8) y = r.bottom + 8;
-  tipEl.style.left = x+'px'; tipEl.style.top = y+'px';
+function togglePlayer(name){
+  const status=document.getElementById('selection-status');status.textContent='';
+  if(selected.has(name))selected.delete(name);
+  else if(selected.size<4)selected.add(name);
+  else {status.textContent='Highlight up to four players. Remove one to add another.';return;}
+  render();
 }
-const hideDotTip = ()=>tipEl.classList.remove('on');
-chartEl.addEventListener('mouseover', e=>{
-  const c = e.target.closest('a')?.querySelector('circle.dot'); c ? showDotTip(c) : hideDotTip(); });
-chartEl.addEventListener('mouseleave', hideDotTip);
-chartEl.addEventListener('focusin', e=>{
-  const c = e.target.closest('a')?.querySelector('circle.dot'); if(c) showDotTip(c); });
-chartEl.addEventListener('focusout', hideDotTip);
-// touch: first tap inspects, tapping the same dot again opens the player
-let lastTap = null;
-chartEl.addEventListener('click', e=>{
-  if(!window.matchMedia('(hover: none)').matches) return;
-  const a = e.target.closest('a'); if(!a) return;
-  if(a !== lastTap){
-    e.preventDefault(); lastTap = a;
-    const c = a.querySelector('circle.dot'); if(c) showDotTip(c);
+function inspect(index){
+  inspected=groups[index].players.map(p=>p.name);renderDetails();tip.classList.remove('on');
+  document.getElementById('point-title').focus({preventScroll:true});
+  details.scrollIntoView({block:'nearest',behavior:'instant'});
+}
+chart.addEventListener('click',e=>{
+  const anchor=e.target.closest('[data-group]');if(!anchor)return;e.preventDefault();
+  let index=Number(anchor.dataset.group);
+  // On a compact chart hit targets can overlap. Pointer input chooses the nearest
+  // actual coordinate; keyboard activation always uses its focused group.
+  if(e.detail>0){
+    const rect=chart.querySelector('svg').getBoundingClientRect();
+    const x=(e.clientX-rect.left)*geometry.W/rect.width,y=(e.clientY-rect.top)*geometry.H/rect.height;
+    index=groups.reduce((best,g,i)=>Math.hypot(g.x-x,g.y-y)<Math.hypot(groups[best].x-x,groups[best].y-y)?i:best,0);
   }
+  inspect(index);
 });
-mountFoot();
+chart.addEventListener('keydown',e=>{const a=e.target.closest('[data-group]');if(a && e.key===' '){e.preventDefault();inspect(Number(a.dataset.group));}});
+function showTip(anchor){
+  tip.textContent=anchor.getAttribute('aria-label');tip.classList.add('on');
+  const r=anchor.getBoundingClientRect();
+  tip.style.left=Math.max(8,Math.min(innerWidth-tip.offsetWidth-8,r.left))+'px';
+  tip.style.top=Math.max(8,r.top-tip.offsetHeight-8)+'px';
+}
+chart.addEventListener('mouseover',e=>{const a=e.target.closest('[data-group]');if(a)showTip(a);});
+chart.addEventListener('focusin',e=>{const a=e.target.closest('[data-group]');if(a)showTip(a);});
+for(const event of ['mouseleave','focusout'])chart.addEventListener(event,()=>tip.classList.remove('on'));
+document.getElementById('player-search').addEventListener('submit',e=>{
+  e.preventDefault();const input=document.getElementById('search');const name=canonicalPlayerName(input.value);
+  if(!byName[name]){document.getElementById('selection-status').textContent='Choose a player from the list.';return;}
+  if(!selected.has(name))togglePlayer(name);
+  input.value='';
+});
+document.getElementById('comparison').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(b)togglePlayer(b.dataset.remove);});
+details.addEventListener('click',e=>{const b=e.target.closest('[data-pin]');if(b){const name=b.dataset.pin;togglePlayer(name);[...details.querySelectorAll('[data-pin]')].find(b=>b.dataset.pin===name)?.focus({preventScroll:true});}});
+for(const [id,change] of [['longevity',v=>longevity=v],['peak',v=>peakMode=v]])document.getElementById(id).addEventListener('change',e=>{change(e.target.value);inspected=[];render();});
+let resizeFrame;
+new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{if(geometry?.W!==Math.max(280,Math.round(chart.clientWidth)))renderChart();});}).observe(chart);
+render();mountFoot();
 </script>
 </body>
 </html>

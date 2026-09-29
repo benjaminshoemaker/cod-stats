@@ -75,14 +75,13 @@
 <script src="data.js"></script>
 <script src="assets/app.js"></script>
 <script type="module">
-import { eraContext } from './assets/rank.js';
+import { eraContext, computeRows } from './assets/rank.js';
+import { careerSeasons } from './assets/career.js';
 mountPageNav('trajectory.html');
 const D = window.APP_DATA;
 const { eraOf } = eraContext(D);
 const ORDER = D.meta.seasonOrder;
 const IDX = Object.fromEntries(ORDER.map((g,i)=>[g,i]));
-const GAMES = Object.fromEntries(D.games.map(g=>[g.game,g]));
-const MBAR = D.meta.referenceMajors || 10;
 const ABBR = Object.fromEntries(ORDER.map(g=>[g, window.GAME_ABBR[g]||g]));
 const ERALAB = {prebo2:'Pre-BO2', mlgcwl:'MLG–CWL', cdl:'CDL era'};
 // validated categorical order (dataviz validator: all checks pass, worst adjacent CVD ΔE 17.9)
@@ -100,35 +99,43 @@ const adjOf = nm => (lbByName[nm]?.adjAll ?? 0);
 const ALLNAMES = D.leaderboard.map(r=>r.name);
 const ymax = Math.max(...D.leaderboard.map(r=>r.adjAll));
 
-const seriesCache = {};
+const seriesCache = Object.fromEntries(ALLNAMES.map(name => [name, careerSeasons(D, name)]));
+const params = new URLSearchParams(location.search);
+let alignment = params.get('align') === 'career' ? 'career' : 'title';
+let showField = params.get('field') === '1';
 function series(name){
-  if(seriesCache[name]) return seriesCache[name];
-  const ss = D.players[name].seasons.slice().sort((a,b)=>GAMES[a.game].order-GAMES[b.game].order);
-  let cum=0; const pts=[];
-  for(const s of ss){ cum+=s.share*MBAR; pts.push({idx:IDX[s.game], cum, season:s.game}); }
-  return seriesCache[name]=pts;
+  const rows = seriesCache[name];
+  return (alignment === 'career' ? rows.filter(s => s.played) : rows)
+    .map(s => ({...s, x:alignment === 'career' ? s.active - 1 : s.idx}));
 }
-const hasEra = (name,era)=>D.players[name].seasons.some(s=>eraOf(s.game)===era);
-const runOf = name=>{ const p=series(name); return p.length? p[p.length-1].idx-p[0].idx : 0; };
-const slopeOf = name=> adjOf(name)/Math.max(1,runOf(name));   // adj wins per season of x-span
-
-// presets, chosen to produce distinct line SHAPES, not just overlapping top players
+const runOf = name => seriesCache[name].filter(s => s.played).length;
+const slopeOf = name => adjOf(name) / Math.max(1,runOf(name));
 const topN = n => ALLNAMES.slice().sort((a,b)=>adjOf(b)-adjOf(a)).slice(0,n);
+const cdlRows = computeRows(D, new Set(eraContext(D).PRESETS.cdl), 1);
 const PRESETS = {
-  top:   ()=>topN(8),
-  fast:  ()=>ALLNAMES.filter(n=>adjOf(n)>=4).sort((a,b)=>slopeOf(b)-slopeOf(a)).slice(0,8),          // steep: won a lot fast
-  slow:  ()=>ALLNAMES.filter(n=>adjOf(n)>=3 && runOf(n)>=5).sort((a,b)=>slopeOf(a)-slopeOf(b)).slice(0,8), // flat: gradual over a long career
-  cdl:   ()=>ALLNAMES.filter(n=>hasEra(n,'cdl')).sort((a,b)=>adjOf(b)-adjOf(a)).slice(0,8),
-  champ: ()=>ALLNAMES.filter(n=>(lbByName[n].champs||0)>0).sort((a,b)=>(lbByName[b].champs-lbByName[a].champs)||(adjOf(b)-adjOf(a))).slice(0,8),
+  top:   ()=>topN(4),
+  fast:  ()=>ALLNAMES.filter(n=>adjOf(n)>=4).sort((a,b)=>slopeOf(b)-slopeOf(a)).slice(0,4),
+  slow:  ()=>ALLNAMES.filter(n=>adjOf(n)>=3 && runOf(n)>=5).sort((a,b)=>slopeOf(a)-slopeOf(b)).slice(0,4),
+  cdl:   ()=>[...cdlRows].sort((a,b)=>a.adjRank-b.adjRank).slice(0,4).map(r=>r.name),
+  champ: ()=>ALLNAMES.filter(n=>(lbByName[n].champs||0)>0).sort((a,b)=>(lbByName[b].champs-lbByName[a].champs)||(adjOf(b)-adjOf(a))).slice(0,4),
 };
-const PBTN = [['top','Top 8','The 8 highest era-adjusted careers'],
-  ['fast','Fast risers','Steepest climbs: the most wins in the fewest seasons'],
-  ['slow','Slow burners','Flattest climbs: built up gradually over a long career'],
-  ['cdl','CDL stars','Top 8 of the CDL era'],
-  ['champ','Most rings','The 8 with the most World Championships'],
+const PBTN = [['top','Top 4','The 4 highest era-adjusted careers'],
+  ['fast','Fast risers','Most adjusted wins per recorded season competed'],
+  ['slow','Slow burners','Gradual winning across at least five recorded seasons'],
+  ['cdl','CDL stars','Top 4 by adjusted wins earned in CDL titles only; lines show full careers'],
+  ['champ','Most rings','The 4 with the most World Championships'],
   ['clear','Clear','Remove all highlights']];
-
-let selected = new Set(PRESETS.top());
+const requested = params.getAll('p').map(canonicalPlayerName).filter(n => lbByName[n]);
+let selected = new Set(params.get('selection') === 'none' ? [] : requested.length ? requested : PRESETS.top());
+function syncUrl(){
+  const url = new URL(location.href);
+  url.searchParams.delete('p');
+  selected.forEach(n => url.searchParams.append('p', n));
+  if(selected.size) url.searchParams.delete('selection'); else url.searchParams.set('selection','none');
+  if(alignment === 'career') url.searchParams.set('align','career'); else url.searchParams.delete('align');
+  if(showField) url.searchParams.set('field','1'); else url.searchParams.delete('field');
+  history.replaceState(null,'',url);
+}
 const colorOf = {};
 function recolor(){ [...selected].sort((a,b)=>adjOf(b)-adjOf(a)).forEach((n,i)=>colorOf[n]=PAL[i%PAL.length]); }
 
@@ -141,12 +148,13 @@ function draw(){
   const wrap=document.getElementById('chart');
   const W=Math.max(720,Math.min(1240,wrap.clientWidth||1200)), H=470;
   const PX0=56, PX1=W-104, PY0=34, PYb=H-42, PH=PYb-PY0;
-  const dx=(PX1-PX0)/(ORDER.length-1);
+  const count = alignment === 'career' ? Math.max(...ALLNAMES.map(runOf)) : ORDER.length;
+  const dx=(PX1-PX0)/Math.max(1,count-1);
   const X=idx=>PX0+idx*dx, Y=c=>PY0+PH-c/ymax*PH;
   geom={W,PX0,PX1,dx,PY0,PYb,X,Y};
-  let s=`<svg class="tj" viewBox="0 0 ${W} ${H}" role="img" aria-label="Career trajectory chart: each line is a player's cumulative era-adjusted wins across their career, oldest title to newest. Gold diamonds mark World Championship wins.">`;
+  let s=`<svg class="tj" viewBox="0 0 ${W} ${H}" role="group" aria-label="Career trajectory chart: cumulative era-adjusted wins aligned by ${alignment==='career'?'recorded season competed':'historical title'}. Gold diamonds mark World Championship wins.">`;
   // era bands + dividers + labels
-  bands.forEach((b,bi)=>{ const x0=Math.max(PX0-dx/2,X(b.i0)-dx/2), x1=Math.min(PX1+dx/2,X(b.i1)+dx/2);
+  if(alignment === 'title') bands.forEach((b,bi)=>{ const x0=Math.max(PX0-dx/2,X(b.i0)-dx/2), x1=Math.min(PX1+dx/2,X(b.i1)+dx/2);
     s+=`<rect x="${x0.toFixed(1)}" y="${PY0}" width="${(x1-x0).toFixed(1)}" height="${PH}" fill="${ERAFILL[b.era]}"/>`;
     if(bi>0) s+=`<line class="banddiv" x1="${x0.toFixed(1)}" y1="${PY0}" x2="${x0.toFixed(1)}" y2="${PYb}"/>`;
     s+=`<text class="bandlab" x="${((x0+x1)/2).toFixed(1)}" y="${PY0-14}" text-anchor="middle">${ERALAB[b.era]}</text>`; });
@@ -154,38 +162,45 @@ function draw(){
   for(let v=0; v<=ymax; v+=5){ s+=`<line class="grid" x1="${PX0}" y1="${Y(v).toFixed(0)}" x2="${PX1}" y2="${Y(v).toFixed(0)}"/><text class="tick" x="${PX0-8}" y="${(Y(v)+4).toFixed(0)}" text-anchor="end">${v}</text>`; }
   s+=`<text class="axtitle" transform="rotate(-90 16 ${(PY0+PH/2).toFixed(0)})" x="16" y="${(PY0+PH/2).toFixed(0)}" text-anchor="middle">cumulative adjusted wins</text>`;
   // x labels
-  ORDER.forEach((g,i)=>{ const x=X(i); s+=`<text class="xlab" x="${x.toFixed(1)}" y="${H-24}" text-anchor="middle" transform="rotate(-42 ${x.toFixed(1)} ${H-24})">${esc(ABBR[g])}</text>`; });
+  (alignment === 'career' ? Array.from({length:count},(_,i)=>String(i+1)) : ORDER).forEach((g,i)=>{ const x=X(i); s+=`<text class="xlab" x="${x.toFixed(1)}" y="${H-24}" text-anchor="middle" transform="rotate(-42 ${x.toFixed(1)} ${H-24})">${esc(alignment === 'career' ? g : ABBR[g])}</text>`; });
 
-  const path = pts => pts.map((p,i)=>`${i?'L':'M'}${X(p.idx).toFixed(1)} ${Y(p.cum).toFixed(1)}`).join(' ');
+  const path = pts => pts.map((p,i)=>`${i?'L':'M'}${X(p.x).toFixed(1)} ${Y(p.cum).toFixed(1)}`).join(' ');
   const drawLine = name=>{
     const pts=series(name); if(!pts.length) return '';
     const sel=selected.has(name), d=path(pts);
-    let g=`<a class="line-link" href="#" tabindex="0" focusable="true" role="button" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."><g class="line${sel?' sel':''}" data-name="${esc(name)}">`;
+    let g=`<a class="line-link" href="#" tabindex="0" focusable="true" role="button" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."><g class="line${sel?' sel':''}" data-name="${esc(name)}" data-points="${esc(JSON.stringify(pts))}">`;
     if(sel) g+=`<path class="halo" d="${d}"/>`;
     g+=`<path class="vis" d="${d}"${sel?` style="stroke:${colorOf[name]}"`:''}/>`;
     g+=`<path class="hit" d="${d}"/>`;
+    // Missing participation has a distinct dashed segment in historical mode.
+    if(sel && alignment === 'title') pts.forEach((p,i)=>{
+      if(!i || (p.played && pts[i-1].played)) return;
+      const gap=path([pts[i-1],p]);
+      g+=`<path d="${gap}" fill="none" stroke="var(--panel)" stroke-width="4" pointer-events="none"/><path d="${gap}" fill="none" stroke="${colorOf[name]}" stroke-width="2" stroke-dasharray="3 5" pointer-events="none"/>`;
+    });
+    if(sel) for(const p of pts) g+=`<circle cx="${X(p.x)}" cy="${Y(p.cum)}" r="${p.played?2.5:2}" fill="${p.played?colorOf[name]:'var(--panel)'}" stroke="${colorOf[name]}" pointer-events="none"/>`;
     if(sel){ const byIdx=Object.fromEntries(pts.map(p=>[p.idx,p]));
       for(const c of (D.players[name].champ_events||[])){ const p=byIdx[IDX[event2game[c.event]]];
-        if(p){ const cx=X(p.idx),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)}: ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
+        if(p){ const cx=X(p.x),cy=Y(p.cum); g+=`<rect class="champ" x="${(cx-4).toFixed(1)}" y="${(cy-4).toFixed(1)}" width="8" height="8" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="${GOLD}" stroke="#fff" stroke-width="1"><title>${esc(name)}: ${esc(ABBR[event2game[c.event]])} World Champion</title></rect>`; } } }
     return g+'</g></a>';
   };
-  for(const n of ALLNAMES) if(!selected.has(n)) s+=drawLine(n);
+  if(showField) for(const n of ALLNAMES) if(!selected.has(n)) s+=drawLine(n);
   const selList=[...selected].sort((a,b)=>adjOf(b)-adjOf(a));
   for(const n of selList) s+=drawLine(n);
   // end labels (de-collided)
-  const ends=selList.map(n=>{const p=series(n),l=p[p.length-1];return {name:n,col:colorOf[n],x:X(l.idx)+8,y:Y(l.cum)+4};}).sort((a,b)=>a.y-b.y);
+  const ends=selList.map(n=>{const p=series(n),l=p[p.length-1];return {name:n,col:colorOf[n],x:X(l.x)+8,y:Y(l.cum)+4};}).sort((a,b)=>a.y-b.y);
   for(let i=1;i<ends.length;i++){ if(ends[i].y-ends[i-1].y<13) ends[i].y=ends[i-1].y+13; }
   // ink text + a colored swatch: the vivid line colors fail AA as 11px text on white
   for(const e of ends) s+=`<a href="player.html?p=${encodeURIComponent(e.name)}"><circle cx="${(e.x+3).toFixed(1)}" cy="${(e.y-3.5).toFixed(1)}" r="3" fill="${e.col}"/><text class="end" x="${(e.x+9).toFixed(1)}" y="${e.y.toFixed(1)}" fill="var(--ink)">${esc(e.name)}</text></a>`;
   // crosshair (updated on hover)
   s+=`<line class="xhair" x1="0" x2="0" y1="${PY0}" y2="${PYb}"/><circle class="xdot" r="4.5"/>`;
   s+='</svg>';
-  const keys=ALLNAMES.map(name=>{
+  const keys=(showField ? ALLNAMES : [...selected]).map(name=>{
     const pts=series(name);
     if(!pts.length) return '';
     const p=pts[pts.length-1];
     const sel=selected.has(name);
-    return `<button class="trace-key" type="button" data-name="${esc(name)}" style="left:${X(p.idx).toFixed(1)}px;top:${Y(p.cum).toFixed(1)}px" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."></button>`;
+    return `<button class="trace-key" type="button" data-name="${esc(name)}" style="left:${X(p.x).toFixed(1)}px;top:${Y(p.cum).toFixed(1)}px" aria-label="${esc(name)} trajectory. Press Enter or Space to ${sel ? 'unpin' : 'pin'} this player."></button>`;
   }).join('');
   wrap.innerHTML=`<div class="tj-stage" style="width:${W}px">${s}${keys}</div>`;
   attachHover();
@@ -213,12 +228,14 @@ function attachHover(){
     }
   };
   const setTrace=(name,p,col)=>{
-    const gx=geom.X(p.idx), gy=geom.Y(p.cum);
+    const gx=geom.X(p.x), gy=geom.Y(p.cum);
     xhair.setAttribute('x1',gx); xhair.setAttribute('x2',gx); xhair.style.opacity='1';
     xdot.setAttribute('cx',gx); xdot.setAttribute('cy',gy); xdot.setAttribute('stroke',col); xdot.style.opacity='1';
     const champs=lbByName[name].champs||0;
     tt.innerHTML=`<b>${esc(name)}</b>${champs?` <span style="color:${GOLD}">${champs}◆</span>`:''}<br>`+
       `<span class="s">through ${esc(ABBR[p.season])}:</span> ${p.cum.toFixed(1)}<br>`+
+      `${alignment === 'career' ? `<span class="s">career season ${p.active}</span><br>` : ''}`+
+      `<span class="s">${p.played ? `${p.wins} wins in this title` : 'No recorded major participation'}</span><br>`+
       `<span class="s">career:</span> ${adjOf(name).toFixed(1)} adj wins`;
     tt.style.display='block';
   };
@@ -233,7 +250,7 @@ function attachHover(){
     const name=g.dataset.name, pts=series(name), p=pts[pts.length-1], col=colorOf[name]||'#2563eb';
     setTrace(name,p,col);
     const svgRect=svg.getBoundingClientRect();
-    const x=svgRect.left + geom.X(p.idx) * (svgRect.width / geom.W);
+    const x=svgRect.left + geom.X(p.x) * (svgRect.width / geom.W);
     const y=svgRect.top + geom.Y(p.cum) * (svgRect.height / 470);
     placeTip(x,y);
   };
@@ -245,7 +262,7 @@ function attachHover(){
     const name=g.dataset.name, pts=series(name), col=colorOf[name]||'#2563eb';
     const vbx=(e.clientX-rect.left)*(geom.W/rect.width);
     const mi=Math.round((vbx-geom.PX0)/geom.dx);
-    let p=pts[0]; for(const q of pts){ if(q.idx<=mi) p=q; }
+    let p=pts[0]; for(const q of pts){ if(q.x<=mi) p=q; }
     setTrace(name,p,col);
     // clamp to the viewport: careers end at the right edge, exactly where an
     // unclamped cursor-following tooltip clips off screen
@@ -301,26 +318,41 @@ function attachHover(){
 function chipsHTML(){
   return [...selected].sort((a,b)=>adjOf(b)-adjOf(a)).map(n=>
     `<span class="chip" style="background:color-mix(in srgb, ${colorOf[n]} 12%, #fff);border-color:color-mix(in srgb, ${colorOf[n]} 40%, #fff)"><span class="cdot" style="background:${colorOf[n]}"></span>${esc(n)}<button data-rm="${esc(n)}" aria-label="Remove ${esc(n)}" title="Remove ${esc(n)}">✕</button></span>`).join('')
-    || '<span class="small faint">No players highlighted. Hover or tap any grey line, or add one.</span>';
+    || '<span class="small faint">No players highlighted. Add a player or choose a preset.</span>';
 }
 
 document.getElementById('root').innerHTML = `
   <h1>Career trajectories</h1>
-  <p class="lede">Every major winner's <strong>cumulative era-adjusted wins</strong>, season by season. A steep climb is a
-  <strong>peak</strong>; a long shallow rise is <strong>longevity</strong>. <span style="color:${GOLD_INK}">◆</span> marks a World Championship.
-  Hover any line to trace it, click or tap to pin it, or add players to keep them highlighted. <a href="methodology.html#era-adjustment">How adjusted wins work →</a></p>
+  <p class="lede">Compare how players accumulated <strong>era-adjusted wins</strong>. Flat sections retain winless seasons.
+  Align by historical title or by each player's recorded seasons competed. <span style="color:${GOLD_INK}">◆</span> marks a World Championship. <a href="methodology.html#era-adjustment">How adjusted wins work →</a></p>
   <div class="picker">
     <input id="search" class="search" list="allplayers" placeholder="Add a player…" autocomplete="off" aria-label="Add a player">
     <datalist id="allplayers">${ALLNAMES.map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
     <span class="small muted">Presets:</span>
     ${PBTN.map(([k,l,t])=>`<button type="button" class="segbtn" data-preset="${k}" title="${esc(t)}">${l}</button>`).join('')}
   </div>
+  <div class="picker">
+    <label>Align careers by <select class="select" id="alignment" aria-label="Align careers by"><option value="title">Historical title</option><option value="career">Career season</option></select></label>
+    <label><input type="checkbox" id="show-field"> Show other players</label>
+    <span class="small muted">Your selections are saved in the page URL.</span>
+  </div>
   <div class="chips" id="chips"></div>
   <p class="scrollhint small faint">Swipe the chart sideways →</p>
   <div class="chart-wrap" id="chart"></div>
-  <p class="small muted">Seasons are evenly spaced oldest → newest (not by calendar year). Grey lines are the rest of the field; hover to identify, click or tap to pin. Championship markers show only on highlighted players.</p>`;
+  <p class="small muted" id="axis-note"></p><p class="small muted">Hover a line for season results; click or tap to pin or unpin. The CDL stars preset selects players using CDL wins only; their lines still show full careers.</p>`;
 
-function rerender(){ recolor(); document.getElementById('chips').innerHTML=chipsHTML(); draw(); }
+function rerender(){
+  tt.style.display='none';
+  syncUrl(); recolor(); document.getElementById('chips').innerHTML=chipsHTML();
+  document.getElementById('alignment').value=alignment;
+  document.getElementById('show-field').checked=showField;
+  document.getElementById('axis-note').textContent=alignment === 'career'
+    ? 'Career season 1 is the first title with recorded major participation. Only recorded seasons competed count; gaps are skipped. Points show totals at the end of each season.'
+    : 'Titles are evenly spaced, oldest to newest. Points show season-end totals. Dashed sections mark gaps with no recorded major participation; a flat solid section means the player competed without a win.';
+  draw();
+}
+document.getElementById('alignment').addEventListener('change',e=>{alignment=e.target.value;rerender();});
+document.getElementById('show-field').addEventListener('change',e=>{showField=e.target.checked;rerender();});
 document.querySelectorAll('.segbtn[data-preset]').forEach(b=>b.addEventListener('click',()=>{
   const k=b.dataset.preset; selected = k==='clear' ? new Set() : new Set(PRESETS[k]()); rerender();
 }));

@@ -609,8 +609,8 @@ test.describe('pages', () => {
   test('peak-vs-longevity scatter renders dots', async ({ page }) => {
     await page.goto('/scatter.html');
     await expect(page.getByRole('heading', { name: /Peak vs\.? Longevity/ })).toBeVisible();
-    // every leaderboard player with wins should be a dot
-    const expected = await page.evaluate(() => (window as any).APP_DATA.leaderboard.length);
+    // Players with identical coordinates share one selectable point.
+    const expected = await page.evaluate(() => new Set((window as any).APP_DATA.leaderboard.map((r: any) => `${r.titlesAll}|${(r.peakInfoAll.wins/r.peakInfoAll.majors).toFixed(12)}`)).size);
     await expect(page.locator('svg.scatter circle.dot')).toHaveCount(expected);
     await expect(page.locator('svg.scatter circle.hit')).toHaveCount(expected);
     const minHitBox = await page.locator('svg.scatter circle.hit').evaluateAll(els =>
@@ -970,7 +970,7 @@ test.describe('pages', () => {
       els => els.map(el => el.getAttribute('data-tip')));
     expect(tips).toContain('Shotzzy, MW19: 4/9 majors (44%) · World Champion');
     expect(tips).toContain('HyDra, BO7: 1/6 majors (17%)');
-    await expect(page.locator('svg.hm rect.cell[tabindex="0"][role="img"]').first()).toBeVisible();
+    await expect(page.locator('svg.hm rect.cell[tabindex="0"][role="button"]').first()).toBeVisible();
     await page.locator('svg.hm rect.cell[aria-label^="Shotzzy, MW19"]').first().focus();
     await expect(page.locator('.charttip.on')).toContainText('Shotzzy, MW19');
   });
@@ -1098,13 +1098,13 @@ test.describe('pages', () => {
 
   test('trajectory picker: Clear empties the highlight, presets change it', async ({ page }) => {
     await page.goto('/trajectory.html');
-    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(8);       // default Top 8
+    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(4);       // default Top 4
     await page.click('.segbtn[data-preset="clear"]');
     await expect(page.locator('svg.tj g.line.sel')).toHaveCount(0);
     await page.click('.segbtn[data-preset="champ"]');
-    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(8);
+    await expect(page.locator('svg.tj g.line.sel')).toHaveCount(4);
     // every highlighted player keeps a removable chip
-    expect(await page.locator('#chips .chip').count()).toBe(8);
+    expect(await page.locator('#chips .chip').count()).toBe(4);
 
     await page.click('.segbtn[data-preset="clear"]');
     await page.locator('#search').fill('ABeZy');
@@ -1858,7 +1858,7 @@ test.describe('design-system adherence', () => {
         dotRadius: Number(dot?.getAttribute('r') || 0),
       };
     });
-    expect(scatterMetrics.href).toContain('player.html?p=');
+    expect(scatterMetrics.href).toBe('#point-details');
     expect(scatterMetrics.hitRadius).toBeGreaterThanOrEqual(22);
     expect(scatterMetrics.hitRadius).toBeGreaterThan(scatterMetrics.dotRadius);
 
@@ -1877,5 +1877,149 @@ test.describe('design-system adherence', () => {
     const before = await page.locator('#chips .chip').count();
     await page.keyboard.press('Enter');
     await expect.poll(() => page.locator('#chips .chip').count()).not.toBe(before);
+  });
+});
+
+// Insights comparisons must preserve participation, season denominators, and URL state.
+test.describe('Insights improvements', () => {
+  test('trajectories retain winless seasons and align recorded career seasons', async ({ page }) => {
+    await page.goto('/trajectory.html?p=Simp&p=Crimsix');
+    const simp = page.locator('.line[data-name="Simp"]');
+    const points = await simp.getAttribute('data-points');
+    const values = JSON.parse(points || '[]');
+    const cw = values.find((v: any) => v.season === 'Black Ops Cold War');
+    const vg = values.find((v: any) => v.season === 'Vanguard');
+    expect(vg.wins).toBe(0);
+    expect(vg.played).toBe(true);
+    expect(vg.cum).toBe(cw.cum);
+    // Verify the visible path has the same height at CW and Vanguard, rather
+    // than merely trusting the data attached to the chart.
+    const path = await simp.locator('path.vis').getAttribute('d');
+    const coordinates = [...(path || '').matchAll(/[ML]([\d.]+) ([\d.]+)/g)].map(m=>({x:Number(m[1]),y:Number(m[2])}));
+    const cwIndex=values.findIndex((v: any)=>v.season==='Black Ops Cold War');
+    expect(coordinates[cwIndex+1].y).toBe(coordinates[cwIndex].y);
+    expect(coordinates[cwIndex+1].x).toBeGreaterThan(coordinates[cwIndex].x);
+    const crim = JSON.parse(await page.locator('.line[data-name="Crimsix"]').getAttribute('data-points') || '[]');
+    expect(crim[0].season).toBe('Call of Duty 4');
+    expect(crim[0].cum).toBe(0);
+    expect(crim.find((v: any) => v.season === 'Modern Warfare 2').played).toBe(false);
+    await page.getByLabel('Align careers by').selectOption('career');
+    const aligned = JSON.parse(await simp.getAttribute('data-points') || '[]');
+    expect(aligned[0].x).toBe(0);
+    expect(aligned[0].season).toBe('Black Ops 4');
+    expect(aligned.every((v: any, i: number) => v.played && v.x === i)).toBe(true);
+    await expect(page).toHaveURL(/align=career/);
+    await page.reload();
+    await expect(page.getByLabel('Align careers by')).toHaveValue('career');
+    await expect(page.locator('#chips .chip')).toHaveCount(2);
+  });
+
+  test('trajectory CDL preset uses CDL results and preserves cleared selections', async ({ page }) => {
+    await page.goto('/trajectory.html');
+    await expect(page.locator('.line')).toHaveCount(4);
+    await page.locator('[data-preset="cdl"]').click();
+    const expected = await page.evaluate(async () => {
+      const {computeRows, eraContext} = await import('/assets/rank.js');
+      const D = (window as any).APP_DATA;
+      return computeRows(D, new Set(eraContext(D).PRESETS.cdl), 1).sort((a: any,b: any)=>a.adjRank-b.adjRank).slice(0,4).map((r: any)=>r.name).sort();
+    });
+    expect((await page.locator('#chips [data-rm]').evaluateAll(els=>els.map(el=>el.getAttribute('data-rm')))).sort()).toEqual(expected);
+    await page.getByLabel('Show other players').check();
+    expect(await page.locator('.line').count()).toBeGreaterThan(4);
+    await page.reload();
+    await expect(page.getByLabel('Show other players')).toBeChecked();
+    await page.locator('[data-preset="clear"]').click();
+    await page.reload();
+    await expect(page.locator('#chips .chip')).toHaveCount(0);
+  });
+
+  test('heatmap distinguishes participation and opens supporting results', async ({ page }) => {
+    await page.goto('/heatmap.html');
+    const zero = page.locator('rect.cell[data-player="Simp"][data-game="Vanguard"]');
+    const absent = page.locator('rect.cell[data-player="Simp"][data-game="Black Ops 2"]');
+    await expect(zero).toHaveAttribute('data-state', 'zero');
+    await expect(absent).toHaveAttribute('data-state', 'absent');
+    expect(await zero.getAttribute('fill')).not.toBe(await absent.getAttribute('fill'));
+    await expect(page.locator('.swatches')).toContainText('100%');
+    await zero.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#season-results')).toContainText('Simp · Vanguard');
+    await expect(page.locator('#season-results')).toContainText('0 of 7');
+    await expect(page.locator('#season-results tbody tr')).toHaveCount(7);
+    await expect(page.locator('#season-results')).toContainText('Call of Duty League Championship 2022');
+    await absent.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#season-results')).toContainText('No recorded major participation');
+    await expect(page.locator('#season-results tbody tr')).toHaveCount(0);
+  });
+
+  test('heatmap reports an unavailable results file instead of claiming no participation', async ({ page }) => {
+    await page.route('**/participation.json', route=>route.fulfill({status:503, body:'unavailable'}));
+    await page.goto('/heatmap.html');
+    await page.locator('rect.cell[data-player="Simp"][data-game="Vanguard"]').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#season-results')).toContainText('Could not load');
+    await expect(page.locator('#season-results')).not.toContainText('No recorded major participation');
+  });
+});
+
+test.describe('Peak comparison improvements', () => {
+  test('shared points expose every player and the full overview fits the viewport', async ({ page }) => {
+    await page.goto('/scatter.html');
+    const simp = page.locator(`svg.scatter a[data-members*='"Simp"']`);
+    await simp.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#point-details')).toContainText('Simp');
+    await expect(page.locator('#point-details')).toContainText('aBeZy');
+    const cards=await page.locator('.scatter-person').evaluateAll(els=>els.map(el=>{
+      const text=el.querySelector('div')!.getBoundingClientRect();
+      const button=el.querySelector('button')!.getBoundingClientRect();
+      return {textWidth:text.width,textRight:text.right,buttonLeft:button.left,buttonRight:button.right,panelRight:el.getBoundingClientRect().right};
+    }));
+    for(const card of cards){
+      expect(card.textWidth).toBeGreaterThan(160);
+      expect(card.textRight).toBeLessThanOrEqual(card.buttonLeft);
+      expect(card.buttonRight).toBeLessThanOrEqual(card.panelRight+1);
+    }
+    const dimensions=await page.locator('svg.scatter').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth}));
+    expect(dimensions.width).toBeLessThanOrEqual(dimensions.viewport);
+    const represented=await page.locator('svg.scatter a[data-members]').evaluateAll(els=>els.flatMap(el=>JSON.parse(el.getAttribute('data-members') || '[]')));
+    const names=await page.evaluate(()=>(window as any).APP_DATA.leaderboard.map((r:any)=>r.name));
+    expect(represented.sort()).toEqual(names.sort());
+  });
+
+  test('player highlights and optional axes survive a reload', async ({ page }) => {
+    await page.goto('/scatter.html');
+    await page.getByLabel('Find a player').fill('Simp');
+    await page.getByRole('button',{name:'Add player',exact:true}).click();
+    await page.getByLabel('Find a player').fill('Scump');
+    await page.getByRole('button',{name:'Add player',exact:true}).click();
+    await page.getByLabel('Longevity measure').selectOption('played');
+    await page.getByLabel('Peak measure').selectOption('three');
+    await expect(page.locator('#comparison')).toContainText('Simp');
+    await expect(page.locator('#comparison')).toContainText('Scump');
+    await expect(page.locator('#comparison a[href^="compare.html"]')).toHaveAttribute('href',/p=Simp.*p=Scump/);
+    await page.reload();
+    await expect(page.getByLabel('Longevity measure')).toHaveValue('played');
+    await expect(page.getByLabel('Peak measure')).toHaveValue('three');
+    await expect(page.locator('#comparison [data-remove]')).toHaveCount(2);
+    await expect(page.locator('#peak-note')).toContainText('consecutive');
+  });
+
+  test('three-season peaks include zero-win titles and exclude incomplete windows', async ({ page }) => {
+    await page.goto('/scatter.html');
+    const result=await page.evaluate(async()=>{
+      const {careerSeasons,careerPeak}=await import('/assets/career.js');
+      const D={meta:{seasonOrder:['A','B','C','D'],referenceMajors:10},players:{Example:{
+        seasons:[{game:'A',wins:2,majors:4},{game:'C',wins:3,majors:6},{game:'D',wins:1,majors:2}],
+        placements:['A','B','C','D'].map(game=>({game,events:4}))
+      }}};
+      const seasons=careerSeasons(D,'Example');
+      return {peak:careerPeak(seasons,3),short:careerPeak(seasons.slice(0,2),3),last:seasons.at(-1).cum};
+    });
+    expect(result.peak.share).toBeCloseTo(1/3,10);
+    expect(result.peak.seasons.map((s:any)=>s.season)).toEqual(['A','B','C']);
+    expect(result.short).toBeNull();
+    expect(result.last).toBe(15);
   });
 });
